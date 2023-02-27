@@ -1,0 +1,20 @@
+{
+  "name": "console-with-cron",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "npx ts-node src/index.ts"
+  },
+  "type": "module",
+  "volta": {
+    "node": "18.13.0",
+    "pnpm": "7.27.0"
+  },
+  "dependencies": {
+    "@aomex/console": "workspace:*",
+    "@aomex/cron": "workspace:*",
+    "@aomex/console-router": "workspace:*",
+    "@aomex/core": "workspace:*",
+    "@aomex/file-cache": "workspace:*"
+  }
+}

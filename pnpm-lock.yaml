@@ -57,6 +57,20 @@ importers:
     devDependencies:
       nodemon: 2.0.20
 
+  examples/console-with-cron:
+    specifiers:
+      '@aomex/console': workspace:*
+      '@aomex/console-router': workspace:*
+      '@aomex/core': workspace:*
+      '@aomex/cron': workspace:*
+      '@aomex/file-cache': workspace:*
+    dependencies:
+      '@aomex/console': link:../../packages/console
+      '@aomex/console-router': link:../../packages/console-router
+      '@aomex/core': link:../../packages/core
+      '@aomex/cron': link:../../packages/cron
+      '@aomex/file-cache': link:../../packages/file-cache
+
   examples/console-with-router:
     specifiers:
       '@aomex/console': workspace:*
