@@ -460,7 +460,7 @@ describe('options.allowMethods', function () {
 });
 
 describe('options.headersKeptOnError', function () {
-  test.only('should keep CORS headers after an error', async () => {
+  test('should keep CORS headers after an error', async () => {
     const app = createApp({}, () => {
       throw new Error('Whoops!');
     });
