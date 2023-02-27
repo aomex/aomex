@@ -1,0 +1,29 @@
+name: Test
+
+on: [pull_request, push]
+
+jobs:
+  test:
+    if: "!contains(toJson(github.event.commits), '[skip ci]')"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: ['18.0.0', 18.x]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'pnpm'
+          node-version: ${{ matrix.node }}
+      - run: pnpm install
+      - run: pnpm test
+      - name: Upload Coverage
+        if: github.ref == 'refs/heads/main' && strategy.job-index == 0
+        uses: codecov/codecov-action@v3
+        with:
+          verbose: true
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}

@@ -1,0 +1,32 @@
+import { ConsoleApp } from '@aomex/console';
+import { readFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { test } from 'vitest';
+import { output } from '../src/output';
+
+test('export crontab', async () => {
+  const spy = vitest.spyOn(console, 'log');
+  let msg = '';
+  spy.mockImplementation((_) => {
+    msg = _;
+  });
+
+  const app = new ConsoleApp();
+  app.mount(output('./test/mocks/commanders'));
+  await app.run('schedule:export');
+  expect(msg).toMatchSnapshot();
+  spy.mockRestore();
+});
+
+test('export crontab to file', async () => {
+  const file = path.join(
+    tmpdir(),
+    'd' + Date.now().toString(),
+    'f' + Math.random().toString(),
+  );
+  const app = new ConsoleApp();
+  app.mount(output('./test/mocks/commanders'));
+  await app.run('schedule:export', '--output', file);
+  expect(readFileSync(file, 'utf-8')).toMatchSnapshot();
+});

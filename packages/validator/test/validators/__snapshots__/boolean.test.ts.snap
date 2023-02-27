@@ -1,0 +1,41 @@
+// Vitest Snapshot v1
+
+exports[`Openapi > Optional 1`] = `
+{
+  "required": false,
+  "schema": {
+    "type": "boolean",
+  },
+}
+`;
+
+exports[`Openapi > Required 1`] = `
+{
+  "required": true,
+  "schema": {
+    "type": "boolean",
+  },
+}
+`;
+
+exports[`Openapi > With default value 1`] = `
+{
+  "required": false,
+  "schema": {
+    "default": true,
+    "type": "boolean",
+  },
+}
+`;
+
+exports[`Openapi > With extra infos 1`] = `
+{
+  "required": true,
+  "schema": {
+    "deprecated": true,
+    "description": "Hello Test",
+    "title": "Title",
+    "type": "boolean",
+  },
+}
+`;

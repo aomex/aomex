@@ -1,0 +1,55 @@
+{
+  "name": "@aomex/openapi",
+  "version": "0.0.6",
+  "description": "Openapi documentation generator",
+  "scripts": {
+    "prepublishOnly": "tsup"
+  },
+  "type": "module",
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [],
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "peerDependencies": {
+    "@aomex/console": "^0.0.5",
+    "@aomex/core": "^0.0.5",
+    "@aomex/web": "^0.0.6",
+    "@aomex/web-router": "^0.0.6"
+  },
+  "dependencies": {
+    "@aomex/file-parser": "workspace:^0.0.2",
+    "@aomex/helper": "workspace:^0.0.3",
+    "filesize": "^10.0.6",
+    "ibm-openapi-validator": "^0.97.3",
+    "ora": "^6.1.2",
+    "read-pkg-up": "^9.1.0",
+    "yaml": "^2.2.1"
+  },
+  "devDependencies": {
+    "@aomex/console": "workspace:^0.0.5",
+    "@aomex/core": "workspace:^0.0.5",
+    "@aomex/web": "workspace:^0.0.6",
+    "@aomex/web-router": "workspace:^0.0.6",
+    "@types/ibm-openapi-validator": "^0.15.1"
+  }
+}

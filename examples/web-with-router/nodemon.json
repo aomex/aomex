@@ -1,0 +1,11 @@
+{
+  "delay": 400,
+  "verbose": true,
+  "ext": "ts",
+  "exec": "ts-node ./src/index.ts",
+  "watch": ["./src/**/*", "package.json", "nodemon.json"],
+  "env": {
+    "NODE_ENV": "development",
+    "PORT": 3000
+  }
+}

@@ -1,0 +1,22 @@
+import { logger } from '@aomex/logger';
+import { prettyJson } from '@aomex/pretty-json';
+import { WebApp } from '@aomex/web';
+import { routers } from '@aomex/web-router';
+
+const app = new WebApp();
+
+app.mount(logger());
+app.mount(prettyJson());
+app.mount(routers('./src/routers'));
+
+app.on('error', (_, ctx) => {
+  const response = ctx.response;
+  response.body = {
+    status: response.statusCode,
+    message: response.body,
+  };
+});
+
+app.listen(3000, () => {
+  console.log('Server started');
+});

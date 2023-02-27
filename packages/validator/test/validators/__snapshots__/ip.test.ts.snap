@@ -1,0 +1,45 @@
+// Vitest Snapshot v1
+
+exports[`Openapi > Optional 1`] = `
+{
+  "required": false,
+  "schema": {
+    "format": "ipv6",
+    "type": "string",
+  },
+}
+`;
+
+exports[`Openapi > Required 1`] = `
+{
+  "required": true,
+  "schema": {
+    "format": "ipv4",
+    "type": "string",
+  },
+}
+`;
+
+exports[`Openapi > With default value 1`] = `
+{
+  "required": false,
+  "schema": {
+    "default": "1.2.3.4",
+    "format": "ipv4",
+    "type": "string",
+  },
+}
+`;
+
+exports[`Openapi > With extra infos 1`] = `
+{
+  "required": true,
+  "schema": {
+    "deprecated": true,
+    "description": "Hello Test",
+    "format": "ip",
+    "title": "Title",
+    "type": "string",
+  },
+}
+`;
