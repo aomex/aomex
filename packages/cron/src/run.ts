@@ -10,22 +10,22 @@ import { runToHelp } from './run-to-help';
 import type { CronOptions } from './cron';
 import { CronJob, CronJobOptions } from './cron-job';
 
-const runSchedule = 'schedule:run';
+const runCron = 'cron:start';
 
 export const run = ({ paths, mode }: CronOptions) =>
-  chain.console.mount(runToHelp(runSchedule)).mount(
+  chain.console.mount(runToHelp(runCron)).mount(
     middleware.console(async (ctx, next) => {
-      if (ctx.request.command !== runSchedule) return next();
+      if (ctx.request.command !== runCron) return next();
       ctx.response.commandMatched = true;
-      const schedules = await getSchedules(paths);
-      schedules.forEach(async (schedule) => {
-        const job = new CronJob(ctx.app, schedule, mode);
-        await job.start();
+      const jobs = await getJobs(paths);
+      jobs.forEach(async (job) => {
+        const cron = new CronJob(ctx.app, job, mode);
+        await cron.start();
       });
     }),
   );
 
-export const getSchedules = async (
+export const getJobs = async (
   paths: PathToFileOptions,
 ): Promise<CronJobOptions[]> => {
   const files = await pathToFiles(paths);

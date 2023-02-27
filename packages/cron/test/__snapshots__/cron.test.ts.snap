@@ -1,30 +1,30 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`output schedule:* help information 1`] = `
+exports[`output cron:* help information 1`] = `
 "aomex [command] [options] [--help|-h]
 
 Commands:
-  aomex schedule:run     Star cron
-  aomex schedule:export  Create cron-compatibly list
+  aomex cron:start   Star cron
+  aomex cron:export  Create cron-compatibly list
 
 Options:
   -v, --version  Show aomex version number                             [boolean]
   -h, --help     Show help                                             [boolean]"
 `;
 
-exports[`output schedule:* help information 2`] = `
-"aomex schedule:run [options]
+exports[`output cron:* help information 2`] = `
+"aomex cron:start [options]
 Schedule list:
 
 
 Options:
-  -h, --help  Show help for command "schedule:run""
+  -h, --help  Show help for command "cron:start""
 `;
 
-exports[`output schedule:* help information 3`] = `
-"aomex schedule:export [options]
+exports[`output cron:* help information 3`] = `
+"aomex cron:export [options]
 
 Options:
   -o, --output  Export to specific file                                 [string]
-  -h, --help    Show help for command "schedule:export""
+  -h, --help    Show help for command "cron:export""
 `;

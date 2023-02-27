@@ -4,10 +4,10 @@ import { pathToFiles } from '@aomex/file-parser';
 import { sleep } from '@aomex/helper';
 import { rmSync } from 'fs';
 import { test } from 'vitest';
-import { getSchedules, run } from '../src/run';
+import { getJobs, run } from '../src/run';
 
 test('generate schedule configuration', async () => {
-  const schedules = await getSchedules('./test/mocks/commanders');
+  const schedules = await getJobs('./test/mocks/commanders');
   expect(schedules).toMatchSnapshot();
 });
 
@@ -19,10 +19,10 @@ test('Run job (mode=overlap)', async () => {
   const app = new ConsoleApp();
   app.mount(commanders('./test/mocks/commanders'));
   app.mount(run({ paths: './test/mocks/commanders' }));
-  await app.run('schedule:run');
+  await app.run('cron:start');
   await sleep(3000);
-  const touchedFiles = pathToFiles(pattern);
-  expect((await touchedFiles).length).greaterThan(1);
+  const touchedFiles = await pathToFiles(pattern);
+  expect(touchedFiles.length).greaterThan(1);
 });
 
 test('Run job (mode=sequence)', async () => {
@@ -33,8 +33,8 @@ test('Run job (mode=sequence)', async () => {
   const app = new ConsoleApp();
   app.mount(commanders('./test/mocks/commanders'));
   app.mount(run({ paths: './test/mocks/commanders', mode: 'sequence' }));
-  await app.run('schedule:run');
+  await app.run('cron:start');
   await sleep(3000);
-  const touchedFiles = pathToFiles(pattern);
-  expect((await touchedFiles).length).greaterThan(1);
+  const touchedFiles = await pathToFiles(pattern);
+  expect(touchedFiles.length).greaterThan(1);
 });

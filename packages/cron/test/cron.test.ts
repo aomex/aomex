@@ -16,7 +16,7 @@ afterAll(() => {
   spy.mockRestore();
 });
 
-test('output schedule:* help information', async () => {
+test('output cron:* help information', async () => {
   let msg = '';
   spy.mockImplementation((_) => {
     msg = _;
@@ -31,8 +31,8 @@ test('output schedule:* help information', async () => {
 
   await app.run('-h');
   expect(msg).toMatchSnapshot();
-  await app.run('schedule:run', '-h');
+  await app.run('cron:start', '-h');
   expect(msg).toMatchSnapshot();
-  await app.run('schedule:export', '-h');
+  await app.run('cron:export', '-h');
   expect(msg).toMatchSnapshot();
 });

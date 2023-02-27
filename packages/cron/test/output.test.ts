@@ -14,7 +14,7 @@ test('export crontab', async () => {
 
   const app = new ConsoleApp();
   app.mount(output('./test/mocks/commanders'));
-  await app.run('schedule:export');
+  await app.run('cron:export');
   expect(msg).toMatchSnapshot();
   spy.mockRestore();
 });
@@ -27,6 +27,6 @@ test('export crontab to file', async () => {
   );
   const app = new ConsoleApp();
   app.mount(output('./test/mocks/commanders'));
-  await app.run('schedule:export', '--output', file);
+  await app.run('cron:export', '--output', file);
   expect(readFileSync(file, 'utf-8')).toMatchSnapshot();
 });

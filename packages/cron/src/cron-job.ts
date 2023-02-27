@@ -1,6 +1,4 @@
 import type { ConsoleApp } from '@aomex/console';
-import { fileURLToPath } from 'node:url';
-import { isMainThread, Worker } from 'node:worker_threads';
 import cronParser from 'cron-parser';
 import type { CronOptions } from './cron';
 import { sleep } from '@aomex/helper';
@@ -17,7 +15,7 @@ export class CronJob {
 
   constructor(
     protected readonly app: ConsoleApp,
-    protected readonly schedule: CronJobOptions,
+    protected readonly job: CronJobOptions,
     protected readonly mode: CronOptions['mode'] = 'overlap',
   ) {}
 
@@ -25,7 +23,7 @@ export class CronJob {
     if (this.mode === 'sequence') this.sequenceLoop();
 
     const {
-      schedule: { seconds },
+      job: { seconds },
     } = this;
     const cronExp = this.getCronExp();
 
@@ -49,7 +47,7 @@ export class CronJob {
 
   getCronExp() {
     const {
-      schedule: { seconds, time },
+      job: { seconds, time },
     } = this;
     const now = new Date();
     if (seconds.length) {
@@ -69,24 +67,9 @@ export class CronJob {
   }
 
   async execute() {
-    if (isMainThread) {
-      await this.createWorker();
-    } else {
-      try {
-        await this.app.run(this.schedule.command, ...this.schedule.args);
-      } catch {}
-    }
-  }
-
-  createWorker(): Promise<void> {
-    const worker = new Worker(fileURLToPath(import.meta.url), {
-      stdout: true,
-    });
-    return new Promise((resolve) => {
-      worker.on('exit', () => {
-        resolve(void 0);
-      });
-    });
+    try {
+      await this.app.run(this.job.command, ...this.job.args);
+    } catch {}
   }
 
   sequenceLoop = () => {

@@ -12,7 +12,7 @@ import path, { dirname } from 'node:path';
 import { outputToHelp } from './output-to-help';
 import { ScheduleMiddleware } from './schedule';
 
-const exportSchedule = 'schedule:export';
+const exportCron = 'cron:export';
 
 export const outputRule = options(
   {
@@ -27,12 +27,12 @@ export const outputRule = options(
 
 export const output = (paths: PathToFileOptions) =>
   chain.console
-    .mount(outputToHelp(exportSchedule))
+    .mount(outputToHelp(exportCron))
     .mount(outputRule)
     .mount(
       middleware.console<Middleware.Infer<typeof outputRule>>(
         async (ctx, next) => {
-          if (ctx.request.command !== exportSchedule) {
+          if (ctx.request.command !== exportCron) {
             Reflect.deleteProperty(ctx, 'options');
             return next();
           }
