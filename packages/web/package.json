@@ -1,0 +1,77 @@
+{
+  "name": "@aomex/web",
+  "version": "0.0.6",
+  "description": "",
+  "scripts": {
+    "prepublishOnly": "tsup"
+  },
+  "type": "module",
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [],
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "peerDependencies": {
+    "@aomex/core": "^0.0.5"
+  },
+  "dependencies": {
+    "@aomex/helper": "workspace:^0.0.3",
+    "@types/accepts": "^1.3.5",
+    "@types/content-disposition": "^0.5.5",
+    "@types/formidable": "^2.0.5",
+    "@types/http-errors": "^2.0.1",
+    "@types/qs": "^6.9.7",
+    "@types/statuses": "^2.0.1",
+    "accepts": "^1.3.8",
+    "co-body": "^6.1.0",
+    "content-disposition": "^0.5.4",
+    "content-type": "^1.0.5",
+    "destroy": "^1.2.0",
+    "encodeurl": "^1.0.2",
+    "escape-html": "^1.0.3",
+    "formidable": "^3.2.5",
+    "fresh": "^0.5.2",
+    "http-errors": "^2.0.0",
+    "lru-cache": "^7.14.1",
+    "mime-types": "^2.1.35",
+    "parseurl": "^1.3.3",
+    "qs": "^6.11.0",
+    "request-ip": "^3.3.0",
+    "statuses": "^2.0.1",
+    "type-is": "^1.6.18",
+    "vary": "^1.1.2"
+  },
+  "devDependencies": {
+    "@aomex/core": "workspace:^0.0.5",
+    "@types/co-body": "^6.1.0",
+    "@types/content-type": "^1.1.5",
+    "@types/destroy": "^1.0.0",
+    "@types/encodeurl": "^1.0.0",
+    "@types/escape-html": "^1.0.2",
+    "@types/fresh": "^0.5.0",
+    "@types/mime-types": "^2.1.1",
+    "@types/parseurl": "^1.3.1",
+    "@types/request-ip": "^0.0.37",
+    "@types/type-is": "^1.6.3",
+    "@types/vary": "^1.1.0"
+  }
+}

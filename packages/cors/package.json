@@ -1,0 +1,44 @@
+{
+  "name": "@aomex/cors",
+  "version": "0.0.4",
+  "description": "跨站资源共享",
+  "keywords": [
+    "cors"
+  ],
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "prepublishOnly": "tsup"
+  },
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@aomex/core": "^0.0.5",
+    "@aomex/web": "^0.0.6"
+  },
+  "devDependencies": {
+    "@aomex/core": "workspace:^0.0.5",
+    "@aomex/web": "workspace:^0.0.6"
+  }
+}

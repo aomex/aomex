@@ -1,0 +1,55 @@
+{
+  "name": "@aomex/console",
+  "version": "0.0.5",
+  "description": "",
+  "scripts": {
+    "prepublishOnly": "tsup && node ./scripts/version-shim.mjs"
+  },
+  "type": "module",
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "bin": {
+    "aomex": "src/bin.ts"
+  },
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "bin": {
+      "aomex": "dist/bin.js"
+    },
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [],
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "peerDependencies": {
+    "@aomex/core": "^0.0.5"
+  },
+  "dependencies": {
+    "@aomex/helper": "workspace:^0.0.3",
+    "@aomex/file-parser": "workspace:^0.0.2",
+    "ts-node": "^10.9.1",
+    "yargs": "^17.6.2",
+    "yargs-parser": "^21.1.1"
+  },
+  "devDependencies": {
+    "@aomex/core": "workspace:^0.0.5",
+    "@types/yargs": "^17.0.22",
+    "@types/yargs-parser": "^21.0.0",
+    "read-pkg-up": "^9.1.0"
+  }
+}

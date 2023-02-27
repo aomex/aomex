@@ -1,0 +1,23 @@
+{
+  "name": "web-with-router",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "nodemon"
+  },
+  "type": "module",
+  "volta": {
+    "node": "18.13.0",
+    "pnpm": "7.27.0"
+  },
+  "dependencies": {
+    "@aomex/core": "workspace:*",
+    "@aomex/logger": "workspace:*",
+    "@aomex/pretty-json": "workspace:*",
+    "@aomex/web": "workspace:*",
+    "@aomex/web-router": "workspace:*"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}

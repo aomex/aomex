@@ -1,0 +1,19 @@
+{
+  "extends": "@tsconfig/node18-strictest-esm/tsconfig.json",
+  "compilerOptions": {
+    "allowJs": false,
+    "checkJs": false,
+    "declaration": true,
+    "removeComments": false,
+    "rootDir": "./",
+    "noEmit": true,
+    "importHelpers": false,
+    "downlevelIteration": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "exactOptionalPropertyTypes": false
+  },
+  "exclude": ["packages/**/dist"]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "compress-body",
+  "private": true,
+  "scripts": {
+    "start": "nodemon"
+  },
+  "type": "module",
+  "volta": {
+    "node": "18.13.0",
+    "pnpm": "7.27.0"
+  },
+  "dependencies": {
+    "@aomex/compress": "workspace:*",
+    "@aomex/core": "workspace:*",
+    "@aomex/logger": "workspace:*",
+    "@aomex/web": "workspace:*",
+    "@aomex/web-router": "workspace:*"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}

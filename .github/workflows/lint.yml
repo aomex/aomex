@@ -1,0 +1,66 @@
+name: Lint
+
+on: [pull_request, push]
+
+jobs:
+  git-commit:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'pnpm'
+          node-version-file: 'package.json'
+      - run: pnpm install
+      - name: Pull Request
+        if: github.event_name == 'pull_request'
+        run: npx --no-install commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+      - name: Push
+        if: github.event_name == 'push'
+        run: echo "${{ github.event.head_commit.message }}" | npx --no-install commitlint --verbose
+  type-checking:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ts: [4.9.x]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'pnpm'
+          node-version-file: 'package.json'
+      - name: Use Typescript@${{ matrix.ts }}
+        run: |
+          pnpm install
+          pnpm install typescript@${{ matrix.ts }} -w
+      - run: pnpm exec tsc
+  code-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'pnpm'
+          node-version-file: 'package.json'
+      - run: pnpm install
+      - run: npx --no-install prettier --cache --check .
+  bundle:
+    if: "!contains(toJson(github.event.commits), '[skip ci]')"
+    needs: [git-commit, type-checking, code-format]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'pnpm'
+          node-version-file: 'package.json'
+      - run: pnpm install
+      - run: pnpm build

@@ -1,0 +1,16 @@
+{
+  "typescript.preferences.quoteStyle": "single",
+  "typescript.suggest.autoImports": true,
+  "editor.tabSize": 2,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "cSpell.words": [
+    "openapi",
+    "openapiv3",
+    "aomex",
+    "filesize",
+    "tsup",
+    "geekact"
+  ]
+}
