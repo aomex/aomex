@@ -16,7 +16,7 @@ export interface ConsoleAppOption {
 
 export class ConsoleApp extends EventEmitter {
   public readonly chainPoints: string[] = [];
-  protected running: boolean = false;
+  protected level: number = 0;
   protected readonly tokenList: ConsoleMiddlewareToken[] = [];
 
   constructor(protected readonly options: ConsoleAppOption = {}) {
@@ -28,11 +28,7 @@ export class ConsoleApp extends EventEmitter {
    * @see process.argv
    */
   public async run(...commands: string[]): Promise<void> {
-    if (this.running) {
-      throw new Error('Call "app.run()" multiple times at same time');
-    }
-
-    this.running = true;
+    const currentLevel = this.level++;
     const request = new ConsoleRequest(
       this,
       commands.length ? commands : hideBin(process.argv),
@@ -59,10 +55,10 @@ export class ConsoleApp extends EventEmitter {
         throw new Error(`Command "${request.command}" is not found`);
       }
     } catch (e) {
-      this.emit('error', e);
+      currentLevel === 0 && this.emit('error', e);
       throw e;
     } finally {
-      this.running = false;
+      --this.level;
     }
   }
 
