@@ -3,7 +3,6 @@
 exports[`export crontab 1`] = `
 "* * * * * npx aomex test:a
 * * * 2-3 * npx aomex test:a
-* * * * * npx aomex test:second --hello test
 * * * * * sleep 0; npx aomex test:second --hello test
 * * * * * sleep 1; npx aomex test:second --hello test
 * * * * * sleep 2; npx aomex test:second --hello test
@@ -64,7 +63,6 @@ exports[`export crontab 1`] = `
 * * * * * sleep 57; npx aomex test:second --hello test
 * * * * * sleep 58; npx aomex test:second --hello test
 * * * * * sleep 59; npx aomex test:second --hello test
-*/2 * * * * npx aomex test:second
 */2 * * * * sleep 0; npx aomex test:second
 */2 * * * * sleep 4; npx aomex test:second
 */2 * * * * sleep 8; npx aomex test:second
@@ -85,7 +83,6 @@ exports[`export crontab 1`] = `
 exports[`export crontab to file 1`] = `
 "* * * * * npx aomex test:a
 * * * 2-3 * npx aomex test:a
-* * * * * npx aomex test:second --hello test
 * * * * * sleep 0; npx aomex test:second --hello test
 * * * * * sleep 1; npx aomex test:second --hello test
 * * * * * sleep 2; npx aomex test:second --hello test
@@ -146,7 +143,6 @@ exports[`export crontab to file 1`] = `
 * * * * * sleep 57; npx aomex test:second --hello test
 * * * * * sleep 58; npx aomex test:second --hello test
 * * * * * sleep 59; npx aomex test:second --hello test
-*/2 * * * * npx aomex test:second
 */2 * * * * sleep 0; npx aomex test:second
 */2 * * * * sleep 4; npx aomex test:second
 */2 * * * * sleep 8; npx aomex test:second

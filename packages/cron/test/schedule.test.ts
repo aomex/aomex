@@ -2,7 +2,7 @@ import { test } from 'vitest';
 import { schedule, ScheduleOptions } from '../src';
 
 describe('time', () => {
-  const expectSnap = (options: ScheduleOptions) => {
+  const expectSnap = (options: ScheduleOptions | string) => {
     expect(schedule(options).toCrontab('my:schedule')).toMatchSnapshot();
   };
 
@@ -44,6 +44,25 @@ describe('time', () => {
     expectSnap({ second: '*/2' });
     expectSnap({ second: '1-12/2' });
     expectSnap({ second: '1-7' });
+  });
+
+  test('cron-like time', () => {
+    expectSnap('*/2 * * 1,4 * *');
+    expectSnap({
+      time: '* * * * *',
+    });
+    expectSnap({
+      time: '*   */2 *    1,4,9 *',
+      args: ['--a', 'b'],
+    });
+  });
+
+  test('cron-like time with invalid length', () => {
+    expect(() => schedule('* * * * * * *').toCrontab('x')).toThrowError();
+    expect(() => schedule('* * * *').toCrontab('x')).toThrowError();
+    expect(() => schedule('* * *').toCrontab('x')).toThrowError();
+
+    expect(() => schedule('* * * * *').toCrontab('x')).not.toThrowError();
   });
 });
 

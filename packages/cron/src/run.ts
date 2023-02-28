@@ -40,7 +40,7 @@ export const getJobs = async (
       for (const middleware of Chain.flatten(builder.chain)) {
         if (middleware instanceof ScheduleMiddleware) {
           tasks.push({
-            time: middleware.time.join(' '),
+            time: middleware.time,
             seconds: middleware.seconds,
             command: builder.commands[0]!,
             args: middleware.args,

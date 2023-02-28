@@ -1,7 +1,7 @@
 import { ConsoleMiddleware, scriptName } from '@aomex/console';
 import parser from 'cron-parser';
 
-export interface ScheduleOptions {
+interface TimeObject {
   /**
    * 0-59
    */
@@ -26,23 +26,58 @@ export interface ScheduleOptions {
    * 0-6
    */
   dayOfWeek?: string | number;
-  args?: (string | number)[];
 }
+
+interface TimeString {
+  /**
+   Cron-like time, support seconds.
+    ```
+      ┌────────────── second (optional)
+      │ ┌──────────── minute 
+      │ │ ┌────────── hour
+      │ │ │ ┌──────── day of month
+      │ │ │ │ ┌────── month
+      │ │ │ │ │ ┌──── day of week
+      │ │ │ │ │ │
+     `* * * * * *`
+    ```
+  */
+  time: string;
+}
+
+export type ScheduleOptions =
+  | (TimeObject | TimeString) & {
+      args?: (string | number)[];
+    };
 
 export class ScheduleMiddleware extends ConsoleMiddleware<object> {
   constructor(protected readonly options: ScheduleOptions) {
     super(async (_, next) => next());
   }
 
-  public get time(): string[] {
-    const { options: opts } = this;
+  public get time(): string {
+    const { options } = this;
+
+    if ('time' in options) {
+      const timeList = options.time.split(/\s+/);
+      switch (timeList.length) {
+        case 6:
+          timeList.shift();
+          return timeList.join(' ');
+        case 5:
+          return timeList.join(' ');
+        default:
+          throw new Error(`Invalid cron time: "${options.time}"`);
+      }
+    }
+
     return [
-      opts.minute ?? '*',
-      opts.hour ?? '*',
-      opts.dayOfMonth ?? '*',
-      opts.month ?? '*',
-      opts.dayOfWeek ?? '*',
-    ].map(String);
+      options.minute ?? '*',
+      options.hour ?? '*',
+      options.dayOfMonth ?? '*',
+      options.month ?? '*',
+      options.dayOfWeek ?? '*',
+    ].join(' ');
   }
 
   public get args() {
@@ -50,32 +85,55 @@ export class ScheduleMiddleware extends ConsoleMiddleware<object> {
   }
 
   public get seconds(): number[] {
-    if (!this.options.second) return [];
+    const { options } = this;
+    let second: string | undefined;
+
+    if ('time' in options) {
+      const timeList = options.time.split(/\s+/);
+      if (timeList.length === 6) {
+        second = timeList[0]!;
+      }
+    } else {
+      second = options.second?.toString();
+    }
+
+    if (!second) return [];
     const seconds: number[] = [];
     // second and minute are both 0-59
-    const interval = parser.parseExpression(`${this.options.second} * * * *`);
+    const interval = parser.parseExpression(`${second} * * * *`);
     while (true) {
-      const second = interval.next().getMinutes();
-      if (seconds.includes(second)) break;
-      seconds.push(second);
+      const nextSecond = interval.next().getMinutes();
+      if (seconds.includes(nextSecond)) break;
+      seconds.push(nextSecond);
     }
     return seconds.sort((a, b) => a - b);
   }
 
   public toCrontab(command: string): string[] {
-    const script = this.time;
-    const crons: string[][] = [script];
+    const script = [this.time];
+    const crons: string[][] = [];
+
     for (const second of this.seconds) {
       crons.push(script.concat(`sleep ${second};`));
     }
-    return crons.map((item) => {
+
+    if (crons.length === 0) {
+      crons.push(script);
+    }
+
+    return crons.map((time) => {
       const args = this.args.map((value) =>
         value.includes(' ') ? `"${value}"` : value,
       );
-      return item.concat(['npx', scriptName, command, ...args]).join(' ');
+      return time.concat(['npx', scriptName, command, ...args]).join(' ');
     });
   }
 }
 
-export const schedule = (options: ScheduleOptions): ScheduleMiddleware =>
-  new ScheduleMiddleware(options);
+export const schedule = (
+  options: ScheduleOptions | string,
+): ScheduleMiddleware => {
+  return new ScheduleMiddleware(
+    typeof options === 'string' ? { time: options } : options,
+  );
+};
