@@ -37,7 +37,7 @@ export const pathToFiles = async (
           /**
            * glob.hasMagic doesn't support path with '\'
            */
-          if (!hasMagic(pattern)) {
+          if (!hasMagic(pattern) && !/{.+?}/.test(pattern)) {
             const stats = await stat(pattern);
             if (!stats.isFile()) {
               pattern = path.posix.resolve(

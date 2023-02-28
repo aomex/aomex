@@ -1,3 +1,4 @@
+import { hasMagic } from 'glob';
 import { isAbsolute, resolve } from 'node:path';
 import { test } from 'vitest';
 import { pathToFiles } from '../src';
@@ -88,4 +89,11 @@ test('get rid of duplicated files', async () => {
 test('returning files by ascii sequence', async () => {
   const files = await pathToFiles('./test/mocks/**/*');
   expect(files).toStrictEqual(files.slice().sort());
+});
+
+test('magic pattern', async () => {
+  const pattern = './test/mocks/dir-a/file-{a,b,c}.yml';
+  expect(hasMagic(pattern)).toBe(false);
+  const files = await pathToFiles(pattern);
+  expect(files.length).toBe(2);
 });
