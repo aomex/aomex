@@ -1,7 +1,7 @@
 import type { ConsoleApp } from '@aomex/console';
 import cronParser from 'cron-parser';
-import type { CronOptions } from './cron';
 import { sleep } from '@aomex/utility';
+import type { CronOptions } from './cron';
 
 export interface CronJobOptions {
   time: string;
@@ -28,10 +28,9 @@ export class CronJob {
     const cronExp = this.getCronExp();
 
     while (true) {
-      const nextTime = cronExp.next();
-      await sleep(nextTime.getTime() - Date.now());
+      await sleep(cronExp.next().getTime() - Date.now());
       if (seconds.length) {
-        const nowSecond = nextTime.getSeconds();
+        const nowSecond = new Date().getSeconds();
         seconds.forEach(async (expectedSecond) => {
           const delay = expectedSecond - nowSecond;
           if (delay >= 0) {
