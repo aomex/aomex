@@ -3,19 +3,19 @@ import cronParser from 'cron-parser';
 import { sleep } from '@aomex/utility';
 import type { CronOptions } from './cron';
 
-export interface CronJobOptions {
+export interface JobOptions {
   time: string;
   seconds: number[];
   args: string[];
   command: string;
 }
 
-export class CronJob {
+export class Job {
   public queue: number = 0;
 
   constructor(
     protected readonly app: ConsoleApp,
-    protected readonly job: CronJobOptions,
+    protected readonly job: JobOptions,
     protected readonly mode: CronOptions['mode'] = 'overlap',
   ) {}
 

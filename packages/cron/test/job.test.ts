@@ -1,7 +1,7 @@
 import { ConsoleApp } from '@aomex/console';
 import { sleep } from '@aomex/utility';
 import { test } from 'vitest';
-import { CronJob } from '../src/cron-job';
+import { Job } from '../src/job';
 
 const app = new ConsoleApp();
 const spy = vitest.spyOn(app, 'run');
@@ -19,7 +19,7 @@ const defaultSchedule = {
 };
 
 test('mode=sequence', () => {
-  const job = new CronJob(app, defaultSchedule, 'sequence');
+  const job = new Job(app, defaultSchedule, 'sequence');
   const spy = vitest.spyOn(job, 'sequenceLoop');
   job.start();
   expect(spy).toHaveBeenCalledTimes(1);
@@ -27,7 +27,7 @@ test('mode=sequence', () => {
 });
 
 test('mode=overlap', () => {
-  const job = new CronJob(app, defaultSchedule);
+  const job = new Job(app, defaultSchedule);
   const spy = vitest.spyOn(job, 'sequenceLoop');
   job.start();
   expect(spy).toHaveBeenCalledTimes(0);
@@ -35,7 +35,7 @@ test('mode=overlap', () => {
 });
 
 test('mode=overlap will switch execute()', () => {
-  const job = new CronJob(app, defaultSchedule);
+  const job = new Job(app, defaultSchedule);
   const spy = vitest.spyOn(job, 'execute');
   job.executeOrQueue();
   expect(job.queue).toBe(0);
@@ -43,7 +43,7 @@ test('mode=overlap will switch execute()', () => {
 });
 
 test('mode=sequence will switch queue', () => {
-  const job = new CronJob(app, defaultSchedule, 'sequence');
+  const job = new Job(app, defaultSchedule, 'sequence');
   const spy = vitest.spyOn(job, 'execute');
   job.executeOrQueue();
   expect(job.queue).toBe(1);
@@ -51,7 +51,7 @@ test('mode=sequence will switch queue', () => {
 });
 
 test('current minute will not run job by default', () => {
-  const job = new CronJob(app, defaultSchedule);
+  const job = new Job(app, defaultSchedule);
   const now = new Date();
   now.setMinutes(now.getMinutes() + 1);
   const nextMinute = now.getMinutes();
@@ -59,7 +59,7 @@ test('current minute will not run job by default', () => {
 });
 
 test('minus one minute to against second schedules', () => {
-  const job = new CronJob(app, { ...defaultSchedule, seconds: [1, 2] });
+  const job = new Job(app, { ...defaultSchedule, seconds: [1, 2] });
   const currentMinute = new Date().getMinutes();
   expect(job.getCronExp().next().getMinutes()).toBe(currentMinute);
 });

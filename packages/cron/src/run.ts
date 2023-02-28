@@ -8,7 +8,7 @@ import {
 import { ScheduleMiddleware } from './schedule';
 import { runToHelp } from './run-to-help';
 import type { CronOptions } from './cron';
-import { CronJob, CronJobOptions } from './cron-job';
+import { Job, JobOptions } from './job';
 
 const runCron = 'cron:start';
 
@@ -17,23 +17,23 @@ export const run = ({ paths, mode }: CronOptions) =>
     middleware.console(async (ctx, next) => {
       if (ctx.request.command !== runCron) return next();
       ctx.response.commandMatched = true;
-      const jobs = await getJobs(paths);
-      jobs.forEach(async (job) => {
-        const cron = new CronJob(ctx.app, job, mode);
-        await cron.start();
+      const configs = await getJobConfigs(paths);
+      configs.forEach(async (config) => {
+        const job = new Job(ctx.app, config, mode);
+        await job.start();
       });
     }),
   );
 
-export const getJobs = async (
+export const getJobConfigs = async (
   paths: PathToFileOptions,
-): Promise<CronJobOptions[]> => {
+): Promise<JobOptions[]> => {
   const files = await pathToFiles(paths);
   const commanders = await fileToModules<Commander>(
     files,
     (item) => !!item && item instanceof Commander,
   );
-  const tasks: CronJobOptions[] = [];
+  const tasks: JobOptions[] = [];
 
   for (const commander of commanders) {
     for (const builder of Commander.getBuilders(commander)) {

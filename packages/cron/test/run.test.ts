@@ -4,11 +4,12 @@ import { pathToFiles } from '@aomex/file-parser';
 import { sleep } from '@aomex/utility';
 import { rmSync } from 'fs';
 import { test } from 'vitest';
-import { getJobs, run } from '../src/run';
+import { getJobConfigs, run } from '../src/run';
 
 test('generate schedule configuration', async () => {
-  const schedules = await getJobs('./test/mocks/commanders');
-  expect(schedules).toMatchSnapshot();
+  await expect(
+    getJobConfigs('./test/mocks/commanders'),
+  ).resolves.toMatchSnapshot();
 });
 
 test('Run job (mode=overlap)', async () => {
