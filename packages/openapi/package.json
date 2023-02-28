@@ -40,7 +40,7 @@
     "@aomex/file-parser": "workspace:^0.0.2",
     "@aomex/helper": "workspace:^0.0.3",
     "filesize": "^10.0.6",
-    "ibm-openapi-validator": "^0.97.3",
+    "ibm-openapi-validator": "^0.97.4",
     "ora": "^6.1.2",
     "read-pkg-up": "^9.1.0",
     "yaml": "^2.2.1"
