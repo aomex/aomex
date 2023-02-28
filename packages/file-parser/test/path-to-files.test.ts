@@ -76,3 +76,16 @@ test('support object[] arguments', async () => {
   expect(files).not.contains(resolve('./test/mocks/dir-a/file-a.yml'));
   expect(files).contains(resolve('./test/mocks/dir-b/file-e.yml'));
 });
+
+test('get rid of duplicated files', async () => {
+  const files = await pathToFiles([
+    './test/mocks/**/*.css',
+    './test/mocks/**/*.{css,js}',
+  ]);
+  expect(files).toHaveLength(2);
+});
+
+test('returning files by ascii sequence', async () => {
+  const files = await pathToFiles('./test/mocks/**/*');
+  expect(files).toStrictEqual(files.slice().sort());
+});

@@ -1,8 +1,6 @@
 import path from 'node:path';
-import { existsSync, statSync } from 'node:fs';
-import glob from 'glob';
-
-const ext = 'ts,js,mts,mjs,cts,cjs';
+import { stat } from 'node:fs/promises';
+import { glob, GlobOptionsWithFileTypesFalse, hasMagic } from 'glob';
 
 interface Options {
   pattern: string[];
@@ -12,91 +10,63 @@ interface Options {
 
 export type PathToFileOptions = string | string[] | Options | Options[];
 
-export const pathToFiles = (paths: PathToFileOptions): Promise<string[]> => {
+export const pathToFiles = async (
+  paths: PathToFileOptions,
+): Promise<string[]> => {
   const opts = normalize(paths);
 
-  return Promise.all(
+  const files = await Promise.all(
     opts.map((opt) => {
       const { dot, pattern: patterns } = opt;
-      const options: glob.IOptions = {
+      const options: GlobOptionsWithFileTypesFalse = {
         nodir: true,
         dot,
+        ignore: (opt.ignore || []).concat('**/*.d.{ts,mts,cts}'),
+        withFileTypes: false,
       };
-      const ignore = opt.ignore ? opt.ignore.slice() : [];
-      ignore.push('**/*.d.{ts,mts,cts}');
-      options.ignore = ignore;
 
       return Promise.all(
-        patterns.map(
-          (pattern) =>
-            new Promise<string[]>((resolve, reject) => {
-              /**
-               * path.resolve() will generate `\` on windows, however glob only support `/`.
-               * The best workaround is use posix.
-               * @link https://github.com/isaacs/node-glob#windows
-               */
-              pattern = path.posix.resolve(pattern);
+        patterns.map(async (pattern) => {
+          /**
+           * path.resolve() will generate `\` on windows, however glob only support `/`.
+           * The best workaround is use posix.
+           * @link https://github.com/isaacs/node-glob#windows
+           */
+          pattern = path.posix.resolve(pattern);
 
-              /**
-               * glob.hasMagic doesn't support path with '\'
-               */
-              if (!glob.hasMagic(pattern)) {
-                if (!existsSync(pattern)) {
-                  return reject('no such file or directory: ' + pattern);
-                }
+          /**
+           * glob.hasMagic doesn't support path with '\'
+           */
+          if (!hasMagic(pattern)) {
+            const stats = await stat(pattern);
+            if (!stats.isFile()) {
+              pattern = path.posix.resolve(
+                pattern,
+                `./**/*.{ts,js,mts,mjs,cts,cjs}`,
+              );
+            }
+          }
 
-                if (!statSync(pattern).isFile()) {
-                  pattern = path.posix.resolve(pattern, `./**/*.{${ext}}`);
-                }
-              }
-
-              glob(pattern, options, (err, matches) => {
-                if (err === null) {
-                  resolve(matches);
-                } else {
-                  reject(err);
-                }
-              });
-            }),
-        ),
-      ).then(flat);
+          return glob(pattern, options);
+        }),
+      );
     }),
-  ).then(flat);
+  );
+
+  return [...new Set(files.flat(2))].map(path.normalize).sort();
 };
 
-const flat = (matches: string[][]): string[] => {
-  switch (matches.length) {
-    case 0:
-      return [];
-    case 1:
-      return matches[0]!.map(path.normalize);
-    default:
-      return [...new Set(matches.flat())].map(path.normalize);
-  }
-};
-
-const normalize = (pattern: PathToFileOptions): Options[] => {
-  if (typeof pattern === 'string') {
-    return [
-      {
-        pattern: [pattern],
-      },
-    ];
+const normalize = (paths: PathToFileOptions): Options[] => {
+  if (typeof paths === 'string') {
+    return [{ pattern: [paths] }];
   }
 
-  if (Array.isArray(pattern)) {
-    if (!pattern.length) return [];
-
-    return isStringArray(pattern)
-      ? [
-          {
-            pattern: pattern,
-          },
-        ]
-      : pattern;
+  if (Array.isArray(paths)) {
+    if (!paths.length) return [];
+    return isStringArray(paths) ? [{ pattern: paths }] : paths;
   }
 
-  return [pattern];
+  return [paths];
 };
 
 const isStringArray = (data: string[] | Options[]): data is string[] => {
