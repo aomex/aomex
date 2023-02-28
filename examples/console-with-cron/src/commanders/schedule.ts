@@ -19,11 +19,7 @@ commander.create('schedule:get', {
 });
 
 commander.create('schedule:set', {
-  mount: [
-    schedule({
-      second: '*/2',
-    }),
-  ],
+  mount: [schedule('*/3 * * * * *')],
   action: async (ctx) => {
     const counter = (await ctx.cache.get<number>('counter')) ?? 0;
     await ctx.cache.set('counter', counter + 1);
