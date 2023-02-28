@@ -38,7 +38,7 @@
     "typescript": ">=4.9"
   },
   "dependencies": {
-    "@aomex/helper": "workspace:^0.0.3",
+    "@aomex/utility": "workspace:^0.0.3",
     "@aomex/middleware": "workspace:^0.0.3",
     "@aomex/openapi-type": "workspace:^0.0.0",
     "@aomex/cache": "workspace:^0.0.2",

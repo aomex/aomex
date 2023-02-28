@@ -9,7 +9,7 @@ import {
   OpenAPI,
   Rule,
 } from '@aomex/core';
-import { bytes } from '@aomex/helper';
+import { bytes } from '@aomex/utility';
 
 declare module '@aomex/core' {
   export interface Rule {

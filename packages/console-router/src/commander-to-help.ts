@@ -5,7 +5,7 @@ import {
   PathToFileOptions,
   pathToFiles,
 } from '@aomex/file-parser';
-import { chalk } from '@aomex/helper';
+import { chalk } from '@aomex/utility';
 import type { Builder } from './builder';
 import { Commander } from './commander';
 

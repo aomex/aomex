@@ -1,7 +1,7 @@
 import type { ConsoleApp } from '@aomex/console';
 import cronParser from 'cron-parser';
 import type { CronOptions } from './cron';
-import { sleep } from '@aomex/helper';
+import { sleep } from '@aomex/utility';
 
 export interface CronJobOptions {
   time: string;

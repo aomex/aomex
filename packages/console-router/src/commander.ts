@@ -1,7 +1,7 @@
 import { Chain, chain, compose, middleware, Middleware } from '@aomex/core';
 import type { ConsoleChain, ConsoleMiddlewareToken } from '@aomex/console';
 import { Builder, type BuilderOptions } from './builder';
-import { toArray } from '@aomex/helper';
+import { toArray } from '@aomex/utility';
 
 export interface CommanderOptions<Props extends object = object> {
   prefix?: string;

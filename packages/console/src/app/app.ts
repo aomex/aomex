@@ -8,7 +8,7 @@ import { ConsoleContext } from './context';
 import type { ConsoleMiddlewareToken } from '../override/chain';
 import { showHelp } from '../middleware/showHelp';
 import { HelpMiddleware } from '../override';
-import { chalk } from '@aomex/helper';
+import { chalk } from '@aomex/utility';
 
 export interface ConsoleAppOption {
   silent?: boolean;

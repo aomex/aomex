@@ -1,6 +1,6 @@
 import { extname } from 'node:path';
 import { compose, Middleware, middleware } from '@aomex/core';
-import { toArray } from '@aomex/helper';
+import { toArray } from '@aomex/utility';
 import type { WebContext } from '../app';
 import type { WebMiddleware, WebMiddlewareToken } from '../override';
 

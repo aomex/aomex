@@ -1,7 +1,7 @@
 import { ConsoleApp } from '@aomex/console';
 import { commanders } from '@aomex/console-router';
 import { pathToFiles } from '@aomex/file-parser';
-import { sleep } from '@aomex/helper';
+import { sleep } from '@aomex/utility';
 import { rmSync } from 'fs';
 import { test } from 'vitest';
 import { getJobs, run } from '../src/run';

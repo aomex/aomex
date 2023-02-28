@@ -1,4 +1,4 @@
-import { toArray } from '@aomex/helper';
+import { toArray } from '@aomex/utility';
 import type { Middleware } from './middleware';
 import type { PureChain } from './pure-chain';
 

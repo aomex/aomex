@@ -1,7 +1,7 @@
 import zlib from 'node:zlib';
 import Stream, { Transform } from 'node:stream';
 import compressible from 'compressible';
-import { bytes } from '@aomex/helper';
+import { bytes } from '@aomex/utility';
 import { middleware } from '@aomex/core';
 import Negotiator from 'negotiator';
 import { statuses, type WebMiddleware } from '@aomex/web';

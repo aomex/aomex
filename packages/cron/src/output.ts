@@ -6,7 +6,7 @@ import {
   PathToFileOptions,
   pathToFiles,
 } from '@aomex/file-parser';
-import { chalk } from '@aomex/helper';
+import { chalk } from '@aomex/utility';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path, { dirname } from 'node:path';
 import { outputToHelp } from './output-to-help';

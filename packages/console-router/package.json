@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@aomex/file-parser": "workspace:^0.0.2",
-    "@aomex/helper": "workspace:^0.0.3"
+    "@aomex/utility": "workspace:^0.0.3"
   },
   "devDependencies": {
     "@aomex/console": "workspace:^0.0.5",

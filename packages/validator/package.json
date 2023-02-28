@@ -31,7 +31,7 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "dependencies": {
-    "@aomex/helper": "workspace:^0.0.3",
+    "@aomex/utility": "workspace:^0.0.3",
     "@aomex/openapi-type": "workspace:^0.0.0",
     "email-validator": "^2.0.4",
     "ip-regex": "^5.0.0"

@@ -1,5 +1,5 @@
 import { ConsoleApp } from '@aomex/console';
-import { sleep } from '@aomex/helper';
+import { sleep } from '@aomex/utility';
 import { test } from 'vitest';
 import { CronJob } from '../src/cron-job';
 

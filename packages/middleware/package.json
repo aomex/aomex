@@ -29,6 +29,6 @@
   "keywords": [],
   "license": "MIT",
   "dependencies": {
-    "@aomex/helper": "workspace:^0.0.3"
+    "@aomex/utility": "workspace:^0.0.3"
   }
 }

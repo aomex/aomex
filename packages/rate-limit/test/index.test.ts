@@ -1,6 +1,6 @@
 import { MemoryCache, middleware } from '@aomex/core';
 import { HttpError, WebApp } from '@aomex/web';
-import { sleep } from '@aomex/helper';
+import { sleep } from '@aomex/utility';
 import request from 'supertest';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { rateLimit } from '../src';

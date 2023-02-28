@@ -1,6 +1,6 @@
 import { HelpMiddleware, scriptName } from '@aomex/console';
 import { middleware } from '@aomex/core';
-import { chalk } from '@aomex/helper';
+import { chalk } from '@aomex/utility';
 
 export const openapiToHelp = (
   commandName: string,

@@ -1,5 +1,5 @@
 import prettyTime from 'pretty-time';
-import { bytes, chalk } from '@aomex/helper';
+import { bytes, chalk } from '@aomex/utility';
 import { statuses } from '@aomex/web';
 
 export const colorCodes = <const>{

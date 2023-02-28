@@ -4,7 +4,7 @@ import {
   ConsoleContext,
   ConsoleMiddlewareToken,
 } from '@aomex/console';
-import type { Union2Intersection } from '@aomex/helper';
+import type { Union2Intersection } from '@aomex/utility';
 
 export interface CommandDocs {
   summary?: string;

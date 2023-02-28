@@ -1,5 +1,5 @@
 import { Chain, middleware, type OpenAPI } from '@aomex/core';
-import type { Union2Intersection } from '@aomex/helper';
+import type { Union2Intersection } from '@aomex/utility';
 import { WebChain, WebContext, WebMiddlewareToken } from '@aomex/web';
 import { pathToRegexp, Key } from 'path-to-regexp';
 

@@ -1,4 +1,4 @@
-import { chalk } from '@aomex/helper';
+import { chalk } from '@aomex/utility';
 import { format } from '../src/format';
 
 describe('builtin tokens', () => {

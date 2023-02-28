@@ -5,7 +5,7 @@ import {
   VerifyOptions,
   Jwt,
 } from 'jsonwebtoken';
-import { toArray } from '@aomex/helper';
+import { toArray } from '@aomex/utility';
 import type { WebContext, WebMiddleware } from '@aomex/web';
 import { getSecret } from './getSecret';
 import { resolveAuthorizationHeader, resolveCookies } from './resolvers';

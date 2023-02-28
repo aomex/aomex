@@ -1,6 +1,6 @@
 import { Middleware, type Next } from '@aomex/core';
 import assert from 'node:assert';
-import type { NonReadonly } from '@aomex/helper';
+import type { NonReadonly } from '@aomex/utility';
 import type { Argv } from 'yargs';
 import type { ConsoleContext } from '../app/context';
 import { ShowHelp, ShowHelpProps } from '../middleware/showHelp';

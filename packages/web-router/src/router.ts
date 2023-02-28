@@ -1,5 +1,5 @@
 import { Chain, chain, compose, middleware, Middleware } from '@aomex/core';
-import { toArray } from '@aomex/helper';
+import { toArray } from '@aomex/utility';
 import type { WebChain, WebMiddlewareToken } from '@aomex/web';
 import { Builder, type BuilderOptions } from './builder';
 
