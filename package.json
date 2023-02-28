@@ -10,7 +10,8 @@
     "preinstall": "npx only-allow pnpm",
     "prepare": "husky install",
     "ci:version": "changeset version && pnpm install --no-frozen-lockfile",
-    "ci:publish": "pnpm publish --filter './packages/**' && changeset tag"
+    "ci:publish": "pnpm publish --filter './packages/**' && changeset tag && pnpm run hack#919",
+    "hack#919": "git tag | grep example | xargs git tag -d"
   },
   "volta": {
     "node": "18.13.0",

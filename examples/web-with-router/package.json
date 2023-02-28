@@ -1,5 +1,5 @@
 {
-  "name": "web-with-router",
+  "name": "example-web-with-router",
   "private": true,
   "main": "src/index.ts",
   "scripts": {

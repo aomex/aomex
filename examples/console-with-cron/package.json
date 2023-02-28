@@ -1,5 +1,5 @@
 {
-  "name": "console-with-cron",
+  "name": "example-console-with-cron",
   "private": true,
   "main": "src/index.ts",
   "scripts": {

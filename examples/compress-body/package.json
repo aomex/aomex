@@ -1,5 +1,5 @@
 {
-  "name": "compress-body",
+  "name": "example-compress-body",
   "private": true,
   "scripts": {
     "start": "nodemon"
