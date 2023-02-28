@@ -296,7 +296,6 @@ importers:
       '@aomex/web': workspace:^0.0.6
       '@aomex/web-router': workspace:^0.0.6
       '@types/ibm-openapi-validator': ^0.15.1
-      filesize: ^10.0.6
       ibm-openapi-validator: ^0.97.4
       ora: ^6.1.2
       read-pkg-up: ^9.1.0
@@ -304,7 +303,6 @@ importers:
     dependencies:
       '@aomex/file-parser': link:../file-parser
       '@aomex/helper': link:../helper
-      filesize: 10.0.6
       ibm-openapi-validator: 0.97.4
       ora: 6.1.2
       read-pkg-up: 9.1.0
@@ -3194,11 +3192,6 @@ packages:
   /file-uri-to-path/2.0.0:
     resolution: {integrity: sha512-hjPFI8oE/2iQPVe4gbrJ73Pp+Xfub2+WI2LlXDbsaJBwT5wuMh35WNWVYYTpnz895shtwfyutMFLFywpQAFdLg==}
     engines: {node: '>= 6'}
-    dev: false
-
-  /filesize/10.0.6:
-    resolution: {integrity: sha512-rzpOZ4C9vMFDqOa6dNpog92CoLYjD79dnjLk2TYDDtImRIyLTOzqojCb05Opd1WuiWjs+fshhCgTd8cl7y5t+g==}
-    engines: {node: '>= 10.4.0'}
     dev: false
 
   /fill-range/7.0.1:

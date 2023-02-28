@@ -1,9 +1,8 @@
 import EventEmitter from 'node:events';
 import type { Mode } from 'node:fs';
 import { readPackageUp } from 'read-pkg-up';
-import { filesize } from 'filesize';
 import { Chain, OpenAPI } from '@aomex/core';
-import { chalk, sleep } from '@aomex/helper';
+import { bytes, chalk, sleep } from '@aomex/helper';
 import {
   fileToModules,
   type PathToFileOptions,
@@ -197,9 +196,7 @@ export const generateOpenapi = async (
         msg +
           path.relative(process.cwd(), distFile) +
           ' ' +
-          filesize(Buffer.byteLength(content), {
-            spacer: '',
-          }),
+          bytes(Buffer.byteLength(content), { unitSeparator: '' }),
         true,
       );
     } else {
