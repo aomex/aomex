@@ -1,6 +1,6 @@
 import { Chain, chain, compose, middleware, Middleware } from '@aomex/core';
 import { toArray } from '@aomex/utility';
-import type { WebChain, WebMiddlewareToken } from '@aomex/web';
+import type { WebApp, WebChain, WebMiddlewareToken } from '@aomex/web';
 import { Builder, type BuilderOptions } from './builder';
 
 export interface RouterOptions<Props extends object = object> {
@@ -108,19 +108,17 @@ export class Router<Props extends object = object> {
   }
 
   protected toMiddleware(): Middleware {
-    const builders = this.builders;
-    const throwIfMethodMismatch = this.throwIfMethodMismatch;
-    let groupChain: Chain | null = null;
+    const groupChain = new Map<WebApp, Chain>();
 
     return middleware.web((ctx, next) => {
-      const { request } = ctx;
+      const { app, request } = ctx;
       const { path: pathname } = request;
       const method = request.method.toUpperCase();
       let matched = false;
       let routerChain: WebChain | null = null;
 
-      for (let i = 0; i < builders.length; ++i) {
-        const builder = builders[i]!;
+      for (let i = 0; i < this.builders.length; ++i) {
+        const builder = this.builders[i]!;
         const params = builder.match(pathname, method);
         if (params) {
           matched = true;
@@ -131,13 +129,15 @@ export class Router<Props extends object = object> {
       }
 
       if (matched) {
-        groupChain ||= Chain.split(this.chain, ctx.app.chainPoints);
-        return compose([groupChain, routerChain!])(ctx, next);
+        if (!groupChain.has(app)) {
+          groupChain.set(app, Chain.split(this.chain, app.chainPoints));
+        }
+        return compose([groupChain.get(app)!, routerChain!])(ctx, next);
       }
 
-      if (throwIfMethodMismatch) {
-        for (let i = 0; i < builders.length; ++i) {
-          if (builders[i]!.isMethodMismatch(pathname, method)) {
+      if (this.throwIfMethodMismatch) {
+        for (let i = 0; i < this.builders.length; ++i) {
+          if (this.builders[i]!.isMethodMismatch(pathname, method)) {
             ctx.throw(405);
           }
         }
