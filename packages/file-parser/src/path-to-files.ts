@@ -36,8 +36,11 @@ export const pathToFiles = async (
 
           /**
            * glob.hasMagic doesn't support path with '\'
+           *
+           * Brace is not magic since glob@9.0.0
+           * @see https://github.com/isaacs/node-glob/issues/496
            */
-          if (!hasMagic(pattern) && !/{.+?}/.test(pattern)) {
+          if (!hasMagic(pattern, { magicalBraces: true })) {
             const stats = await stat(pattern);
             if (!stats.isFile()) {
               pattern = path.posix.resolve(
