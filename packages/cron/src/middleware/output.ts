@@ -1,16 +1,11 @@
 import { options } from '@aomex/console';
-import { Commander } from '@aomex/console-router';
-import { Chain, chain, Middleware, middleware, rule } from '@aomex/core';
-import {
-  fileToModules,
-  PathToFileOptions,
-  pathToFiles,
-} from '@aomex/file-parser';
+import { chain, Middleware, middleware, rule } from '@aomex/core';
+import type { PathToFileOptions } from '@aomex/file-parser';
 import { chalk } from '@aomex/utility';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path, { dirname } from 'node:path';
+import { getMiddlewareSchedule } from '../lib/get-middleware-schedule';
 import { outputToHelp } from './output-to-help';
-import { ScheduleMiddleware } from './schedule';
 
 const exportCron = 'cron:export';
 
@@ -38,22 +33,11 @@ export const output = (paths: PathToFileOptions) =>
           }
 
           ctx.response.commandMatched = true;
-          const files = await pathToFiles(paths);
-          const commanders = await fileToModules<Commander>(
-            files,
-            (item) => !!item && item instanceof Commander,
-          );
 
-          const crons: string[] = [];
-          for (const commander of commanders) {
-            for (const builder of Commander.getBuilders(commander)) {
-              for (const middleware of Chain.flatten(builder.chain)) {
-                if (middleware instanceof ScheduleMiddleware) {
-                  crons.push(...middleware.toCrontab(builder.commands[0]!));
-                }
-              }
-            }
-          }
+          const schedules = await getMiddlewareSchedule(paths);
+          const crons = schedules
+            .map((schedule) => schedule.toCrontab())
+            .flat();
 
           const { output: outputToFile } = ctx.options;
           if (outputToFile) {

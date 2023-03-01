@@ -1,22 +1,8 @@
 import { ConsoleApp } from '@aomex/console';
-import { SpyInstance, test } from 'vitest';
-import { cron } from '../src';
-
-let spy: SpyInstance;
-
-beforeAll(() => {
-  spy = vitest.spyOn(console, 'log');
-});
-
-beforeEach(() => {
-  spy.mockReset();
-});
-
-afterAll(() => {
-  spy.mockRestore();
-});
+import { cron } from '../../src';
 
 test('output cron:* help information', async () => {
+  const spy = vitest.spyOn(console, 'log');
   let msg = '';
   spy.mockImplementation((_) => {
     msg = _;
@@ -35,4 +21,6 @@ test('output cron:* help information', async () => {
   expect(msg).toMatchSnapshot();
   await app.run('cron:export', '-h');
   expect(msg).toMatchSnapshot();
+
+  spy.mockRestore();
 });

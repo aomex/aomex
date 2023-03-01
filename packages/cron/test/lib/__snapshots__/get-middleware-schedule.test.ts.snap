@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`generate schedule configuration 1`] = `
+exports[`get schedules 1`] = `
 [
   {
     "args": [],

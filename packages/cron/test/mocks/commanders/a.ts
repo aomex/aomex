@@ -13,3 +13,7 @@ commander.create('test:a', {
   ],
   action() {},
 });
+
+export default schedule({
+  second: '1,2,3,4',
+});

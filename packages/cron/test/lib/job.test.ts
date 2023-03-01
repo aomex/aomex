@@ -1,7 +1,8 @@
 import { ConsoleApp } from '@aomex/console';
 import { sleep } from '@aomex/utility';
 import { test } from 'vitest';
-import { Job } from '../src/job';
+import { Job } from '../../src/lib/job';
+import { Schedule } from '../../src/lib/schedule';
 
 const app = new ConsoleApp();
 const spy = vitest.spyOn(app, 'run');
@@ -11,12 +12,11 @@ beforeEach(() => {
   spy.mockReset();
 });
 
-const defaultSchedule = {
+const defaultSchedule = new Schedule({
   time: '* * * * *',
-  seconds: [],
   args: [],
   command: 'x',
-};
+});
 
 test('mode=sequence', () => {
   const job = new Job(app, defaultSchedule, 'sequence');
@@ -59,7 +59,14 @@ test('current minute will not run job by default', () => {
 });
 
 test('minus one minute to against second schedules', () => {
-  const job = new Job(app, { ...defaultSchedule, seconds: [1, 2] });
+  const job = new Job(
+    app,
+    new Schedule({
+      second: '1,2',
+      args: [],
+      command: 'x',
+    }),
+  );
   const currentMinute = new Date().getMinutes();
   expect(job.getCronExp().next().getMinutes()).toBe(currentMinute);
 });

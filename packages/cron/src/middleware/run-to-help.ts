@@ -10,7 +10,7 @@ export const runToHelp = (commandName: string): HelpMiddleware =>
         return next();
       case 'show-detail':
         if (ctx.request.command !== commandName) return next();
-        yargs.usage(`${scriptName} ${commandName} [options]\nSchedule list:\n`);
+        yargs.usage(`${scriptName} ${commandName} [options]`);
         ctx.response.commandMatched = true;
         return;
       default:

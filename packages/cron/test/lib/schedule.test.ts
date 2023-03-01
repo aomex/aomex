@@ -1,9 +1,14 @@
 import { test } from 'vitest';
-import { schedule, ScheduleOptions } from '../src';
+import { Schedule, ScheduleOptions } from '../../src/lib/schedule';
 
 describe('time', () => {
-  const expectSnap = (options: ScheduleOptions | string) => {
-    expect(schedule(options).toCrontab('my:schedule')).toMatchSnapshot();
+  const expectSnap = (
+    options: ScheduleOptions,
+    command: string = 'my:schedule',
+  ) => {
+    expect(
+      new Schedule({ ...options, command }).toCrontab().join('\n'),
+    ).toMatchSnapshot();
   };
 
   test('*', () => {
@@ -47,7 +52,9 @@ describe('time', () => {
   });
 
   test('cron-like time', () => {
-    expectSnap('*/2 * * 1,4 * *');
+    expectSnap({
+      time: '*/2 * * 1,4 * *',
+    });
     expectSnap({
       time: '* * * * *',
     });
@@ -58,17 +65,25 @@ describe('time', () => {
   });
 
   test('cron-like time with invalid length', () => {
-    expect(() => schedule('* * * * * * *').toCrontab('x')).toThrowError();
-    expect(() => schedule('* * * *').toCrontab('x')).toThrowError();
-    expect(() => schedule('* * *').toCrontab('x')).toThrowError();
+    const expectError = (time: string) => {
+      expect(() =>
+        new Schedule({ time, command: 'x' }).toCrontab(),
+      ).toThrowError();
+    };
 
-    expect(() => schedule('* * * * *').toCrontab('x')).not.toThrowError();
+    expectError('* * * * * * *');
+    expectError(' * * * * * ');
+    expectError('* * * *');
+    expectError('* * *');
+    expectError('* *');
+    expectError('*');
+    expectError('');
   });
 });
 
 describe('command', () => {
   const expectSnap = (command: string, args?: string[]) => {
-    expect(schedule({ args }).toCrontab(command)).toMatchSnapshot();
+    expect(new Schedule({ args, command }).toCrontab()).toMatchSnapshot();
   };
 
   test('name', () => {

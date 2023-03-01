@@ -14,8 +14,6 @@ Options:
 
 exports[`output cron:* help information 2`] = `
 "aomex cron:start [options]
-Schedule list:
-
 
 Options:
   -h, --help  Show help for command "cron:start""

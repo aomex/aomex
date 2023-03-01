@@ -1,21 +1,15 @@
 import type { ConsoleApp } from '@aomex/console';
 import cronParser from 'cron-parser';
 import { sleep } from '@aomex/utility';
-import type { CronOptions } from './cron';
-
-export interface JobOptions {
-  time: string;
-  seconds: number[];
-  args: string[];
-  command: string;
-}
+import type { CronOptions } from '../middleware/cron';
+import type { Schedule } from './schedule';
 
 export class Job {
   public queue: number = 0;
 
   constructor(
     protected readonly app: ConsoleApp,
-    protected readonly job: JobOptions,
+    protected readonly schedule: Schedule,
     protected readonly mode: CronOptions['mode'] = 'overlap',
   ) {}
 
@@ -23,7 +17,7 @@ export class Job {
     if (this.mode === 'sequence') this.sequenceLoop();
 
     const {
-      job: { seconds },
+      schedule: { seconds },
     } = this;
     const cronExp = this.getCronExp();
 
@@ -46,7 +40,7 @@ export class Job {
 
   getCronExp() {
     const {
-      job: { seconds, time },
+      schedule: { seconds, time },
     } = this;
     const now = new Date();
     if (seconds.length) {
@@ -67,7 +61,7 @@ export class Job {
 
   async execute() {
     try {
-      await this.app.run(this.job.command, ...this.job.args);
+      await this.app.run(this.schedule.command, ...this.schedule.args);
     } catch {}
   }
 

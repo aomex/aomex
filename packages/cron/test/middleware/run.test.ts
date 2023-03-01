@@ -4,13 +4,7 @@ import { pathToFiles } from '@aomex/file-parser';
 import { sleep } from '@aomex/utility';
 import { rmSync } from 'fs';
 import { test } from 'vitest';
-import { getJobConfigs, run } from '../src/run';
-
-test('generate schedule configuration', async () => {
-  await expect(
-    getJobConfigs('./test/mocks/commanders'),
-  ).resolves.toMatchSnapshot();
-});
+import { run } from '../../src/middleware/run';
 
 test('Run job (mode=overlap)', async () => {
   const pattern = './test/__temp__/auto-by-worker-*';
