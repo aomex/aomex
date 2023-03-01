@@ -1,5 +1,9 @@
 import { Chain, chain, compose, middleware, Middleware } from '@aomex/core';
-import type { ConsoleChain, ConsoleMiddlewareToken } from '@aomex/console';
+import type {
+  ConsoleApp,
+  ConsoleChain,
+  ConsoleMiddlewareToken,
+} from '@aomex/console';
 import { Builder, type BuilderOptions } from './builder';
 import { toArray } from '@aomex/utility';
 
@@ -40,20 +44,22 @@ export class Commander<Props extends object = object> {
   }
 
   protected toMiddleware(): Middleware {
-    const builders = this.builders;
-    let groupChain: Chain | null = null;
+    const groupChain = new Map<ConsoleApp, Chain>();
 
     return middleware.console((ctx, next) => {
       const {
+        app,
         request: { command },
       } = ctx;
 
-      for (let i = 0; i < builders.length; ++i) {
-        const builder = builders[i]!;
+      for (let i = 0; i < this.builders.length; ++i) {
+        const builder = this.builders[i]!;
         if (builder.match(command)) {
           ctx.response.commandMatched = true;
-          groupChain ||= Chain.split(this.chain, ctx.app.chainPoints);
-          return compose([groupChain, builder.chain])(ctx, next);
+          if (!groupChain.has(app)) {
+            groupChain.set(app, Chain.split(this.chain, app.chainPoints));
+          }
+          return compose([groupChain.get(app)!, builder.chain])(ctx, next);
         }
       }
 
