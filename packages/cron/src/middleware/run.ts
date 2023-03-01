@@ -14,7 +14,13 @@ export const run = ({ paths, mode }: CronOptions) =>
 
       const schedules = await getMiddlewareSchedule(paths);
       schedules.forEach(async (schedule) => {
-        const job = new Job(ctx.app, schedule, mode);
+        const job = new Job(
+          ctx.app,
+          schedule.time,
+          schedule.seconds,
+          [schedule.command, ...schedule.args],
+          schedule.mode ?? mode,
+        );
         await job.start();
       });
     }),

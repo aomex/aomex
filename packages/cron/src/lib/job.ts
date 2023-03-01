@@ -2,75 +2,69 @@ import type { ConsoleApp } from '@aomex/console';
 import cronParser from 'cron-parser';
 import { sleep } from '@aomex/utility';
 import type { CronOptions } from '../middleware/cron';
-import type { Schedule } from './schedule';
 
 export class Job {
   public queue: number = 0;
+  protected executing: boolean = false;
 
   constructor(
     protected readonly app: ConsoleApp,
-    protected readonly schedule: Schedule,
-    protected readonly mode: CronOptions['mode'] = 'overlap',
+    protected readonly time: string,
+    protected readonly seconds: number[],
+    protected readonly argv: string[],
+    protected readonly mode?: CronOptions['mode'],
   ) {}
 
   async start(): Promise<void> {
-    if (this.mode === 'sequence') this.sequenceLoop();
-
-    const {
-      schedule: { seconds },
-    } = this;
-    const cronExp = this.getCronExp();
+    const handle = this.getCronHandle();
 
     while (true) {
-      await sleep(cronExp.next().getTime() - Date.now());
-      if (seconds.length) {
+      await sleep(handle.next().getTime() - Date.now());
+      if (this.seconds.length) {
         const nowSecond = new Date().getSeconds();
-        seconds.forEach(async (expectedSecond) => {
-          const delay = expectedSecond - nowSecond;
+        this.seconds.forEach(async (nextSecond) => {
+          const delay = nextSecond - nowSecond;
           if (delay >= 0) {
             await sleep(delay * 1000);
-            this.executeOrQueue();
+            this.emit();
           }
         });
       } else {
-        this.executeOrQueue();
+        this.emit();
       }
     }
   }
 
-  getCronExp() {
-    const {
-      schedule: { seconds, time },
-    } = this;
+  getCronHandle() {
     const now = new Date();
-    if (seconds.length) {
+    if (this.seconds.length) {
       now.setMinutes(now.getMinutes() - 1);
     }
-    return cronParser.parseExpression(time, {
+    return cronParser.parseExpression(this.time, {
       currentDate: now,
     });
   }
 
-  executeOrQueue() {
-    if (this.mode === 'sequence') {
+  emit() {
+    if (this.mode === 'one-by-one') {
       ++this.queue;
+      this.executeWithoutOverlapping();
     } else {
       this.execute();
     }
   }
 
-  async execute() {
-    try {
-      await this.app.run(this.schedule.command, ...this.schedule.args);
-    } catch {}
+  execute() {
+    return this.app.run(...this.argv).catch(() => {});
   }
 
-  sequenceLoop = () => {
-    if (this.queue > 0) {
-      --this.queue;
-      this.execute().finally(this.sequenceLoop);
-    } else {
-      setTimeout(this.sequenceLoop, 300);
-    }
-  };
+  executeWithoutOverlapping() {
+    if (this.executing || this.queue === 0) return;
+    --this.queue;
+    this.executing = true;
+    this.execute().finally(() => {
+      this.executing = false;
+      this.executeWithoutOverlapping();
+    });
+  }
 }

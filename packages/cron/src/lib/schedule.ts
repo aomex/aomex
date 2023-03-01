@@ -1,5 +1,6 @@
 import { scriptName } from '@aomex/console';
 import parser from 'cron-parser';
+import type { CronOptions } from '../middleware/cron';
 
 interface ScheduleTimeObject {
   /**
@@ -49,6 +50,11 @@ interface ScheduleTimeString {
 
 interface ScheduleBaseOptions {
   args?: (string | number)[];
+  /**
+   * The way to trigger schedule. If not set, `cron.mode` will be merged.
+   * @see CronOptions.mode
+   */
+  mode?: CronOptions['mode'];
 }
 
 export type ScheduleOptions = (ScheduleTimeObject | ScheduleTimeString) &
@@ -65,6 +71,10 @@ export class Schedule {
     protected readonly options: ScheduleOptions & { command: string },
   ) {
     this.command = options.command;
+  }
+
+  public get mode(): CronOptions['mode'] | undefined {
+    return this.options.mode;
   }
 
   public get time(): string {
@@ -150,6 +160,7 @@ export class Schedule {
       args: this.args,
       seconds: this.seconds,
       command: this.command,
+      mode: this.mode,
     };
   }
 }

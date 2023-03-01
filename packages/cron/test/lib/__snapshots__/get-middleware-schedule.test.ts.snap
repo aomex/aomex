@@ -5,12 +5,14 @@ exports[`get schedules 1`] = `
   {
     "args": [],
     "command": "test:a",
+    "mode": undefined,
     "seconds": [],
     "time": "* * * * *",
   },
   {
     "args": [],
     "command": "test:a",
+    "mode": undefined,
     "seconds": [],
     "time": "* * * 2-3 *",
   },
@@ -20,6 +22,7 @@ exports[`get schedules 1`] = `
       "test",
     ],
     "command": "test:second",
+    "mode": undefined,
     "seconds": [
       0,
       1,
@@ -87,6 +90,7 @@ exports[`get schedules 1`] = `
   {
     "args": [],
     "command": "test:second",
+    "mode": undefined,
     "seconds": [
       0,
       4,

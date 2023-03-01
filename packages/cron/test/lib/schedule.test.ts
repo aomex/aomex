@@ -99,3 +99,11 @@ describe('command', () => {
     expectSnap('hello:test', ['--data', 'test me', '--mark', '--verbose']);
   });
 });
+
+test('specific mode', () => {
+  expect(new Schedule({ command: 'x' }).mode).toBeUndefined();
+  expect(new Schedule({ command: 'x', mode: 'overlap' }).mode).toBe('overlap');
+  expect(new Schedule({ command: 'x', mode: 'one-by-one' }).mode).toBe(
+    'one-by-one',
+  );
+});
