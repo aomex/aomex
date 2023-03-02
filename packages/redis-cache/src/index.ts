@@ -1,16 +1,27 @@
 import { Cache, CacheOptions } from '@aomex/core';
-import type { RedisClientType } from 'redis';
+import {
+  RedisClientType,
+  RedisClientOptions,
+  createClient,
+  RedisDefaultModules,
+} from 'redis';
 
 export interface RedisCacheOptions extends CacheOptions {
-  redis: RedisClientType;
+  redis:
+    | RedisClientType<RedisDefaultModules, any, any>
+    | RedisClientOptions<RedisDefaultModules, any, any>;
 }
 
 export class RedisCache extends Cache {
-  private readonly redis: RedisClientType;
+  private readonly redis: RedisClientType<RedisDefaultModules, any, any>;
 
   constructor(config: RedisCacheOptions) {
     super(config);
-    this.redis = config.redis;
+
+    this.redis =
+      'get' in config.redis && 'set' in config.redis
+        ? config.redis
+        : createClient(config.redis);
   }
 
   protected getValue(key: string): Promise<string | null> {
@@ -51,10 +62,9 @@ export class RedisCache extends Cache {
   }
 
   protected async deleteAllValues(): Promise<boolean> {
-    const { redis } = this;
     const pattern = `${this.keyPrefix}*`;
-    const keys = await redis.keys(pattern);
-    await redis.del(keys);
+    const keys = await this.redis.keys(pattern);
+    await this.redis.del(keys);
     return true;
   }
 }
