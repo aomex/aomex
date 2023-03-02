@@ -4,8 +4,8 @@ A fluent node.js framework, Inspired by [koa](https://github.com/koajs/koa) and 
 
 [![node version](https://img.shields.io/node/v/@aomex/core?logo=node.js)](https://nodejs.org)
 [![npm peer typescript version](https://img.shields.io/npm/dependency-version/@aomex/core/peer/typescript?logo=typescript)](https://github.com/microsoft/TypeScript)
-[![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/aomex/aomex/lint.yml?branch=main&label=lint&logo=eslint)](https://github.com/aomex/aomex/actions)
-[![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/aomex/aomex/test.yml?branch=main&label=test&logo=vitest)](https://github.com/aomex/aomex/actions)
+[![GitHub Workflow Status (lint)](https://img.shields.io/github/actions/workflow/status/aomex/aomex/lint.yml?branch=main&label=lint&logo=eslint)](https://github.com/aomex/aomex/actions/workflows/lint.yml)
+[![GitHub Workflow Status (test)](https://img.shields.io/github/actions/workflow/status/aomex/aomex/test.yml?branch=main&label=test&logo=vitest)](https://github.com/aomex/aomex/actions/workflows/test.yml)
 [![Codecov](https://img.shields.io/codecov/c/github/aomex/aomex?logo=codecov)](https://codecov.io/gh/aomex/aomex)
 [![License](https://img.shields.io/github/license/aomex/aomex?logo=open-source-initiative)](https://github.com/aomex/aomex/blob/main/LICENSE)
 [![Code Style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?logo=prettier)](https://github.com/prettier/prettier)
