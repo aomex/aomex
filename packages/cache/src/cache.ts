@@ -34,10 +34,10 @@ export abstract class Cache {
     defaultValue?: string | number | object | boolean,
   ): Promise<any> {
     const hashKey = this.buildKey(key);
-    let result = await this.getValue(hashKey);
+    const result = await this.getValue(hashKey);
 
     if (result === null) {
-      return defaultValue === undefined ? null : defaultValue;
+      return defaultValue === void 0 ? null : defaultValue;
     }
 
     try {
@@ -72,12 +72,9 @@ export abstract class Cache {
     duration?: number,
   ): Promise<T> {
     let value: T | null = await this.get(key);
-
     if (value !== null) return value;
-
-    value = await orSet();
-    await this.set(key, value, duration);
-    return value;
+    await this.set(key, await orSet(), duration);
+    return (await this.get<T>(key))!;
   }
 
   /**
@@ -94,8 +91,7 @@ export abstract class Cache {
     duration?: number,
   ): Promise<boolean> {
     const hashKey = this.buildKey(key);
-    const wrappedValue = JSON.stringify(value);
-    return this.setValue(hashKey, wrappedValue, duration);
+    return this.setValue(hashKey, JSON.stringify(value), duration);
   }
 
   /**
@@ -111,8 +107,7 @@ export abstract class Cache {
    */
   async add(key: string, value: any, duration?: number): Promise<boolean> {
     const hashKey = this.buildKey(key);
-    const wrappedValue = JSON.stringify(value);
-    return this.addValue(hashKey, wrappedValue, duration);
+    return this.addValue(hashKey, JSON.stringify(value), duration);
   }
 
   /**
