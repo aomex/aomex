@@ -14,7 +14,6 @@
     "@aomex/console": "workspace:*",
     "@aomex/cron": "workspace:*",
     "@aomex/console-router": "workspace:*",
-    "@aomex/core": "workspace:*",
-    "@aomex/file-cache": "workspace:*"
+    "@aomex/core": "workspace:*"
   }
 }

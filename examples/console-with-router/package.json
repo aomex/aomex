@@ -13,7 +13,6 @@
   "dependencies": {
     "@aomex/console": "workspace:*",
     "@aomex/console-router": "workspace:*",
-    "@aomex/core": "workspace:*",
-    "@aomex/file-cache": "workspace:*"
+    "@aomex/core": "workspace:*"
   }
 }

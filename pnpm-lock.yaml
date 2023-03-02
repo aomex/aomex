@@ -63,25 +63,21 @@ importers:
       '@aomex/console-router': workspace:*
       '@aomex/core': workspace:*
       '@aomex/cron': workspace:*
-      '@aomex/file-cache': workspace:*
     dependencies:
       '@aomex/console': link:../../packages/console
       '@aomex/console-router': link:../../packages/console-router
       '@aomex/core': link:../../packages/core
       '@aomex/cron': link:../../packages/cron
-      '@aomex/file-cache': link:../../packages/file-cache
 
   examples/console-with-router:
     specifiers:
       '@aomex/console': workspace:*
       '@aomex/console-router': workspace:*
       '@aomex/core': workspace:*
-      '@aomex/file-cache': workspace:*
     dependencies:
       '@aomex/console': link:../../packages/console
       '@aomex/console-router': link:../../packages/console-router
       '@aomex/core': link:../../packages/core
-      '@aomex/file-cache': link:../../packages/file-cache
 
   examples/web-with-router:
     specifiers:
@@ -212,14 +208,6 @@ importers:
       '@aomex/core': link:../core
       '@aomex/web': link:../web
       '@types/etag': 1.8.1
-
-  packages/file-cache:
-    specifiers:
-      '@aomex/core': workspace:^0.0.5
-      '@aomex/file-parser': workspace:^0.0.2
-    dependencies:
-      '@aomex/core': link:../core
-      '@aomex/file-parser': link:../file-parser
 
   packages/file-parser:
     specifiers:

@@ -45,7 +45,6 @@ A fluent node.js framework, Inspired by [koa](https://github.com/koajs/koa) and 
 | [@aomex/console-router](./packages/console-router) | [![npm](https://img.shields.io/npm/v/@aomex/console-router)](https://www.npmjs.com/package/@aomex/console-router) | console  |
 | [@aomex/openapi](./packages/openapi)               | [![npm](https://img.shields.io/npm/v/@aomex/openapi)](https://www.npmjs.com/package/@aomex/openapi)               | console  |
 | [@aomex/cron](./packages/cron)                     | [![npm](https://img.shields.io/npm/v/@aomex/cron)](https://www.npmjs.com/package/@aomex/cron)                     | console  |
-| [@aomex/file-cache](./packages/file-cache)         | [![npm](https://img.shields.io/npm/v/@aomex/file-cache)](https://www.npmjs.com/package/@aomex/file-cache)         | -        |
 | [@aomex/redis-cache](./packages/redis-cache)       | [![npm](https://img.shields.io/npm/v/@aomex/redis-cache)](https://www.npmjs.com/package/@aomex/redis-cache)       | -        |
 | [@aomex/ioredis-cache](./packages/ioredis-cache)   | [![npm](https://img.shields.io/npm/v/@aomex/ioredis-cache)](https://www.npmjs.com/package/@aomex/ioredis-cache)   | -        |
 
