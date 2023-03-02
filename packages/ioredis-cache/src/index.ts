@@ -1,8 +1,8 @@
 import { Cache, CacheOptions } from '@aomex/core';
-import type { Redis } from 'ioredis';
+import { Redis, RedisOptions } from 'ioredis';
 
 export interface RedisCacheOptions extends CacheOptions {
-  redis: Redis;
+  redis: Redis | RedisOptions;
 }
 
 export class RedisCache extends Cache {
@@ -10,7 +10,8 @@ export class RedisCache extends Cache {
 
   constructor(config: RedisCacheOptions) {
     super(config);
-    this.redis = config.redis;
+    this.redis =
+      config.redis instanceof Redis ? config.redis : new Redis(config.redis);
   }
 
   protected getValue(key: string): Promise<string | null> {
