@@ -1,6 +1,6 @@
 {
   "name": "@aomex/jwt",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "JSON Web Token",
   "keywords": [
     "json-web-token"
@@ -34,18 +34,18 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@aomex/core": "^0.0.5",
-    "@aomex/web": "^0.0.6"
+    "@aomex/core": "^0.0.6",
+    "@aomex/web": "^0.0.7"
   },
   "dependencies": {
-    "@aomex/utility": "workspace:0.0.3",
+    "@aomex/utility": "workspace:0.0.4",
     "@types/jsonwebtoken": "^9.0.1",
     "cookie": "^0.5.0",
     "jsonwebtoken": "^9.0.0"
   },
   "devDependencies": {
-    "@aomex/core": "workspace:^0.0.5",
-    "@aomex/web": "workspace:^0.0.6",
+    "@aomex/core": "workspace:^0.0.6",
+    "@aomex/web": "workspace:^0.0.7",
     "@types/cookie": "^0.5.1"
   }
 }

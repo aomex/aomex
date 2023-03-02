@@ -1,6 +1,6 @@
 {
   "name": "@aomex/core",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -38,10 +38,10 @@
     "typescript": ">=4.9"
   },
   "dependencies": {
-    "@aomex/utility": "workspace:^0.0.3",
-    "@aomex/middleware": "workspace:^0.0.3",
+    "@aomex/utility": "workspace:^0.0.4",
+    "@aomex/middleware": "workspace:^0.0.4",
     "@aomex/openapi-type": "workspace:^0.0.0",
-    "@aomex/cache": "workspace:^0.0.2",
-    "@aomex/validator": "workspace:^0.0.4"
+    "@aomex/cache": "workspace:^0.0.3",
+    "@aomex/validator": "workspace:^0.0.5"
   }
 }

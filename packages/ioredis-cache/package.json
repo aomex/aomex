@@ -1,6 +1,6 @@
 {
   "name": "@aomex/ioredis-cache",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -31,11 +31,11 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "peerDependencies": {
-    "@aomex/core": "^0.0.5",
+    "@aomex/core": "^0.0.6",
     "ioredis": "^5"
   },
   "devDependencies": {
-    "@aomex/core": "workspace:^0.0.5",
+    "@aomex/core": "workspace:^0.0.6",
     "ioredis": "^5.3.1"
   }
 }
