@@ -213,9 +213,9 @@ importers:
 
   packages/file-parser:
     specifiers:
-      glob: ^9.1.0
+      glob: ^9.2.1
     dependencies:
-      glob: 9.1.0
+      glob: 9.2.1
 
   packages/ioredis-cache:
     specifiers:
@@ -3426,14 +3426,14 @@ packages:
       once: 1.4.0
       path-is-absolute: 1.0.1
 
-  /glob/9.1.0:
-    resolution: {integrity: sha512-bAnZn/xYN7o43Y97vDipnunJtQOOhJAyt7/zt1HrzFgtIrol4eJTUn8Kd74B1cMyOBuzWUMvBr2F178h0UQuUw==}
+  /glob/9.2.1:
+    resolution: {integrity: sha512-Pxxgq3W0HyA3XUvSXcFhRSs+43Jsx0ddxcFrbjxNGkL2Ak5BAUBxLqI5G6ADDeCHLfzzXFhe0b1yYcctGmytMA==}
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       fs.realpath: 1.0.0
       minimatch: 7.4.1
       minipass: 4.2.4
-      path-scurry: 1.5.0
+      path-scurry: 1.6.1
     dev: false
 
   /global-dirs/0.1.1:
@@ -4208,8 +4208,8 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /lru-cache/7.18.0:
-    resolution: {integrity: sha512-zB4mTJNwserMxerHY0evAuBe/5wnyeznwZ6h19vTV3B9lbqm2c7pWlExjjXgBx8E2J64JF4siGBqKksl2cHTgg==}
+  /lru-cache/7.18.3:
+    resolution: {integrity: sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==}
     engines: {node: '>=12'}
     dev: false
 
@@ -4725,11 +4725,11 @@ packages:
   /path-parse/1.0.7:
     resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
 
-  /path-scurry/1.5.0:
-    resolution: {integrity: sha512-hJ8rODLI9B2qwsYAd32rrI76gwVUPeu5kq/do6URDj2bJCVH3ilyT978Mv/NLuFMaqzHrn3XtiDLMZHaTTh4vA==}
+  /path-scurry/1.6.1:
+    resolution: {integrity: sha512-OW+5s+7cw6253Q4E+8qQ/u1fVvcJQCJo/VFD8pje+dbJCF1n5ZRMV2AEHbGp+5Q7jxQIYJxkHopnj6nzdGeZLA==}
     engines: {node: '>=14'}
     dependencies:
-      lru-cache: 7.18.0
+      lru-cache: 7.18.3
       minipass: 4.2.4
     dev: false
 
