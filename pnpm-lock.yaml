@@ -187,6 +187,7 @@ importers:
       '@aomex/file-parser': workspace:^0.0.3
       '@aomex/utility': workspace:^0.0.4
       cron-parser: ^4.7.1
+      strip-ansi: ^7.0.1
     dependencies:
       '@aomex/file-parser': link:../file-parser
       '@aomex/utility': link:../utility
@@ -195,6 +196,7 @@ importers:
       '@aomex/console': link:../console
       '@aomex/console-router': link:../console-router
       '@aomex/core': link:../core
+      strip-ansi: 7.0.1
 
   packages/etag:
     specifiers:

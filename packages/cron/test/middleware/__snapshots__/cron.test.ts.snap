@@ -4,7 +4,7 @@ exports[`output cron:* help information 1`] = `
 "aomex [command] [options] [--help|-h]
 
 Commands:
-  aomex cron:start   Star cron
+  aomex cron:start   Star cron jobs
   aomex cron:export  Create cron-compatibly list
 
 Options:

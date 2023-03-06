@@ -1,5 +1,6 @@
-import { compose, Middleware, middleware } from '@aomex/core';
+import { compose, Middleware, middleware, Next } from '@aomex/core';
 import yargs, { type Argv } from 'yargs';
+import type { ConsoleContext } from '../app';
 
 import { scriptName, version } from '../meta';
 
@@ -9,9 +10,38 @@ export interface ShowHelpProps {
 
 export class ShowHelp {
   constructor(
-    public readonly status: 'show-all' | 'show-detail',
-    public readonly yargs: Argv,
+    protected readonly ctx: ConsoleContext,
+    protected readonly status: 'all' | 'detail',
+    protected readonly yargs: Argv,
   ) {}
+
+  async config({
+    next,
+    all,
+    detail,
+    detailCommand,
+  }: {
+    all: (yargs: Argv) => Promise<void> | void;
+    detail: (yargs: Argv) => Promise<void> | void;
+    detailCommand: string | (() => boolean);
+    next: Next;
+  }) {
+    if (this.status === 'all') {
+      await all(this.yargs);
+      return next();
+    } else if (this.status === 'detail') {
+      if (typeof detailCommand === 'string') {
+        if (detailCommand !== this.ctx.request.command) return next();
+      } else {
+        if (!detailCommand()) {
+          return next();
+        }
+      }
+
+      await detail(this.yargs);
+      this.ctx.response.commandMatched = true;
+    }
+  }
 }
 
 export const showHelp = (middlewareList: Middleware[]) => {
@@ -34,7 +64,7 @@ export const showHelp = (middlewareList: Middleware[]) => {
           .describe('version', `Show ${scriptName} version number`)
           .alias('v', 'version')
           .alias('h', 'help');
-        ctx.cli = new ShowHelp('show-all', cli);
+        ctx.cli = new ShowHelp(ctx, 'all', cli);
         await composeFn(ctx);
         cli.showHelp('log');
       }
@@ -43,7 +73,7 @@ export const showHelp = (middlewareList: Middleware[]) => {
 
     if (options['help'] || options['h']) {
       const cli = yargs([]).scriptName(scriptName).version(false).help(false);
-      ctx.cli = new ShowHelp('show-detail', cli);
+      ctx.cli = new ShowHelp(ctx, 'detail', cli);
 
       await composeFn(ctx);
 

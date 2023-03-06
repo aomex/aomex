@@ -1,4 +1,5 @@
 import { ConsoleApp } from '@aomex/console';
+import stripAnsi from 'strip-ansi';
 import { cron } from '../../src';
 
 test('output cron:* help information', async () => {
@@ -16,7 +17,7 @@ test('output cron:* help information', async () => {
   );
 
   await app.run('-h');
-  expect(msg).toMatchSnapshot();
+  expect(stripAnsi(msg)).toMatchSnapshot();
   await app.run('cron:start', '-h');
   expect(msg).toMatchSnapshot();
   await app.run('cron:export', '-h');

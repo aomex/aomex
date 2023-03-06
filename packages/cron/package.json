@@ -43,6 +43,7 @@
   "devDependencies": {
     "@aomex/console": "workspace:^0.0.6",
     "@aomex/console-router": "workspace:^0.0.6",
-    "@aomex/core": "workspace:^0.0.6"
+    "@aomex/core": "workspace:^0.0.6",
+    "strip-ansi": "^7.0.1"
   }
 }
