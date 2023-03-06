@@ -53,7 +53,7 @@ export const commanderToHelp = (options: CommanderToHelpOptions) =>
         break;
       default:
         const _: never = status;
-        assert(_);
+        return _;
     }
 
     return next();

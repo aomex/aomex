@@ -17,6 +17,6 @@ export const outputToHelp = (commandName: string): HelpMiddleware =>
         return;
       default:
         const _: never = status;
-        assert(_);
+        return _;
     }
   });

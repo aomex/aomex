@@ -29,6 +29,6 @@ export const openapiToHelp = (
         return;
       default:
         const _: never = status;
-        assert(_);
+        return _;
     }
   });
