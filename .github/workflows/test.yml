@@ -11,6 +11,11 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         node: ['18.0.0', 18.x]
     runs-on: ${{ matrix.os }}
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2

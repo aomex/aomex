@@ -231,9 +231,11 @@ importers:
   packages/ioredis-cache:
     specifiers:
       '@aomex/core': workspace:^0.0.6
+      '@aomex/utility': workspace:^0.0.4
       ioredis: ^5.3.1
     devDependencies:
       '@aomex/core': link:../core
+      '@aomex/utility': link:../utility
       ioredis: 5.3.1
 
   packages/jwt:
@@ -346,9 +348,11 @@ importers:
   packages/redis-cache:
     specifiers:
       '@aomex/core': workspace:^0.0.6
+      '@aomex/utility': workspace:^0.0.4
       redis: ^4.6.4
     devDependencies:
       '@aomex/core': link:../core
+      '@aomex/utility': link:../utility
       redis: 4.6.4
 
   packages/response-time:
