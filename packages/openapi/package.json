@@ -49,6 +49,7 @@
     "@aomex/core": "workspace:^0.0.6",
     "@aomex/web": "workspace:^0.0.7",
     "@aomex/web-router": "workspace:^0.0.7",
-    "@types/ibm-openapi-validator": "^0.15.1"
+    "@types/ibm-openapi-validator": "^0.15.1",
+    "strip-ansi": "^7.0.1"
   }
 }

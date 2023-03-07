@@ -1,0 +1,124 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`emitter > emit events 1`] = `
+[
+  "Initialize",
+  "Search routers",
+  "Parse router",
+  "Parse router test/routers/test1.ts",
+  "Parse router test/routers/test2.ts",
+  "Parse router",
+  "Fix document by hand",
+  "Fix document by hand [skipped]",
+  "Optimize document",
+  "Save to file",
+  "Save to file: openapi.json [size: 758B]",
+  "Validate",
+  "Validate 29 warnings",
+  "warn",
+]
+`;
+
+exports[`emitter > validate with errors 1`] = `
+[
+  "Initialize",
+  "Search routers",
+  "Parse router",
+  "Parse router",
+  "Fix document by hand",
+  "Fix document by hand [skipped]",
+  "Optimize document",
+  "Save to file",
+  "Save to file: openapi.json [size: 88B]",
+  "Validate",
+  "Validate 1 errors，3 warnings",
+  "fail",
+]
+`;
+
+exports[`routers > parse routers 1`] = `
+{
+  "/abc": {
+    "get": {
+      "parameters": [
+        {
+          "in": "query",
+          "name": "q1",
+          "required": true,
+          "schema": {
+            "type": "string",
+          },
+        },
+        {
+          "in": "query",
+          "name": "q2",
+          "required": true,
+          "schema": {
+            "items": {
+              "exclusiveMinimum": false,
+              "minimum": 100,
+              "type": "number",
+            },
+            "type": "array",
+          },
+        },
+      ],
+      "responses": {
+        "default": {
+          "description": "",
+        },
+      },
+      "tags": [
+        "test1",
+      ],
+    },
+    "post": {
+      "requestBody": {
+        "content": {
+          "*/*": {
+            "schema": {
+              "properties": {
+                "name": {
+                  "type": "string",
+                },
+              },
+              "type": "object",
+            },
+          },
+        },
+        "required": false,
+      },
+      "responses": {
+        "default": {
+          "description": "",
+        },
+      },
+      "tags": [
+        "test1",
+      ],
+    },
+  },
+  "/abc/{id}": {
+    "put": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "number",
+          },
+        },
+      ],
+      "responses": {
+        "default": {
+          "description": "",
+        },
+      },
+      "tags": [
+        "test1",
+      ],
+    },
+  },
+}
+`;

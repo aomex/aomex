@@ -292,6 +292,7 @@ importers:
       ibm-openapi-validator: ^0.97.4
       ora: ^6.1.2
       read-pkg-up: ^9.1.0
+      strip-ansi: ^7.0.1
       yaml: ^2.2.1
     dependencies:
       '@aomex/file-parser': link:../file-parser
@@ -306,6 +307,7 @@ importers:
       '@aomex/web': link:../web
       '@aomex/web-router': link:../web-router
       '@types/ibm-openapi-validator': 0.15.1
+      strip-ansi: 7.0.1
 
   packages/openapi-type:
     specifiers:

@@ -33,6 +33,8 @@ export const openapi = (
       middleware.console(async (ctx, next) => {
         if (ctx.request.command !== commandName) return next();
 
+        ctx.response.commandMatched = true;
+
         const emitter = new EventEmitter();
         const spinner: Ora = ora();
 

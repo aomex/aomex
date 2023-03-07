@@ -80,6 +80,7 @@ export const generateDocument = async (
   {
     document.openapi ||= '3.0.3';
     document.tags ||= [];
+    document.info ||= { title: '', version: '' };
     document.paths = {};
     document.info.title ||=
       (await readPackageUp())?.packageJson.name || 'API documentation';
@@ -92,7 +93,10 @@ export const generateDocument = async (
   emitter.emit('msg', (msg = 'Parse router'));
   const usedTags: string[] = [];
   for (const file of files) {
-    emitter.emit('replace', msg + path.relative(process.cwd(), file));
+    emitter.emit(
+      'replace',
+      msg + ' ' + chalk.gray(path.relative(process.cwd(), file)),
+    );
     await sleep(50);
 
     const routers = await fileToModules<Router>(
@@ -191,12 +195,13 @@ export const generateDocument = async (
       await writeFile(distFile, content, {
         mode: config.fileMode,
       });
+      const size = bytes(Buffer.byteLength(content), { unitSeparator: '' });
       emitter.emit(
         'replace',
         msg +
+          ': ' +
           path.relative(process.cwd(), distFile) +
-          ' ' +
-          bytes(Buffer.byteLength(content), { unitSeparator: '' }),
+          chalk.gray(` [size: ${size}]`),
         true,
       );
     } else {
@@ -216,7 +221,7 @@ export const generateDocument = async (
       summary.push(`${result.warnings.length} warnings`);
     }
     summary.length &&
-      emitter.emit('replace', msg + chalk.yellow(summary.join('，')));
+      emitter.emit('replace', msg + ' ' + chalk.yellow(summary.join('，')));
 
     emitter.emit(
       'end',
