@@ -3,8 +3,7 @@ import { WebMiddleware, WebMiddlewareToDocument } from '../override';
 import { getMimeType } from '../util';
 
 export interface WebResponseOptions
-  extends Pick<OpenAPI.ResponseObject, 'description'>,
-    Pick<OpenAPI.MediaTypeObject, 'example'> {
+  extends Pick<OpenAPI.MediaTypeObject, 'example'> {
   /**
    * Examples:
    * - 200
@@ -23,12 +22,13 @@ export interface WebResponseOptions
    * - stream
    * - \*\/\* (any type)
    */
-  contentType: string;
+  contentType?: string;
   /**
    * Final data schema
    */
   schema: Validator | { [key: string]: Validator };
   headers?: { [key: string]: Validator };
+  description?: string;
 }
 
 /**
@@ -47,16 +47,19 @@ export class WebResponseMiddleware extends WebMiddleware<object> {
     methodItem.responses ||= {};
     const {
       statusCode,
-      contentType,
+      contentType = '*/*',
       schema,
       headers = {},
       example,
-      ...rest
+      description = '',
     } = this.options;
+    const type = contentType.includes('*')
+      ? contentType
+      : getMimeType(contentType) || '*/*';
     methodItem.responses[statusCode] = {
-      ...rest,
+      description,
       content: {
-        [getMimeType(contentType) || '*/*']: {
+        [type.split(';', 1)[0]!]: {
           schema: Validator.toDocument(
             schema instanceof Validator ? schema : rule.object(schema),
           ).schema,
