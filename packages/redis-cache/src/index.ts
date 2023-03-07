@@ -13,7 +13,8 @@ export interface RedisCacheOptions extends CacheOptions {
 }
 
 export class RedisCache extends Cache {
-  private readonly redis: RedisClientType<RedisDefaultModules, any, any>;
+  public readonly redis: RedisClientType<RedisDefaultModules, any, any>;
+  private connectPromise: Promise<void>;
 
   constructor(config: RedisCacheOptions) {
     super(config);
@@ -22,9 +23,18 @@ export class RedisCache extends Cache {
       'get' in config.redis && 'set' in config.redis
         ? config.redis
         : createClient(config.redis);
+    this.connectPromise = this.redis.connect();
   }
 
-  protected getValue(key: string): Promise<string | null> {
+  protected connect() {
+    if (!this.redis.isReady) {
+      return this.connectPromise;
+    }
+    return;
+  }
+
+  protected async getValue(key: string): Promise<string | null> {
+    await this.connect();
     return this.redis.get(key);
   }
 
@@ -33,6 +43,7 @@ export class RedisCache extends Cache {
     value: string,
     duration?: number | undefined,
   ): Promise<boolean> {
+    await this.connect();
     const result: string | null = await this.redis.set(key, value, {
       PX: duration,
     });
@@ -44,6 +55,7 @@ export class RedisCache extends Cache {
     value: string,
     duration?: number | undefined,
   ): Promise<boolean> {
+    await this.connect();
     const result: string | null = await this.redis.set(key, value, {
       PX: duration,
       NX: true,
@@ -52,19 +64,26 @@ export class RedisCache extends Cache {
   }
 
   protected async existsKey(key: string): Promise<boolean> {
+    await this.connect();
     const count: number = await this.redis.exists(key);
     return count === 1;
   }
 
   protected async deleteValue(key: string): Promise<boolean> {
+    await this.connect();
     await this.redis.del(key);
     return true;
   }
 
   protected async deleteAllValues(): Promise<boolean> {
-    const pattern = `${this.keyPrefix}*`;
-    const keys = await this.redis.keys(pattern);
-    await this.redis.del(keys);
+    await this.connect();
+    if (this.keyPrefix) {
+      const pattern = `${this.keyPrefix}*`;
+      const keys = await this.redis.keys(pattern);
+      await this.redis.del(keys);
+    } else {
+      await this.redis.flushDb();
+    }
     return true;
   }
 }
