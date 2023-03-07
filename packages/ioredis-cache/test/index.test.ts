@@ -162,11 +162,13 @@ describe('flush db', () => {
     });
 
     await cache.set('key-a', 'value');
-    await cache.redis.set('key-b', 'value');
+    await cache.redis.set('key-without-cache-prefix', 'value');
     await redis1.set('key-c', 'value');
     await cache.deleteAll();
     await expect(cache.exists('key-a')).resolves.toBeFalsy();
-    await expect(cache.redis.exists('key-b')).resolves.toBe(0);
+    await expect(cache.redis.exists('key-without-cache-prefix')).resolves.toBe(
+      1,
+    );
     await expect(redis1.exists('key-c')).resolves.toBe(1);
   });
 
