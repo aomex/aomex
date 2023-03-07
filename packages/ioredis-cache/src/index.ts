@@ -6,7 +6,7 @@ export interface RedisCacheOptions extends CacheOptions {
 }
 
 export class RedisCache extends Cache {
-  private readonly redis: Redis;
+  public readonly redis: Redis;
 
   constructor(config: RedisCacheOptions) {
     super(config);
@@ -58,9 +58,17 @@ export class RedisCache extends Cache {
 
   protected async deleteAllValues(): Promise<boolean> {
     const { redis } = this;
-    const pattern = `${redis.options.keyPrefix ?? ''}${this.keyPrefix}*`;
-    const keys = await redis.keys(pattern);
-    await redis.del(keys);
+    const redisPrefix = redis.options.keyPrefix ?? '';
+    const cachePrefix = this.keyPrefix;
+
+    if (redisPrefix || cachePrefix) {
+      const keys = await redis.keys(`${redisPrefix}${cachePrefix}*`);
+      if (keys.length) {
+        await redis.del(...keys.map((item) => item.slice(redisPrefix.length)));
+      }
+    } else {
+      await redis.flushdb();
+    }
     return true;
   }
 }
