@@ -217,6 +217,17 @@ importers:
     dependencies:
       glob: 9.2.1
 
+  packages/helmet:
+    specifiers:
+      '@aomex/core': workspace:^0.0.6
+      '@aomex/web': workspace:^0.0.7
+      helmet: ^6.0.1
+    dependencies:
+      helmet: 6.0.1
+    devDependencies:
+      '@aomex/core': link:../core
+      '@aomex/web': link:../web
+
   packages/ioredis-cache:
     specifiers:
       '@aomex/core': workspace:^0.0.6
@@ -3510,6 +3521,11 @@ packages:
     engines: {node: '>= 0.4.0'}
     dependencies:
       function-bind: 1.1.1
+
+  /helmet/6.0.1:
+    resolution: {integrity: sha512-8wo+VdQhTMVBMCITYZaGTbE4lvlthelPYSvoyNvk4RECTmrVjMerp9RfUOQXZWLvCcAn1pKj7ZRxK4lI9Alrcw==}
+    engines: {node: '>=14.0.0'}
+    dev: false
 
   /hexoid/1.0.0:
     resolution: {integrity: sha512-QFLV0taWQOZtvIRIAdBChesmogZrtuXvVWsFHZTk2SU+anspqZ2vMnoLg7IE1+Uk16N19APic1BuF8bC8c2m5g==}
