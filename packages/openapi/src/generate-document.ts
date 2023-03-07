@@ -62,7 +62,7 @@ export interface OpenapiOptions {
   emitter: EventEmitter;
 }
 
-export const generateOpenapi = async (
+export const generateDocument = async (
   config: OpenapiOptions,
 ): Promise<{
   document: OpenAPI.Document;

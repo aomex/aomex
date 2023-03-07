@@ -3,11 +3,11 @@ import { chain, middleware } from '@aomex/core';
 import ora, { type Ora } from 'ora';
 import { openapiToHelp } from './openapi-to-help';
 import {
-  generateOpenapi,
+  generateDocument,
   type OpenapiValidateResultItem,
   type OpenapiOptions,
   type OpenapiValidateResult,
-} from './generate-openapi';
+} from './generate-document';
 
 export const openapi = (
   options: Omit<OpenapiOptions, 'emitter'> & {
@@ -56,7 +56,7 @@ export const openapi = (
 
         let result: OpenapiValidateResult;
         try {
-          result = (await generateOpenapi({ ...options, emitter })).result;
+          result = (await generateDocument({ ...options, emitter })).result;
         } catch (e) {
           spinner.fail();
           throw e;
