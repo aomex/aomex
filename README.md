@@ -38,6 +38,7 @@ A fluent node.js framework, Inspired by [koa](https://github.com/koajs/koa) and 
 | [@aomex/cors](./packages/cors)                     | [![npm](https://img.shields.io/npm/v/@aomex/cors)](https://www.npmjs.com/package/@aomex/cors)                     | web      |
 | [@aomex/jwt](./packages/jwt)                       | [![npm](https://img.shields.io/npm/v/@aomex/jwt)](https://www.npmjs.com/package/@aomex/jwt)                       | web      |
 | [@aomex/logger](./packages/logger)                 | [![npm](https://img.shields.io/npm/v/@aomex/logger)](https://www.npmjs.com/package/@aomex/logger)                 | web      |
+| [@aomex/helmet](./packages/helmet)                 | [![npm](https://img.shields.io/npm/v/@aomex/helmet)](https://www.npmjs.com/package/@aomex/helmet)                 | web      |
 | [@aomex/pretty-json](./packages/pretty-json)       | [![npm](https://img.shields.io/npm/v/@aomex/pretty-json)](https://www.npmjs.com/package/@aomex/pretty-json)       | web      |
 | [@aomex/response-time](./packages/response-time)   | [![npm](https://img.shields.io/npm/v/@aomex/response-time)](https://www.npmjs.com/package/@aomex/response-time)   | web      |
 | [@aomex/rate-limit](./packages/rate-limit)         | [![npm](https://img.shields.io/npm/v/@aomex/rate-limit)](https://www.npmjs.com/package/@aomex/rate-limit)         | web      |
