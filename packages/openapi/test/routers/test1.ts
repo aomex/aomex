@@ -31,3 +31,13 @@ router.put('/abc/:id', {
   ],
   action() {},
 });
+
+// Testing operationId
+router.all('/abcde/:id', {
+  mount: [
+    params({
+      id: rule.number(),
+    }),
+  ],
+  action() {},
+});

@@ -1,6 +1,7 @@
 import EventEmitter from 'node:events';
 import type { Mode } from 'node:fs';
 import { readPackageUp } from 'read-pkg-up';
+import snakeCase from 'lodash.snakecase';
 import { Chain, OpenAPI } from '@aomex/core';
 import { bytes, chalk, sleep } from '@aomex/utility';
 import {
@@ -14,6 +15,7 @@ import validate from 'ibm-openapi-validator';
 import path from 'node:path';
 import { mkdir, writeFile } from 'node:fs/promises';
 import yaml from 'yaml';
+import { methodToVerb } from './method-to-verb';
 
 export interface OpenapiValidateResultItem {
   path: string[];
@@ -120,7 +122,6 @@ export const generateDocument = async (
             const methodItem: OpenAPI.OperationObject = (pathItem[
               method.toLowerCase() as `${Lowercase<typeof method>}`
             ] = {
-              tags: [getTagByFilename(file)],
               responses: {},
               ...builder.docs,
             });
@@ -136,6 +137,11 @@ export const generateDocument = async (
                 });
               }
             }
+
+            methodItem.tags ||= [getTagByFilename(file)];
+            methodItem.operationId ||= snakeCase(
+              methodToVerb(method, uri) + ' ' + uri,
+            );
 
             if (Object.keys(methodItem.responses).length === 0) {
               methodItem.responses = {

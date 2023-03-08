@@ -307,7 +307,9 @@ importers:
       '@aomex/web': workspace:^0.0.7
       '@aomex/web-router': workspace:^0.0.7
       '@types/ibm-openapi-validator': ^0.15.1
+      '@types/lodash.snakecase': ^4.1.7
       ibm-openapi-validator: ^0.97.4
+      lodash.snakecase: ^4.1.1
       ora: ^6.1.2
       read-pkg-up: ^9.1.0
       strip-ansi: ^7.0.1
@@ -316,6 +318,7 @@ importers:
       '@aomex/file-parser': link:../file-parser
       '@aomex/utility': link:../utility
       ibm-openapi-validator: 0.97.4
+      lodash.snakecase: 4.1.1
       ora: 6.1.2
       read-pkg-up: 9.1.0
       yaml: 2.2.1
@@ -325,6 +328,7 @@ importers:
       '@aomex/web': link:../web
       '@aomex/web-router': link:../web-router
       '@types/ibm-openapi-validator': 0.15.1
+      '@types/lodash.snakecase': 4.1.7
       strip-ansi: 7.0.1
 
   packages/openapi-type:
@@ -2257,6 +2261,16 @@ packages:
     dependencies:
       '@types/node': 18.14.6
     dev: false
+
+  /@types/lodash.snakecase/4.1.7:
+    resolution: {integrity: sha512-nv9M+JJokFyfZ9QmaWVXZu2DfT40K0GictZaA8SwXczp3oCzMkjp7PtvUBQyvdoG9SnlCpoRXZDIVwQRzJbd9A==}
+    dependencies:
+      '@types/lodash': 4.14.191
+    dev: true
+
+  /@types/lodash/4.14.191:
+    resolution: {integrity: sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==}
+    dev: true
 
   /@types/microtime/2.1.0:
     resolution: {integrity: sha512-4mUXDZ9ISb7vpu7Q5cR9Itl2ncbYzn7nVgplTLBHoM4M3Mt85dK12CXIMGn+F8ZD0CMiWhjBajJyDY5yxijC0Q==}
@@ -4903,7 +4917,6 @@ packages:
 
   /lodash.snakecase/4.1.1:
     resolution: {integrity: sha512-QZ1d4xoBHYUeuouhEq3lk3Uq7ldgyFXGBhg04+oRLnIz8o9T65Eh+8YdroUwn846zchkA9yDsDl5CVVaV2nqYw==}
-    dev: true
 
   /lodash.sortby/4.7.0:
     resolution: {integrity: sha512-HDWXG8isMntAyRF5vZ7xKuEvOhT4AhlRt/3czTSjvGUxjYCBVRQY48ViDHyfYz9VIoBkW4TMGQNapx+l3RUwdA==}

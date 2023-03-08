@@ -12,9 +12,9 @@ exports[`emitter > emit events 1`] = `
   "Fix document by hand",
   "Fix document by hand [skipped]",
   "Save to file",
-  "Save to file: openapi.json [size: 858B]",
+  "Save to file: openapi.json [size: 2.02KB]",
   "Validate",
-  "Validate 23 warnings",
+  "Validate 50 warnings",
   "warn",
 ]
 `;
@@ -39,6 +39,7 @@ exports[`routers > parse routers 1`] = `
 {
   "/abc": {
     "get": {
+      "operationId": "list_abc",
       "parameters": [
         {
           "in": "query",
@@ -75,6 +76,7 @@ exports[`routers > parse routers 1`] = `
       ],
     },
     "post": {
+      "operationId": "create_abc",
       "requestBody": {
         "content": {
           "*/*": {
@@ -105,6 +107,135 @@ exports[`routers > parse routers 1`] = `
   },
   "/abc/{id}": {
     "put": {
+      "operationId": "replace_abc_id",
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "number",
+          },
+        },
+      ],
+      "responses": {
+        "default": {
+          "description": "",
+        },
+      },
+      "tags": [
+        "test1",
+      ],
+    },
+  },
+  "/abcde/{id}": {
+    "delete": {
+      "operationId": "delete_abcde_id",
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "number",
+          },
+        },
+      ],
+      "responses": {
+        "default": {
+          "description": "",
+        },
+      },
+      "tags": [
+        "test1",
+      ],
+    },
+    "get": {
+      "operationId": "get_abcde_id",
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "number",
+          },
+        },
+      ],
+      "responses": {
+        "default": {
+          "description": "",
+        },
+      },
+      "tags": [
+        "test1",
+      ],
+    },
+    "options": {
+      "operationId": "options_abcde_id",
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "number",
+          },
+        },
+      ],
+      "responses": {
+        "default": {
+          "description": "",
+        },
+      },
+      "tags": [
+        "test1",
+      ],
+    },
+    "patch": {
+      "operationId": "update_abcde_id",
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "number",
+          },
+        },
+      ],
+      "responses": {
+        "default": {
+          "description": "",
+        },
+      },
+      "tags": [
+        "test1",
+      ],
+    },
+    "post": {
+      "operationId": "create_abcde_id",
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "number",
+          },
+        },
+      ],
+      "responses": {
+        "default": {
+          "description": "",
+        },
+      },
+      "tags": [
+        "test1",
+      ],
+    },
+    "put": {
+      "operationId": "replace_abcde_id",
       "parameters": [
         {
           "in": "path",

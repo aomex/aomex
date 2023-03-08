@@ -40,6 +40,7 @@
     "@aomex/file-parser": "workspace:^0.0.3",
     "@aomex/utility": "workspace:^0.0.4",
     "ibm-openapi-validator": "^0.97.4",
+    "lodash.snakecase": "^4.1.1",
     "ora": "^6.1.2",
     "read-pkg-up": "^9.1.0",
     "yaml": "^2.2.1"
@@ -50,6 +51,7 @@
     "@aomex/web": "workspace:^0.0.7",
     "@aomex/web-router": "workspace:^0.0.7",
     "@types/ibm-openapi-validator": "^0.15.1",
+    "@types/lodash.snakecase": "^4.1.7",
     "strip-ansi": "^7.0.1"
   }
 }
