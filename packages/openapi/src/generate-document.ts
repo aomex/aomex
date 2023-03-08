@@ -154,22 +154,22 @@ export const generateDocument = async (
   emitter.emit('replace', msg);
 
   {
+    const tags = document.tags!;
+    const definedTags = tags.map((item) => item.name);
+    for (const tag of [...new Set(usedTags)].sort()) {
+      if (!definedTags.includes(tag)) {
+        emitter.emit('msg', (msg = `Append tag: ${tag}`));
+        tags.push({ name: tag });
+      }
+    }
+  }
+
+  {
     emitter.emit('msg', (msg = 'Fix document by hand'));
     if (config.fix) {
       config.fix(document);
     } else {
       emitter.emit('replace', skip(msg));
-    }
-  }
-
-  {
-    const tags = document.tags!;
-    const definedTags = tags.map((item) => item.name);
-    for (const tag of [...new Set(usedTags)].sort()) {
-      if (!definedTags.includes(tag)) {
-        emitter.emit('msg', (msg = `Add tag: ${tag}`));
-        tags.push({ name: tag });
-      }
     }
   }
 
