@@ -30,11 +30,10 @@ exports[`Openapi > With default value 1`] = `
 
 exports[`Openapi > With extra infos 1`] = `
 {
+  "deprecated": true,
+  "description": "Hello Test",
   "required": true,
   "schema": {
-    "deprecated": true,
-    "description": "Hello Test",
-    "title": "Title",
     "type": "boolean",
   },
 }

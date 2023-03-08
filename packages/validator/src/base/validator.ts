@@ -14,9 +14,12 @@ export interface ValidateResultError {
   }[];
 }
 
+/**
+ * Useless fields: [title, externalDocs]
+ */
 export type PartialOpenAPISchema = Pick<
   OpenAPI.SchemaObject,
-  'title' | 'description' | 'deprecated' | 'example' | 'externalDocs'
+  'description' | 'deprecated' | 'example'
 >;
 
 export interface ValidatorOptions<Type> {
@@ -76,17 +79,24 @@ export abstract class Validator<T = unknown> {
   };
 
   public static toDocument(validator: Validator): OpenAPI.ParameterBaseObject {
-    const { required, docs = {}, defaultValue } = validator.config;
+    const {
+      required,
+      docs: { description, deprecated, example, ...docs } = {},
+      defaultValue,
+    } = validator.config;
     const schema: OpenAPI.SchemaObject = {
       ...docs,
       default: validator.getDefaultValue(defaultValue),
       ...validator.toDocument(),
     };
 
-    return {
+    const result: OpenAPI.ParameterBaseObject = {
       required,
-      schema: JSON.parse(JSON.stringify(schema)),
+      ...{ description, deprecated, example },
+      schema: schema,
     };
+
+    return JSON.parse(JSON.stringify(result));
   }
 
   public static validate(

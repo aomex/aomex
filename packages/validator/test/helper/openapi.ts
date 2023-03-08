@@ -10,7 +10,6 @@ const expectOpenapiWithDocs = (validator: Validator) => {
     Validator.toDocument(
       validator.docs({
         deprecated: true,
-        title: 'Title',
         description: 'Hello Test',
       }),
     ),
