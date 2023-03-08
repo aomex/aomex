@@ -1,4 +1,3 @@
-import assert from 'node:assert';
 import { Middleware, type Next, type OpenAPI } from '@aomex/core';
 import type { NonReadonly } from '@aomex/utility';
 import type { WebContext } from '../app/context';
@@ -37,7 +36,7 @@ export class WebMiddleware<
   }
 
   public toDocument(options: WebMiddlewareToDocument) {
-    assert(options);
+    options;
   }
 }
 
