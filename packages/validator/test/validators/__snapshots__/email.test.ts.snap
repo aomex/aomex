@@ -5,6 +5,9 @@ exports[`Openapi > Optional 1`] = `
   "required": false,
   "schema": {
     "format": "email",
+    "maxLength": 4294967295,
+    "minLength": 0,
+    "pattern": "",
     "type": "string",
   },
 }
@@ -15,6 +18,9 @@ exports[`Openapi > Required 1`] = `
   "required": true,
   "schema": {
     "format": "email",
+    "maxLength": 4294967295,
+    "minLength": 0,
+    "pattern": "",
     "type": "string",
   },
 }
@@ -26,6 +32,9 @@ exports[`Openapi > With default value 1`] = `
   "schema": {
     "default": "hello@gmail.com",
     "format": "email",
+    "maxLength": 4294967295,
+    "minLength": 0,
+    "pattern": "",
     "type": "string",
   },
 }
@@ -38,6 +47,9 @@ exports[`Openapi > With extra infos 1`] = `
   "required": true,
   "schema": {
     "format": "email",
+    "maxLength": 4294967295,
+    "minLength": 0,
+    "pattern": "",
     "type": "string",
   },
 }

@@ -12,9 +12,9 @@ exports[`emitter > emit events 1`] = `
   "Fix document by hand",
   "Fix document by hand [skipped]",
   "Save to file",
-  "Save to file: openapi.json [size: 758B]",
+  "Save to file: openapi.json [size: 858B]",
   "Validate",
-  "Validate 29 warnings",
+  "Validate 23 warnings",
   "warn",
 ]
 `;
@@ -45,6 +45,9 @@ exports[`routers > parse routers 1`] = `
           "name": "q1",
           "required": true,
           "schema": {
+            "maxLength": 4294967295,
+            "minLength": 0,
+            "pattern": "",
             "type": "string",
           },
         },
@@ -78,6 +81,9 @@ exports[`routers > parse routers 1`] = `
             "schema": {
               "properties": {
                 "name": {
+                  "maxLength": 4294967295,
+                  "minLength": 0,
+                  "pattern": "",
                   "type": "string",
                 },
               },

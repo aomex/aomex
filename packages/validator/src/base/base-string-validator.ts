@@ -75,12 +75,18 @@ export abstract class BaseStringValidator<T> extends Validator<T> {
 
   protected override toDocument(): OpenAPI.SchemaObject {
     const { lengthRange = {}, pattern } = this.config;
+    /**
+     * Set default value to against openapi validator warning
+     * - pattern
+     * - minLength
+     * - maxLength
+     */
     return {
       type: 'string',
       // FIXME: where to place pattern.flags?
-      pattern: pattern && pattern.source,
-      minLength: lengthRange.min,
-      maxLength: lengthRange.max,
+      pattern: pattern ? pattern.source : '',
+      minLength: lengthRange.min ?? 0,
+      maxLength: lengthRange.max ?? Math.pow(2, 32) - 1,
     };
   }
 }
