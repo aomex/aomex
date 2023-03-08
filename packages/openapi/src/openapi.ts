@@ -83,7 +83,5 @@ export const openapi = (
 
 const formatValidateMessage = (item: OpenapiValidateResultItem) => {
   let pathname = item.path.length ? item.path.join('.') : '';
-  pathname =
-    pathname && !item.message.includes(`"${pathname}"`) ? `[${pathname}] ` : '';
-  return `${pathname}${item.message}`;
+  return `[${pathname || '.'}] ${item.message}`;
 };
