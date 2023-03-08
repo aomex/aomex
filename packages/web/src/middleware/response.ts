@@ -53,13 +53,11 @@ export class WebResponseMiddleware extends WebMiddleware<object> {
       example,
       description = '',
     } = this.options;
-    const type = contentType.includes('*')
-      ? contentType
-      : getMimeType(contentType) || '*/*';
+
     methodItem.responses[statusCode] = {
       description,
       content: {
-        [type.split(';', 1)[0]!]: {
+        [this.fixContentType(contentType)]: {
           schema: Validator.toDocument(
             schema instanceof Validator ? schema : rule.object(schema),
           ).schema,
@@ -73,5 +71,12 @@ export class WebResponseMiddleware extends WebMiddleware<object> {
         ]),
       ),
     };
+  }
+
+  protected fixContentType(contentType: string) {
+    const type = contentType.includes('*')
+      ? contentType
+      : getMimeType(contentType) || '*/*';
+    return type.split(';', 1)[0]!;
   }
 }
