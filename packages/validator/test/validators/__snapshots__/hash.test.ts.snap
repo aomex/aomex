@@ -5,8 +5,8 @@ exports[`Openapi > Optional 1`] = `
   "required": false,
   "schema": {
     "format": "md5",
-    "maxLength": 4294967295,
-    "minLength": 0,
+    "maxLength": 32,
+    "minLength": 32,
     "pattern": "",
     "type": "string",
   },
@@ -18,8 +18,8 @@ exports[`Openapi > Required 1`] = `
   "required": true,
   "schema": {
     "format": "md5",
-    "maxLength": 4294967295,
-    "minLength": 0,
+    "maxLength": 32,
+    "minLength": 32,
     "pattern": "",
     "type": "string",
   },
@@ -32,8 +32,8 @@ exports[`Openapi > With default value 1`] = `
   "schema": {
     "default": "some-hash",
     "format": "md5",
-    "maxLength": 4294967295,
-    "minLength": 0,
+    "maxLength": 32,
+    "minLength": 32,
     "pattern": "",
     "type": "string",
   },
@@ -47,8 +47,8 @@ exports[`Openapi > With extra infos 1`] = `
   "required": true,
   "schema": {
     "format": "sha1",
-    "maxLength": 4294967295,
-    "minLength": 0,
+    "maxLength": 40,
+    "minLength": 40,
     "pattern": "",
     "type": "string",
   },

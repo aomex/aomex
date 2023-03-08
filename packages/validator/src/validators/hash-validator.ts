@@ -90,8 +90,13 @@ export class HashValidator<T = string> extends BaseStringValidator<T> {
   }
 
   protected override toDocument(): OpenAPI.SchemaObject {
+    const { algorithm } = this.config;
+    const length = HashValidator.algorithmLength[algorithm];
+
     return {
       ...super.toDocument(),
+      minLength: length,
+      maxLength: length,
       format: this.config.algorithm,
     };
   }
