@@ -1,0 +1,132 @@
+{
+  "openapi": "3.0.3",
+  "tags": [
+    {
+      "name": "admin"
+    },
+    {
+      "name": "user"
+    }
+  ],
+  "info": {
+    "title": "example-openapi",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/admins/{id}": {
+      "delete": {
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "description": "Here is the description",
+        "externalDocs": {
+          "url": "http://example.com"
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": false,
+            "description": "Yes, this is a id and is required for request",
+            "deprecated": true,
+            "example": 1234567,
+            "schema": {
+              "default": 321,
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/admins/other/{id}": {
+      "delete": {
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "description": "Use /admins/:id instead",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "ccc"
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "description": "User Name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "required": false,
+            "description": "**Warning:** Put token in headers",
+            "deprecated": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

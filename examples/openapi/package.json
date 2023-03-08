@@ -1,0 +1,22 @@
+{
+  "name": "example-openapi",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "generate": "aomex openapi"
+  },
+  "type": "module",
+  "volta": {
+    "node": "18.13.0",
+    "pnpm": "7.27.0"
+  },
+  "dependencies": {
+    "@aomex/console": "workspace:*",
+    "@aomex/console-router": "workspace:*",
+    "@aomex/core": "workspace:*",
+    "@aomex/openapi": "workspace:*",
+    "@aomex/web": "workspace:*",
+    "@aomex/web-router": "workspace:*",
+    "swagger-ui": "^4.17.1"
+  }
+}
