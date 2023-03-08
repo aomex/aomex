@@ -163,19 +163,14 @@ export const generateDocument = async (
   }
 
   {
-    emitter.emit('msg', (msg = 'Optimize document'));
-    const tagDefinitions = document.tags!.filter(({ name: tag }) =>
-      usedTags.includes(tag),
-    );
-    const definedTags = tagDefinitions.map((item) => item.name);
-    [...new Set(usedTags)].sort().forEach((tag) => {
+    const tags = document.tags!;
+    const definedTags = tags.map((item) => item.name);
+    for (const tag of [...new Set(usedTags)].sort()) {
       if (!definedTags.includes(tag)) {
-        tagDefinitions.push({
-          name: tag,
-        });
+        emitter.emit('msg', (msg = `Add tag: ${tag}`));
+        tags.push({ name: tag });
       }
-    });
-    document.tags = tagDefinitions;
+    }
   }
 
   {

@@ -68,7 +68,7 @@ describe('routers', () => {
     ).toBeGreaterThan(-1);
   });
 
-  test('unused tags will be removed', async () => {
+  test('unused tags will not be removed', async () => {
     const { document } = await generateDocument({
       emitter: new EventEmitter(),
       routers: ['./test/routers'],
@@ -80,9 +80,9 @@ describe('routers', () => {
         ],
       },
     });
-    expect(document.tags?.findIndex((item) => item.name === 'aabb')).toBe(-1);
+    expect(document.tags!.findIndex((item) => item.name === 'aabb')).toBe(0);
     expect(
-      document.tags?.findIndex((item) => item.name === 'test1'),
+      document.tags!.findIndex((item) => item.name === 'test1'),
     ).toBeGreaterThan(-1);
   });
 });

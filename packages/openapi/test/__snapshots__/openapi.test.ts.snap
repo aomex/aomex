@@ -6,7 +6,7 @@ exports[`log messages 1`] = `
   "- Search routers",
   "- Parse router",
   "- Fix document by hand",
-  "- Optimize document",
+  "- Add tag: test1",
   "- Save to file",
   "- Validate",
   "⚠ Validate 29 warnings",
