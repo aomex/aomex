@@ -1,10 +1,5 @@
-import {
-  JwtHeader,
-  JwtPayload,
-  verify,
-  VerifyOptions,
-  Jwt,
-} from 'jsonwebtoken';
+import type { JwtHeader, JwtPayload, VerifyOptions, Jwt } from 'jsonwebtoken';
+import jsonWebToken from 'jsonwebtoken'; // jsonwebtoken is CommonJS
 import { toArray } from '@aomex/utility';
 import { WebContext, WebMiddleware, WebMiddlewareToDocument } from '@aomex/web';
 import { getSecret } from './getSecret';
@@ -94,13 +89,13 @@ export const jwt = <UserSchema = object>(
       let decodedToken: string | Jwt | JwtPayload | undefined;
 
       if (secrets.length === 1) {
-        decodedToken = verify(token!, secrets[0]!, options);
+        decodedToken = jsonWebToken.verify(token!, secrets[0]!, options);
       } else {
         decodedToken = await Promise.any(
           secrets.map((s) => {
             // verify will sync throw exception
             try {
-              return verify(token!, s, options);
+              return jsonWebToken.verify(token!, s, options);
             } catch {
               return Promise.reject();
             }
