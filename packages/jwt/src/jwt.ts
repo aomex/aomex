@@ -6,10 +6,9 @@ import {
   Jwt,
 } from 'jsonwebtoken';
 import { toArray } from '@aomex/utility';
-import type { WebContext, WebMiddleware } from '@aomex/web';
+import { WebContext, WebMiddleware, WebMiddlewareToDocument } from '@aomex/web';
 import { getSecret } from './getSecret';
 import { resolveAuthorizationHeader, resolveCookies } from './resolvers';
-import { middleware } from '@aomex/core';
 
 export interface JWTOptions extends Omit<VerifyOptions, 'complete'> {
   secret: JWTSecret | JWTSecretLoader;
@@ -32,21 +31,41 @@ export type JWTSecretLoader = (
   payload: string | JwtPayload,
 ) => Promise<JWTSecret>;
 
-export const jwt = <UserType = object>(
+export class JsonWebTokenMiddleware<
+  Props extends object = object,
+> extends WebMiddleware<Props> {
+  public override toDocument({
+    document,
+    methodItem,
+  }: WebMiddlewareToDocument): void {
+    document.components ||= {};
+    document.components.securitySchemes ||= {};
+    document.components.securitySchemes['jwt'] ||= {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    };
+
+    if (methodItem) {
+      methodItem.security ||= [{ jwt: [] }];
+    }
+  }
+}
+
+export const jwt = <UserSchema = object>(
   options: JWTOptions,
-): WebMiddleware<{
+): JsonWebTokenMiddleware<{
   readonly jwt: {
-    user: UserType;
+    user: UserSchema;
     token: string;
   };
 }> => {
-  // TODO: debug属性应该给在主库设置
   const { getToken, isRevoked } = options;
   const tokenResolvers = [resolveCookies, resolveAuthorizationHeader];
 
   getToken && tokenResolvers.unshift(getToken);
 
-  return middleware.web(async (ctx, next) => {
+  return new JsonWebTokenMiddleware(async (ctx, next) => {
     let token: string | null | undefined;
     for (const resolver of tokenResolvers) {
       if ((token = resolver(ctx, options))) break;
@@ -67,7 +86,7 @@ export const jwt = <UserType = object>(
         secret = await getSecret(secret, token);
       }
 
-      let secrets = toArray(secret);
+      const secrets = toArray(secret);
       if (!secret || !secrets.length) {
         ctx.throw(500, 'Secret not provided');
       }
@@ -79,7 +98,7 @@ export const jwt = <UserType = object>(
       } else {
         decodedToken = await Promise.any(
           secrets.map((s) => {
-            // verify会立即报错，加上 try/catch 才能保证map持续处理
+            // verify will sync throw exception
             try {
               return verify(token!, s, options);
             } catch {

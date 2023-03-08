@@ -1,0 +1,85 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`openapi > add security to router automatically 1`] = `
+{
+  "components": {
+    "securitySchemes": {
+      "jwt": {
+        "bearerFormat": "JWT",
+        "scheme": "bearer",
+        "type": "http",
+      },
+    },
+  },
+  "info": {
+    "title": "Hello test",
+    "version": "0.0.1",
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/users": {
+      "get": {
+        "responses": {},
+        "security": [
+          {
+            "jwt": [],
+          },
+        ],
+      },
+    },
+  },
+}
+`;
+
+exports[`openapi > should generate security scheme 1`] = `
+{
+  "components": {
+    "securitySchemes": {
+      "jwt": {
+        "bearerFormat": "JWT",
+        "scheme": "bearer",
+        "type": "http",
+      },
+    },
+  },
+  "info": {
+    "title": "Hello test",
+    "version": "0.0.1",
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/users": {
+      "get": {
+        "responses": {},
+      },
+    },
+  },
+}
+`;
+
+exports[`openapi > should not override security from router 1`] = `
+{
+  "components": {
+    "securitySchemes": {
+      "jwt": {
+        "bearerFormat": "JWT",
+        "scheme": "bearer",
+        "type": "http",
+      },
+    },
+  },
+  "info": {
+    "title": "Hello test",
+    "version": "0.0.1",
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/users": {
+      "get": {
+        "responses": {},
+        "security": [],
+      },
+    },
+  },
+}
+`;

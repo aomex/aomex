@@ -1,5 +1,4 @@
 import request from 'supertest';
-import { describe, expect, test } from 'vitest';
 import { jwt, JWTOptions } from '../src';
 import { sign } from 'jsonwebtoken';
 import {
@@ -9,7 +8,7 @@ import {
   WebContext,
   WebMiddlewareSkipOptions,
 } from '@aomex/web';
-import { chain, Middleware, middleware } from '@aomex/core';
+import { chain, Middleware, middleware, OpenAPI } from '@aomex/core';
 
 const createApp = (
   options: JWTOptions & { debug?: boolean },
@@ -545,5 +544,65 @@ describe('skipIf tests', () => {
       .expect((res) => {
         return res.body.foo !== 'bar' && 'Wrong user';
       });
+  });
+});
+
+describe('openapi', () => {
+  const middleware = jwt({ secret: 'here is secrets' });
+
+  test('should generate security scheme', () => {
+    const document: OpenAPI.Document = {
+      openapi: '3.0.3',
+      paths: {
+        '/users': { get: { responses: {} } },
+      },
+      info: {
+        title: 'Hello test',
+        version: '0.0.1',
+      },
+    };
+
+    middleware.toDocument({ document });
+    expect(document).toMatchSnapshot();
+  });
+
+  test('add security to router automatically', () => {
+    const document: OpenAPI.Document = {
+      openapi: '3.0.3',
+      paths: {
+        '/users': { get: { responses: {} } },
+      },
+      info: {
+        title: 'Hello test',
+        version: '0.0.1',
+      },
+    };
+
+    middleware.toDocument({
+      document,
+      pathItem: document.paths['/users'],
+      methodItem: document.paths['/users']!.get,
+    });
+    expect(document).toMatchSnapshot();
+  });
+
+  test('should not override security from router', () => {
+    const document: OpenAPI.Document = {
+      openapi: '3.0.3',
+      paths: {
+        '/users': { get: { responses: {}, security: [] } },
+      },
+      info: {
+        title: 'Hello test',
+        version: '0.0.1',
+      },
+    };
+
+    middleware.toDocument({
+      document,
+      pathItem: document.paths['/users'],
+      methodItem: document.paths['/users']!.get,
+    });
+    expect(document).toMatchSnapshot();
   });
 });
