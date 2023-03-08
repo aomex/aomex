@@ -1,6 +1,6 @@
 import { Chain, chain, compose, middleware, Middleware } from '@aomex/core';
 import { toArray } from '@aomex/utility';
-import type { WebApp, WebChain, WebMiddlewareToken } from '@aomex/web';
+import { METHOD, WebApp, WebChain, WebMiddlewareToken } from '@aomex/web';
 import { Builder, type BuilderOptions } from './builder';
 
 export interface RouterOptions<Props extends object = object> {
@@ -37,60 +37,60 @@ export class Router<Props extends object = object> {
     uri: string | string[],
     options: BuilderOptions<Props, T>,
   ): void {
-    return this.create(uri, ['GET', 'HEAD'], options);
+    return this.create(uri, [METHOD.GET, METHOD.HEAD], options);
   }
 
   public post<T extends WebMiddlewareToken<object>[] | []>(
     uri: string | string[],
     options: BuilderOptions<Props, T>,
   ): void {
-    return this.create(uri, ['POST'], options);
+    return this.create(uri, [METHOD.POST], options);
   }
 
   public put<T extends WebMiddlewareToken<object>[] | []>(
     uri: string | string[],
     options: BuilderOptions<Props, T>,
   ): void {
-    return this.create(uri, ['PUT'], options);
+    return this.create(uri, [METHOD.PUT], options);
   }
 
   public patch<T extends WebMiddlewareToken<object>[] | []>(
     uri: string | string[],
     options: BuilderOptions<Props, T>,
   ): void {
-    return this.create(uri, ['PATCH'], options);
+    return this.create(uri, [METHOD.PATCH], options);
   }
 
   public delete<T extends WebMiddlewareToken<object>[] | []>(
     uri: string | string[],
     options: BuilderOptions<Props, T>,
   ): void {
-    return this.create(uri, ['DELETE'], options);
+    return this.create(uri, [METHOD.DELETE], options);
   }
 
   public head<T extends WebMiddlewareToken<object>[] | []>(
     uri: string | string[],
     options: BuilderOptions<Props, T>,
   ): void {
-    return this.create(uri, ['HEAD'], options);
+    return this.create(uri, [METHOD.HEAD], options);
   }
 
   public options<T extends WebMiddlewareToken<object>[] | []>(
     uri: string | string[],
     options: BuilderOptions<Props, T>,
   ): void {
-    return this.create(uri, ['OPTIONS'], options);
+    return this.create(uri, [METHOD.OPTIONS], options);
   }
 
   public all<T extends WebMiddlewareToken<object>[] | []>(
     uri: string | string[],
     options: BuilderOptions<Props, T>,
   ): void {
-    return this.create(uri, Builder['METHODS'].slice(), options);
+    return this.create(uri, Object.values(METHOD).slice(), options);
   }
 
   public customize<T extends WebMiddlewareToken<object>[] | []>(
-    methods: (typeof Builder)['METHODS'][number][],
+    methods: METHOD[],
     uri: string | string[],
     options: BuilderOptions<Props, T>,
   ): void {
@@ -99,7 +99,7 @@ export class Router<Props extends object = object> {
 
   protected create(
     uri: string | string[],
-    methods: (typeof Builder)['METHODS'][number][],
+    methods: METHOD[],
     options: BuilderOptions<Props, any[]>,
   ): void {
     this.builders.push(

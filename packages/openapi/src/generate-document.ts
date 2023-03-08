@@ -9,7 +9,7 @@ import {
   type PathToFileOptions,
   pathToFiles,
 } from '@aomex/file-parser';
-import { WebMiddleware } from '@aomex/web';
+import { METHOD, WebMiddleware } from '@aomex/web';
 import { Router } from '@aomex/web-router';
 import validate from 'ibm-openapi-validator';
 import path from 'node:path';
@@ -114,13 +114,13 @@ export const generateDocument = async (
           const pathItem = (document.paths[normalizePath(uri)] ||= {});
           let methods = builder.methods;
 
-          if (methods.includes('GET') && methods.includes('HEAD')) {
+          if (methods.includes(METHOD.GET) && methods.includes(METHOD.HEAD)) {
             methods = methods.filter((method) => method !== 'HEAD');
           }
 
           for (const method of methods) {
             const methodItem: OpenAPI.OperationObject = (pathItem[
-              method.toLowerCase() as `${Lowercase<typeof method>}`
+              method.toLowerCase() as `${Lowercase<METHOD>}`
             ] = {
               responses: {},
               ...builder.docs,
@@ -133,6 +133,7 @@ export const generateDocument = async (
                 middleware.toDocument({
                   document,
                   pathItem,
+                  methodName: method,
                   methodItem,
                 });
               }

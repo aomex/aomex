@@ -3,6 +3,7 @@ import type { NonReadonly } from '@aomex/utility';
 import type { WebContext } from '../app/context';
 // NOTICE: Do not import skip function from `../middleware/index`
 import { skip, type WebMiddlewareSkipOptions } from '../middleware/skip';
+import type { METHOD } from '../util';
 
 declare module '@aomex/core' {
   export interface MiddlewarePlatform {
@@ -15,6 +16,7 @@ declare module '@aomex/core' {
 export interface WebMiddlewareToDocument {
   document: OpenAPI.Document;
   pathItem?: OpenAPI.PathItemObject;
+  methodName?: METHOD;
   methodItem?: OpenAPI.OperationObject;
 }
 

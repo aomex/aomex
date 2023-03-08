@@ -1,6 +1,6 @@
 import { Chain, middleware, type OpenAPI } from '@aomex/core';
 import type { Union2Intersection } from '@aomex/utility';
-import { WebChain, WebContext, WebMiddlewareToken } from '@aomex/web';
+import { METHOD, WebChain, WebContext, WebMiddlewareToken } from '@aomex/web';
 import { pathToRegexp, Key } from 'path-to-regexp';
 
 type CollectArrayType<T> = T extends WebMiddlewareToken<infer R> ? R : object;
@@ -30,16 +30,6 @@ export class Builder<
   Props extends object = object,
   T extends WebMiddlewareToken[] | [] = [],
 > {
-  public static METHODS = <const>[
-    'GET',
-    'POST',
-    'PUT',
-    'PATCH',
-    'DELETE',
-    'HEAD',
-    'OPTIONS',
-  ];
-
   public readonly chain: WebChain;
   public readonly docs?: RouterDocs;
   protected readonly uriPatterns: [RegExp, Key[], PureUri][];
@@ -47,7 +37,7 @@ export class Builder<
   constructor(
     prefix: string,
     public readonly uris: string[],
-    public readonly methods: (typeof Builder)['METHODS'][number][],
+    public readonly methods: METHOD[],
     options: BuilderOptions<Props, T>,
   ) {
     const middlewareList = Chain.flatten(options.mount);
