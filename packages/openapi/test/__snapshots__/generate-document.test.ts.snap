@@ -12,9 +12,9 @@ exports[`emitter > emit events 1`] = `
   "Fix document by hand",
   "Fix document by hand [skipped]",
   "Save to file",
-  "Save to file: openapi.json [size: 2.02KB]",
+  "Save to file: openapi.json [size: 2.09KB]",
   "Validate",
-  "Validate 50 warnings",
+  "Validate 49 warnings",
   "warn",
 ]
 `;
@@ -103,6 +103,7 @@ exports[`routers > parse routers 1`] = `
       "tags": [
         "test1",
       ],
+      "x-codegen-request-body-name": "body",
     },
   },
   "/abc/{id}": {
@@ -233,6 +234,7 @@ exports[`routers > parse routers 1`] = `
       "tags": [
         "test1",
       ],
+      "x-codegen-request-body-name": "body",
     },
     "put": {
       "operationId": "replace_abcde_id",

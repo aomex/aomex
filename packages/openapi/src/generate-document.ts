@@ -144,6 +144,11 @@ export const generateDocument = async (
               methodToVerb(method, uri) + ' ' + uri,
             );
 
+            if (method === METHOD.POST) {
+              // @ts-expect-error against warning
+              methodItem['x-codegen-request-body-name'] = 'body';
+            }
+
             if (Object.keys(methodItem.responses).length === 0) {
               methodItem.responses = {
                 default: {
