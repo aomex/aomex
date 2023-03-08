@@ -11,10 +11,11 @@ exports[`emitter > emit events 1`] = `
   "Append tag: test1",
   "Fix document by hand",
   "Fix document by hand [skipped]",
+  "Optimize common parameters",
   "Save to file",
-  "Save to file: openapi.json [size: 2.09KB]",
+  "Save to file: openapi.json [size: 1.68KB]",
   "Validate",
-  "Validate 49 warnings",
+  "Validate 38 warnings",
   "warn",
 ]
 `;
@@ -27,6 +28,7 @@ exports[`emitter > validate with errors 1`] = `
   "Parse router",
   "Fix document by hand",
   "Fix document by hand [skipped]",
+  "Optimize common parameters",
   "Save to file",
   "Save to file: openapi.json [size: 88B]",
   "Validate",
@@ -132,16 +134,6 @@ exports[`routers > parse routers 1`] = `
   "/abcde/{id}": {
     "delete": {
       "operationId": "delete_abcde_id",
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "required": true,
-          "schema": {
-            "type": "number",
-          },
-        },
-      ],
       "responses": {
         "default": {
           "description": "",
@@ -153,16 +145,6 @@ exports[`routers > parse routers 1`] = `
     },
     "get": {
       "operationId": "get_abcde_id",
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "required": true,
-          "schema": {
-            "type": "number",
-          },
-        },
-      ],
       "responses": {
         "default": {
           "description": "",
@@ -174,16 +156,6 @@ exports[`routers > parse routers 1`] = `
     },
     "options": {
       "operationId": "options_abcde_id",
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "required": true,
-          "schema": {
-            "type": "number",
-          },
-        },
-      ],
       "responses": {
         "default": {
           "description": "",
@@ -193,18 +165,18 @@ exports[`routers > parse routers 1`] = `
         "test1",
       ],
     },
+    "parameters": [
+      {
+        "in": "path",
+        "name": "id",
+        "required": true,
+        "schema": {
+          "type": "number",
+        },
+      },
+    ],
     "patch": {
       "operationId": "update_abcde_id",
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "required": true,
-          "schema": {
-            "type": "number",
-          },
-        },
-      ],
       "responses": {
         "default": {
           "description": "",
@@ -216,16 +188,6 @@ exports[`routers > parse routers 1`] = `
     },
     "post": {
       "operationId": "create_abcde_id",
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "required": true,
-          "schema": {
-            "type": "number",
-          },
-        },
-      ],
       "responses": {
         "default": {
           "description": "",
@@ -238,16 +200,6 @@ exports[`routers > parse routers 1`] = `
     },
     "put": {
       "operationId": "replace_abcde_id",
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "required": true,
-          "schema": {
-            "type": "number",
-          },
-        },
-      ],
       "responses": {
         "default": {
           "description": "",

@@ -2,6 +2,7 @@ import EventEmitter from 'node:events';
 import type { Mode } from 'node:fs';
 import { readPackageUp } from 'read-pkg-up';
 import snakeCase from 'lodash.snakecase';
+import equal from 'fast-deep-equal';
 import { Chain, OpenAPI } from '@aomex/core';
 import { bytes, chalk, sleep } from '@aomex/utility';
 import {
@@ -186,6 +187,51 @@ export const generateDocument = async (
   }
 
   {
+    emitter.emit('msg', (msg = 'Optimize common parameters'));
+    pathLoop: for (const path of Object.values(document.paths)) {
+      const parameters: OpenAPI.ParameterObject[][] = [];
+      for (const method of methods) {
+        const methodItem = path?.[method];
+        if (!methodItem) continue;
+        const parameter = methodItem.parameters as
+          | OpenAPI.ParameterObject[]
+          | undefined;
+        if (!parameter || !parameter.length) continue pathLoop;
+        parameters.push(parameter);
+      }
+      if (parameters.length < 2) continue pathLoop;
+      let intersect = parameters[0]!;
+      for (let i = 1; i < parameters.length; ++i) {
+        const parameter = parameters[i]!;
+        intersect = intersect.filter((item) => {
+          for (let j = 0; j < parameter.length; ++j) {
+            if (equal(parameter[j], item)) {
+              parameter[j] = item;
+              return true;
+            }
+          }
+          return false;
+        });
+        if (!intersect.length) continue pathLoop;
+      }
+      path!.parameters = intersect;
+      intersect.forEach((item) => {
+        for (const parameter of parameters) {
+          parameter.splice(
+            parameter.findIndex((p) => p === item),
+            1,
+          );
+        }
+      });
+      for (const method of methods) {
+        if (path![method] && !path![method]!.parameters!.length) {
+          delete path![method]!.parameters;
+        }
+      }
+    }
+  }
+
+  {
     emitter.emit('msg', (msg = 'Save to file'));
     let distFile: typeof config.output =
       config.output === false ? false : config.output || 'openapi.json';
@@ -216,10 +262,10 @@ export const generateDocument = async (
     }
   }
 
-  emitter.emit('msg', (msg = 'Validate'));
-  const result = (await validate(document)) as OpenapiValidateResult;
-
+  let result: OpenapiValidateResult;
   {
+    emitter.emit('msg', (msg = 'Validate'));
+    result = (await validate(document)) as OpenapiValidateResult;
     const summary: string[] = [];
     if (result.errors?.length) {
       summary.push(`${result.errors.length} errors`);
@@ -244,6 +290,10 @@ export const generateDocument = async (
     },
   };
 };
+
+const methods = Object.values(METHOD).map((method) =>
+  method.toLowerCase(),
+) as OpenAPI.HttpMethods[];
 
 const skip = (message: string) => message + ' ' + chalk.gray('[skipped]');
 
