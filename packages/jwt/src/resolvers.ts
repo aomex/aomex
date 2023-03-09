@@ -1,4 +1,3 @@
-import cookie from 'cookie';
 import type { JWTResolverLoader } from './jwt';
 
 export const resolveAuthorizationHeader: JWTResolverLoader = (ctx) => {
@@ -20,8 +19,5 @@ export const resolveAuthorizationHeader: JWTResolverLoader = (ctx) => {
 };
 
 export const resolveCookies: JWTResolverLoader = (ctx, options) => {
-  if (options.cookie) {
-    return cookie.parse(ctx.request.headers['cookie'] || '')[options.cookie];
-  }
-  return null;
+  return options.cookie ? ctx.request.cookie[options.cookie] : null;
 };
