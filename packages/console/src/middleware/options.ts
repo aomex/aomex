@@ -59,7 +59,7 @@ export class ConsoleOptionMiddleware<
 
       yargs.option(key, {
         alias: aliases[key],
-        description: schema?.description,
+        description: docs.description,
         default: defaultValue,
         deprecated: docs.deprecated,
         type: dateType,
