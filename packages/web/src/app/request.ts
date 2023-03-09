@@ -1,4 +1,5 @@
 import { IncomingMessage } from 'node:http';
+import type { TLSSocket } from 'node:tls';
 import parseurl from 'parseurl';
 import qs from 'qs';
 import coBody from 'co-body';
@@ -88,6 +89,16 @@ export class WebRequest extends IncomingMessage {
 
   get ip(): string {
     return requestIP.getClientIp(this) || '';
+  }
+
+  get protocol(): string {
+    if ((this.socket as TLSSocket).encrypted) return 'https';
+    const proto = this.headers['x-forwarded-proto'];
+    return (proto && proto.split(/\s*,\s*/, 1)[0]) || 'http';
+  }
+
+  get secure(): boolean {
+    return this.protocol === 'https';
   }
 
   get fresh(): boolean {
