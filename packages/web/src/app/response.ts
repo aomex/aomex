@@ -71,11 +71,13 @@ export class WebResponse<
 
   declare readonly hasHeader: {
     (name: UpperStringHeaderKeys): boolean;
+    (name: UpperArrayHeaderKeys): boolean;
     (name: string): boolean;
   };
 
   declare readonly removeHeader: {
     (name: UpperStringHeaderKeys): void;
+    (name: UpperArrayHeaderKeys): void;
     (name: string): void;
   };
 
