@@ -307,7 +307,7 @@ importers:
       '@types/ibm-openapi-validator': ^0.15.1
       '@types/lodash.snakecase': ^4.1.7
       fast-deep-equal: ^3.1.3
-      ibm-openapi-validator: ^0.97.4
+      ibm-openapi-validator: ^0.97.5
       lodash.snakecase: ^4.1.1
       ora: ^6.1.2
       read-pkg-up: ^9.1.0
@@ -317,7 +317,7 @@ importers:
       '@aomex/file-parser': link:../file-parser
       '@aomex/utility': link:../utility
       fast-deep-equal: 3.1.3
-      ibm-openapi-validator: 0.97.4
+      ibm-openapi-validator: 0.97.5
       lodash.snakecase: 4.1.1
       ora: 6.1.2
       read-pkg-up: 9.1.0
@@ -1333,8 +1333,8 @@ packages:
     engines: {node: '>=14.0.0'}
     dev: false
 
-  /@ibm-cloud/openapi-ruleset/0.45.4:
-    resolution: {integrity: sha512-8u8v/EdzUaM+tMHBA5wedkpdmKOI/ftb7nIrqNi4vi2nU7WU2EVhdvx/Qkxa+A7HlU9pBHxReLNPYZc343axsw==}
+  /@ibm-cloud/openapi-ruleset/0.45.5:
+    resolution: {integrity: sha512-8FqJQj8osll6iLOD5JsFWR+kOU1HbCp1Z2PjHeE67Wb/srz7V9B+YyjZOO9QAgLLHwvgt07XS13FQ+ArNNetGg==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@ibm-cloud/openapi-ruleset-utilities': 0.0.1
@@ -4281,12 +4281,12 @@ packages:
     hasBin: true
     dev: true
 
-  /ibm-openapi-validator/0.97.4:
-    resolution: {integrity: sha512-3P7opjEo3cY9tYt8BPsH2/JyAItPOrtxEbBthoDpBgDu79ps1C6BP/V4wuGun3ZAtvbU+wWyRFLU1tK8eUiE/g==}
+  /ibm-openapi-validator/0.97.5:
+    resolution: {integrity: sha512-MlXLjQCZRU0yqQ6EFzBhCehkFXp/rXuGsjsEglK+ldDJZV/YQy7dw1V6ROzoiibjm0f00J7L3ubLvlbIlHilGQ==}
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
-      '@ibm-cloud/openapi-ruleset': 0.45.4
+      '@ibm-cloud/openapi-ruleset': 0.45.5
       '@stoplight/spectral-cli': 6.6.0
       '@stoplight/spectral-core': 1.16.1
       '@stoplight/spectral-parsers': 1.0.2
