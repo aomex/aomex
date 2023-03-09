@@ -14,7 +14,11 @@ import type { CookieParseOptions, CookieSerializeOptions } from 'cookie';
 export interface WebAppOption {
   silent?: boolean;
   debug?: boolean;
-  queryParser?: IParseOptions;
+  /**
+   * Set default options for `qs` when parsing querystring from request
+   * @see WebRequest.query
+   */
+  query?: IParseOptions;
   /**
    * Set default/common options for cookie
    */

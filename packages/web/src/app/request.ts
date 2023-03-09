@@ -40,7 +40,7 @@ export class WebRequest extends IncomingMessage {
   public get query(): Record<string, unknown> {
     return (this._query ||= qs.parse(this.querystring, {
       comma: true,
-      ...this.app.options.queryParser,
+      ...this.app.options.query,
     }));
   }
 
