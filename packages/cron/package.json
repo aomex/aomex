@@ -38,7 +38,7 @@
   "dependencies": {
     "@aomex/file-parser": "workspace:^0.0.3",
     "@aomex/utility": "workspace:^0.0.4",
-    "cron-parser": "^4.7.1"
+    "cron-parser": "^4.8.1"
   },
   "devDependencies": {
     "@aomex/console": "workspace:^0.0.6",

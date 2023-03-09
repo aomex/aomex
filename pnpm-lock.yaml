@@ -206,12 +206,12 @@ importers:
       '@aomex/core': workspace:^0.0.6
       '@aomex/file-parser': workspace:^0.0.3
       '@aomex/utility': workspace:^0.0.4
-      cron-parser: ^4.7.1
+      cron-parser: ^4.8.1
       strip-ansi: ^7.0.1
     dependencies:
       '@aomex/file-parser': link:../file-parser
       '@aomex/utility': link:../utility
-      cron-parser: 4.7.1
+      cron-parser: 4.8.1
     devDependencies:
       '@aomex/console': link:../console
       '@aomex/console-router': link:../console-router
@@ -3172,8 +3172,8 @@ packages:
   /create-require/1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
 
-  /cron-parser/4.7.1:
-    resolution: {integrity: sha512-WguFaoQ0hQ61SgsCZLHUcNbAvlK0lypKXu62ARguefYmjzaOXIVRNrAmyXzabTwUn4sQvQLkk6bjH+ipGfw8bA==}
+  /cron-parser/4.8.1:
+    resolution: {integrity: sha512-jbokKWGcyU4gl6jAfX97E1gDpY12DJ1cLJZmoDzaAln/shZ+S3KBFBuA2Q6WeUN4gJf/8klnV1EfvhA2lK5IRQ==}
     engines: {node: '>=12.0.0'}
     dependencies:
       luxon: 3.2.1
