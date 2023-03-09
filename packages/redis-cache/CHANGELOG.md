@@ -1,5 +1,14 @@
 # @aomex/redis-cache
 
+## 0.0.4
+
+### Patch Changes
+
+- [`6f7b03f`](https://github.com/aomex/aomex/commit/6f7b03f95bef7eb733074f6109ee7245ffa2d140) Thanks [@geekact](https://github.com/geekact)! - fix(redis-cache): awaiting redis is ready before command can be executed
+
+- Updated dependencies []:
+  - @aomex/core@0.0.7
+
 ## 0.0.3
 
 ### Patch Changes
