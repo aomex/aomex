@@ -16,7 +16,7 @@ A fluent node.js framework, Inspired by [koa](https://github.com/koajs/koa) and 
 - Console schedule platform
 - Koa-like middleware
 - Middleware manager - chain
-- Data validator
+- Safe data validator
 - Openapi/Swagger document generator
 - Cache engine
 - Out-of-box TypeScript support
