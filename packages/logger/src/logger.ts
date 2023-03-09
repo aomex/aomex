@@ -4,11 +4,18 @@ import { middleware } from '@aomex/core';
 import type { WebContext, WebMiddleware } from '@aomex/web';
 import { Counter } from './counter';
 import { format } from './format';
+import { FormatToken } from './format-token';
 
 type Printer = (message: string, ...args: any[]) => any;
 
 export interface LoggerOptions {
+  /**
+   * Defaults `  [request] [method] [url]`
+   */
   requestFormat?: string | false;
+  /**
+   * Defaults `  [response] [method] [url] [statusCode] [time] [contentLength]`
+   */
   responseFormat?: string | false;
   printer?: Printer;
   customTokens?: { [key: string]: (ctx: WebContext) => string };
@@ -18,10 +25,13 @@ const defaultPrinter: Printer = (message, ...args) => {
   console.log(util.format(message, ...args));
 };
 
+const defaultRequestFormat = `  ${FormatToken.request} ${FormatToken.method} ${FormatToken.url}`;
+const defaultResponseFormat = `  ${FormatToken.request} ${FormatToken.method} ${FormatToken.url} ${FormatToken.statusCode} ${FormatToken.time} ${FormatToken.contentLength}`;
+
 export const logger = (options: LoggerOptions = {}): WebMiddleware => {
   const {
-    requestFormat = '  [request] [method] [url]',
-    responseFormat = '  [response] [method] [url] [statusCode] [time] [contentLength]',
+    requestFormat = defaultRequestFormat,
+    responseFormat = defaultResponseFormat,
     printer = defaultPrinter,
     customTokens,
   } = options;

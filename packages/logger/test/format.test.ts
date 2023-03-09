@@ -1,11 +1,12 @@
 import { chalk } from '@aomex/utility';
+import { FormatToken } from '../src';
 import { format } from '../src/format';
 
 describe('builtin tokens', () => {
   test('request', () => {
     expect(
       format({
-        message: ' xx [request] []',
+        message: ` xx ${FormatToken.request} []`,
         method: 'GET',
         url: '/',
         startTime: process.hrtime(),
@@ -16,7 +17,7 @@ describe('builtin tokens', () => {
   test('response + 200', () => {
     expect(
       format({
-        message: '[response]  abc',
+        message: `${FormatToken.response}  abc`,
         statusCode: 200,
         method: 'GET',
         url: '/',
@@ -28,7 +29,7 @@ describe('builtin tokens', () => {
   test('response + 403', () => {
     expect(
       format({
-        message: '[response]  abc',
+        message: `${FormatToken.response}  abc`,
         statusCode: 403,
         method: 'GET',
         url: '/',
@@ -40,7 +41,7 @@ describe('builtin tokens', () => {
   test('response + 响应未完成', () => {
     expect(
       format({
-        message: '[response]  abc',
+        message: `${FormatToken.response}  abc`,
         statusCode: 200,
         method: 'GET',
         url: '/',
@@ -53,7 +54,7 @@ describe('builtin tokens', () => {
   test('method', () => {
     expect(
       format({
-        message: ' xx [method] []',
+        message: ` xx ${FormatToken.method} []`,
         method: 'GET',
         url: '/',
         startTime: process.hrtime(),
@@ -61,7 +62,7 @@ describe('builtin tokens', () => {
     ).toStrictEqual([` xx ${chalk.bold('%s')} []`, 'GET']);
     expect(
       format({
-        message: ' xx [method] []',
+        message: ` xx ${FormatToken.method} []`,
         method: 'PUT',
         url: '/',
         startTime: process.hrtime(),
@@ -72,7 +73,7 @@ describe('builtin tokens', () => {
   test('url', () => {
     expect(
       format({
-        message: 'test [url]  abc',
+        message: `test ${FormatToken.url}  abc`,
         method: 'GET',
         url: '/my/custom/u',
         startTime: process.hrtime(),
@@ -84,7 +85,7 @@ describe('builtin tokens', () => {
     [101, 200, 204].forEach((statusCode) => {
       expect(
         format({
-          message: '[statusCode]  abc',
+          message: `${FormatToken.statusCode}  abc`,
           statusCode,
           method: 'GET',
           url: '/',
@@ -98,7 +99,7 @@ describe('builtin tokens', () => {
     [300, 301, 302].forEach((statusCode) => {
       expect(
         format({
-          message: '[statusCode]  abc',
+          message: `${FormatToken.statusCode}  abc`,
           statusCode,
           method: 'GET',
           url: '/',
@@ -112,7 +113,7 @@ describe('builtin tokens', () => {
     [400, 401, 403, 404].forEach((statusCode) => {
       expect(
         format({
-          message: '[statusCode]  abc',
+          message: `${FormatToken.statusCode}  abc`,
           statusCode,
           method: 'GET',
           url: '/',
@@ -126,7 +127,7 @@ describe('builtin tokens', () => {
     [500, 503].forEach((statusCode) => {
       expect(
         format({
-          message: '[statusCode]  abc',
+          message: `${FormatToken.statusCode}  abc`,
           statusCode,
           method: 'GET',
           url: '/',
@@ -139,7 +140,7 @@ describe('builtin tokens', () => {
   test('contentLength + 0', () => {
     expect(
       format({
-        message: '[contentLength]  abc',
+        message: `${FormatToken.contentLength}  abc`,
         method: 'GET',
         url: '/',
         startTime: process.hrtime(),
@@ -151,7 +152,7 @@ describe('builtin tokens', () => {
   test('contentLength + undefined', () => {
     expect(
       format({
-        message: '[contentLength]  abc',
+        message: `${FormatToken.contentLength}  abc`,
         method: 'GET',
         url: '/',
         startTime: process.hrtime(),
@@ -162,7 +163,7 @@ describe('builtin tokens', () => {
   test('contentLength + empty status', () => {
     expect(
       format({
-        message: '[contentLength]  abc',
+        message: `${FormatToken.contentLength}  abc`,
         method: 'GET',
         url: '/',
         startTime: process.hrtime(),
@@ -175,7 +176,7 @@ describe('builtin tokens', () => {
   test('contentLength', () => {
     expect(
       format({
-        message: '[contentLength]  abc',
+        message: `${FormatToken.contentLength}  abc`,
         method: 'GET',
         url: '/',
         startTime: process.hrtime(),
@@ -187,7 +188,7 @@ describe('builtin tokens', () => {
   test('contentType', () => {
     expect(
       format({
-        message: '[contentType]  abc',
+        message: `${FormatToken.contentType}  abc`,
         method: 'GET',
         url: '/',
         startTime: process.hrtime(),
@@ -211,7 +212,7 @@ describe('builtin tokens', () => {
   test('token compose', () => {
     expect(
       format({
-        message: ' [response] [statusCode] [contentLength]  abc',
+        message: ` ${FormatToken.response} ${FormatToken.statusCode} ${FormatToken.contentLength}  abc`,
         method: 'GET',
         url: '/',
         startTime: process.hrtime(),
@@ -230,7 +231,7 @@ describe('custom tokens', () => {
   test('unknown token', () => {
     expect(
       format({
-        message: ' xx [url] [custom]',
+        message: ` xx ${FormatToken.url} [custom]`,
         method: 'GET',
         url: '/',
         startTime: process.hrtime(),
@@ -241,7 +242,7 @@ describe('custom tokens', () => {
   test('token handle', () => {
     expect(
       format({
-        message: ' xx [url] [custom]',
+        message: ` xx ${FormatToken.url} [custom]`,
         method: 'GET',
         url: '/',
         startTime: process.hrtime(),

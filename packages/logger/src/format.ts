@@ -1,6 +1,7 @@
 import prettyTime from 'pretty-time';
 import { bytes, chalk } from '@aomex/utility';
 import { statuses } from '@aomex/web';
+import { FormatToken } from './format-token';
 
 export const colorCodes = <const>{
   7: 'magenta',
@@ -44,11 +45,11 @@ export const format = (opts: {
       return '%s';
     }
 
-    switch (token) {
-      case 'request':
+    switch (`[${token}]`) {
+      case FormatToken.request:
         args.push('<--');
         return chalk.gray('%s');
-      case 'response':
+      case FormatToken.response:
         if (statusCode >= 400) {
           args.push('xxx');
           return chalk.red('%s');
@@ -60,19 +61,19 @@ export const format = (opts: {
 
         args.push('-->');
         return chalk.gray('%s');
-      case 'method':
+      case FormatToken.method:
         args.push(method);
         return chalk.bold('%s');
-      case 'url':
+      case FormatToken.url:
         args.push(url);
         return chalk.gray('%s');
-      case 'statusCode':
+      case FormatToken.statusCode:
         const c =
           colorCodes[((statusCode / 100) | 0) as keyof typeof colorCodes] ||
           colorCodes[0]!;
         args.push(statusCode.toString());
         return chalk[c]('%s');
-      case 'contentLength':
+      case FormatToken.contentLength:
         args.push(
           statuses.empty[statusCode] || contentLength === 0
             ? '0'
@@ -81,10 +82,10 @@ export const format = (opts: {
             : bytes(contentLength).toLowerCase(),
         );
         return chalk.gray('%s');
-      case 'contentType':
+      case FormatToken.contentType:
         args.push(contentType);
         return chalk.gray('%s');
-      case 'time':
+      case FormatToken.time:
         args.push(prettyTime(process.hrtime(startTime)));
         return chalk.gray('%s');
       default:
