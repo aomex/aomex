@@ -1,5 +1,17 @@
 # @aomex/cron
 
+## 0.0.4
+
+### Patch Changes
+
+- [`3077a1f`](https://github.com/aomex/aomex/commit/3077a1fd43f30cf9d21fa0bfb406427706f05b89) Thanks [@geekact](https://github.com/geekact)! - chore(cron): upgrade cron-parser from 4.7.1 to 4.8.1
+
+- Updated dependencies [[`b7313d5`](https://github.com/aomex/aomex/commit/b7313d56bdb93cabde8dc5b872a94b590f45b655), [`01f90ab`](https://github.com/aomex/aomex/commit/01f90abec716427b7ccde3ab566067a4ba3293c8), [`c4bb0f4`](https://github.com/aomex/aomex/commit/c4bb0f424e7d2d2f8610583e106cbaef73077278), [`6c6cda2`](https://github.com/aomex/aomex/commit/6c6cda26522176c44761a738f2bc106a1889497b)]:
+  - @aomex/file-parser@0.0.4
+  - @aomex/console@0.0.7
+  - @aomex/console-router@0.0.7
+  - @aomex/core@0.0.7
+
 ## 0.0.3
 
 ### Patch Changes

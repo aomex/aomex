@@ -1,5 +1,13 @@
 # @aomex/file-parser
 
+## 0.0.4
+
+### Patch Changes
+
+- [`b7313d5`](https://github.com/aomex/aomex/commit/b7313d56bdb93cabde8dc5b872a94b590f45b655) Thanks [@geekact](https://github.com/geekact)! - chore(file-parser): upgrade glob from 9.1.0 to 9.2.1
+
+- [`c4bb0f4`](https://github.com/aomex/aomex/commit/c4bb0f424e7d2d2f8610583e106cbaef73077278) Thanks [@geekact](https://github.com/geekact)! - fix(file-parser): pathToFiles() should always returning path with forward slash
+
 ## 0.0.3
 
 ### Patch Changes

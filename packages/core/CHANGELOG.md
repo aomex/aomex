@@ -1,5 +1,13 @@
 # @aomex/core
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies [[`cba047e`](https://github.com/aomex/aomex/commit/cba047ecb496da6269aed3f58f6e316a3444c939), [`bdbf43a`](https://github.com/aomex/aomex/commit/bdbf43afcbc198a9ae97137022c6914f1a89a477), [`5092841`](https://github.com/aomex/aomex/commit/5092841c6b8a998e8648a1119d7e1ceb8534297d), [`9c0bb28`](https://github.com/aomex/aomex/commit/9c0bb285d25594310e5450634223100a01bf1b5d)]:
+  - @aomex/validator@0.0.6
+  - @aomex/cache@0.0.4
+
 ## 0.0.6
 
 ### Patch Changes
