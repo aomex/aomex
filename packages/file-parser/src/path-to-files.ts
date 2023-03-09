@@ -13,7 +13,7 @@ export type PathToFileOptions = string | string[] | Options | Options[];
 export const pathToFiles = async (
   paths: PathToFileOptions,
 ): Promise<string[]> => {
-  const opts = normalize(paths);
+  const opts = normalizeSearchPath(paths);
 
   const files = await Promise.all(
     opts.map((opt) => {
@@ -56,10 +56,10 @@ export const pathToFiles = async (
     }),
   );
 
-  return [...new Set(files.flat(2))].map(path.normalize).sort();
+  return [...new Set(files.flat(2))].sort();
 };
 
-const normalize = (paths: PathToFileOptions): Options[] => {
+const normalizeSearchPath = (paths: PathToFileOptions): Options[] => {
   if (typeof paths === 'string') {
     return [{ pattern: [paths] }];
   }
