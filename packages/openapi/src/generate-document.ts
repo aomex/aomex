@@ -98,7 +98,9 @@ export const generateDocument = async (
   for (const file of files) {
     emitter.emit(
       'replace',
-      msg + ' ' + chalk.gray(path.relative(process.cwd(), file)),
+      msg +
+        ' ' +
+        chalk.gray(path.posix.join(path.relative(process.cwd(), file))),
     );
     await sleep(50);
 
