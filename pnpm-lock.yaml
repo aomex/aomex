@@ -421,6 +421,7 @@ importers:
       '@types/co-body': ^6.1.0
       '@types/content-disposition': ^0.5.5
       '@types/content-type': ^1.1.5
+      '@types/cookie': ^0.5.1
       '@types/destroy': ^1.0.0
       '@types/encodeurl': ^1.0.0
       '@types/escape-html': ^1.0.2
@@ -438,6 +439,7 @@ importers:
       co-body: ^6.1.0
       content-disposition: ^0.5.4
       content-type: ^1.0.5
+      cookie: ^0.5.0
       destroy: ^1.2.0
       encodeurl: ^1.0.2
       escape-html: ^1.0.3
@@ -456,6 +458,7 @@ importers:
       '@aomex/utility': link:../utility
       '@types/accepts': 1.3.5
       '@types/content-disposition': 0.5.5
+      '@types/cookie': 0.5.1
       '@types/formidable': 2.0.5
       '@types/http-errors': 2.0.1
       '@types/qs': 6.9.7
@@ -464,6 +467,7 @@ importers:
       co-body: 6.1.0
       content-disposition: 0.5.4
       content-type: 1.0.5
+      cookie: 0.5.0
       destroy: 1.2.0
       encodeurl: 1.0.2
       escape-html: 1.0.3
@@ -2175,7 +2179,6 @@ packages:
 
   /@types/cookie/0.5.1:
     resolution: {integrity: sha512-COUnqfB2+ckwXXSFInsFdOAWQzCCx+a5hq2ruyj+Vjund94RJQd4LG2u9hnvJrTgunKAaax7ancBYlDrNYxA0g==}
-    dev: true
 
   /@types/cookiejar/2.1.2:
     resolution: {integrity: sha512-t73xJJrvdTjXrn4jLS9VSGRbz0nUY3cl2DMGDU48lKl+HR9dbbjW2A9r3g40VA++mQpy6uuHg33gy7du2BKpog==}

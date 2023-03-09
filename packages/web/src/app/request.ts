@@ -2,6 +2,7 @@ import { IncomingMessage } from 'node:http';
 import type { TLSSocket } from 'node:tls';
 import parseurl from 'parseurl';
 import qs from 'qs';
+import cookie from 'cookie';
 import coBody from 'co-body';
 import formidable from 'formidable';
 import accepts, { Accepts } from 'accepts';
@@ -26,6 +27,7 @@ export class WebRequest extends IncomingMessage {
   protected _query?: any;
   protected _body?: any;
   protected _accept?: Accepts;
+  protected _cookie?: { readonly [key: string]: string | undefined };
 
   get path(): string {
     return parseurl(this)!.pathname!;
@@ -110,6 +112,16 @@ export class WebRequest extends IncomingMessage {
     if (status > 299 && status !== 304) return false;
 
     return fresh(this.headers, this.res.getHeaders());
+  }
+
+  /**
+   * A short hand for request header `Cookie`
+   */
+  get cookie() {
+    return (this._cookie ||= cookie.parse(
+      this.headers['cookie'] || '',
+      this.app.options.cookie?.get,
+    ));
   }
 }
 

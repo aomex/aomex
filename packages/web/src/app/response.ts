@@ -20,8 +20,17 @@ import { createReadStream } from 'node:fs';
 import { getMimeType } from '../util';
 import typeIs from 'type-is';
 import vary from 'vary';
+import cookie, { type CookieSerializeOptions } from 'cookie';
 
 export type Body = string | object | Stream | Buffer | null;
+
+interface CookieCache {
+  set(name: string, value: string, options?: CookieSerializeOptions): void;
+  remove(
+    name: string,
+    options?: Omit<CookieSerializeOptions, 'maxAge' | 'expires'>,
+  ): void;
+}
 
 export class WebResponse<
   Request extends WebRequest = WebRequest,
@@ -34,6 +43,7 @@ export class WebResponse<
   private _statusCode: number;
   private _determineHeaders: boolean = false;
   private _determineNullBody: boolean = false;
+  private _cookie: CookieCache | null = null;
 
   constructor(req: Request) {
     super(req);
@@ -268,6 +278,38 @@ export class WebResponse<
     field: string | string[],
   ): string {
     return vary.append(header, field);
+  }
+
+  get cookie() {
+    if (this._cookie) return this._cookie;
+    const defaultSerializeOptions: CookieSerializeOptions = {
+      path: '/',
+      sameSite: false,
+      secure: this.req.secure,
+      httpOnly: true,
+      ...this.app.options.cookie?.set,
+    };
+    this._cookie = {
+      set: (name, value, options) => {
+        const setCookie = this.getHeader('Set-Cookie') || [];
+        setCookie.push(
+          cookie.serialize(name, value, {
+            ...defaultSerializeOptions,
+            ...options,
+          }),
+        );
+        this.setHeader('Set-Cookie', setCookie);
+      },
+      remove: (name, options) => {
+        this.cookie.set(name, '', {
+          ...defaultSerializeOptions,
+          ...options,
+          maxAge: undefined,
+          expires: new Date(0),
+        });
+      },
+    };
+    return this._cookie;
   }
 
   protected setStatus(code: number) {

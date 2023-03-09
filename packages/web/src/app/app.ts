@@ -9,11 +9,27 @@ import { WebContext } from '../app/context';
 import type { WebMiddlewareToken } from '../override/chain';
 import { WebRequest } from './request';
 import { WebResponse } from './response';
+import type { CookieParseOptions, CookieSerializeOptions } from 'cookie';
 
 export interface WebAppOption {
   silent?: boolean;
   debug?: boolean;
   queryParser?: IParseOptions;
+  /**
+   * Set default/common options for cookie
+   */
+  cookie?: {
+    /**
+     * Default option for request.cookie
+     * @see WebRequest.cookie
+     */
+    get?: CookieParseOptions;
+    /**
+     * Default option for response.cookie
+     * @see WebResponse.cookie
+     */
+    set?: CookieSerializeOptions;
+  };
 }
 
 export class WebApp extends EventEmitter {
