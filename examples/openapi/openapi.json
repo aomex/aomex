@@ -1,4 +1,21 @@
 {
+  "servers": [
+    {
+      "url": "http://www.example.com"
+    }
+  ],
+  "externalDocs": {
+    "url": "http://www.example.com"
+  },
+  "components": {
+    "securitySchemes": {
+      "jwt": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
   "openapi": "3.0.3",
   "tags": [
     {
@@ -10,14 +27,11 @@
   ],
   "info": {
     "title": "example-openapi",
-    "version": "0.0.0"
+    "version": "1.2.3-oas"
   },
   "paths": {
     "/admins/{id}": {
       "delete": {
-        "tags": [
-          "admin"
-        ],
         "responses": {
           "default": {
             "description": ""
@@ -27,6 +41,11 @@
         "externalDocs": {
           "url": "http://example.com"
         },
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -40,14 +59,15 @@
               "type": "integer"
             }
           }
-        ]
+        ],
+        "tags": [
+          "admin"
+        ],
+        "operationId": "delete_admins_id"
       }
     },
     "/admins/other/{id}": {
       "delete": {
-        "tags": [
-          "admin"
-        ],
         "responses": {
           "default": {
             "description": ""
@@ -55,6 +75,11 @@
         },
         "deprecated": true,
         "description": "Use /admins/:id instead",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -64,14 +89,15 @@
               "type": "integer"
             }
           }
-        ]
+        ],
+        "tags": [
+          "admin"
+        ],
+        "operationId": "delete_admins_other_id"
       }
     },
     "/users": {
       "get": {
-        "tags": [
-          "user"
-        ],
         "responses": {
           "200": {
             "description": "",
@@ -81,7 +107,10 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "string"
+                      "type": "string",
+                      "pattern": "",
+                      "minLength": 0,
+                      "maxLength": 4294967295
                     }
                   },
                   "required": [
@@ -97,7 +126,10 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "string"
+                  "type": "string",
+                  "pattern": "",
+                  "minLength": 0,
+                  "maxLength": 4294967295
                 },
                 "example": "ccc"
               }
@@ -112,7 +144,10 @@
             "required": true,
             "description": "User Name",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "",
+              "minLength": 0,
+              "maxLength": 4294967295
             }
           },
           {
@@ -122,10 +157,17 @@
             "description": "**Warning:** Put token in headers",
             "deprecated": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "",
+              "minLength": 0,
+              "maxLength": 4294967295
             }
           }
-        ]
+        ],
+        "tags": [
+          "user"
+        ],
+        "operationId": "list_users"
       }
     }
   }

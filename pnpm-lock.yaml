@@ -84,6 +84,7 @@ importers:
       '@aomex/console': workspace:*
       '@aomex/console-router': workspace:*
       '@aomex/core': workspace:*
+      '@aomex/jwt': workspace:*
       '@aomex/openapi': workspace:*
       '@aomex/web': workspace:*
       '@aomex/web-router': workspace:*
@@ -92,6 +93,7 @@ importers:
       '@aomex/console': link:../../packages/console
       '@aomex/console-router': link:../../packages/console-router
       '@aomex/core': link:../../packages/core
+      '@aomex/jwt': link:../../packages/jwt
       '@aomex/openapi': link:../../packages/openapi
       '@aomex/web': link:../../packages/web
       '@aomex/web-router': link:../../packages/web-router
@@ -308,6 +310,7 @@ importers:
       '@aomex/web-router': workspace:^0.0.7
       '@types/ibm-openapi-validator': ^0.15.1
       '@types/lodash.snakecase': ^4.1.7
+      fast-deep-equal: ^3.1.3
       ibm-openapi-validator: ^0.97.4
       lodash.snakecase: ^4.1.1
       ora: ^6.1.2
@@ -317,6 +320,7 @@ importers:
     dependencies:
       '@aomex/file-parser': link:../file-parser
       '@aomex/utility': link:../utility
+      fast-deep-equal: 3.1.3
       ibm-openapi-validator: 0.97.4
       lodash.snakecase: 4.1.1
       ora: 6.1.2

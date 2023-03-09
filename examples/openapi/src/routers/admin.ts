@@ -1,9 +1,11 @@
-import { rule } from '@aomex/core';
+import { chain, rule } from '@aomex/core';
 import { params } from '@aomex/web';
+import { jwt } from '@aomex/jwt';
 import { Router } from '@aomex/web-router';
 
 export const router = new Router({
   prefix: '/admins',
+  mount: chain.web.mount(jwt({ secret: '123456' })),
 });
 
 router.delete('/:id', {
