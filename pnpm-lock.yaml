@@ -124,9 +124,9 @@ importers:
 
   packages/compress:
     specifiers:
-      '@aomex/core': workspace:^0.0.7
+      '@aomex/core': workspace:^0.0.8
       '@aomex/utility': workspace:^0.0.4
-      '@aomex/web': workspace:^0.0.8
+      '@aomex/web': workspace:^0.0.9
       '@types/compressible': ^2.0.0
       '@types/negotiator': ^0.6.1
       compressible: ^2.0.18
@@ -143,8 +143,8 @@ importers:
 
   packages/console:
     specifiers:
-      '@aomex/core': workspace:^0.0.7
-      '@aomex/file-parser': workspace:^0.0.4
+      '@aomex/core': workspace:^0.0.8
+      '@aomex/file-parser': workspace:^0.0.5
       '@aomex/utility': workspace:^0.0.4
       '@types/yargs': ^17.0.22
       '@types/yargs-parser': ^21.0.0
@@ -166,9 +166,9 @@ importers:
 
   packages/console-router:
     specifiers:
-      '@aomex/console': workspace:^0.0.7
-      '@aomex/core': workspace:^0.0.7
-      '@aomex/file-parser': workspace:^0.0.4
+      '@aomex/console': workspace:^0.0.8
+      '@aomex/core': workspace:^0.0.8
+      '@aomex/file-parser': workspace:^0.0.5
       '@aomex/utility': workspace:^0.0.4
     dependencies:
       '@aomex/file-parser': link:../file-parser
@@ -179,11 +179,11 @@ importers:
 
   packages/core:
     specifiers:
-      '@aomex/cache': workspace:^0.0.4
+      '@aomex/cache': workspace:^0.0.5
       '@aomex/middleware': workspace:^0.0.4
       '@aomex/openapi-type': workspace:^0.0.0
       '@aomex/utility': workspace:^0.0.4
-      '@aomex/validator': workspace:^0.0.6
+      '@aomex/validator': workspace:^0.0.7
     dependencies:
       '@aomex/cache': link:../cache
       '@aomex/middleware': link:../middleware
@@ -193,18 +193,18 @@ importers:
 
   packages/cors:
     specifiers:
-      '@aomex/core': workspace:^0.0.7
-      '@aomex/web': workspace:^0.0.8
+      '@aomex/core': workspace:^0.0.8
+      '@aomex/web': workspace:^0.0.9
     devDependencies:
       '@aomex/core': link:../core
       '@aomex/web': link:../web
 
   packages/cron:
     specifiers:
-      '@aomex/console': workspace:^0.0.7
-      '@aomex/console-router': workspace:^0.0.7
-      '@aomex/core': workspace:^0.0.7
-      '@aomex/file-parser': workspace:^0.0.4
+      '@aomex/console': workspace:^0.0.8
+      '@aomex/console-router': workspace:^0.0.8
+      '@aomex/core': workspace:^0.0.8
+      '@aomex/file-parser': workspace:^0.0.5
       '@aomex/utility': workspace:^0.0.4
       cron-parser: ^4.8.1
       strip-ansi: ^7.0.1
@@ -220,8 +220,8 @@ importers:
 
   packages/etag:
     specifiers:
-      '@aomex/core': workspace:^0.0.7
-      '@aomex/web': workspace:^0.0.8
+      '@aomex/core': workspace:^0.0.8
+      '@aomex/web': workspace:^0.0.9
       '@types/etag': ^1.8.1
       etag: ^1.8.1
     dependencies:
@@ -239,8 +239,8 @@ importers:
 
   packages/helmet:
     specifiers:
-      '@aomex/core': workspace:^0.0.7
-      '@aomex/web': workspace:^0.0.8
+      '@aomex/core': workspace:^0.0.8
+      '@aomex/web': workspace:^0.0.9
       helmet: ^6.0.1
     dependencies:
       helmet: 6.0.1
@@ -250,7 +250,7 @@ importers:
 
   packages/ioredis-cache:
     specifiers:
-      '@aomex/core': workspace:^0.0.7
+      '@aomex/core': workspace:^0.0.8
       '@aomex/utility': workspace:^0.0.4
       ioredis: ^5.3.1
     devDependencies:
@@ -260,9 +260,9 @@ importers:
 
   packages/jwt:
     specifiers:
-      '@aomex/core': workspace:^0.0.7
+      '@aomex/core': workspace:^0.0.8
       '@aomex/utility': workspace:0.0.4
-      '@aomex/web': workspace:^0.0.8
+      '@aomex/web': workspace:^0.0.9
       '@types/jsonwebtoken': ^9.0.1
       jsonwebtoken: ^9.0.0
     dependencies:
@@ -275,9 +275,9 @@ importers:
 
   packages/logger:
     specifiers:
-      '@aomex/core': workspace:^0.0.7
+      '@aomex/core': workspace:^0.0.8
       '@aomex/utility': workspace:0.0.4
-      '@aomex/web': workspace:^0.0.8
+      '@aomex/web': workspace:^0.0.9
       '@types/pretty-time': ^1.1.2
       pretty-time: ^1.1.0
       strip-ansi: ^7.0.1
@@ -298,12 +298,12 @@ importers:
 
   packages/openapi:
     specifiers:
-      '@aomex/console': workspace:^0.0.7
-      '@aomex/core': workspace:^0.0.7
-      '@aomex/file-parser': workspace:^0.0.4
+      '@aomex/console': workspace:^0.0.8
+      '@aomex/core': workspace:^0.0.8
+      '@aomex/file-parser': workspace:^0.0.5
       '@aomex/utility': workspace:^0.0.4
-      '@aomex/web': workspace:^0.0.8
-      '@aomex/web-router': workspace:^0.0.8
+      '@aomex/web': workspace:^0.0.9
+      '@aomex/web-router': workspace:^0.0.9
       '@types/ibm-openapi-validator': ^0.15.1
       '@types/lodash.snakecase': ^4.1.7
       fast-deep-equal: ^3.1.3
@@ -339,8 +339,8 @@ importers:
 
   packages/pretty-json:
     specifiers:
-      '@aomex/core': workspace:^0.0.7
-      '@aomex/web': workspace:^0.0.8
+      '@aomex/core': workspace:^0.0.8
+      '@aomex/web': workspace:^0.0.9
       '@types/streaming-json-stringify': ^3.1.1
       streaming-json-stringify: ^3.1.0
     dependencies:
@@ -352,9 +352,9 @@ importers:
 
   packages/rate-limit:
     specifiers:
-      '@aomex/core': workspace:^0.0.7
+      '@aomex/core': workspace:^0.0.8
       '@aomex/utility': workspace:^0.0.4
-      '@aomex/web': workspace:^0.0.8
+      '@aomex/web': workspace:^0.0.9
       '@types/microtime': ^2.1.0
       '@types/ms': ^0.7.31
       microtime: ^3.1.1
@@ -371,7 +371,7 @@ importers:
 
   packages/redis-cache:
     specifiers:
-      '@aomex/core': workspace:^0.0.7
+      '@aomex/core': workspace:^0.0.8
       '@aomex/utility': workspace:^0.0.4
       redis: ^4.6.4
     devDependencies:
@@ -381,8 +381,8 @@ importers:
 
   packages/response-time:
     specifiers:
-      '@aomex/core': workspace:^0.0.7
-      '@aomex/web': workspace:^0.0.8
+      '@aomex/core': workspace:^0.0.8
+      '@aomex/web': workspace:^0.0.9
     devDependencies:
       '@aomex/core': link:../core
       '@aomex/web': link:../web
@@ -411,7 +411,7 @@ importers:
 
   packages/web:
     specifiers:
-      '@aomex/core': workspace:^0.0.7
+      '@aomex/core': workspace:^0.0.8
       '@aomex/utility': workspace:^0.0.4
       '@types/accepts': ^1.3.5
       '@types/co-body': ^6.1.0
@@ -494,10 +494,10 @@ importers:
 
   packages/web-router:
     specifiers:
-      '@aomex/core': workspace:^0.0.7
-      '@aomex/file-parser': workspace:^0.0.4
+      '@aomex/core': workspace:^0.0.8
+      '@aomex/file-parser': workspace:^0.0.5
       '@aomex/utility': workspace:^0.0.4
-      '@aomex/web': workspace:^0.0.8
+      '@aomex/web': workspace:^0.0.9
       path-to-regexp: ^6.2.1
     dependencies:
       '@aomex/file-parser': link:../file-parser

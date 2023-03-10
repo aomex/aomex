@@ -1,5 +1,13 @@
 # @aomex/file-parser
 
+## 0.0.5
+
+### Patch Changes
+
+- [`b7313d5`](https://github.com/aomex/aomex/commit/b7313d56bdb93cabde8dc5b872a94b590f45b655) Thanks [@geekact](https://github.com/geekact)! - chore(file-parser): upgrade glob from 9.1.0 to 9.2.1
+
+- [`912ed81`](https://github.com/aomex/aomex/commit/912ed81c12a3ff12c13607732107dec66c586a38) Thanks [@geekact](https://github.com/geekact)! - chore(file-parser): remove path.normalize()
+
 ## 0.0.3
 
 ### Patch Changes

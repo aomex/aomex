@@ -1,6 +1,6 @@
 {
   "name": "@aomex/web",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -31,7 +31,7 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "peerDependencies": {
-    "@aomex/core": "^0.0.7"
+    "@aomex/core": "^0.0.8"
   },
   "dependencies": {
     "@aomex/utility": "workspace:^0.0.4",
@@ -63,7 +63,7 @@
     "vary": "^1.1.2"
   },
   "devDependencies": {
-    "@aomex/core": "workspace:^0.0.7",
+    "@aomex/core": "workspace:^0.0.8",
     "@types/co-body": "^6.1.0",
     "@types/content-type": "^1.1.5",
     "@types/destroy": "^1.0.0",

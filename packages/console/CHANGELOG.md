@@ -1,5 +1,17 @@
 # @aomex/console
 
+## 0.0.8
+
+### Patch Changes
+
+- [`01f90ab`](https://github.com/aomex/aomex/commit/01f90abec716427b7ccde3ab566067a4ba3293c8) Thanks [@geekact](https://github.com/geekact)! - fix(console): options.toHelp() use wrong description
+
+- [`6c6cda2`](https://github.com/aomex/aomex/commit/6c6cda26522176c44761a738f2bc106a1889497b) Thanks [@geekact](https://github.com/geekact)! - chore(console): upgrade yargs from 17.6.2 to 17.7.1
+
+- Updated dependencies [[`b7313d5`](https://github.com/aomex/aomex/commit/b7313d56bdb93cabde8dc5b872a94b590f45b655), [`912ed81`](https://github.com/aomex/aomex/commit/912ed81c12a3ff12c13607732107dec66c586a38)]:
+  - @aomex/file-parser@0.0.5
+  - @aomex/core@0.0.8
+
 ## 0.0.6
 
 ### Patch Changes
