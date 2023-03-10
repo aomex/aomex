@@ -1,5 +1,15 @@
 # @aomex/web
 
+## 0.0.10
+
+### Patch Changes
+
+- [`2439286`](https://github.com/aomex/aomex/commit/2439286e69dcc7211ac280b91dbca5de95cc488b) Thanks [@geekact](https://github.com/geekact)! - refactor: rename web-router to router
+
+- Updated dependencies [[`fbb7ab2`](https://github.com/aomex/aomex/commit/fbb7ab2e6ec2a18e7ad8f018788523952049b6fd)]:
+  - @aomex/utility@0.0.5
+  - @aomex/core@0.0.9
+
 ## 0.0.9
 
 ### Patch Changes

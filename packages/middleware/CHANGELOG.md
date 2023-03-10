@@ -1,5 +1,12 @@
 # @aomex/middleware
 
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [[`fbb7ab2`](https://github.com/aomex/aomex/commit/fbb7ab2e6ec2a18e7ad8f018788523952049b6fd)]:
+  - @aomex/utility@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes

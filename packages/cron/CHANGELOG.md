@@ -1,5 +1,17 @@
 # @aomex/cron
 
+## 0.0.6
+
+### Patch Changes
+
+- [`4daab53`](https://github.com/aomex/aomex/commit/4daab530f58f8027332eb8789f0e3584a4603e83) Thanks [@geekact](https://github.com/geekact)! - refactor: rename console-router to commander
+
+- Updated dependencies [[`fbb7ab2`](https://github.com/aomex/aomex/commit/fbb7ab2e6ec2a18e7ad8f018788523952049b6fd), [`4daab53`](https://github.com/aomex/aomex/commit/4daab530f58f8027332eb8789f0e3584a4603e83)]:
+  - @aomex/utility@0.0.5
+  - @aomex/commander@0.0.9
+  - @aomex/console@0.0.9
+  - @aomex/core@0.0.9
+
 ## 0.0.5
 
 ### Patch Changes
