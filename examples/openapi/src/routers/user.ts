@@ -1,4 +1,4 @@
-import { Router } from '@aomex/web-router';
+import { Router } from '@aomex/router';
 import { query, response } from '@aomex/web';
 import { rule } from '@aomex/core';
 

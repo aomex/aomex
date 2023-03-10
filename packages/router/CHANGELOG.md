@@ -1,10 +1,10 @@
-# @aomex/web-router
+# @aomex/router
 
 ## 0.0.9
 
 ### Patch Changes
 
-- [`fc7008e`](https://github.com/aomex/aomex/commit/fc7008e889a55e6a0a268bb77cab5be0f0bd9d30) Thanks [@geekact](https://github.com/geekact)! - refactor(web,web-router): move method enum from web-router to web
+- [`fc7008e`](https://github.com/aomex/aomex/commit/fc7008e889a55e6a0a268bb77cab5be0f0bd9d30) Thanks [@geekact](https://github.com/geekact)! - refactor(web,router): move method enum from router to web
 
 - Updated dependencies [[`b7313d5`](https://github.com/aomex/aomex/commit/b7313d56bdb93cabde8dc5b872a94b590f45b655), [`dcf2f4b`](https://github.com/aomex/aomex/commit/dcf2f4b6a13228d4731e4969e6abff9bef8ef0e2), [`d788ce7`](https://github.com/aomex/aomex/commit/d788ce731af885eae3819683813b2a9502742cea), [`c6fe6cb`](https://github.com/aomex/aomex/commit/c6fe6cb2f21acf74bc06db1509deff4aa35c48b3), [`a2727fb`](https://github.com/aomex/aomex/commit/a2727fb7619341dc3b23736e5dc11cee7d65e0bc), [`4253004`](https://github.com/aomex/aomex/commit/42530043854956a42d16be090b89fbac70e2fa17), [`fc7008e`](https://github.com/aomex/aomex/commit/fc7008e889a55e6a0a268bb77cab5be0f0bd9d30), [`912ed81`](https://github.com/aomex/aomex/commit/912ed81c12a3ff12c13607732107dec66c586a38), [`d80df1a`](https://github.com/aomex/aomex/commit/d80df1a07eb92214a9c3c7fa15c629ea1ee88c43)]:
   - @aomex/file-parser@0.0.5
@@ -15,7 +15,7 @@
 
 ### Patch Changes
 
-- [`0b6d4e7`](https://github.com/aomex/aomex/commit/0b6d4e7bd68d28b682de87d2540a89329afef408) Thanks [@geekact](https://github.com/geekact)! - fix(web-router): group chain cache should match app
+- [`0b6d4e7`](https://github.com/aomex/aomex/commit/0b6d4e7bd68d28b682de87d2540a89329afef408) Thanks [@geekact](https://github.com/geekact)! - fix(router): group chain cache should match app
 
 - [`bbc8dda`](https://github.com/aomex/aomex/commit/bbc8dda9f0876c3402608133085350cc693def6f) Thanks [@geekact](https://github.com/geekact)! - refactor: rename package helper to utility
 

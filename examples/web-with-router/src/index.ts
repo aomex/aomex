@@ -1,7 +1,7 @@
 import { logger } from '@aomex/logger';
 import { prettyJson } from '@aomex/pretty-json';
 import { WebApp } from '@aomex/web';
-import { routers } from '@aomex/web-router';
+import { routers } from '@aomex/router';
 
 const app = new WebApp();
 

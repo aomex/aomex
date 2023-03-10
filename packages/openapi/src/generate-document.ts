@@ -13,7 +13,7 @@ import {
   pathToFiles,
 } from '@aomex/utility';
 import { METHOD, WebMiddleware } from '@aomex/web';
-import { Router } from '@aomex/web-router';
+import { Router } from '@aomex/router';
 import validate from 'ibm-openapi-validator';
 import path from 'node:path';
 import { mkdir, writeFile } from 'node:fs/promises';

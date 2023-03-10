@@ -33,7 +33,7 @@ A fluent node.js framework, Inspired by [koa](https://github.com/koajs/koa) and 
 
 | Name                                             | Version                                                                                                         | Platform |
 | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- | -------- |
-| [@aomex/web-router](./packages/web-router)       | [![npm](https://img.shields.io/npm/v/@aomex/web-router)](https://www.npmjs.com/package/@aomex/web-router)       | web      |
+| [@aomex/router](./packages/router)               | [![npm](https://img.shields.io/npm/v/@aomex/router)](https://www.npmjs.com/package/@aomex/router)               | web      |
 | [@aomex/compress](./packages/compress)           | [![npm](https://img.shields.io/npm/v/@aomex/compress)](https://www.npmjs.com/package/@aomex/compress)           | web      |
 | [@aomex/cors](./packages/cors)                   | [![npm](https://img.shields.io/npm/v/@aomex/cors)](https://www.npmjs.com/package/@aomex/cors)                   | web      |
 | [@aomex/jwt](./packages/jwt)                     | [![npm](https://img.shields.io/npm/v/@aomex/jwt)](https://www.npmjs.com/package/@aomex/jwt)                     | web      |

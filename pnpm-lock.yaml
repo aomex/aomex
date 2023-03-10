@@ -46,14 +46,14 @@ importers:
       '@aomex/core': workspace:*
       '@aomex/logger': workspace:*
       '@aomex/web': workspace:*
-      '@aomex/web-router': workspace:*
+      '@aomex/router': workspace:*
       nodemon: ^2.0.21
     dependencies:
       '@aomex/compress': link:../../packages/compress
       '@aomex/core': link:../../packages/core
       '@aomex/logger': link:../../packages/logger
       '@aomex/web': link:../../packages/web
-      '@aomex/web-router': link:../../packages/web-router
+      '@aomex/router': link:../../packages/router
     devDependencies:
       nodemon: 2.0.21
 
@@ -87,7 +87,7 @@ importers:
       '@aomex/jwt': workspace:*
       '@aomex/openapi': workspace:*
       '@aomex/web': workspace:*
-      '@aomex/web-router': workspace:*
+      '@aomex/router': workspace:*
       swagger-ui: ^4.17.1
     dependencies:
       '@aomex/commander': link:../../packages/commander
@@ -96,7 +96,7 @@ importers:
       '@aomex/jwt': link:../../packages/jwt
       '@aomex/openapi': link:../../packages/openapi
       '@aomex/web': link:../../packages/web
-      '@aomex/web-router': link:../../packages/web-router
+      '@aomex/router': link:../../packages/router
       swagger-ui: 4.17.1
 
   examples/web-with-router:
@@ -105,14 +105,14 @@ importers:
       '@aomex/logger': workspace:*
       '@aomex/pretty-json': workspace:*
       '@aomex/web': workspace:*
-      '@aomex/web-router': workspace:*
+      '@aomex/router': workspace:*
       nodemon: ^2.0.21
     dependencies:
       '@aomex/core': link:../../packages/core
       '@aomex/logger': link:../../packages/logger
       '@aomex/pretty-json': link:../../packages/pretty-json
       '@aomex/web': link:../../packages/web
-      '@aomex/web-router': link:../../packages/web-router
+      '@aomex/router': link:../../packages/router
     devDependencies:
       nodemon: 2.0.21
 
@@ -290,7 +290,7 @@ importers:
       '@aomex/core': workspace:^0.0.8
       '@aomex/utility': workspace:^0.0.4
       '@aomex/web': workspace:^0.0.9
-      '@aomex/web-router': workspace:^0.0.9
+      '@aomex/router': workspace:^0.0.9
       '@types/ibm-openapi-validator': ^0.15.1
       '@types/lodash.snakecase': ^4.1.7
       fast-deep-equal: ^3.1.3
@@ -312,7 +312,7 @@ importers:
       '@aomex/console': link:../console
       '@aomex/core': link:../core
       '@aomex/web': link:../web
-      '@aomex/web-router': link:../web-router
+      '@aomex/router': link:../router
       '@types/ibm-openapi-validator': 0.15.1
       '@types/lodash.snakecase': 4.1.7
       strip-ansi: 7.0.1
@@ -480,7 +480,7 @@ importers:
       '@types/type-is': 1.6.3
       '@types/vary': 1.1.0
 
-  packages/web-router:
+  packages/router:
     specifiers:
       '@aomex/core': workspace:^0.0.8
       '@aomex/utility': workspace:^0.0.4

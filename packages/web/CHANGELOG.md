@@ -14,7 +14,7 @@
 
 - [`4253004`](https://github.com/aomex/aomex/commit/42530043854956a42d16be090b89fbac70e2fa17) Thanks [@geekact](https://github.com/geekact)! - fix(web): response returning invalid content-type for openapi
 
-- [`fc7008e`](https://github.com/aomex/aomex/commit/fc7008e889a55e6a0a268bb77cab5be0f0bd9d30) Thanks [@geekact](https://github.com/geekact)! - refactor(web,web-router): move method enum from web-router to web
+- [`fc7008e`](https://github.com/aomex/aomex/commit/fc7008e889a55e6a0a268bb77cab5be0f0bd9d30) Thanks [@geekact](https://github.com/geekact)! - refactor(web,router): move method enum from router to web
 
 - [`d80df1a`](https://github.com/aomex/aomex/commit/d80df1a07eb92214a9c3c7fa15c629ea1ee88c43) Thanks [@geekact](https://github.com/geekact)! - feat(web): request add protocol and secure getter
 

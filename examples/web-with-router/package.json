@@ -15,7 +15,7 @@
     "@aomex/logger": "workspace:*",
     "@aomex/pretty-json": "workspace:*",
     "@aomex/web": "workspace:*",
-    "@aomex/web-router": "workspace:*"
+    "@aomex/router": "workspace:*"
   },
   "devDependencies": {
     "nodemon": "^2.0.21"

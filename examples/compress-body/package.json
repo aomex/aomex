@@ -14,7 +14,7 @@
     "@aomex/core": "workspace:*",
     "@aomex/logger": "workspace:*",
     "@aomex/web": "workspace:*",
-    "@aomex/web-router": "workspace:*"
+    "@aomex/router": "workspace:*"
   },
   "devDependencies": {
     "nodemon": "^2.0.21"

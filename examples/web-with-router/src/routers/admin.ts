@@ -1,6 +1,6 @@
 import { rule } from '@aomex/core';
 import { params } from '@aomex/web';
-import { Router } from '@aomex/web-router';
+import { Router } from '@aomex/router';
 
 export const router = new Router({
   prefix: '/admins',

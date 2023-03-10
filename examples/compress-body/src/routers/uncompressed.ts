@@ -1,4 +1,4 @@
-import { Router } from '@aomex/web-router';
+import { Router } from '@aomex/router';
 import { createReadStream } from 'node:fs';
 import path from 'node:path';
 import { routerChain } from '../middleware/chain';

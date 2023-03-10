@@ -1,5 +1,5 @@
 import { WebApp } from '@aomex/web';
-import { routers } from '@aomex/web-router';
+import { routers } from '@aomex/router';
 import { appChain } from './middleware/chain';
 
 const app = new WebApp();
