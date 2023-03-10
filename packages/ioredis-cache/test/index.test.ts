@@ -14,8 +14,8 @@ const cache = new RedisCache({
   }),
 });
 
-afterEach(async () => {
-  await cache.deleteAll();
+beforeEach(async () => {
+  await cache.redis.flushdb();
 });
 
 test('set and get', async () => {
