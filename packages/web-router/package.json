@@ -1,6 +1,6 @@
 {
   "name": "@aomex/web-router",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -31,16 +31,16 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "peerDependencies": {
-    "@aomex/core": "^0.0.7",
-    "@aomex/web": "^0.0.8"
+    "@aomex/core": "^0.0.8",
+    "@aomex/web": "^0.0.9"
   },
   "dependencies": {
-    "@aomex/file-parser": "workspace:^0.0.4",
+    "@aomex/file-parser": "workspace:^0.0.5",
     "@aomex/utility": "workspace:^0.0.4",
     "path-to-regexp": "^6.2.1"
   },
   "devDependencies": {
-    "@aomex/core": "workspace:^0.0.7",
-    "@aomex/web": "workspace:^0.0.8"
+    "@aomex/core": "workspace:^0.0.8",
+    "@aomex/web": "workspace:^0.0.9"
   }
 }

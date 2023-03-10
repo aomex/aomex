@@ -1,6 +1,6 @@
 {
   "name": "@aomex/core",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -41,7 +41,7 @@
     "@aomex/utility": "workspace:^0.0.4",
     "@aomex/middleware": "workspace:^0.0.4",
     "@aomex/openapi-type": "workspace:^0.0.0",
-    "@aomex/cache": "workspace:^0.0.4",
-    "@aomex/validator": "workspace:^0.0.6"
+    "@aomex/cache": "workspace:^0.0.5",
+    "@aomex/validator": "workspace:^0.0.7"
   }
 }

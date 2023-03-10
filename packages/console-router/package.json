@@ -1,6 +1,6 @@
 {
   "name": "@aomex/console-router",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -31,15 +31,15 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "peerDependencies": {
-    "@aomex/console": "^0.0.7",
-    "@aomex/core": "^0.0.7"
+    "@aomex/console": "^0.0.8",
+    "@aomex/core": "^0.0.8"
   },
   "dependencies": {
-    "@aomex/file-parser": "workspace:^0.0.4",
+    "@aomex/file-parser": "workspace:^0.0.5",
     "@aomex/utility": "workspace:^0.0.4"
   },
   "devDependencies": {
-    "@aomex/console": "workspace:^0.0.7",
-    "@aomex/core": "workspace:^0.0.7"
+    "@aomex/console": "workspace:^0.0.8",
+    "@aomex/core": "workspace:^0.0.8"
   }
 }
