@@ -1,7 +1,6 @@
 import { options } from '@aomex/console';
 import { chain, Middleware, middleware, rule } from '@aomex/core';
-import type { PathToFileOptions } from '@aomex/file-parser';
-import { chalk } from '@aomex/utility';
+import { chalk, type PathToFileOptions } from '@aomex/utility';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path, { dirname } from 'node:path';
 import { getMiddlewareSchedule } from '../lib/get-middleware-schedule';

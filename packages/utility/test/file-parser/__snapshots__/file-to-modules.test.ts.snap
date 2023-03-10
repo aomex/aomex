@@ -1,0 +1,49 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`parse script files > js + ts 1`] = `
+[
+  {
+    "hello": "test",
+  },
+  "test-b",
+  {
+    "hello": "default test",
+  },
+  {
+    "hello": "test2",
+  },
+  "test-b1",
+  {
+    "good": "unit test",
+    "hello": "default test",
+  },
+]
+`;
+
+exports[`parse script files > js only 1`] = `
+[
+  {
+    "hello": "test",
+  },
+  "test-b",
+  {
+    "hello": "default test",
+  },
+]
+`;
+
+exports[`parse script files > ts only 1`] = `
+[
+  {
+    "hello": "test",
+  },
+  {
+    "hello": "test2",
+  },
+  "test-b1",
+  {
+    "good": "unit test",
+    "hello": "default test",
+  },
+]
+`;

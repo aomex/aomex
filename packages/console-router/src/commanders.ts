@@ -4,7 +4,7 @@ import {
   fileToModules,
   pathToFiles,
   type PathToFileOptions,
-} from '@aomex/file-parser';
+} from '@aomex/utility';
 import { Commander } from './commander';
 import { commanderToHelp } from './commander-to-help';
 

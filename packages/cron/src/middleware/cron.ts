@@ -1,6 +1,6 @@
 import type { ConsoleChain } from '@aomex/console';
 import { chain } from '@aomex/core';
-import type { PathToFileOptions } from '@aomex/file-parser';
+import type { PathToFileOptions } from '@aomex/utility';
 import { output } from './output';
 import { run } from './run';
 

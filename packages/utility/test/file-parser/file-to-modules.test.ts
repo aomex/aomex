@@ -1,6 +1,5 @@
 import path from 'node:path';
-import { test } from 'vitest';
-import { fileToModules } from '../src';
+import { fileToModules } from '../../src';
 
 const jsFile = path.resolve('./test/mocks/dir-a/sub/file-i.js');
 const tsFile = path.resolve('./test/mocks/dir-a/sub/file-b.ts');

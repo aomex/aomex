@@ -144,7 +144,6 @@ importers:
   packages/console:
     specifiers:
       '@aomex/core': workspace:^0.0.8
-      '@aomex/file-parser': workspace:^0.0.5
       '@aomex/utility': workspace:^0.0.4
       '@types/yargs': ^17.0.22
       '@types/yargs-parser': ^21.0.0
@@ -153,7 +152,6 @@ importers:
       yargs: ^17.7.1
       yargs-parser: ^21.1.1
     dependencies:
-      '@aomex/file-parser': link:../file-parser
       '@aomex/utility': link:../utility
       ts-node: 10.9.1
       yargs: 17.7.1
@@ -168,10 +166,8 @@ importers:
     specifiers:
       '@aomex/console': workspace:^0.0.8
       '@aomex/core': workspace:^0.0.8
-      '@aomex/file-parser': workspace:^0.0.5
       '@aomex/utility': workspace:^0.0.4
     dependencies:
-      '@aomex/file-parser': link:../file-parser
       '@aomex/utility': link:../utility
     devDependencies:
       '@aomex/console': link:../console
@@ -204,12 +200,10 @@ importers:
       '@aomex/console': workspace:^0.0.8
       '@aomex/console-router': workspace:^0.0.8
       '@aomex/core': workspace:^0.0.8
-      '@aomex/file-parser': workspace:^0.0.5
       '@aomex/utility': workspace:^0.0.4
       cron-parser: ^4.8.1
       strip-ansi: ^7.0.1
     dependencies:
-      '@aomex/file-parser': link:../file-parser
       '@aomex/utility': link:../utility
       cron-parser: 4.8.1
     devDependencies:
@@ -230,12 +224,6 @@ importers:
       '@aomex/core': link:../core
       '@aomex/web': link:../web
       '@types/etag': 1.8.1
-
-  packages/file-parser:
-    specifiers:
-      glob: ^9.2.1
-    dependencies:
-      glob: 9.2.1
 
   packages/helmet:
     specifiers:
@@ -300,7 +288,6 @@ importers:
     specifiers:
       '@aomex/console': workspace:^0.0.8
       '@aomex/core': workspace:^0.0.8
-      '@aomex/file-parser': workspace:^0.0.5
       '@aomex/utility': workspace:^0.0.4
       '@aomex/web': workspace:^0.0.9
       '@aomex/web-router': workspace:^0.0.9
@@ -314,7 +301,6 @@ importers:
       strip-ansi: ^7.0.1
       yaml: ^2.2.1
     dependencies:
-      '@aomex/file-parser': link:../file-parser
       '@aomex/utility': link:../utility
       fast-deep-equal: 3.1.3
       ibm-openapi-validator: 0.97.5
@@ -392,10 +378,12 @@ importers:
       '@types/bytes': ^3.1.1
       bytes: ^3.1.2
       chalk: ^5.2.0
+      glob: ^9.2.1
     dependencies:
       '@types/bytes': 3.1.1
       bytes: 3.1.2
       chalk: 5.2.0
+      glob: 9.2.1
 
   packages/validator:
     specifiers:
@@ -495,12 +483,10 @@ importers:
   packages/web-router:
     specifiers:
       '@aomex/core': workspace:^0.0.8
-      '@aomex/file-parser': workspace:^0.0.5
       '@aomex/utility': workspace:^0.0.4
       '@aomex/web': workspace:^0.0.9
       path-to-regexp: ^6.2.1
     dependencies:
-      '@aomex/file-parser': link:../file-parser
       '@aomex/utility': link:../utility
       path-to-regexp: 6.2.1
     devDependencies:

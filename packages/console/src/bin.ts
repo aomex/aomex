@@ -4,8 +4,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { existsSync, statSync, writeFileSync } from 'node:fs';
 import { hideBin } from 'yargs/helpers';
-import { fileToModules, pathToFiles } from '@aomex/file-parser';
-import { chalk } from '@aomex/utility';
+import { chalk, fileToModules, pathToFiles } from '@aomex/utility';
 import type { Config } from './define-config';
 
 {

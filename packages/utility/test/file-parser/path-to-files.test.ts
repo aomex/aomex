@@ -1,6 +1,5 @@
 import { isAbsolute, resolve } from 'node:path';
-import { test } from 'vitest';
-import { pathToFiles } from '../src';
+import { pathToFiles } from '../../src';
 
 test('always returning absolute path', async () => {
   const files = await pathToFiles('./test/mocks/dir-a/*');

@@ -1,11 +1,11 @@
 import { ConsoleMiddleware, scriptName } from '@aomex/console';
 import { Chain, middleware } from '@aomex/core';
 import {
+  chalk,
   fileToModules,
   PathToFileOptions,
   pathToFiles,
-} from '@aomex/file-parser';
-import { chalk } from '@aomex/utility';
+} from '@aomex/utility';
 import type { Builder } from './builder';
 import { Commander } from './commander';
 

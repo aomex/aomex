@@ -40,7 +40,6 @@
     "@aomex/core": "^0.0.8"
   },
   "dependencies": {
-    "@aomex/file-parser": "workspace:^0.0.5",
     "@aomex/utility": "workspace:^0.0.4",
     "ts-node": "^10.9.1",
     "yargs": "^17.7.1",

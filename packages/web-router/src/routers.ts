@@ -3,7 +3,7 @@ import {
   fileToModules,
   pathToFiles,
   type PathToFileOptions,
-} from '@aomex/file-parser';
+} from '@aomex/utility';
 import type { WebMiddleware } from '@aomex/web';
 import { Router } from './router';
 

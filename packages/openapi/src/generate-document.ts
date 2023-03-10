@@ -4,12 +4,14 @@ import { readPackageUp } from 'read-pkg-up';
 import snakeCase from 'lodash.snakecase';
 import equal from 'fast-deep-equal';
 import { Chain, OpenAPI } from '@aomex/core';
-import { bytes, chalk, sleep } from '@aomex/utility';
 import {
+  bytes,
+  chalk,
+  sleep,
   fileToModules,
   type PathToFileOptions,
   pathToFiles,
-} from '@aomex/file-parser';
+} from '@aomex/utility';
 import { METHOD, WebMiddleware } from '@aomex/web';
 import { Router } from '@aomex/web-router';
 import validate from 'ibm-openapi-validator';
