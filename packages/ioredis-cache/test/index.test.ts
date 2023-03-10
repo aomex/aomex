@@ -7,7 +7,10 @@ const cache = new RedisCache({
   redis: new Redis({
     host: 'localhost',
     port: 6379,
-    db: 7,
+    db:
+      process.env['REDIS_DB'] === undefined
+        ? 11
+        : Number(process.env['REDIS_DB']),
   }),
 });
 

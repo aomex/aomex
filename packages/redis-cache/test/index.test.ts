@@ -6,7 +6,10 @@ import { RedisCache } from '../src';
 const cache = new RedisCache({
   redis: {
     url: 'redis://localhost:6379',
-    database: 7,
+    database:
+      process.env['REDIS_DB'] === undefined
+        ? 12
+        : Number(process.env['REDIS_DB']),
   },
 });
 

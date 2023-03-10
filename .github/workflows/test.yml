@@ -47,6 +47,8 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: pnpm install
       - run: pnpm test
+        env:
+          REDIS_DB: ${{ strategy.job-index }}
       - name: Upload Coverage
         if: github.ref == 'refs/heads/main' && strategy.job-index == 0
         uses: codecov/codecov-action@v3
