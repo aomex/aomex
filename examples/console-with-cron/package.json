@@ -13,7 +13,7 @@
   "dependencies": {
     "@aomex/console": "workspace:*",
     "@aomex/cron": "workspace:*",
-    "@aomex/console-router": "workspace:*",
+    "@aomex/commander": "workspace:*",
     "@aomex/core": "workspace:*"
   }
 }

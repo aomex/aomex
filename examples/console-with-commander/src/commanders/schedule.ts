@@ -1,4 +1,4 @@
-import { Commander } from '@aomex/console-router';
+import { Commander } from '../../../../packages/commander/src';
 import { routerChain } from '../middleware/chain';
 
 export const commander = new Commander({

@@ -1,4 +1,4 @@
-import { Commander } from '@aomex/console-router';
+import { Commander } from '@aomex/commander';
 import { schedule } from '@aomex/cron';
 import { routerChain } from '../middleware/chain';
 

@@ -1,4 +1,4 @@
-import { Commander } from '@aomex/console-router';
+import { Commander } from '@aomex/commander';
 import { schedule } from '../../../src';
 
 export const commander = new Commander();

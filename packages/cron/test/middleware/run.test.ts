@@ -1,5 +1,5 @@
 import { ConsoleApp } from '@aomex/console';
-import { commanders } from '@aomex/console-router';
+import { commanders } from '@aomex/commander';
 import { test } from 'vitest';
 import { Job } from '../../src/lib/job';
 import { run } from '../../src/middleware/run';

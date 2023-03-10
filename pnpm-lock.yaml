@@ -57,32 +57,32 @@ importers:
     devDependencies:
       nodemon: 2.0.21
 
+  examples/console-with-commander:
+    specifiers:
+      '@aomex/commander': workspace:*
+      '@aomex/console': workspace:*
+      '@aomex/core': workspace:*
+    dependencies:
+      '@aomex/commander': link:../../packages/commander
+      '@aomex/console': link:../../packages/console
+      '@aomex/core': link:../../packages/core
+
   examples/console-with-cron:
     specifiers:
+      '@aomex/commander': workspace:*
       '@aomex/console': workspace:*
-      '@aomex/console-router': workspace:*
       '@aomex/core': workspace:*
       '@aomex/cron': workspace:*
     dependencies:
+      '@aomex/commander': link:../../packages/commander
       '@aomex/console': link:../../packages/console
-      '@aomex/console-router': link:../../packages/console-router
       '@aomex/core': link:../../packages/core
       '@aomex/cron': link:../../packages/cron
 
-  examples/console-with-router:
-    specifiers:
-      '@aomex/console': workspace:*
-      '@aomex/console-router': workspace:*
-      '@aomex/core': workspace:*
-    dependencies:
-      '@aomex/console': link:../../packages/console
-      '@aomex/console-router': link:../../packages/console-router
-      '@aomex/core': link:../../packages/core
-
   examples/openapi:
     specifiers:
+      '@aomex/commander': workspace:*
       '@aomex/console': workspace:*
-      '@aomex/console-router': workspace:*
       '@aomex/core': workspace:*
       '@aomex/jwt': workspace:*
       '@aomex/openapi': workspace:*
@@ -90,8 +90,8 @@ importers:
       '@aomex/web-router': workspace:*
       swagger-ui: ^4.17.1
     dependencies:
+      '@aomex/commander': link:../../packages/commander
       '@aomex/console': link:../../packages/console
-      '@aomex/console-router': link:../../packages/console-router
       '@aomex/core': link:../../packages/core
       '@aomex/jwt': link:../../packages/jwt
       '@aomex/openapi': link:../../packages/openapi
@@ -121,6 +121,17 @@ importers:
       lru-cache: ^7.17.0
     dependencies:
       lru-cache: 7.17.0
+
+  packages/commander:
+    specifiers:
+      '@aomex/console': workspace:^0.0.8
+      '@aomex/core': workspace:^0.0.8
+      '@aomex/utility': workspace:^0.0.4
+    dependencies:
+      '@aomex/utility': link:../utility
+    devDependencies:
+      '@aomex/console': link:../console
+      '@aomex/core': link:../core
 
   packages/compress:
     specifiers:
@@ -162,17 +173,6 @@ importers:
       '@types/yargs-parser': 21.0.0
       read-pkg-up: 9.1.0
 
-  packages/console-router:
-    specifiers:
-      '@aomex/console': workspace:^0.0.8
-      '@aomex/core': workspace:^0.0.8
-      '@aomex/utility': workspace:^0.0.4
-    dependencies:
-      '@aomex/utility': link:../utility
-    devDependencies:
-      '@aomex/console': link:../console
-      '@aomex/core': link:../core
-
   packages/core:
     specifiers:
       '@aomex/cache': workspace:^0.0.5
@@ -197,8 +197,8 @@ importers:
 
   packages/cron:
     specifiers:
+      '@aomex/commander': workspace:^0.0.8
       '@aomex/console': workspace:^0.0.8
-      '@aomex/console-router': workspace:^0.0.8
       '@aomex/core': workspace:^0.0.8
       '@aomex/utility': workspace:^0.0.4
       cron-parser: ^4.8.1
@@ -207,8 +207,8 @@ importers:
       '@aomex/utility': link:../utility
       cron-parser: 4.8.1
     devDependencies:
+      '@aomex/commander': link:../commander
       '@aomex/console': link:../console
-      '@aomex/console-router': link:../console-router
       '@aomex/core': link:../core
       strip-ansi: 7.0.1
 

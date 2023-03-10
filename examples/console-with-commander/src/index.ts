@@ -1,5 +1,5 @@
 import { ConsoleApp } from '@aomex/console';
-import { commanders } from '@aomex/console-router';
+import { commanders } from '../../../packages/commander/src';
 import { appChain } from './middleware/chain';
 
 const app = new ConsoleApp();

@@ -32,7 +32,7 @@
   "license": "MIT",
   "peerDependencies": {
     "@aomex/console": "^0.0.8",
-    "@aomex/console-router": "^0.0.8",
+    "@aomex/commander": "^0.0.8",
     "@aomex/core": "^0.0.8"
   },
   "dependencies": {
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@aomex/console": "workspace:^0.0.8",
-    "@aomex/console-router": "workspace:^0.0.8",
+    "@aomex/commander": "workspace:^0.0.8",
     "@aomex/core": "workspace:^0.0.8",
     "strip-ansi": "^7.0.1"
   }

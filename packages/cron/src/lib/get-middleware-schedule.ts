@@ -1,4 +1,4 @@
-import { Commander } from '@aomex/console-router';
+import { Commander } from '@aomex/commander';
 import { Chain } from '@aomex/core';
 import { fileToModules, PathToFileOptions, pathToFiles } from '@aomex/utility';
 import { ScheduleMiddleware } from '../middleware/schedule';
