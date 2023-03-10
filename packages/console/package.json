@@ -1,6 +1,6 @@
 {
   "name": "@aomex/console",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "",
   "scripts": {
     "prepublishOnly": "tsup && node ./scripts/version-shim.mjs"
@@ -37,17 +37,17 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "peerDependencies": {
-    "@aomex/core": "^0.0.6"
+    "@aomex/core": "^0.0.7"
   },
   "dependencies": {
-    "@aomex/file-parser": "workspace:^0.0.3",
+    "@aomex/file-parser": "workspace:^0.0.4",
     "@aomex/utility": "workspace:^0.0.4",
     "ts-node": "^10.9.1",
     "yargs": "^17.7.1",
     "yargs-parser": "^21.1.1"
   },
   "devDependencies": {
-    "@aomex/core": "workspace:^0.0.6",
+    "@aomex/core": "workspace:^0.0.7",
     "@types/yargs": "^17.0.22",
     "@types/yargs-parser": "^21.0.0",
     "read-pkg-up": "^9.1.0"
