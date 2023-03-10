@@ -1,6 +1,6 @@
 {
   "name": "@aomex/cors",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "跨站资源共享",
   "keywords": [
     "cors"
@@ -34,11 +34,11 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@aomex/core": "^0.0.8",
-    "@aomex/web": "^0.0.9"
+    "@aomex/core": "^0.0.9",
+    "@aomex/web": "^0.0.10"
   },
   "devDependencies": {
-    "@aomex/core": "workspace:^0.0.8",
-    "@aomex/web": "workspace:^0.0.9"
+    "@aomex/core": "workspace:^0.0.9",
+    "@aomex/web": "workspace:^0.0.10"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@aomex/cron",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -31,18 +31,18 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "peerDependencies": {
-    "@aomex/console": "^0.0.8",
-    "@aomex/commander": "^0.0.8",
-    "@aomex/core": "^0.0.8"
+    "@aomex/console": "^0.0.9",
+    "@aomex/commander": "^0.0.9",
+    "@aomex/core": "^0.0.9"
   },
   "dependencies": {
-    "@aomex/utility": "workspace:^0.0.4",
+    "@aomex/utility": "workspace:^0.0.5",
     "cron-parser": "^4.8.1"
   },
   "devDependencies": {
-    "@aomex/console": "workspace:^0.0.8",
-    "@aomex/commander": "workspace:^0.0.8",
-    "@aomex/core": "workspace:^0.0.8",
+    "@aomex/console": "workspace:^0.0.9",
+    "@aomex/commander": "workspace:^0.0.9",
+    "@aomex/core": "workspace:^0.0.9",
     "strip-ansi": "^7.0.1"
   }
 }

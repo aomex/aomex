@@ -1,6 +1,6 @@
 {
   "name": "@aomex/helmet",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Security headers",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
@@ -31,14 +31,14 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@aomex/core": "^0.0.8",
-    "@aomex/web": "^0.0.9"
+    "@aomex/core": "^0.0.9",
+    "@aomex/web": "^0.0.10"
   },
   "dependencies": {
     "helmet": "^6.0.1"
   },
   "devDependencies": {
-    "@aomex/core": "workspace:^0.0.8",
-    "@aomex/web": "workspace:^0.0.9"
+    "@aomex/core": "workspace:^0.0.9",
+    "@aomex/web": "workspace:^0.0.10"
   }
 }

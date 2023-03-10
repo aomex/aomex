@@ -1,6 +1,6 @@
 {
   "name": "@aomex/redis-cache",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -31,12 +31,12 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "peerDependencies": {
-    "@aomex/core": "^0.0.8",
+    "@aomex/core": "^0.0.9",
     "redis": "^4"
   },
   "devDependencies": {
-    "@aomex/core": "workspace:^0.0.8",
-    "@aomex/utility": "workspace:^0.0.4",
+    "@aomex/core": "workspace:^0.0.9",
+    "@aomex/utility": "workspace:^0.0.5",
     "redis": "^4.6.4"
   }
 }
