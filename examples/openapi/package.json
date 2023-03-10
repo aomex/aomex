@@ -18,7 +18,6 @@
     "@aomex/jwt": "workspace:*",
     "@aomex/openapi": "workspace:*",
     "@aomex/web": "workspace:*",
-    "@aomex/router": "workspace:*",
-    "swagger-ui": "^4.17.1"
+    "@aomex/router": "workspace:*"
   }
 }
