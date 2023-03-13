@@ -144,7 +144,7 @@ importers:
     specifiers:
       '@aomex/core': workspace:^0.0.9
       '@aomex/utility': workspace:^0.0.5
-      '@aomex/web': workspace:^0.0.10
+      '@aomex/web': workspace:^0.0.11
       '@types/compressible': ^2.0.0
       '@types/negotiator': ^0.6.1
       compressible: ^2.0.18
@@ -197,7 +197,7 @@ importers:
   packages/cors:
     specifiers:
       '@aomex/core': workspace:^0.0.9
-      '@aomex/web': workspace:^0.0.10
+      '@aomex/web': workspace:^0.0.11
     devDependencies:
       '@aomex/core': link:../core
       '@aomex/web': link:../web
@@ -222,7 +222,7 @@ importers:
   packages/etag:
     specifiers:
       '@aomex/core': workspace:^0.0.9
-      '@aomex/web': workspace:^0.0.10
+      '@aomex/web': workspace:^0.0.11
       '@types/etag': ^1.8.1
       etag: ^1.8.1
     dependencies:
@@ -235,7 +235,7 @@ importers:
   packages/helmet:
     specifiers:
       '@aomex/core': workspace:^0.0.9
-      '@aomex/web': workspace:^0.0.10
+      '@aomex/web': workspace:^0.0.11
       helmet: ^6.0.1
     dependencies:
       helmet: 6.0.1
@@ -257,7 +257,7 @@ importers:
     specifiers:
       '@aomex/core': workspace:^0.0.9
       '@aomex/utility': workspace:0.0.5
-      '@aomex/web': workspace:^0.0.10
+      '@aomex/web': workspace:^0.0.11
       '@types/jsonwebtoken': ^9.0.1
       jsonwebtoken: ^9.0.0
     dependencies:
@@ -272,7 +272,7 @@ importers:
     specifiers:
       '@aomex/core': workspace:^0.0.9
       '@aomex/utility': workspace:0.0.5
-      '@aomex/web': workspace:^0.0.10
+      '@aomex/web': workspace:^0.0.11
       '@types/pretty-time': ^1.1.2
       pretty-time: ^1.1.0
       strip-ansi: ^7.0.1
@@ -295,9 +295,9 @@ importers:
     specifiers:
       '@aomex/console': workspace:^0.0.9
       '@aomex/core': workspace:^0.0.9
-      '@aomex/router': workspace:^0.0.10
+      '@aomex/router': workspace:^0.0.11
       '@aomex/utility': workspace:^0.0.5
-      '@aomex/web': workspace:^0.0.10
+      '@aomex/web': workspace:^0.0.11
       '@types/ibm-openapi-validator': ^0.15.1
       '@types/lodash.snakecase': ^4.1.7
       fast-deep-equal: ^3.1.3
@@ -333,7 +333,7 @@ importers:
   packages/pretty-json:
     specifiers:
       '@aomex/core': workspace:^0.0.9
-      '@aomex/web': workspace:^0.0.10
+      '@aomex/web': workspace:^0.0.11
       '@types/streaming-json-stringify': ^3.1.1
       streaming-json-stringify: ^3.1.0
     dependencies:
@@ -347,7 +347,7 @@ importers:
     specifiers:
       '@aomex/core': workspace:^0.0.9
       '@aomex/utility': workspace:^0.0.5
-      '@aomex/web': workspace:^0.0.10
+      '@aomex/web': workspace:^0.0.11
       '@types/microtime': ^2.1.0
       '@types/ms': ^0.7.31
       microtime: ^3.1.1
@@ -375,7 +375,7 @@ importers:
   packages/response-time:
     specifiers:
       '@aomex/core': workspace:^0.0.9
-      '@aomex/web': workspace:^0.0.10
+      '@aomex/web': workspace:^0.0.11
     devDependencies:
       '@aomex/core': link:../core
       '@aomex/web': link:../web
@@ -384,7 +384,7 @@ importers:
     specifiers:
       '@aomex/core': workspace:^0.0.9
       '@aomex/utility': workspace:^0.0.5
-      '@aomex/web': workspace:^0.0.10
+      '@aomex/web': workspace:^0.0.11
       path-to-regexp: ^6.2.1
     dependencies:
       '@aomex/utility': link:../utility
@@ -396,7 +396,7 @@ importers:
   packages/static:
     specifiers:
       '@aomex/core': workspace:^0.0.9
-      '@aomex/web': workspace:^0.0.10
+      '@aomex/web': workspace:^0.0.11
     devDependencies:
       '@aomex/core': link:../core
       '@aomex/web': link:../web

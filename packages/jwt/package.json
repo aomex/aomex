@@ -1,6 +1,6 @@
 {
   "name": "@aomex/jwt",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "JSON Web Token",
   "keywords": [
     "json-web-token"
@@ -35,7 +35,7 @@
   },
   "peerDependencies": {
     "@aomex/core": "^0.0.9",
-    "@aomex/web": "^0.0.10"
+    "@aomex/web": "^0.0.11"
   },
   "dependencies": {
     "@aomex/utility": "workspace:0.0.5",
@@ -44,6 +44,6 @@
   },
   "devDependencies": {
     "@aomex/core": "workspace:^0.0.9",
-    "@aomex/web": "workspace:^0.0.10"
+    "@aomex/web": "workspace:^0.0.11"
   }
 }

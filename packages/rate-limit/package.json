@@ -1,6 +1,6 @@
 {
   "name": "@aomex/rate-limit",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Web request rate limit",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
@@ -32,7 +32,7 @@
   },
   "peerDependencies": {
     "@aomex/core": "^0.0.9",
-    "@aomex/web": "^0.0.10"
+    "@aomex/web": "^0.0.11"
   },
   "dependencies": {
     "microtime": "^3.1.1",
@@ -41,7 +41,7 @@
   "devDependencies": {
     "@aomex/core": "workspace:^0.0.9",
     "@aomex/utility": "workspace:^0.0.5",
-    "@aomex/web": "workspace:^0.0.10",
+    "@aomex/web": "workspace:^0.0.11",
     "@types/microtime": "^2.1.0",
     "@types/ms": "^0.7.31"
   }
