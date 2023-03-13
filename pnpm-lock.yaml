@@ -384,6 +384,14 @@ importers:
       '@aomex/core': link:../core
       '@aomex/web': link:../web
 
+  packages/static:
+    specifiers:
+      '@aomex/core': workspace:^0.0.9
+      '@aomex/web': workspace:^0.0.10
+    devDependencies:
+      '@aomex/core': link:../core
+      '@aomex/web': link:../web
+
   packages/utility:
     specifiers:
       '@types/bytes': ^3.1.1

@@ -43,6 +43,7 @@ A fluent node.js framework, Inspired by [koa](https://github.com/koajs/koa) and 
 | [@aomex/response-time](./packages/response-time) | [![npm](https://img.shields.io/npm/v/@aomex/response-time)](https://www.npmjs.com/package/@aomex/response-time) | web      |
 | [@aomex/rate-limit](./packages/rate-limit)       | [![npm](https://img.shields.io/npm/v/@aomex/rate-limit)](https://www.npmjs.com/package/@aomex/rate-limit)       | web      |
 | [@aomex/etag](./packages/etag)                   | [![npm](https://img.shields.io/npm/v/@aomex/etag)](https://www.npmjs.com/package/@aomex/etag)                   | web      |
+| [@aomex/static](./packages/static)               | [![npm](https://img.shields.io/npm/v/@aomex/static)](https://www.npmjs.com/package/@aomex/static)               | web      |
 | [@aomex/commander](./packages/commander)         | [![npm](https://img.shields.io/npm/v/@aomex/commander)](https://www.npmjs.com/package/@aomex/commander)         | console  |
 | [@aomex/openapi](./packages/openapi)             | [![npm](https://img.shields.io/npm/v/@aomex/openapi)](https://www.npmjs.com/package/@aomex/openapi)             | console  |
 | [@aomex/cron](./packages/cron)                   | [![npm](https://img.shields.io/npm/v/@aomex/cron)](https://www.npmjs.com/package/@aomex/cron)                   | console  |
