@@ -5,6 +5,6 @@ services:
     # https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/installation.md
     image: swaggerapi/swagger-ui:v4.17.1
     volumes:
-      - ../openapi.json:/app/swagger.json
+      - ../public/openapi.json:/app/swagger.json
     ports:
       - 8080:8080

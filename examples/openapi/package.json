@@ -4,7 +4,9 @@
   "private": true,
   "main": "src/index.ts",
   "scripts": {
-    "generate": "aomex openapi"
+    "gen": "aomex openapi",
+    "swagger": "vite serve",
+    "docker": "docker-compose -f ./swagger-docker/docker-compose.yml up"
   },
   "type": "module",
   "volta": {
@@ -12,12 +14,18 @@
     "pnpm": "7.27.0"
   },
   "dependencies": {
-    "@aomex/console": "workspace:*",
     "@aomex/commander": "workspace:*",
+    "@aomex/console": "workspace:*",
     "@aomex/core": "workspace:*",
     "@aomex/jwt": "workspace:*",
     "@aomex/openapi": "workspace:*",
+    "@aomex/router": "workspace:*",
+    "@aomex/static": "workspace:*",
     "@aomex/web": "workspace:*",
-    "@aomex/router": "workspace:*"
+    "swagger-ui": "^4.18.1"
+  },
+  "devDependencies": {
+    "@types/swagger-ui": "^3.52.0",
+    "vite": "^4.1.4"
   }
 }

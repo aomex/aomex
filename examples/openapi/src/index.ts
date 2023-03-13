@@ -8,6 +8,7 @@ app.mount(
     routers: './src/routers',
     renderWarnings: true,
     prettyJson: true,
+    output: './public/openapi.json',
     docs: {
       servers: [
         {
