@@ -1,5 +1,13 @@
 # @aomex/web
 
+## 0.0.11
+
+### Patch Changes
+
+- [`d9dc050`](https://github.com/aomex/aomex/commit/d9dc050897367353588c4bb778cbafb7607406ab) Thanks [@geekact](https://github.com/geekact)! - fix(web): don't override content-length in some case
+
+- [`41ae605`](https://github.com/aomex/aomex/commit/41ae6054b2e87c4120f3fcee12302bb3d96f1df3) Thanks [@geekact](https://github.com/geekact)! - feat(web): auto bind onError
+
 ## 0.0.10
 
 ### Patch Changes

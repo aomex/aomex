@@ -1,6 +1,6 @@
 {
   "name": "@aomex/compress",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Compress content for web server",
   "keywords": [],
   "repository": "git@github.com:aomex/aomex.git",
@@ -33,7 +33,7 @@
   },
   "peerDependencies": {
     "@aomex/core": "^0.0.9",
-    "@aomex/web": "^0.0.10"
+    "@aomex/web": "^0.0.11"
   },
   "dependencies": {
     "@aomex/utility": "workspace:^0.0.5",
@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@aomex/core": "workspace:^0.0.9",
-    "@aomex/web": "workspace:^0.0.10",
+    "@aomex/web": "workspace:^0.0.11",
     "@types/compressible": "^2.0.0",
     "@types/negotiator": "^0.6.1"
   }

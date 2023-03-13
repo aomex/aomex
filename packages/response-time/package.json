@@ -1,6 +1,6 @@
 {
   "name": "@aomex/response-time",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "X-Response-Time header",
   "keywords": [],
   "repository": "git@github.com:aomex/aomex.git",
@@ -33,10 +33,10 @@
   },
   "peerDependencies": {
     "@aomex/core": "^0.0.9",
-    "@aomex/web": "^0.0.10"
+    "@aomex/web": "^0.0.11"
   },
   "devDependencies": {
     "@aomex/core": "workspace:^0.0.9",
-    "@aomex/web": "workspace:^0.0.10"
+    "@aomex/web": "workspace:^0.0.11"
   }
 }

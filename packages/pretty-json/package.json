@@ -1,6 +1,6 @@
 {
   "name": "@aomex/pretty-json",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Format JSON response",
   "keywords": [
     "pretty",
@@ -36,14 +36,14 @@
   },
   "peerDependencies": {
     "@aomex/core": "^0.0.9",
-    "@aomex/web": "^0.0.10"
+    "@aomex/web": "^0.0.11"
   },
   "dependencies": {
     "streaming-json-stringify": "^3.1.0"
   },
   "devDependencies": {
     "@aomex/core": "workspace:^0.0.9",
-    "@aomex/web": "workspace:^0.0.10",
+    "@aomex/web": "workspace:^0.0.11",
     "@types/streaming-json-stringify": "^3.1.1"
   }
 }
