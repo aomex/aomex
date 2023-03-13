@@ -30,7 +30,7 @@ exports[`emitter > validate with errors 1`] = `
   "Fix document by hand [skipped]",
   "Optimize common parameters",
   "Save to file",
-  "Save to file: openapi.json [size: 88B]",
+  "Save to file: openapi.json [size: 89B]",
   "Validate",
   "Validate 1 errors，3 warnings",
   "fail",
