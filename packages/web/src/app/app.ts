@@ -70,7 +70,7 @@ export class WebApp extends EventEmitter {
     return (req: WebRequest, res: WebResponse) => {
       return fn(new WebContext(this, req, res))
         .then(res.flush.bind(res))
-        .catch(res.onError.bind(res));
+        .catch(res.onError);
     };
   }
 

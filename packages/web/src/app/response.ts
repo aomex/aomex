@@ -56,6 +56,8 @@ export class WebResponse<
         this.setStatus(code);
       },
     });
+
+    this.onError = this.onError.bind(this);
   }
 
   declare readonly setHeader: {
