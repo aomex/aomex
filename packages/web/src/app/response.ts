@@ -203,11 +203,14 @@ export class WebResponse<
 
     if (statuses.empty[this.statusCode]) return this.end();
 
+    // Don't use `this.body=` in this block to against `_explicitBody`
     if (output === null) {
+      const isJSON = this.contentType === 'application/json';
       if (this._explicitBody) {
-        this._body = this.findContentType('json') ? String(null) : '';
+        this._body = isJSON ? String(null) : '';
+      } else if (isJSON) {
+        this._body = String(null);
       } else {
-        // Don't use `this.body=` to against `_explicitBody`
         this._body = String(this.statusMessage || this.statusCode);
       }
       this.determineHeaders();
@@ -368,14 +371,19 @@ export class WebResponse<
     if (statuses.empty[this.statusCode]) {
       // status=204 ===> body=null
       this.removeHeaders('Content-Type', 'Content-Length', 'Transfer-Encoding');
-    } else if (this.contentType === 'application/json') {
-      // contentType=json ===> body=null
-      this.contentLength = Buffer.byteLength(String(null));
     } else if (this._explicitBody) {
       // body=null ===> **
-      this.contentLength = 0;
-      if (!this.hasHeader('Content-Type')) {
-        this.contentType = 'text';
+      if (this.contentType === 'application/json') {
+        this.contentLength = Buffer.byteLength(String(null));
+      } else {
+        this.contentLength = 0;
+        if (!this.hasHeader('Content-Type')) {
+          this.contentType = 'text';
+        }
+      }
+    } else if (this.contentType === 'application/json') {
+      if (!this.hasHeader('Content-Length')) {
+        this.contentLength = Buffer.byteLength(String(null));
       }
     } else {
       // Output status message at flush()
