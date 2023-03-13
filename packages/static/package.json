@@ -1,6 +1,6 @@
 {
   "name": "@aomex/static",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Static file server",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
@@ -32,10 +32,10 @@
   },
   "peerDependencies": {
     "@aomex/core": "^0.0.9",
-    "@aomex/web": "^0.0.10"
+    "@aomex/web": "^0.0.11"
   },
   "devDependencies": {
     "@aomex/core": "workspace:^0.0.9",
-    "@aomex/web": "workspace:^0.0.10"
+    "@aomex/web": "workspace:^0.0.11"
   }
 }

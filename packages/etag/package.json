@@ -1,6 +1,6 @@
 {
   "name": "@aomex/etag",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "response token",
   "keywords": [
     "etag"
@@ -35,14 +35,14 @@
   },
   "peerDependencies": {
     "@aomex/core": "^0.0.9",
-    "@aomex/web": "^0.0.10"
+    "@aomex/web": "^0.0.11"
   },
   "dependencies": {
     "etag": "^1.8.1"
   },
   "devDependencies": {
     "@aomex/core": "workspace:^0.0.9",
-    "@aomex/web": "workspace:^0.0.10",
+    "@aomex/web": "workspace:^0.0.11",
     "@types/etag": "^1.8.1"
   }
 }

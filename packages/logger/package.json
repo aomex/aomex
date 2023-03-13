@@ -1,6 +1,6 @@
 {
   "name": "@aomex/logger",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "web request log",
   "keywords": [
     "api-request-logger"
@@ -35,7 +35,7 @@
   },
   "peerDependencies": {
     "@aomex/core": "^0.0.9",
-    "@aomex/web": "^0.0.10"
+    "@aomex/web": "^0.0.11"
   },
   "dependencies": {
     "@aomex/utility": "workspace:0.0.5",
@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@aomex/core": "workspace:^0.0.9",
-    "@aomex/web": "workspace:^0.0.10",
+    "@aomex/web": "workspace:^0.0.11",
     "@types/pretty-time": "^1.1.2",
     "strip-ansi": "^7.0.1"
   }

@@ -1,5 +1,12 @@
 # @aomex/rate-limit
 
+## 0.0.9
+
+### Patch Changes
+
+- Updated dependencies [[`d9dc050`](https://github.com/aomex/aomex/commit/d9dc050897367353588c4bb778cbafb7607406ab), [`41ae605`](https://github.com/aomex/aomex/commit/41ae6054b2e87c4120f3fcee12302bb3d96f1df3)]:
+  - @aomex/web@0.0.11
+
 ## 0.0.8
 
 ### Patch Changes
