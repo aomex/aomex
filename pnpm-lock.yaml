@@ -48,6 +48,12 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0(@types/node@18.19.26)
 
+  packages/internal-file-import:
+    dependencies:
+      glob:
+        specifier: ^10.3.10
+        version: 10.3.10
+
   packages/internal-tools:
     dependencies:
       '@types/bytes':
