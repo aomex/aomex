@@ -1,12 +1,11 @@
-/// <reference types='vitest/globals' />
-import { defineConfig } from 'vitest/config';
+import { defineProject } from 'vitest/config';
 
-export default defineConfig({
+export default defineProject({
   test: {
     coverage: {
       provider: 'v8',
       enabled: true,
-      include: ['src/**'],
+      include: ['packages/**/src/**'],
       all: true,
       // lines: 99,
       // functions: 99,

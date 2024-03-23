@@ -1,4 +1,4 @@
-import { test } from 'vitest';
+import { expect, test } from 'vitest';
 import { sleep } from '../src';
 
 test('异步等待', () => {

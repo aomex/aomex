@@ -1,4 +1,4 @@
-import { test } from 'vitest';
+import { expect, test } from 'vitest';
 import { toArray } from '../src';
 
 test('非数组转数组', () => {

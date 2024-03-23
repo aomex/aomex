@@ -3,7 +3,6 @@
   "version": "0.0.27",
   "description": "aomex内部实用工具",
   "scripts": {
-    "test": "vitest",
     "prepublishOnly": "tsup"
   },
   "type": "module",
