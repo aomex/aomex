@@ -54,7 +54,7 @@ importers:
         specifier: workspace:^
         version: link:../internal-tools
       '@types/node':
-        specifier: '*'
+        specifier: '>=18'
         version: 18.19.26
       email-validator:
         specifier: ^2.0.4
@@ -86,6 +86,12 @@ importers:
       chalk:
         specifier: ^5.3.0
         version: 5.3.0
+
+  packages/service:
+    devDependencies:
+      '@aomex/internal-tools':
+        specifier: workspace:^
+        version: link:../internal-tools
 
 packages:
 
