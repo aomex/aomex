@@ -1,6 +1,6 @@
 {
   "name": "@aomex/memory-cache",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "内存缓存",
   "scripts": {
     "prepublishOnly": "tsup"

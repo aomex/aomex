@@ -1,6 +1,6 @@
 {
   "name": "@aomex/file-cache",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "aomex文件缓存，基于sqlite数据库",
   "scripts": {
     "prepublishOnly": "tsup"

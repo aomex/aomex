@@ -1,6 +1,6 @@
 {
   "name": "@aomex/console",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "控制台应用",
   "scripts": {
     "prepublishOnly": "tsup && node ./scripts/version-shim.mjs"
@@ -37,8 +37,8 @@
     "@aomex/core": "^1.0.0"
   },
   "dependencies": {
-    "@aomex/internal-tools": "workspace:^",
     "@aomex/internal-file-import": "workspace:^",
+    "@aomex/internal-tools": "workspace:^",
     "tsx": "^4.15.6",
     "yargs": "^17.7.1",
     "yargs-parser": "^21.1.1"

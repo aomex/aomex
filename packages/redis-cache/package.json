@@ -1,6 +1,6 @@
 {
   "name": "@aomex/redis-cache",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "aomex基于redis的缓存实现",
   "scripts": {
     "prepublishOnly": "tsup"
