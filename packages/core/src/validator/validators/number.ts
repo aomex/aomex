@@ -22,6 +22,8 @@ export class NumberValidator<T = number> extends BaseNumberValidator<T> {
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
+  public declare precision: (decimals: number) => this;
+
   protected override validateNumber(num: number): magistrate.Result<number> {
     return magistrate.ok(num);
   }

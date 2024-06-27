@@ -9,6 +9,7 @@ export declare namespace BaseNumberValidator {
     minInclusive?: boolean;
     max?: number;
     maxInclusive?: boolean;
+    precision?: number;
   }
 }
 
@@ -49,6 +50,15 @@ export abstract class BaseNumberValidator<T = number> extends Validator<T> {
     return validator as this;
   }
 
+  /**
+   * 小数点保留位数，使用`.toFixed()`剔除多余的小数
+   */
+  protected precision(decimals: number): this {
+    const validator = this.copy();
+    validator.config.precision = decimals;
+    return validator as this;
+  }
+
   protected validateValue(
     num: number,
     key: string,
@@ -60,6 +70,7 @@ export abstract class BaseNumberValidator<T = number> extends Validator<T> {
       minInclusive,
       maxInclusive,
       strict,
+      precision,
     } = this.config;
 
     if (!strict && typeof num === 'string') {
@@ -68,6 +79,10 @@ export abstract class BaseNumberValidator<T = number> extends Validator<T> {
 
     if (!Number.isFinite(num)) {
       return magistrate.fail(i18n.t('core.validator.number.must_be_number', { label }));
+    }
+
+    if (precision !== undefined) {
+      num = Number(num.toFixed(precision));
     }
 
     if (
