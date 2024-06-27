@@ -1,0 +1,43 @@
+{
+  "name": "@aomex/rate-limit-redis-store",
+  "version": "1.0.4",
+  "description": "请求限速redis存储引擎",
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "prepublishOnly": "tsup"
+  },
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@aomex/rate-limit": "^1.0.0"
+  },
+  "dependencies": {
+    "ioredis": "^5.4.1"
+  },
+  "devDependencies": {
+    "@aomex/internal-tools": "workspace:^",
+    "@aomex/rate-limit": "workspace:^"
+  }
+}

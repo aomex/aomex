@@ -1,0 +1,42 @@
+{
+  "name": "@aomex/rate-limit",
+  "version": "1.0.4",
+  "description": "请求限速",
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "prepublishOnly": "tsup"
+  },
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@aomex/core": "^1.0.0",
+    "@aomex/web": "^1.0.0"
+  },
+  "devDependencies": {
+    "@aomex/core": "workspace:^",
+    "@aomex/internal-tools": "workspace:^",
+    "@aomex/web": "workspace:^"
+  }
+}

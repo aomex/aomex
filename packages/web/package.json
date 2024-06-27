@@ -1,0 +1,70 @@
+{
+  "name": "@aomex/web",
+  "version": "1.0.4",
+  "description": "aomex web层应用",
+  "scripts": {
+    "prepublishOnly": "tsup && node ./scripts/patch-dist.mjs"
+  },
+  "type": "module",
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [],
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "peerDependencies": {
+    "@aomex/core": "^1.0.0"
+  },
+  "dependencies": {
+    "@aomex/internal-tools": "workspace:^",
+    "@types/accepts": "^1.3.7",
+    "@types/content-disposition": "^0.5.8",
+    "@types/cookie": "^0.6.0",
+    "@types/formidable": "^3.4.5",
+    "@types/http-errors": "^2.0.4",
+    "@types/qs": "^6.9.14",
+    "@types/statuses": "^2.0.5",
+    "accepts": "^1.3.8",
+    "co-body": "^6.2.0",
+    "content-disposition": "^0.5.4",
+    "cookie": "^0.6.0",
+    "destroy": "^1.2.0",
+    "formidable": "^3.5.1",
+    "fresh": "^0.5.2",
+    "http-errors": "^2.0.0",
+    "mime-types": "^2.1.35",
+    "qs": "^6.12.0",
+    "request-ip": "^3.3.0",
+    "statuses": "^2.0.1",
+    "type-is": "^1.6.18",
+    "vary": "^1.1.2"
+  },
+  "devDependencies": {
+    "@aomex/core": "workspace:^",
+    "@types/co-body": "^6.1.3",
+    "@types/destroy": "^1.0.3",
+    "@types/fresh": "^0.5.2",
+    "@types/mime-types": "^2.1.4",
+    "@types/request-ip": "^0.0.41",
+    "@types/type-is": "^1.6.6",
+    "@types/vary": "^1.1.3"
+  }
+}
