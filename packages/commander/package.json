@@ -1,6 +1,6 @@
 {
   "name": "@aomex/commander",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "创建aomex控制台指令",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -35,8 +35,8 @@
     "@aomex/core": "^1.0.0"
   },
   "dependencies": {
-    "@aomex/internal-tools": "workspace:^",
-    "@aomex/internal-file-import": "workspace:^"
+    "@aomex/internal-file-import": "workspace:^",
+    "@aomex/internal-tools": "workspace:^"
   },
   "devDependencies": {
     "@aomex/console": "workspace:^",
