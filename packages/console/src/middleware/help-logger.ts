@@ -79,23 +79,22 @@ export const helpLogger = (middlewareList: Middleware[]): ConsoleMiddleware => {
     await next();
 
     if (!ctx.commandMatched) {
-      const recommendCommands = Object.entries(
+      const recommendCommand = Object.entries(
         await collectConsoleDocument({
           document: {},
           middlewareList,
           app: ctx.app,
         }),
       )
-        .filter(([commandName, { show }]) => {
-          return show !== false && getDistance(command, commandName) <= 3;
-        })
-        .map(([commandName]) => commandName);
+        .map(([commandName]) => <const>[commandName, getDistance(command, commandName)])
+        .filter((item) => item[1] <= 3)
+        .sort((a, b) => a[1] - b[1])[0];
 
       throw new Error(
-        recommendCommands.length
+        recommendCommand
           ? i18n.t('console.command_found_recommended', {
               command,
-              recommended: recommendCommands,
+              recommended: recommendCommand[0],
             })
           : i18n.t('console.command_not_found', { command }),
       );
