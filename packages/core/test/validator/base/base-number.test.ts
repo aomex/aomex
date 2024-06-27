@@ -16,6 +16,12 @@ describe('链式调用返回新的实例', () => {
     expect(v1).toBeInstanceOf(MockNumberValidator);
     expect(v1).not.toBe(validator);
   });
+
+  test('precision', () => {
+    const v1 = validator['precision'](2);
+    expect(v1).toBeInstanceOf(MockNumberValidator);
+    expect(v1).not.toBe(validator);
+  });
 });
 
 describe('大小', () => {
@@ -62,4 +68,13 @@ test('严格模式下，字符串禁止转换为数字', async () => {
   await expect(validator['validate']('123')).resolves.toStrictEqual(
     magistrate.fail(i18n.t('core.validator.number.must_be_number', { label: '' })),
   );
+});
+
+test('精度', async () => {
+  const validator = new MockNumberValidator()['precision'](2);
+  await expect(validator['validate'](123.45678)).resolves.toStrictEqual(
+    magistrate.ok(123.46),
+  );
+  await expect(validator['validate'](123.4)).resolves.toStrictEqual(magistrate.ok(123.4));
+  await expect(validator['validate'](123)).resolves.toStrictEqual(magistrate.ok(123));
 });

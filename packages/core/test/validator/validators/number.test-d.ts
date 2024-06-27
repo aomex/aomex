@@ -63,3 +63,9 @@ const validator = new TargetValidator();
   const v = validator.max(100);
   expectType<TargetValidator<DefaultType>>(v);
 }
+
+// 精度
+{
+  const v = validator.precision(2);
+  expectType<TargetValidator<DefaultType>>(v);
+}
