@@ -30,6 +30,9 @@
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
   "license": "MIT",
+  "engines": {
+    "node": "^20.13.0 || ^22"
+  },
   "dependencies": {
     "@aomex/internal-cache": "workspace:^",
     "sqlite": "^5.1.1",
