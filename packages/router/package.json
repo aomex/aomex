@@ -40,7 +40,7 @@
   "dependencies": {
     "@aomex/internal-file-import": "workspace:^",
     "@aomex/internal-tools": "workspace:^",
-    "path-to-regexp": "^6.2.1"
+    "path-to-regexp": "^7.0.0"
   },
   "devDependencies": {
     "@aomex/core": "workspace:^",

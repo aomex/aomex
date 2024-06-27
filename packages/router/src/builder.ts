@@ -6,7 +6,7 @@ import {
 } from '@aomex/core';
 import type { Union2Intersection } from '@aomex/internal-tools';
 import { WebContext, type WebMiddlewareToken } from '@aomex/web';
-import { match, type MatchFunction } from 'path-to-regexp';
+import { match } from 'path-to-regexp';
 
 export declare namespace Builder {
   export type DTO<Props extends object, T extends WebMiddlewareToken[] | []> = Omit<
@@ -68,7 +68,7 @@ export class Builder<
 
   public readonly docs?: Builder.Docs;
   protected readonly middlewareList: Middleware[];
-  protected readonly uriPatterns: [MatchFunction<Record<string, unknown>>, PureUri][];
+  protected readonly uriPatterns: [ReturnType<typeof match>, PureUri][];
 
   constructor(
     prefix: string,
