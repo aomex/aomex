@@ -16,14 +16,19 @@ jobs:
         with:
           # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
           fetch-depth: 0
+      - name: git config
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           cache: 'pnpm'
           node-version-file: 'package.json'
       - run: pnpm install
-      - run: npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
       - run: npx lerna version --yes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: pnpm --recursive publish
+      - run: |
+          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
+          pnpm --recursive publish
