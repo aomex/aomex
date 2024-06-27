@@ -25,5 +25,5 @@ jobs:
       - run: npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
       - run: npx lerna version --yes
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: pnpm --recursive publish
