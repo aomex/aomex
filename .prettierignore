@@ -1,0 +1,6 @@
+dist/
+pnpm-lock.yaml
+CHANGELOG.md
+coverage/
+.changeset/*.md
+openapi.json

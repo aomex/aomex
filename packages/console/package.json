@@ -1,0 +1,51 @@
+{
+  "name": "@aomex/console",
+  "version": "1.0.4",
+  "description": "控制台应用",
+  "scripts": {
+    "prepublishOnly": "tsup && node ./scripts/version-shim.mjs"
+  },
+  "type": "module",
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "bin": {
+      "aomex": "dist/bin.js"
+    },
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [],
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "peerDependencies": {
+    "@aomex/core": "^1.0.0"
+  },
+  "dependencies": {
+    "@aomex/internal-tools": "workspace:^",
+    "@aomex/internal-file-import": "workspace:^",
+    "tsx": "^4.15.6",
+    "yargs": "^17.7.1",
+    "yargs-parser": "^21.1.1"
+  },
+  "devDependencies": {
+    "@aomex/core": "workspace:^",
+    "@types/yargs": "^17.0.23",
+    "@types/yargs-parser": "^21.0.0"
+  }
+}

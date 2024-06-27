@@ -1,0 +1,57 @@
+{
+  "name": "@aomex/openapi",
+  "version": "1.0.4",
+  "description": "Openapi文档生成工具",
+  "scripts": {
+    "prepublishOnly": "tsup"
+  },
+  "type": "module",
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [],
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "peerDependencies": {
+    "@aomex/console": "^1.0.0",
+    "@aomex/core": "^1.0.0",
+    "@aomex/router": "^1.0.0",
+    "@aomex/web": "^1.0.0"
+  },
+  "dependencies": {
+    "@aomex/internal-file-import": "workspace:^",
+    "@aomex/internal-tools": "workspace:^",
+    "@stoplight/spectral-core": "^1.18.3",
+    "@stoplight/spectral-rulesets": "^1.19.1",
+    "listr2": "^8.2.1",
+    "lodash.snakecase": "^4.1.1",
+    "log-symbols": "^6.0.0",
+    "yaml": "^2.4.5"
+  },
+  "devDependencies": {
+    "@aomex/console": "workspace:^",
+    "@aomex/core": "workspace:^",
+    "@aomex/router": "workspace:^",
+    "@aomex/web": "workspace:^",
+    "@types/lodash.snakecase": "^4.1.9",
+    "stat-mode": "^1.0.0"
+  }
+}
