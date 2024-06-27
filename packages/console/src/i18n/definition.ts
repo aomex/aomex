@@ -7,7 +7,7 @@ declare module '@aomex/core' {
         command_not_found: I18nMessage<{ command: string }>;
         command_found_recommended: I18nMessage<{
           command: string;
-          recommended: string[];
+          recommended: string;
         }>;
       };
     }

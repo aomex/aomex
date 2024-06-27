@@ -182,9 +182,9 @@ test('检测相似指令', async () => {
         fn: () => {},
         help: {
           onDocument(doc) {
-            doc['foo'] = {};
             doc['bar'] = {};
             doc['fool'] = { summary: 'I am foolish' };
+            doc['foo'] = {};
             doc['fools'] = { show: false };
           },
         },
@@ -193,5 +193,7 @@ test('检测相似指令', async () => {
   });
 
   await app.run('fooo');
-  expect(lastMsg).toMatch('Error: 指令"fooo"不存在，你是在找这些指令吗：foo、fool');
+  expect(lastMsg).toMatch('Error: 指令 "fooo" 不存在，你是说 "aomex fool" 吗？');
+  await app.run('testme');
+  expect(lastMsg).toMatch('Error: 指令 "testme" 不存在');
 });

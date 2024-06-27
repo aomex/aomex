@@ -88,7 +88,7 @@ test('报错日志', async () => {
   });
   await app.run('foo');
   expect(spy).toHaveBeenCalledOnce();
-  expect(msg).toMatchInlineSnapshot(`"指令"foo"不存在"`);
+  expect(msg).toMatchInlineSnapshot(`"指令 "foo" 不存在"`);
 });
 
 test('自定义报错回调', async () => {
@@ -98,7 +98,7 @@ test('自定义报错回调', async () => {
     msg = err.message;
   });
   await app.run('foo');
-  expect(msg).toMatchInlineSnapshot(`"指令"foo"不存在"`);
+  expect(msg).toMatchInlineSnapshot(`"指令 "foo" 不存在"`);
 });
 
 test('设置语言', () => {
