@@ -43,3 +43,13 @@ test('未命中则继续执行中间件', async () => {
   expect(code).toBe(1);
   expect(spy).toHaveBeenCalledTimes(1);
 });
+
+test('自定义指令名称', async () => {
+  const app = new ConsoleApp({
+    mount: [openapi({ commandName: 'openapi:admin', routers: [] })],
+  });
+
+  await expect(app.run('openapi')).resolves.toBe(1);
+  await expect(app.run('openapi:user')).resolves.toBe(1);
+  await expect(app.run('openapi:admin')).resolves.toBe(0);
+});

@@ -19,6 +19,10 @@ import { styleText } from 'node:util';
 
 export interface OpenapiOptions {
   /**
+   * 指令名称。默认值：`openapi`
+   */
+  commandName?: string;
+  /**
    * http接口路由文件
    */
   routers: GlobPathOptions;
