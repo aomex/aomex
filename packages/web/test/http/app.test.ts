@@ -1,6 +1,6 @@
 import { describe, expect, test, vitest } from 'vitest';
 import { WebApp } from '../../src';
-import { i18n, mdchain, middleware } from '@aomex/core';
+import { i18n, middleware } from '@aomex/core';
 import supertest from 'supertest';
 import { Server } from 'http';
 import fs from 'node:fs';
@@ -30,9 +30,7 @@ test('挂载中间件', () => {
   const md2 = middleware.web(() => {});
   const md3 = middleware.web(() => {});
 
-  const app = new WebApp({
-    mount: mdchain.web.mount(md3).mount(md1).mount(md2),
-  });
+  const app = new WebApp({ mount: [md3, md1, md2] });
   expect(app['middlewareList']).toStrictEqual([md3, md1, md2]);
 });
 
@@ -69,23 +67,21 @@ describe('listen', () => {
 
   test('请求时遍历中间件', async () => {
     let str = '';
-    const box = mdchain.web
-      .mount(
+    const app = new WebApp({
+      mount: [
         middleware.mixin(async (_, next) => {
           str += 1;
           await next();
           str += 4;
         }),
-      )
-      .mount(
         middleware.web(async (ctx, next) => {
           str += 2;
           await next();
           ctx.send('foo,bar');
           str += 3;
         }),
-      );
-    const app = new WebApp({ mount: box });
+      ],
+    });
 
     await supertest(app.listen()).get('/').expect(200, 'foo,bar');
     expect(str).toBe('1234');
@@ -99,11 +95,11 @@ describe('日志', () => {
       errStr = msg;
     });
     const app = new WebApp({
-      mount: mdchain.web.mount(
+      mount: [
         middleware.mixin(() => {
           throw new Error('foo bar');
         }),
-      ),
+      ],
     });
 
     await supertest(app.listen()).get('/');
@@ -114,11 +110,11 @@ describe('日志', () => {
   test('404状态下不打印日志', async () => {
     const spy = vitest.spyOn(console, 'error').mockImplementationOnce(() => {});
     const app = new WebApp({
-      mount: mdchain.web.mount(
+      mount: [
         middleware.web((ctx) => {
           ctx.throw(404, 'foo bar');
         }),
-      ),
+      ],
     });
 
     await supertest(app.listen()).get('/');
@@ -128,13 +124,13 @@ describe('日志', () => {
   test('expose时不打印日志', async () => {
     const spy = vitest.spyOn(console, 'error').mockImplementationOnce(() => {});
     const app = new WebApp({
-      mount: mdchain.web.mount(
+      mount: [
         middleware.web((ctx) => {
           ctx.throw(500, 'foo bar', {
             expose: true,
           });
         }),
-      ),
+      ],
     });
     await supertest(app.listen()).get('/');
     expect(spy).toHaveBeenCalledTimes(0);
@@ -151,11 +147,11 @@ test('设置语言', () => {
 test('https', async () => {
   const dir = join(import.meta.dirname, '..', 'fixture', 'ca');
   const app = new WebApp({
-    mount: mdchain.web.mount(
+    mount: [
       middleware.web((ctx) => {
         ctx.send('protocol-' + ctx.request.protocol);
       }),
-    ),
+    ],
   });
   process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
   const server = app

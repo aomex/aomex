@@ -3,55 +3,63 @@ import https from 'node:https';
 import stream from 'node:stream';
 import { WebRequest } from './request';
 import { WebResponse } from './response';
-import {
-  I18n,
-  Middleware,
-  MixinMiddlewareChain,
-  compose,
-  flattenMiddlewareToken,
-  i18n,
-} from '@aomex/core';
+import { I18n, Middleware, compose, i18n } from '@aomex/core';
 import { WebContext } from './context';
 import type { HttpError } from 'http-errors';
 import { EOL } from 'node:os';
-import type { WebMiddlewareChain } from '../override';
+import type { WebMiddlewareToken } from '../override';
 import { styleText } from 'node:util';
+import type { Union2Intersection } from '@aomex/internal-tools';
 
-export interface WebAppOption {
-  /**
-   * 调试模式。默认值：`process.env.NODE_ENV !== 'production'`
-   */
-  debug?: boolean;
-  /**
-   * 全局中间件组，挂载后该组会被打上标记。
-   * ```typescript
-   * const appChain = mdchain.web.mount(md1).mount(md2);
-   * const chain1 = appChain.mount(md3);
-   * const chain2 = chain1.mount(md4);
-   *
-   * const app = new WebApp({ box: appChain });
-   * ```
-   */
-  mount?: WebMiddlewareChain | MixinMiddlewareChain;
-  locale?: I18n.LocaleName;
+export namespace WebApp {
+  export interface Option<T extends WebMiddlewareToken[] | []> {
+    /**
+     * 调试模式。默认值：`process.env.NODE_ENV !== 'production'`
+     */
+    debug?: boolean;
+    /**
+     * 全局中间件
+     *
+     * ```typescript
+     * const app = new WebApp({
+     *   mount: [md1, md2]
+     * });
+     *
+     * declare module '@aomex/web' {
+     *   namespace WebApp {
+     *     type T = WebApp.Infer<typeof app>;
+     *     interface Props extends T {}
+     *   }
+     * }
+     * ```
+     */
+    mount?: T;
+    locale?: I18n.LocaleName;
+  }
+
+  export type Infer<T> =
+    T extends WebApp<infer U>
+      ? U extends any[]
+        ? Union2Intersection<Middleware.CollectArrayType<U[number]>>
+        : unknown
+      : unknown;
+
+  export interface Props {}
 }
 
-export class WebApp extends stream.EventEmitter<{
-  error: [err: HttpError, ctx: WebContext];
+export class WebApp<
+  T extends WebMiddlewareToken[] | [] = any[],
+> extends stream.EventEmitter<{
+  error: [err: HttpError, ctx: WebContext & WebApp.Props];
 }> {
   protected readonly point?: string;
-  protected readonly middlewareList: Middleware[];
+  protected readonly middlewareList: WebMiddlewareToken[];
 
-  constructor(protected readonly options: WebAppOption = {}) {
+  constructor(protected readonly options: WebApp.Option<T> = {}) {
     super();
     this.middlewareList = [];
-    if (options.locale) {
-      i18n.setLocale(options.locale);
-    }
-    if (options.mount) {
-      this.point = options.mount['createPoint']();
-      this.middlewareList = flattenMiddlewareToken(options.mount);
-    }
+    i18n.setLocale(options.locale || 'zh_CN');
+    this.middlewareList = options.mount || [];
   }
 
   get debug(): boolean {

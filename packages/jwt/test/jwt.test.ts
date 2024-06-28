@@ -1,4 +1,4 @@
-import { OpenAPI, mdchain } from '@aomex/core';
+import { OpenAPI } from '@aomex/core';
 import { WebApp } from '@aomex/web';
 import { expect, test } from 'vitest';
 import { JWT } from '../src';
@@ -11,7 +11,7 @@ import { readFileSync } from 'fs';
 test('[401] 无令牌', async () => {
   const jwt = new JWT({ secret: 'shhhh' });
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   await supertest(app.listen()).get('/').expect(401);
 });
@@ -19,7 +19,7 @@ test('[401] 无令牌', async () => {
 test('报头令牌', async () => {
   const jwt = new JWT({ secret: 'shhhh' });
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   const token = jwt.sign({ foo: 'bar' });
 
@@ -42,7 +42,7 @@ test('报头令牌', async () => {
 test('[401] 报头令牌无效', async () => {
   const jwt = new JWT({ secret: 'shhhh' });
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   const token = jwt.sign({ foo: 'bar' });
   await supertest(app.listen()).get('/').set('Authorization', 'Bearer wrong').expect(401);
@@ -55,7 +55,7 @@ test('[401] 报头令牌无效', async () => {
 test('[401] 报头令牌格式错误', async () => {
   const jwt = new JWT({ secret: 'shhhh' });
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   const token = jwt.sign({});
 
@@ -68,7 +68,7 @@ test('tokenLoader', async () => {
     tokenLoader: (): string => jwt.sign({ foo: 'bar' }),
   });
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   await supertest(app.listen()).get('/').expect(404);
 });
@@ -79,7 +79,7 @@ test('tokenLoader也能抛出异常', async () => {
     tokenLoader: (ctx) => ctx.throw(401, '出错了'),
   });
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   await supertest(app.listen()).get('/').expect(401, '出错了');
 });
@@ -90,7 +90,7 @@ test('[401] tokenLoader返回了错误的token', async () => {
     tokenLoader: () => jsonwebtoken.sign({ foo: 'bar' }, 'bad-secret'),
   });
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   await supertest(app.listen()).get('/').expect(401);
 });
@@ -100,7 +100,7 @@ test('密码错误', async () => {
     secret: 'shhhh',
   });
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   const token = jsonwebtoken.sign({ foo: 'bar' }, 'different-shhhh');
 
@@ -116,7 +116,7 @@ test('多个密码', async () => {
     legacySecretOrPublicKey: ['different-shhhh', 'some-other-shhhhh'],
   });
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   const token = jsonwebtoken.sign({ foo: 'bar' }, 'different-shhhh');
 
@@ -134,7 +134,7 @@ test('多个密码', async () => {
 test('从cookie获取令牌', async () => {
   const jwt = new JWT({ secret: 'shhhh', tokenFromCookie: 'jwt' });
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   const token = jwt.sign({ foo: 'bar' });
 
@@ -145,7 +145,7 @@ test('从cookie获取令牌', async () => {
 test('从查询字符串获取令牌', async () => {
   const jwt = new JWT({ secret: 'shhhh', tokenFromQueryString: 'jwt' });
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   const token = jwt.sign({ foo: 'bar' });
 
@@ -156,7 +156,7 @@ test('从查询字符串获取令牌', async () => {
 test('令牌时效性', async () => {
   const jwt = new JWT({ secret: 'shhhh' });
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   const token = jwt.sign({ foo: 'bar' }, { expiresIn: '2s' });
 
@@ -174,7 +174,7 @@ test('令牌时效性', async () => {
 test('令牌被销毁', async () => {
   const jwt = new JWT({ secret: 'shhhh', isRevoked: async () => true });
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   const token = jwt.sign({ foo: 'bar' });
 
@@ -187,7 +187,7 @@ test('令牌被销毁', async () => {
 test('issuer匹配失败', async () => {
   const jwt = new JWT({ secret: 'shhhh', verifyOptions: { issuer: 'foo' } });
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   const token = jwt.sign({ foo: 'bar' }, { issuer: 'bar' });
 
@@ -208,7 +208,7 @@ test('密钥对', async () => {
   });
 
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   const token = jwt.sign({ foo: 'bar' }, { algorithm: 'RS256' });
 
@@ -229,7 +229,7 @@ test('错误的密钥对', async () => {
   });
 
   const app = new WebApp({
-    mount: mdchain.web.mount(jwt.middleware),
+    mount: [jwt.middleware],
   });
   const token = jwt.sign({ foo: 'bar' }, { algorithm: 'RS256' });
 

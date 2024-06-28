@@ -1,7 +1,7 @@
 import { expect, test, vitest } from 'vitest';
 import { Router, routers } from '../src';
 import { WebApp } from '@aomex/web';
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import supertest from 'supertest';
 
 test('前缀', async () => {
@@ -10,26 +10,27 @@ test('前缀', async () => {
   router.get('/bar', { action: spy });
 
   const app = new WebApp({
-    mount: mdchain.web.mount(routers([router])),
+    mount: [routers([router])],
   });
 
   await supertest(app.listen()).get('/test/foo/bar');
   expect(spy).toHaveBeenCalledOnce();
 });
 
-test('挂载中间件组', async () => {
+test('挂载中间件', async () => {
   let str = '';
 
   const router = new Router({
     prefix: '/test/foo',
-    mount: mdchain.web.mount(
+    mount: [
       middleware.web(async (_, next) => {
         str += 1;
         await next();
         str += 7;
       }),
-    ),
+    ],
   });
+
   router.get('/bar', {
     mount: [
       middleware.web(async (_, next) => {
@@ -48,8 +49,7 @@ test('挂载中间件组', async () => {
     },
   });
 
-  const appChain = mdchain.web.mount(routers([router]));
-  const app = new WebApp({ mount: appChain });
+  const app = new WebApp({ mount: [routers([router])] });
   await supertest(app.listen()).get('/test/foo/bar');
   expect(str).toBe('1234567');
 });
@@ -63,7 +63,7 @@ test.each(<const>['get', 'post', 'put', 'delete', 'patch'])(
     router[name](['/foo', '/bar'], { action: spy });
 
     const app = new WebApp({
-      mount: mdchain.web.mount(routers([router])),
+      mount: [routers([router])],
     });
     await Promise.all([
       supertest(app.listen())[name]('/foo'),
@@ -81,7 +81,7 @@ test('支持任意方法', async () => {
   router.all('/foo', { action: spy });
 
   const app = new WebApp({
-    mount: mdchain.web.mount(routers([router])),
+    mount: [routers([router])],
   });
 
   const agent = supertest(app.listen());
@@ -105,7 +105,7 @@ test('支持自定义方法', async () => {
   router.customize(['POST', 'DELETE'], '/foo', { action: spy });
 
   const app = new WebApp({
-    mount: mdchain.web.mount(routers([router])),
+    mount: [routers([router])],
   });
 
   const agent = supertest(app.listen());
@@ -132,7 +132,7 @@ test('params', async () => {
     },
   });
   const app = new WebApp({
-    mount: mdchain.web.mount(routers([router])),
+    mount: [routers([router])],
   });
   await supertest(app.listen()).get('/users/2/posts/5678');
   expect(spy).toHaveBeenCalledWith({ userId: '2', postId: '5678' });
@@ -148,7 +148,7 @@ test('一个router可注册多个route', async () => {
   router.get('/baz', { action: spy3 });
 
   const app = new WebApp({
-    mount: mdchain.web.mount(routers([router])),
+    mount: [routers([router])],
   });
 
   const agent = supertest(app.listen());
@@ -161,50 +161,4 @@ test('一个router可注册多个route', async () => {
   expect(spy1).toHaveBeenCalledTimes(2);
   expect(spy2).toHaveBeenCalledTimes(1);
   expect(spy3).toHaveBeenCalledTimes(1);
-});
-
-test('中间件组从全局组分离', async () => {
-  let str = '';
-  const appChain = mdchain.web
-    .mount(
-      middleware.web(async (_, next) => {
-        str += 1;
-        await next();
-        str += 6;
-      }),
-    )
-    .mount(
-      middleware.web(async (ctx, next) => {
-        const routerChain = appChain
-          .mount(
-            middleware.web(async (_, next) => {
-              str += 2;
-              await next();
-              str += 5;
-            }),
-          )
-          .mount(
-            middleware.web(async (_, next) => {
-              str += 3;
-              await next();
-              str += 4;
-            }),
-          );
-
-        const router = new Router({
-          mount: routerChain.mount(
-            middleware.web(() => {
-              str += ':';
-            }),
-          ),
-        });
-        router.get('/', { action: () => {} });
-        await router['collect'](ctx.app)['GET'][0]!.route(ctx, next);
-      }),
-    );
-
-  const app = new WebApp({ mount: appChain });
-
-  await supertest(app.listen()).get('/');
-  expect(str).toBe('123:456');
 });

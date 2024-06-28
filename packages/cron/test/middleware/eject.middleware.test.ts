@@ -1,18 +1,18 @@
 import { expect, test, vitest } from 'vitest';
 import { eject } from '../../src/middleware/eject.middleware';
 import { dirname, join } from 'path';
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import { ConsoleApp } from '@aomex/console';
 
 const testDir = dirname(import.meta.dirname);
 
 test('导出任务列表', async () => {
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(
+    mount: [
       eject({
         path: join(testDir, 'mock', 'commanders', 'eject.cmd.ts'),
       }),
-    ),
+    ],
   });
 
   const spy = vitest.spyOn(console, 'log').mockImplementation(() => {});
@@ -28,13 +28,12 @@ test('导出任务列表', async () => {
 test('无效指令继续往后执行', async () => {
   const spy = vitest.fn();
   const app = new ConsoleApp({
-    mount: mdchain.console
-      .mount(
-        eject({
-          path: join(testDir, '..', 'package.json'),
-        }),
-      )
-      .mount(middleware.console(spy)),
+    mount: [
+      eject({
+        path: join(testDir, '..', 'package.json'),
+      }),
+      middleware.console(spy),
+    ],
   });
   await app.run('cron:eject');
   expect(spy).toHaveBeenCalledTimes(0);

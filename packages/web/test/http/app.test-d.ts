@@ -1,4 +1,4 @@
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import { WebApp, WebContext } from '../../src';
 import { expectType } from 'ts-expect';
 import { HttpError } from 'http-errors';
@@ -34,8 +34,9 @@ import http from 'http';
 // 挂载
 {
   new WebApp({ mount: undefined });
-  new WebApp({ mount: mdchain.web });
-  new WebApp({ mount: mdchain.mixin });
+  new WebApp({ mount: [] });
+  //@ts-expect-error
+  new WebApp({ mount: {} });
   //@ts-expect-error
   new WebApp({ mount: middleware.web(() => {}) });
 }
@@ -45,7 +46,7 @@ import http from 'http';
   const app = new WebApp();
   app.on('error', (err, ctx) => {
     expectType<HttpError>(err);
-    expectType<WebContext>(ctx);
+    expectType<WebContext & WebApp.Props>(ctx);
   });
   // @ts-expect-error
   app.on('data', () => {});

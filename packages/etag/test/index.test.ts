@@ -2,13 +2,13 @@ import { createReadStream } from 'node:fs';
 import request from 'supertest';
 import { expect, test } from 'vitest';
 import { WebApp } from '@aomex/web';
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import { etag } from '../src';
 import { join } from 'node:path';
 
 test('没有响应内容时不设置etag', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(etag()),
+    mount: [etag()],
   });
 
   await request(app.listen())
@@ -20,12 +20,13 @@ test('没有响应内容时不设置etag', async () => {
 
 test('已经包含etag报文时，不再重新设置etag', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(etag()).mount(
+    mount: [
+      etag(),
       middleware.web((ctx) => {
         ctx.send({ hi: 'etag' });
         ctx.response.setHeader('Etag', '"foo"');
       }),
-    ),
+    ],
   });
 
   await request(app.listen())
@@ -37,11 +38,12 @@ test('已经包含etag报文时，不再重新设置etag', async () => {
 
 test('响应字符串时，添加etag报文', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(etag()).mount(
+    mount: [
+      etag(),
       middleware.web((ctx) => {
         ctx.send('Hello World');
       }),
-    ),
+    ],
   });
 
   await request(app.listen()).get('/').expect('ETag', '"b-Ck1VqNd45QIvq3AZd8XYQLvEhtA"');
@@ -49,11 +51,12 @@ test('响应字符串时，添加etag报文', async () => {
 
 test('响应Buffer时，添加etag报文', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(etag()).mount(
+    mount: [
+      etag(),
       middleware.web((ctx) => {
         ctx.send(Buffer.from('Hello World'));
       }),
-    ),
+    ],
   });
 
   await request(app.listen()).get('/').expect('ETag', '"b-Ck1VqNd45QIvq3AZd8XYQLvEhtA"');
@@ -61,11 +64,12 @@ test('响应Buffer时，添加etag报文', async () => {
 
 test('响应JSON时，添加etag报文', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(etag()).mount(
+    mount: [
+      etag(),
       middleware.web((ctx) => {
         ctx.send({ foo: 'bar' });
       }),
-    ),
+    ],
   });
 
   await request(app.listen()).get('/').expect('ETag', '"d-pedE0BZFQNM7HX6mFsKPL6l+dUo"');
@@ -73,11 +77,12 @@ test('响应JSON时，添加etag报文', async () => {
 
 test('带path的数据流时，添加etag报文，并携带W/', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(etag()).mount(
+    mount: [
+      etag(),
       middleware.web((ctx) => {
         ctx.send(createReadStream(join(import.meta.dirname, 'fixture', 'a.txt')));
       }),
-    ),
+    ],
   });
 
   await request(app.listen())
@@ -88,11 +93,12 @@ test('带path的数据流时，添加etag报文，并携带W/', async () => {
 
 test('手动开启携带W/', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(etag({ weak: true })).mount(
+    mount: [
+      etag({ weak: true }),
       middleware.web((ctx) => {
         ctx.send('Hello World');
       }),
-    ),
+    ],
   });
 
   await request(app.listen())

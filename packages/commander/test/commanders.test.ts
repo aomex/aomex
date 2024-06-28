@@ -2,7 +2,7 @@ import { expect, test, vitest } from 'vitest';
 import { Commander, commanders } from '../src';
 import { ConsoleApp, ConsoleMiddleware, collectConsoleDocument } from '@aomex/console';
 import { join } from 'node:path';
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 
 const dir = import.meta.dirname;
 
@@ -12,7 +12,7 @@ test('中间件', async () => {
 
 test('从路径动态加载', async () => {
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(commanders(join(dir, 'fixture'))),
+    mount: [commanders(join(dir, 'fixture'))],
   });
   await expect(app.run('aaa1')).resolves.toBe(0);
   await expect(app.run('bbb1')).resolves.toBe(0);
@@ -32,7 +32,7 @@ test('直接传入指令', async () => {
     },
   });
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(commanders([commander])),
+    mount: [commanders([commander])],
   });
   await expect(app.run('schedule:a')).resolves.toBe(0);
   expect(spy).toHaveBeenCalledWith('foo');
@@ -51,7 +51,7 @@ test('缓存指令实例', async () => {
     action: () => {},
   });
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(commanders([commander])),
+    mount: [commanders([commander])],
   });
 
   // @ts-expect-error
@@ -66,16 +66,13 @@ test('缓存指令实例', async () => {
   ]);
 
   expect(spy).toHaveBeenCalledTimes(1);
-  expect(spy).toHaveBeenCalledWith(app);
   spy.mockRestore();
 });
 
 test('未匹配上指令时继续其他中间件', async () => {
   const spy = vitest.fn();
   const app = new ConsoleApp({
-    mount: mdchain.console
-      .mount(commanders(join(dir, 'fixture')))
-      .mount(middleware.console(spy)),
+    mount: [commanders(join(dir, 'fixture')), middleware.console(spy)],
   });
   await app.run('aaa1');
   expect(spy).toHaveBeenCalledTimes(0);

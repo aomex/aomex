@@ -15,16 +15,6 @@ export const md = middleware.mixin(async (ctx, next) => {
 });
 ```
 
-## middleware-chain
-
-中间件组，上层应用可扩展
-
-```typescript
-import { mdchain } from '@aomex/core';
-
-export const box = mdchain.mixin.mount(md);
-```
-
 ## validator
 
 验证器，验证一切输入

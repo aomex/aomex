@@ -1,5 +1,5 @@
 import { ConsoleApp } from '@aomex/console';
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import { beforeEach, expect, test, vitest } from 'vitest';
 import { start } from '../../src/middleware/start.middleware';
 import { dirname, join } from 'path';
@@ -19,9 +19,7 @@ beforeEach(() => {
 
 test('无任务时自动结束', async () => {
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(
-      start({ path: join(testDir, 'mock', 'commanders', 'empty.cmd.ts'), port }),
-    ),
+    mount: [start({ path: join(testDir, 'mock', 'commanders', 'empty.cmd.ts'), port })],
   });
   await expect(app.run('cron:start')).resolves.toBe(0);
 });
@@ -31,9 +29,7 @@ test('执行任务', async () => {
     await sleep(1000);
   });
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(
-      start({ path: join(testDir, 'mock', 'commanders', 'start.cmd.ts'), port }),
-    ),
+    mount: [start({ path: join(testDir, 'mock', 'commanders', 'start.cmd.ts'), port })],
   });
   const promise = app.run('cron:start');
   await sleep(500);
@@ -45,9 +41,9 @@ test('执行任务', async () => {
 
 test('等待长任务完成后才能中断', { timeout: 9_000 }, async () => {
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(
+    mount: [
       start({ path: join(testDir, 'mock', 'commanders', 'start-delay.cmd.ts'), port }),
-    ),
+    ],
   });
   const spy = vitest.spyOn(Job.prototype, 'start').mockImplementation(async function (
     this: Job,
@@ -83,12 +79,12 @@ test('等待长任务完成后才能中断', { timeout: 9_000 }, async () => {
 
 test('使用监听获取正在执行的任务', { timeout: 9_000 }, async () => {
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(
+    mount: [
       start({
         path: join(testDir, 'mock', 'commanders', 'start-delay.cmd.ts'),
         port,
       }),
-    ),
+    ],
   });
 
   const startSpy = vitest
@@ -125,14 +121,13 @@ test('使用监听获取正在执行的任务', { timeout: 9_000 }, async () => 
 
 test('使用cron:stop结束任务', { timeout: 9_000 }, async () => {
   const app = new ConsoleApp({
-    mount: mdchain.console
-      .mount(
-        start({
-          path: join(testDir, 'mock', 'commanders', 'start-delay.cmd.ts'),
-          port,
-        }),
-      )
-      .mount(stop({ path: '', port })),
+    mount: [
+      start({
+        path: join(testDir, 'mock', 'commanders', 'start-delay.cmd.ts'),
+        port,
+      }),
+      stop({ path: '', port }),
+    ],
   });
   const spy = vitest
     .spyOn(Job.prototype, 'runChildProcess')
@@ -151,9 +146,10 @@ test('使用cron:stop结束任务', { timeout: 9_000 }, async () => {
 test('不是cron:start指令则继续往后执行', async () => {
   const spy = vitest.fn();
   const app = new ConsoleApp({
-    mount: mdchain.console
-      .mount(start({ path: join(testDir, 'mock', 'commanders', 'empty.cmd.ts'), port }))
-      .mount(middleware.console(spy)),
+    mount: [
+      start({ path: join(testDir, 'mock', 'commanders', 'empty.cmd.ts'), port }),
+      middleware.console(spy),
+    ],
   });
   await app.run('cron:start');
   expect(spy).toHaveBeenCalledTimes(0);

@@ -1,6 +1,6 @@
 import { expect, test, vitest } from 'vitest';
 import { Commander, commanders } from '../src';
-import { compose, mdchain, middleware, rule } from '@aomex/core';
+import { middleware, rule } from '@aomex/core';
 import { ConsoleApp, collectConsoleDocument, options } from '@aomex/console';
 
 test('前缀', async () => {
@@ -8,7 +8,7 @@ test('前缀', async () => {
   const spy = vitest.fn();
   commander.create('a', { action: spy });
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(commanders([commander])),
+    mount: [commanders([commander])],
   });
 
   await app.run('schedule:a');
@@ -19,13 +19,13 @@ test('挂载中间件组', async () => {
   let str = '';
 
   const commander = new Commander({
-    mount: mdchain.console.mount(
+    mount: [
       middleware.console(async (_, next) => {
         str += 1;
         await next();
         str += 7;
       }),
-    ),
+    ],
   });
   commander.create('foo', {
     mount: [
@@ -45,8 +45,7 @@ test('挂载中间件组', async () => {
     },
   });
 
-  const appChain = mdchain.console.mount(commanders([commander]));
-  const app = new ConsoleApp({ mount: appChain });
+  const app = new ConsoleApp({ mount: [commanders([commander])] });
   await app.run('foo');
   expect(str).toBe('1234567');
 });
@@ -61,61 +60,13 @@ test('一个commander可注册多个command', async () => {
   commander.create('c', { action: spy3 });
 
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(commanders([commander])),
+    mount: [commanders([commander])],
   });
 
   await Promise.all([app.run('t:a'), app.run('t:b'), app.run('t:c'), app.run('t:a')]);
   expect(spy1).toHaveBeenCalledTimes(2);
   expect(spy2).toHaveBeenCalledTimes(1);
   expect(spy3).toHaveBeenCalledTimes(1);
-});
-
-test('中间件组从全局组分离', async () => {
-  let str = '';
-  const appChain = mdchain.console
-    .mount(
-      middleware.console(async (_, next) => {
-        str += 1;
-        await next();
-        str += 6;
-      }),
-    )
-    .mount(
-      middleware.console(async (ctx, next) => {
-        const routerChain = appChain
-          .mount(
-            middleware.console(async (_, next) => {
-              str += 2;
-              await next();
-              str += 5;
-            }),
-          )
-          .mount(
-            middleware.console(async (_, next) => {
-              str += 3;
-              await next();
-              str += 4;
-            }),
-          );
-
-        const commander = new Commander({
-          mount: routerChain.mount(
-            middleware.console(() => {
-              str += ':';
-            }),
-          ),
-        });
-        commander.create('foo', { action: () => {} });
-        await compose([commander['toMiddleware'](ctx.app)])(ctx, next);
-      }),
-    );
-
-  const app = new ConsoleApp({
-    mount: appChain,
-  });
-
-  await app.run('foo');
-  expect(str).toBe('123:456');
 });
 
 test('文档', async () => {
@@ -147,7 +98,7 @@ test('文档', async () => {
   const doc = {};
   await collectConsoleDocument({
     document: doc,
-    middlewareList: [commander['toMiddleware'](new ConsoleApp())],
+    middlewareList: [commander['toMiddleware']()],
     app: new ConsoleApp(),
   });
   expect(doc).toMatchInlineSnapshot(`

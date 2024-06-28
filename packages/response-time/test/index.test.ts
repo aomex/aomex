@@ -2,10 +2,10 @@ import { WebApp } from '@aomex/web';
 import request from 'supertest';
 import { test } from 'vitest';
 import { responseTime } from '../src';
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 
 test('增加报头 x-response-time', () => {
-  const app = new WebApp({ mount: mdchain.web.mount(responseTime) });
+  const app = new WebApp({ mount: [responseTime] });
 
   return request(app.listen())
     .get('/')
@@ -15,11 +15,12 @@ test('增加报头 x-response-time', () => {
 
 test('报错不影响', () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(responseTime).mount(
+    mount: [
+      responseTime,
       middleware.web((ctx) => {
         ctx.throw(400);
       }),
-    ),
+    ],
   });
 
   return request(app.listen())

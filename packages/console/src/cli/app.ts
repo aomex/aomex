@@ -2,52 +2,57 @@ import EventEmitter from 'node:events';
 import { EOL } from 'node:os';
 import { styleText } from 'node:util';
 import { hideBin } from 'yargs/helpers';
-import {
-  I18n,
-  Middleware,
-  MixinMiddlewareChain,
-  compose,
-  flattenMiddlewareToken,
-  i18n,
-} from '@aomex/core';
+import { I18n, Middleware, compose, i18n } from '@aomex/core';
 import { ConsoleInput } from './input';
 import { ConsoleTerminal } from './terminal';
 import { ConsoleContext } from './context';
-import type { ConsoleMiddlewareChain } from '../override';
 import { helpLogger } from '../middleware/help-logger';
+import type { ConsoleMiddlewareToken } from '../override';
+import type { Union2Intersection } from '@aomex/internal-tools';
 
-export interface ConsoleAppOption {
-  /**
-   * 全局中间件组，挂载后该组会被打上标记。
-   * ```typescript
-   * const appChain = mdchain.console.mount(md1).mount(md2);
-   * const chain1 = appChain.mount(md3);
-   * const chain2 = chain1.mount(md4);
-   *
-   * const app = new ConsoleApp({ box: appChain });
-   * ```
-   */
-  mount?: ConsoleMiddlewareChain | MixinMiddlewareChain;
-  locale?: I18n.LocaleName;
+export namespace ConsoleApp {
+  export interface Option<T extends ConsoleMiddlewareToken[] | []> {
+    /**
+     * 全局中间件
+     * ```typescript
+     *
+     * const app = new ConsoleApp({ mount: [md1, md2] });
+     *
+     * declare module '@aomex/console' {
+     *   namespace ConsoleApp {
+     *     type T = ConsoleApp.Infer<typeof app>;
+     *     interface Props extends T {}
+     *   }
+     * }
+     * ```
+     */
+    mount?: T;
+    locale?: I18n.LocaleName;
+  }
+
+  export type Infer<T> =
+    T extends ConsoleApp<infer U>
+      ? U extends any[]
+        ? Union2Intersection<Middleware.CollectArrayType<U[number]>>
+        : unknown
+      : unknown;
+
+  export interface Props {}
 }
 
-export class ConsoleApp extends EventEmitter<{
-  error: [err: Error, ctx: ConsoleContext, level: number];
+export class ConsoleApp<
+  T extends ConsoleMiddlewareToken[] | [] = any[],
+> extends EventEmitter<{
+  error: [err: Error, ctx: ConsoleContext & ConsoleApp.Props, level: number];
 }> {
   level: number = 0;
   protected readonly point?: string;
   protected readonly middlewareList: Middleware[];
 
-  constructor(protected readonly options: ConsoleAppOption = {}) {
+  constructor(protected readonly options: ConsoleApp.Option<T> = {}) {
     super();
-    if (options.locale) {
-      i18n.setLocale(options.locale);
-    }
-    this.middlewareList = [];
-    if (options.mount) {
-      this.point = options.mount['createPoint']();
-      this.middlewareList = flattenMiddlewareToken(options.mount);
-    }
+    i18n.setLocale(options.locale || 'zh_CN');
+    this.middlewareList = options.mount || [];
   }
 
   /**
@@ -75,7 +80,13 @@ export class ConsoleApp extends EventEmitter<{
       await compose([helpLogger(this.middlewareList), ...this.middlewareList])(ctx);
       return 0;
     } catch (e) {
-      this.emit('error', e as Error, ctx, currentLevel);
+      this.emit(
+        'error',
+        e as Error,
+        // @ts-expect-error
+        ctx,
+        currentLevel,
+      );
       return 1;
     } finally {
       --this.level;

@@ -1,6 +1,6 @@
 import '../../src';
 import { ConsoleApp } from '@aomex/console';
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import { beforeEach, expect, test, vitest } from 'vitest';
 import { dirname, join } from 'path';
 import { stop } from '../../src/middleware/stop.middleware';
@@ -30,7 +30,7 @@ test('连接服务', async () => {
   server.listen(port);
 
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(stop({ path: '', port })),
+    mount: [stop({ path: '', port })],
   });
   const code = await app.run('cron:stop');
   await new Promise((resolve) => server.close(resolve));
@@ -42,14 +42,13 @@ test('连接服务', async () => {
 test('无效指令继续往后执行', { timeout: 9_000 }, async () => {
   const spy = vitest.fn();
   const app = new ConsoleApp({
-    mount: mdchain.console
-      .mount(
-        stop({
-          path: join(testDir, '..', 'package.json'),
-          port,
-        }),
-      )
-      .mount(middleware.console(spy)),
+    mount: [
+      stop({
+        path: join(testDir, '..', 'package.json'),
+        port,
+      }),
+      middleware.console(spy),
+    ],
   });
   await app.run('cron:stop');
   expect(spy).toHaveBeenCalledTimes(0);
@@ -60,7 +59,7 @@ test('无效指令继续往后执行', { timeout: 9_000 }, async () => {
 
 test('监听了无效的端口', { timeout: 9_000 }, async () => {
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(stop({ path: '', port })),
+    mount: [stop({ path: '', port })],
   });
   const spy = vitest.spyOn(console, 'warn');
   await expect(app.run('cron:stop')).resolves.toBe(0);

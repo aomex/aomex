@@ -1,20 +1,17 @@
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import { Commander } from '../src';
 import { expectType, type TypeEqual } from 'ts-expect';
-import type { ConsoleContext } from '@aomex/console';
+import { ConsoleApp, type ConsoleContext } from '@aomex/console';
 
 // 创建实例
 {
   new Commander();
   new Commander({});
   new Commander({ prefix: '/' });
-  new Commander({ mount: mdchain.console });
+  new Commander({ mount: [] });
+  new Commander({ mount: [middleware.console(() => {})] });
   // @ts-expect-error
-  new Commander({ mount: mdchain.mixin });
-  // @ts-expect-error
-  new Commander({ mount: mdchain.web });
-  // @ts-expect-error
-  new Commander({ mount: middleware.console(() => {}) });
+  new Commander({ mount: {} });
 }
 
 // 创建路由
@@ -30,9 +27,21 @@ import type { ConsoleContext } from '@aomex/console';
 }
 
 // 中间件
+declare module '@aomex/console' {
+  namespace ConsoleApp {
+    type T = ConsoleApp.Infer<typeof app>;
+    interface Props extends T {}
+  }
+}
+const app = new ConsoleApp({
+  mount: [
+    middleware.console<{ abcde: boolean }>(() => {}),
+    middleware.console<{ foo?: string }>(() => {}),
+  ],
+});
 {
   const commander = new Commander({
-    mount: mdchain.console.mount(middleware.console<{ x: { y: 'z' } }>(() => {})),
+    mount: [middleware.console<{ x: { y: 'z' } }>(() => {})],
   });
 
   commander.create('/', {
@@ -45,16 +54,13 @@ import type { ConsoleContext } from '@aomex/console';
       expectType<TypeEqual<{ y: 'z' }, typeof x>>(true);
       expectType<boolean>(ctx.a);
       expectType<string | undefined>(ctx.b);
+      expectType<boolean>(ctx.abcde);
+      expectType<string | undefined>(ctx.foo);
     },
   });
 
   commander.create('', {
-    mount: [
-      middleware.console(() => {}),
-      middleware.mixin(() => {}),
-      mdchain.console,
-      mdchain.mixin,
-    ],
+    mount: [middleware.console(() => {}), middleware.mixin(() => {})],
     action: () => {},
   });
 
@@ -66,7 +72,7 @@ import type { ConsoleContext } from '@aomex/console';
 
   commander.create('', {
     // @ts-expect-error
-    mount: [mdchain.web(() => {})],
+    mount: [middleware.web(() => {})],
     action: () => {},
   });
 }
@@ -74,7 +80,7 @@ import type { ConsoleContext } from '@aomex/console';
 // Data Transfer Object (DTO)
 {
   const commander = new Commander({
-    mount: mdchain.console.mount(middleware.console<{ x: { y: 'z' } }>(() => {})),
+    mount: [middleware.console<{ x: { y: 'z' } }>(() => {})],
   });
 
   class Test {

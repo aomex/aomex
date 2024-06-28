@@ -1,32 +1,29 @@
-import {
-  mdchain,
-  compose,
-  middleware,
-  flattenMiddlewareToken,
-  type ComposeFn,
-} from '@aomex/core';
-import { toArray } from '@aomex/internal-tools';
+import { Middleware, compose, middleware, type ComposeFn } from '@aomex/core';
+import { toArray, type Union2Intersection } from '@aomex/internal-tools';
 import { Builder, type BuilderOptions } from './builder';
 import {
-  type ConsoleApp,
+  ConsoleApp,
   type ConsoleMiddleware,
-  type ConsoleMiddlewareChain,
   type ConsoleMiddlewareToken,
 } from '@aomex/console';
 
-export interface CommanderOptions<Props extends object = object> {
+export interface CommanderOptions<T extends ConsoleMiddlewareToken[] | []> {
   prefix?: string;
-  mount?: ConsoleMiddlewareChain<Props>;
+  mount?: T;
 }
 
-export class Commander<Props extends object = object> {
-  protected readonly middlewareChain: ConsoleMiddlewareChain;
+export class Commander<
+  T extends ConsoleMiddlewareToken[] | [] = any[],
+  Props extends object | unknown = ConsoleApp.Props &
+    Union2Intersection<Middleware.CollectArrayType<T[number]>>,
+> {
+  protected readonly middlewareList: ConsoleMiddlewareToken[];
   protected readonly prefix: string;
   protected readonly builders: Builder[] = [];
 
-  constructor(protected readonly opts: CommanderOptions<Props> = {}) {
+  constructor(protected readonly opts: CommanderOptions<T> = {}) {
     this.prefix = opts.prefix || '';
-    this.middlewareChain = opts.mount || mdchain.console;
+    this.middlewareList = opts.mount || [];
   }
 
   public create<T extends ConsoleMiddlewareToken<object>[] | []>(
@@ -38,14 +35,12 @@ export class Commander<Props extends object = object> {
     return undefined as any;
   }
 
-  protected toMiddleware(app: ConsoleApp): ConsoleMiddleware {
+  protected toMiddleware(): ConsoleMiddleware {
     const builders = [...this.builders];
     const buildersLength = builders.length;
-    const middlewareList = flattenMiddlewareToken(
-      this.middlewareChain['split'](app['point']),
-    );
+
     const commandFn: ComposeFn[] = builders.map((builder) => {
-      return compose(middlewareList.concat(builder['middlewareList']));
+      return compose(this.middlewareList.concat(builder['middlewareList']));
     });
 
     return middleware.console({
@@ -63,25 +58,25 @@ export class Commander<Props extends object = object> {
         return next();
       },
       help: {
-        async onDocument(doc, { children, collectCommand }) {
+        onDocument: async (doc, { children, collectCommand }) => {
           for (const builder of builders) {
             for (const commandName of builder.commands) {
               doc[commandName] = { ...builder.docs };
               collectCommand(
                 commandName,
-                middlewareList.concat(builder['middlewareList']),
+                this.middlewareList.concat(builder['middlewareList']),
               );
             }
           }
 
-          const totalMiddlewareList = [...middlewareList];
+          const totalMiddlewareList = [...this.middlewareList];
           for (const builder of builders) {
             totalMiddlewareList.push(...builder['middlewareList']);
           }
           await children(totalMiddlewareList);
         },
-        async postDocument(_, { children }) {
-          const totalMiddlewareList = [...middlewareList];
+        postDocument: async (_, { children }) => {
+          const totalMiddlewareList = [...this.middlewareList];
           for (const builder of builders) {
             totalMiddlewareList.push(...builder['middlewareList']);
           }

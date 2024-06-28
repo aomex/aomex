@@ -1,7 +1,7 @@
 import { afterEach, expect, test, vitest } from 'vitest';
 import { openapi } from '../src';
 import { ConsoleApp, ConsoleMiddleware } from '@aomex/console';
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import { readFileSync, rmSync } from 'fs';
@@ -20,7 +20,7 @@ test('执行指令', async () => {
   const file = join(tmpdir(), Math.random() + Date.now() + 'openapi.json');
 
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(openapi({ routers: [], saveToFile: file })),
+    mount: [openapi({ routers: [], saveToFile: file })],
   });
 
   const code = await app.run('openapi');
@@ -33,7 +33,7 @@ test('执行指令', async () => {
 test('未命中则继续执行中间件', async () => {
   const spy = vitest.fn();
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(openapi({ routers: [] })).mount(middleware.console(spy)),
+    mount: [openapi({ routers: [] }), middleware.console(spy)],
   });
 
   await app.run('openapi');
