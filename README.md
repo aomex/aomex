@@ -24,11 +24,7 @@
 # 安装
 
 ```bash
-pnpm create aomex
-# 或者
-yarn create aomex
-# 或者
-npm create aomex
+npm create aomex --project my-aomex --pnpm
 ```
 
 # 应用平台
