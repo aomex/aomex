@@ -80,13 +80,8 @@ export class ConsoleApp<
       await compose([helpLogger(this.middlewareList), ...this.middlewareList])(ctx);
       return 0;
     } catch (e) {
-      this.emit(
-        'error',
-        e as Error,
-        // @ts-expect-error
-        ctx,
-        currentLevel,
-      );
+      // @ts-ignore
+      this.emit('error', e as Error, ctx, currentLevel);
       return 1;
     } finally {
       --this.level;
