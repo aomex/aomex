@@ -1,3 +1,3 @@
-# @aomex/core
+# @aomex/cors
 
 文档：https://aomex.js.org
