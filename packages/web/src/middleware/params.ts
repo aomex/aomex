@@ -3,17 +3,6 @@ import type { WebMiddleware } from '../override';
 
 /**
  * 验证请求路径参数
- *
- * ```typescript
- * // ctx.request.params = { id: '100', name: 'aomex' };
- * chain.web
- *   .mount(params({
- *     id: rule.int().max(1000),
- *   }))
- *   .mount(middleware.web((ctx, next) => {
- *     console.log(ctx.params); // { id: 100 }
- *   }));
- * ```
  */
 export const params = <T extends { [key: string]: P }, P extends Validator>(
   fields: T,

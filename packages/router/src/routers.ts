@@ -4,7 +4,7 @@ import {
   type GlobPathOptions,
   getFileValues,
 } from '@aomex/internal-file-import';
-import { WebContext, WebRequest, type WebMiddleware } from '@aomex/web';
+import { WebRequest, type WebMiddleware } from '@aomex/web';
 import { Router } from './router';
 import type { Builder } from './builder';
 
@@ -38,10 +38,10 @@ export const routers = (options: GlobPathOptions | Router[]): WebMiddleware => {
     });
   }
 
-  const initialize = (ctx: WebContext) => {
+  const initialize = () => {
     for (let i = 0; i < routers.length; ++i) {
       const router = routers[i]!;
-      const subCollections = router['collect'](ctx.app);
+      const subCollections = router['collect']();
       const methods = Object.keys(
         subCollections,
       ) as unknown as (typeof Builder)['METHODS'];
@@ -54,7 +54,7 @@ export const routers = (options: GlobPathOptions | Router[]): WebMiddleware => {
 
   return middleware.web(async (ctx, next) => {
     if (!routers) await promise;
-    if (!initialized) initialize(ctx);
+    if (!initialized) initialize();
 
     const { method, pathname } = ctx.request;
     const collection = collections[method];

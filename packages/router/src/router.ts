@@ -1,21 +1,25 @@
-import { mdchain, compose, flattenMiddlewareToken, type ComposeFn } from '@aomex/core';
-import { toArray } from '@aomex/internal-tools';
-import { WebApp, WebMiddlewareChain, type WebMiddlewareToken } from '@aomex/web';
+import { Middleware, compose, type ComposeFn } from '@aomex/core';
+import { toArray, type Union2Intersection } from '@aomex/internal-tools';
+import { type WebApp, type WebMiddlewareToken } from '@aomex/web';
 import { Builder, type BuilderOptions } from './builder';
 
-export interface RouterOptions<Props extends object = object> {
+export interface RouterOptions<T extends WebMiddlewareToken[] | [] = any[]> {
   prefix?: string;
-  mount?: WebMiddlewareChain<Props>;
+  mount?: T;
 }
 
-export class Router<Props extends object = object> {
-  protected readonly middlewareChain: WebMiddlewareChain;
+export class Router<
+  T extends WebMiddlewareToken[] | [] = any[],
+  Props extends object | unknown = WebApp.Props &
+    Union2Intersection<Middleware.CollectArrayType<T[number]>>,
+> {
+  protected readonly middlewareList: WebMiddlewareToken[];
   protected readonly prefix: string;
   protected readonly builders: Builder[] = [];
 
-  constructor(protected readonly opts: RouterOptions<Props> = {}) {
+  constructor(protected readonly opts: RouterOptions<T> = {}) {
     this.prefix = opts.prefix || '';
-    this.middlewareChain = opts.mount || mdchain.web;
+    this.middlewareList = opts.mount || [];
   }
 
   public get<T extends WebMiddlewareToken[] | []>(
@@ -77,7 +81,7 @@ export class Router<Props extends object = object> {
     options.disable !== true && this.builders.push(builder);
   }
 
-  protected collect(app: WebApp) {
+  protected collect() {
     const collections: Record<
       (typeof Builder)['METHODS'][number],
       { match: Builder['match']; route: ComposeFn }[]
@@ -89,16 +93,12 @@ export class Router<Props extends object = object> {
       DELETE: [],
     };
 
-    const routerMiddlewares = flattenMiddlewareToken(
-      this.middlewareChain['split'](app['point']),
-    );
-
     for (let i = 0; i < this.builders.length; ++i) {
       const builder = this.builders[i]!;
       for (const method of builder['methods']) {
         collections[method].push({
           match: builder.match.bind(builder),
-          route: compose(routerMiddlewares.concat(builder['middlewareList'])),
+          route: compose(this.middlewareList.concat(builder['middlewareList'])),
         });
       }
     }

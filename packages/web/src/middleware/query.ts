@@ -3,18 +3,6 @@ import type { WebMiddleware } from '../override';
 
 /**
  * 验证请求查询字符串
- *
- * ```typescript
- * // ctx.request.query = { id: '100', name: 'aomex' };
- * chain.web
- *   .mount(query({
- *     id: rule.int().max(1000),
- *     name: rule.string(),
- *   }))
- *   .mount(middleware.web((ctx, next) => {
- *     console.log(ctx.query); // { id: 100 }
- *   }));
- * ```
  */
 export const query = <T extends { [key: string]: P }, P extends Validator>(
   fields: T,

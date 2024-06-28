@@ -1,20 +1,17 @@
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import { Router } from '../src';
 import { type TypeEqual, expectType } from 'ts-expect';
-import { WebContext, response } from '@aomex/web';
+import { WebApp, WebContext, response } from '@aomex/web';
 
 // 创建实例
 {
   new Router();
   new Router({});
   new Router({ prefix: '/' });
-  new Router({ mount: mdchain.web });
+  new Router({ mount: [] });
+  new Router({ mount: [middleware.web(() => {})] });
   // @ts-expect-error
-  new Router({ mount: mdchain.mixin });
-  // @ts-expect-error
-  new Router({ mount: mdchain.console });
-  // @ts-expect-error
-  new Router({ mount: middleware.web(() => {}) });
+  new Router({ mount: {} });
 }
 
 // 创建路由
@@ -30,9 +27,21 @@ import { WebContext, response } from '@aomex/web';
 }
 
 // 中间件
+declare module '@aomex/web' {
+  namespace WebApp {
+    type T = WebApp.Infer<typeof app>;
+    interface Props extends T {}
+  }
+}
+const app = new WebApp({
+  mount: [
+    middleware.web<{ abcde: boolean }>(() => {}),
+    middleware.web<{ foo?: string }>(() => {}),
+  ],
+});
 {
   const router = new Router({
-    mount: mdchain.web.mount(middleware.web<{ x: { y: 'z' } }>(() => {})),
+    mount: [middleware.web<{ x: { y: 'z' } }>(() => {})],
   });
 
   router.get('/', {
@@ -45,16 +54,13 @@ import { WebContext, response } from '@aomex/web';
       expectType<TypeEqual<{ y: 'z' }, typeof x>>(true);
       expectType<boolean>(ctx.a);
       expectType<string | undefined>(ctx.b);
+      expectType<boolean>(ctx.abcde);
+      expectType<string | undefined>(ctx.foo);
     },
   });
 
   router.get('', {
-    mount: [
-      middleware.web(() => {}),
-      middleware.mixin(() => {}),
-      mdchain.web,
-      mdchain.mixin,
-    ],
+    mount: [middleware.web(() => {}), middleware.mixin(() => {})],
     action: () => {},
   });
 
@@ -66,7 +72,7 @@ import { WebContext, response } from '@aomex/web';
 
   router.get('', {
     // @ts-expect-error
-    mount: [mdchain.console(() => {})],
+    mount: [middleware.console(() => {})],
     action: () => {},
   });
 }
@@ -74,7 +80,7 @@ import { WebContext, response } from '@aomex/web';
 // Data Transfer Object (DTO)
 {
   const router = new Router({
-    mount: mdchain.web.mount(middleware.web<{ x: { y: 'z' } }>(() => {})),
+    mount: [middleware.web<{ x: { y: 'z' } }>(() => {})],
   });
 
   class Test {

@@ -9,6 +9,8 @@ export declare namespace Middleware {
         : never;
 
   export type Fn<Ctx = any> = (ctx: Ctx, next: Next) => any;
+
+  export type CollectArrayType<T> = T extends Middleware<infer R> ? R : unknown;
 }
 
 export interface MiddlewarePlatform {}

@@ -2,13 +2,13 @@ import { expect, test } from 'vitest';
 import { cron } from '../../src';
 import {
   ConsoleApp,
-  ConsoleMiddlewareChain,
+  ConsoleMiddleware,
   collectConsoleDocument,
   type ConsoleDocument,
 } from '@aomex/console';
 
 test('是中间件组', () => {
-  expect(cron('')).toBeInstanceOf(ConsoleMiddlewareChain);
+  expect(cron('')).toBeInstanceOf(ConsoleMiddleware);
 });
 
 test('文档', async () => {
@@ -16,7 +16,7 @@ test('文档', async () => {
 
   await collectConsoleDocument({
     document: docs,
-    middlewareList: cron('')['middlewareList'],
+    middlewareList: [cron('')],
     app: new ConsoleApp(),
   });
   expect(docs).toMatchInlineSnapshot(`

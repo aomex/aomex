@@ -1,32 +1,30 @@
-import {
-  middleware,
-  type OpenAPI,
-  flattenMiddlewareToken,
-  Middleware,
-} from '@aomex/core';
+import { Middleware, middleware, type OpenAPI } from '@aomex/core';
 import type { Union2Intersection } from '@aomex/internal-tools';
 import { WebContext, type WebMiddlewareToken } from '@aomex/web';
 import { match } from 'path-to-regexp';
 
 export declare namespace Builder {
-  export type DTO<Props extends object, T extends WebMiddlewareToken[] | []> = Omit<
-    Props & Union2Intersection<CollectArrayType<T[number]>>,
+  export type DTO<
+    Props extends object | unknown,
+    T extends WebMiddlewareToken[] | [],
+  > = Omit<
+    Props & Union2Intersection<Middleware.CollectArrayType<T[number]>>,
     ResponseMethods
   >;
 
   export type Interface<
-    Props extends object,
+    Props extends object | unknown,
     T extends WebMiddlewareToken[] | [],
-  > = Props & Union2Intersection<CollectArrayType<T[number]>>;
+  > = Props & Union2Intersection<Middleware.CollectArrayType<T[number]>>;
 
   export type Context<
-    Props extends object,
+    Props extends object | unknown,
     T extends WebMiddlewareToken[] | [],
   > = Interface<Props, T> & OverrideWebContext<Interface<Props, T>>;
 
   type ResponseMethods = 'send' | 'throw' | 'redirect';
 
-  type OverrideWebContext<Props extends object> = 'send' extends keyof Props
+  type OverrideWebContext<Props extends object | unknown> = 'send' extends keyof Props
     ? Omit<WebContext, ResponseMethods>
     : 'throw' extends keyof Props
       ? Omit<WebContext, ResponseMethods>
@@ -40,10 +38,8 @@ export declare namespace Builder {
   >;
 }
 
-type CollectArrayType<T> = T extends WebMiddlewareToken<infer R> ? R : object;
-
 export interface BuilderOptions<
-  Props extends object,
+  Props extends object | unknown,
   T extends WebMiddlewareToken[] | [],
 > {
   /**
@@ -61,13 +57,13 @@ const duplicatedSlash = /\/{2,}/g;
 const sideSlash = /(^\/|\/$)/g;
 
 export class Builder<
-  Props extends object = object,
+  Props extends object | unknown = object,
   T extends WebMiddlewareToken[] | [] = [],
 > {
   static METHODS = <const>['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
   public readonly docs?: Builder.Docs;
-  protected readonly middlewareList: Middleware[];
+  protected readonly middlewareList: WebMiddlewareToken[];
   protected readonly uriPatterns: [ReturnType<typeof match>, PureUri][];
 
   constructor(
@@ -77,9 +73,10 @@ export class Builder<
     options: BuilderOptions<Props, T>,
   ) {
     this.docs = options.docs;
-    this.middlewareList = flattenMiddlewareToken(options.mount).concat(
+    this.middlewareList = [
+      ...(options.mount || []),
       middleware.web((ctx, _) => options.action(ctx as any)),
-    );
+    ];
 
     const uriPatterns: typeof this.uriPatterns = (this.uriPatterns = []);
     for (let i = uris.length; i-- > 0; ) {

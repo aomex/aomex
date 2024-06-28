@@ -1,4 +1,4 @@
-import { flattenMiddlewareToken, type OpenAPI } from '@aomex/core';
+import { type OpenAPI } from '@aomex/core';
 import { getFileValues } from '@aomex/internal-file-import';
 import { Router } from '@aomex/router';
 import { WebMiddleware, WebRequest, type OpenApiInjector } from '@aomex/web';
@@ -26,7 +26,7 @@ export const parseFiles = async (document: OpenAPI.Document, files: string[]) =>
     );
 
     for (const router of routers) {
-      const groupMiddlewareList = flattenMiddlewareToken(router['middlewareChain']);
+      const groupMiddlewareList = router['middlewareList'];
       const builders = router['builders'];
 
       for (const builder of builders) {

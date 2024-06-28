@@ -1,7 +1,7 @@
 import { afterAll, expect, test, vitest } from 'vitest';
 import { ConsoleApp, ConsoleMiddleware } from '../../src';
 import { afterEach } from 'node:test';
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import { stripVTControlCharacters } from 'node:util';
 import { helpLogger } from '../../src/middleware/help-logger';
 
@@ -50,7 +50,7 @@ test('自定义指令', async () => {
     },
   });
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(md),
+    mount: [md],
   });
   await app.run('-h');
   expect(stripVTControlCharacters(lastMsg)).toMatchInlineSnapshot(`
@@ -85,7 +85,7 @@ test('展示指令详情', async () => {
     },
   });
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(md),
+    mount: [md],
   });
   await app.run('foo', '-h');
   expect(stripVTControlCharacters(lastMsg)).toMatchInlineSnapshot(`
@@ -110,7 +110,7 @@ test('设置show=false禁止显示用法', async () => {
     },
   });
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(md),
+    mount: [md],
   });
   await app.run('-h');
   expect(stripVTControlCharacters(lastMsg)).toMatchInlineSnapshot(`
@@ -160,7 +160,7 @@ test('指令参数', async () => {
     },
   });
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(md),
+    mount: [md],
   });
   await app.run('foo', '-h');
   expect(stripVTControlCharacters(lastMsg)).toMatchInlineSnapshot(`
@@ -177,7 +177,7 @@ test('指令参数', async () => {
 
 test('检测相似指令', async () => {
   const app = new ConsoleApp({
-    mount: mdchain.console.mount(
+    mount: [
       middleware.console({
         fn: () => {},
         help: {
@@ -189,7 +189,7 @@ test('检测相似指令', async () => {
           },
         },
       }),
-    ),
+    ],
   });
 
   await app.run('fooo');

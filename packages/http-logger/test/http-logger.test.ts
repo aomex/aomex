@@ -1,4 +1,4 @@
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import { WebApp } from '@aomex/web';
 import { stripVTControlCharacters } from 'node:util';
 import {
@@ -36,11 +36,12 @@ beforeEach(() => {
 
 test('只打印请求日志', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(httpLogger({ responseFormat: false, printer })).mount(
+    mount: [
+      httpLogger({ responseFormat: false, printer }),
       middleware.web((ctx) => {
         ctx.send(200, 'foo bar');
       }),
-    ),
+    ],
   });
   await supertest(app.listen()).get('/api');
   expect(msgs).toMatchInlineSnapshot(`
@@ -52,11 +53,12 @@ test('只打印请求日志', async () => {
 
 test('只打印响应日志', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(httpLogger({ requestFormat: false, printer })).mount(
+    mount: [
+      httpLogger({ requestFormat: false, printer }),
       middleware.web((ctx) => {
         ctx.send(200, 'foo bar');
       }),
-    ),
+    ],
   });
   const spy = vitest
     .spyOn(process, 'hrtime')
@@ -74,11 +76,12 @@ test('只打印响应日志', async () => {
 
 test('打印请求和响应日志', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(httpLogger({ printer })).mount(
+    mount: [
+      httpLogger({ printer }),
       middleware.web((ctx) => {
         ctx.send(200, 'foo bar');
       }),
-    ),
+    ],
   });
   const spy = vitest
     .spyOn(process, 'hrtime')
@@ -97,11 +100,12 @@ test('打印请求和响应日志', async () => {
 
 test('打印错误日志', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(httpLogger({ printer })).mount(
+    mount: [
+      httpLogger({ printer }),
       middleware.web((ctx) => {
         ctx.throw(400, 'bad request');
       }),
-    ),
+    ],
   });
   const spy = vitest
     .spyOn(process, 'hrtime')
@@ -120,11 +124,12 @@ test('打印错误日志', async () => {
 
 test('数据流也能获取长度', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(httpLogger({ printer })).mount(
+    mount: [
+      httpLogger({ printer }),
       middleware.web((ctx) => {
         ctx.send(createReadStream(join(import.meta.dirname, 'fixture', 'file.txt')));
       }),
-    ),
+    ],
   });
   const spy = vitest
     .spyOn(process, 'hrtime')
@@ -143,23 +148,20 @@ test('数据流也能获取长度', async () => {
 
 test('自定义令牌', async () => {
   const app = new WebApp({
-    mount: mdchain.web
-      .mount(
-        httpLogger({
-          requestFormat: '[method] [foo] [bar] [baz]',
-          responseFormat: '[foo]   [method]',
-          customTokens: {
-            foo: () => 'ifooo',
-            baz: async () => 'bazzz',
-          },
-          printer,
-        }),
-      )
-      .mount(
-        middleware.web((ctx) => {
-          ctx.send(200, 'foo bar');
-        }),
-      ),
+    mount: [
+      httpLogger({
+        requestFormat: '[method] [foo] [bar] [baz]',
+        responseFormat: '[foo]   [method]',
+        customTokens: {
+          foo: () => 'ifooo',
+          baz: async () => 'bazzz',
+        },
+        printer,
+      }),
+      middleware.web((ctx) => {
+        ctx.send(200, 'foo bar');
+      }),
+    ],
   });
 
   await supertest(app.listen()).get('/api');

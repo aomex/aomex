@@ -1,5 +1,5 @@
 import { Readable } from 'node:stream';
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import { WebApp } from '@aomex/web';
 import { expect, test } from 'vitest';
 import supertest from 'supertest';
@@ -7,11 +7,12 @@ import { prettyJson } from '../src';
 
 test('默认开启美化', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(prettyJson()).mount(
+    mount: [
+      prettyJson(),
       middleware.web((ctx) => {
         ctx.send({ foo: 'bar' });
       }),
-    ),
+    ],
   });
 
   await supertest(app.listen())
@@ -28,11 +29,12 @@ test('默认开启美化', async () => {
 
 test('null和undefined', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(prettyJson()).mount(
+    mount: [
+      prettyJson(),
       middleware.web((ctx) => {
         ctx.send({ foo: null, bar: undefined });
       }),
-    ),
+    ],
   });
 
   await supertest(app.listen())
@@ -48,11 +50,12 @@ test('null和undefined', async () => {
 
 test('通过enable=false关闭美化', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(prettyJson({ enable: false })).mount(
+    mount: [
+      prettyJson({ enable: false }),
       middleware.web((ctx) => {
         ctx.send({ foo: 'bar' });
       }),
-    ),
+    ],
   });
 
   await supertest(app.listen())
@@ -64,11 +67,12 @@ test('通过enable=false关闭美化', async () => {
 
 test('自定义空格', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(prettyJson({ spaces: 6 })).mount(
+    mount: [
+      prettyJson({ spaces: 6 }),
       middleware.web((ctx) => {
         ctx.send({ foo: 'bar' });
       }),
-    ),
+    ],
   });
 
   await supertest(app.listen())
@@ -84,13 +88,12 @@ test('自定义空格', async () => {
 
 test('通过查询字符串开启美化', async () => {
   const app = new WebApp({
-    mount: mdchain.web
-      .mount(prettyJson({ enable: false, query: 'make_it_pretty' }))
-      .mount(
-        middleware.web((ctx) => {
-          ctx.send({ foo: 'bar' });
-        }),
-      ),
+    mount: [
+      prettyJson({ enable: false, query: 'make_it_pretty' }),
+      middleware.web((ctx) => {
+        ctx.send({ foo: 'bar' });
+      }),
+    ],
   });
 
   await supertest(app.listen())
@@ -111,11 +114,12 @@ test('通过查询字符串开启美化', async () => {
 
 test('如果设置中不包含查询字符串，则查询字符串无效', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(prettyJson({ enable: false })).mount(
+    mount: [
+      prettyJson({ enable: false }),
       middleware.web((ctx) => {
         ctx.send({ foo: 'bar' });
       }),
-    ),
+    ],
   });
 
   await supertest(app.listen())
@@ -127,7 +131,8 @@ test('如果设置中不包含查询字符串，则查询字符串无效', async
 
 test('美化对象流', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(prettyJson({ spaces: 4 })).mount(
+    mount: [
+      prettyJson({ spaces: 4 }),
       middleware.web((ctx) => {
         const stream = new Readable({ objectMode: true });
         ctx.send(stream);
@@ -135,7 +140,7 @@ test('美化对象流', async () => {
         stream.push({ message: '2' });
         stream.push(null);
       }),
-    ),
+    ],
   });
 
   await supertest(app.listen())
@@ -159,7 +164,8 @@ test('美化对象流', async () => {
 
 test('普通流不美化', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(prettyJson({ spaces: 4 })).mount(
+    mount: [
+      prettyJson({ spaces: 4 }),
       middleware.web((ctx) => {
         const stream = new Readable();
         ctx.send(stream);
@@ -167,7 +173,7 @@ test('普通流不美化', async () => {
         stream.push(JSON.stringify({ message: '2' }));
         stream.push(null);
       }),
-    ),
+    ],
   });
 
   await supertest(app.listen())

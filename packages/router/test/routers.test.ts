@@ -2,7 +2,7 @@ import { expect, test, vitest } from 'vitest';
 import { Router, routers } from '../src';
 import { join } from 'node:path';
 import { WebApp } from '@aomex/web';
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import supertest from 'supertest';
 import { router as routerA } from './fixture/a.router';
 
@@ -10,7 +10,7 @@ const dir = import.meta.dirname;
 
 test('从路径动态加载', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(routers(join(dir, 'fixture'))),
+    mount: [routers(join(dir, 'fixture'))],
   });
   await supertest(app.listen()).get('/test1').expect(200, 'foo');
   await supertest(app.listen()).get('/test2').expect(200, 'bar');
@@ -24,14 +24,14 @@ test('直接传入路由', async () => {
     },
   });
   const app = new WebApp({
-    mount: mdchain.web.mount(routers([router])),
+    mount: [routers([router])],
   });
   await supertest(app.listen()).get('/test/users').expect(200, 'foo-bar');
 });
 
 test('路由实例只收集一次', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(routers(join(dir, 'fixture'))),
+    mount: [routers(join(dir, 'fixture'))],
   });
 
   // @ts-expect-error
@@ -58,7 +58,7 @@ test('路由分类', async () => {
   router.post('/foo', { action: () => {} });
 
   const app = new WebApp({
-    mount: mdchain.web.mount(routers([router])),
+    mount: [routers([router])],
   });
 
   const spy1 = vitest.spyOn(router['builders'][0]!, 'match');
@@ -84,7 +84,7 @@ test('路由分类', async () => {
 test('未匹配上路由时继续其他中间件', async () => {
   const spy = vitest.fn();
   const app = new WebApp({
-    mount: mdchain.web.mount(routers(join(dir, 'fixture'))).mount(middleware.web(spy)),
+    mount: [routers(join(dir, 'fixture')), middleware.web(spy)],
   });
   await supertest(app.listen()).get('/test1');
   expect(spy).toHaveBeenCalledTimes(0);
@@ -94,7 +94,7 @@ test('未匹配上路由时继续其他中间件', async () => {
 
 test('head请求与复用get请求', async () => {
   const app = new WebApp({
-    mount: mdchain.web.mount(routers(join(dir, 'fixture'))),
+    mount: [routers(join(dir, 'fixture'))],
   });
   await supertest(app.listen()).head('/test1').expect(200);
 });

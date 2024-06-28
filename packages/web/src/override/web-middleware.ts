@@ -1,6 +1,10 @@
-import { Middleware, type Next, type OpenAPI } from '@aomex/core';
+import { Middleware, MixinMiddleware, type Next, type OpenAPI } from '@aomex/core';
 import type { NonReadonly } from '@aomex/internal-tools';
 import type { WebContext, WebRequest } from '../http';
+
+export type WebMiddlewareToken<P extends object = object> =
+  | WebMiddleware<P>
+  | MixinMiddleware<P>;
 
 declare module '@aomex/core' {
   export interface MiddlewarePlatform {

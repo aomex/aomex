@@ -1,7 +1,7 @@
 import { expect, test, vitest } from 'vitest';
 import { helmet } from '../src';
 import { WebApp, WebMiddleware } from '@aomex/web';
-import { mdchain, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import supertest from 'supertest';
 
 test('中间件', async () => {
@@ -10,7 +10,7 @@ test('中间件', async () => {
 });
 
 test('默认设置报文', async () => {
-  const app = new WebApp({ mount: mdchain.web.mount(helmet()) });
+  const app = new WebApp({ mount: [helmet()] });
   await supertest(app.listen())
     .get('/')
     .expect((res) => {
@@ -35,7 +35,7 @@ test('默认设置报文', async () => {
 test('执行后面的中间件', async () => {
   const spy = vitest.fn();
   const app = new WebApp({
-    mount: mdchain.web.mount(helmet()).mount(middleware.web(spy)),
+    mount: [helmet(), middleware.web(spy)],
   });
   await supertest(app.listen()).get('/');
   expect(spy).toBeCalledTimes(1);

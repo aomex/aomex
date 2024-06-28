@@ -26,18 +26,16 @@ export const commanders = (options: GlobPathOptions | Commander[]): ConsoleMiddl
   return middleware.console({
     fn: async (ctx, next) => {
       if (!commanders) await promise;
-      composeFn ||= compose(
-        commanders.map((commander) => commander['toMiddleware'](ctx.app)),
-      );
+      composeFn ||= compose(commanders.map((commander) => commander['toMiddleware']()));
       return composeFn(ctx, next);
     },
     help: {
-      async onDocument(_, { app, children }) {
+      async onDocument(_, { children }) {
         await promise;
-        await children(commanders.map((commander) => commander['toMiddleware'](app)));
+        await children(commanders.map((commander) => commander['toMiddleware']()));
       },
-      async postDocument(_, { app, children }) {
-        await children(commanders.map((commander) => commander['toMiddleware'](app)));
+      async postDocument(_, { children }) {
+        await children(commanders.map((commander) => commander['toMiddleware']()));
       },
     },
   });
