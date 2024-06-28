@@ -2,9 +2,9 @@ import { i18n, middleware } from '@aomex/core';
 import type { ConsoleMiddleware } from '@aomex/console';
 import { generateDocument, type OpenapiOptions } from './lib/generate-document';
 
-const commandName = 'openapi';
-
 export const openapi = (options: OpenapiOptions): ConsoleMiddleware => {
+  const { commandName = 'openapi' } = options;
+
   return middleware.console({
     fn: async (ctx, next) => {
       if (ctx.input.command !== commandName) return next();
