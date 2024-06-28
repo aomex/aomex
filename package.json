@@ -10,7 +10,8 @@
     "test": "vitest",
     "build": "node scripts/remove-dist.mjs && pnpm --recursive --workspace-concurrency 1 prepublishOnly",
     "preinstall": "only-allow pnpm",
-    "prepare": "husky"
+    "prepare": "husky",
+    "deploy:main": "sh scripts/deploy-main.sh"
   },
   "volta": {
     "node": "20.13.0",
