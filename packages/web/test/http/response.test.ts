@@ -346,7 +346,7 @@ describe('error', () => {
     const spy = vitest.fn();
     app.addListener('error', spy);
     res.onError(new Error('foo bar'));
-    expect(res.body).toBe('Internal Server Error');
+    expect(res.body).toBe('foo bar');
     expect(res.statusCode).toBe(500);
     expect(spy).toHaveBeenCalledOnce();
   });
@@ -367,7 +367,7 @@ describe('error', () => {
         expose: false,
       }),
     );
-    expect(res.body).toBe('Forbidden');
+    expect(res.body).toBe('foo bar');
     expect(res.statusCode).toBe(403);
   });
 
@@ -384,7 +384,7 @@ describe('error', () => {
     res.onError(new Error('foo bar'));
     expect(res.getHeaders()).toMatchInlineSnapshot(`
       {
-        "content-length": 21,
+        "content-length": 7,
         "content-type": "text/plain; charset=utf-8",
       }
     `);
@@ -401,7 +401,7 @@ describe('error', () => {
     expect(res.getHeaders()).toMatchInlineSnapshot(`
       {
         "accept": "yy",
-        "content-length": 21,
+        "content-length": 7,
         "content-type": "text/plain; charset=utf-8",
         "origin": "xx",
       }

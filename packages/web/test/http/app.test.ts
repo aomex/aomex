@@ -23,6 +23,20 @@ describe('debug', () => {
     process.env['NODE_ENV'] = 'production';
     expect(app.debug).toBeFalsy();
   });
+
+  test('开启后500响应真实错误', async () => {
+    const app = new WebApp({
+      debug: true,
+      mount: [
+        middleware.web((ctx) => {
+          ctx.throw(500, '数据库配置有问题');
+        }),
+      ],
+    });
+    await supertest(app.listen()).get('/').expect(500, '数据库配置有问题');
+    app['options'].debug = false;
+    await supertest(app.listen()).get('/').expect(500, 'Internal Server Error');
+  });
 });
 
 test('挂载中间件', () => {

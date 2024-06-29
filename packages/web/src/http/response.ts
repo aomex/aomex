@@ -202,7 +202,8 @@ export class WebResponse extends ServerResponse {
       this.statusCode = code;
     }
 
-    this.body = err.expose ? err.message : statuses.message[this.statusCode]!;
+    this.body =
+      this.app.debug || err.expose ? err.message : statuses.message[this.statusCode]!;
     // @ts-ignore
     this.app.emit('error', err, this.ctx);
     this.flush();
