@@ -1,6 +1,6 @@
 {
   "name": "@aomex/core",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "aomex核心库",
   "scripts": {
     "prepublishOnly": "tsup"
