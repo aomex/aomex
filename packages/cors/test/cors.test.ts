@@ -373,8 +373,7 @@ describe('vary', () => {
       .get('/')
       .set('Origin', 'https://aomex.js.org')
       .expect('Vary', 'Accept-Encoding, Origin')
-      .expect(/Error/)
-      .expect(500);
+      .expect(500, 'Oops');
   });
 
   test('其他中间件报错并设置了vary=*', async () => {
@@ -394,8 +393,7 @@ describe('vary', () => {
       .get('/')
       .set('Origin', 'https://aomex.js.org')
       .expect('Vary', '*')
-      .expect(/Error/)
-      .expect(500);
+      .expect(500, 'Oops');
   });
 
   test('其他中间件报错并设置了vary而且包含了Origin，则不能重复添加', async () => {
@@ -415,8 +413,7 @@ describe('vary', () => {
       .get('/')
       .set('Origin', 'https://aomex.js.org')
       .expect('Vary', 'Origin, Accept-Encoding')
-      .expect(/Error/)
-      .expect(500);
+      .expect(500, 'Oops');
   });
 });
 
