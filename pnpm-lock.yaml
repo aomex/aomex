@@ -444,6 +444,15 @@ importers:
         specifier: workspace:^
         version: link:../web
 
+  packages/serve-static:
+    devDependencies:
+      '@aomex/core':
+        specifier: workspace:^
+        version: link:../core
+      '@aomex/web':
+        specifier: workspace:^
+        version: link:../web
+
   packages/web:
     dependencies:
       '@aomex/internal-tools':
