@@ -2,8 +2,8 @@
 
 set -ex
 
-git pull
 git switch develop
+git pull
 git rebase origin/main
 
 git switch main

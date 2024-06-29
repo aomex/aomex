@@ -11,7 +11,8 @@
     "build": "node scripts/remove-dist.mjs && pnpm --recursive --workspace-concurrency 1 prepublishOnly",
     "preinstall": "only-allow pnpm",
     "prepare": "husky",
-    "deploy:main": "sh scripts/deploy-main.sh"
+    "deploy:main": "sh scripts/develop-deploy-main.sh",
+    "sync:main": "sh scripts/develop-sync-main.sh"
   },
   "volta": {
     "node": "20.13.0",
