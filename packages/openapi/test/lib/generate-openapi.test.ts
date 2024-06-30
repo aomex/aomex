@@ -1,15 +1,8 @@
-import { afterEach, expect, test } from 'vitest';
-import { generateDocument } from '../../src';
-import { rmSync } from 'fs';
-
-afterEach(async () => {
-  try {
-    rmSync('openapi.json');
-  } catch {}
-});
+import { expect, test } from 'vitest';
+import { generateOpenapi } from '../../src';
 
 test('指定基础文档', async () => {
-  const result = await generateDocument({
+  const result = await generateOpenapi({
     routers: [],
     docs: {
       openapi: '3.0.2',
@@ -30,7 +23,7 @@ test('指定基础文档', async () => {
 });
 
 test('手动修复文档', async () => {
-  const result = await generateDocument({
+  const result = await generateOpenapi({
     routers: [],
     fix(data) {
       data.info.description = ' desc foo bar';
