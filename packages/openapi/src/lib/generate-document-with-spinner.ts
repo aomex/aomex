@@ -1,7 +1,7 @@
 import type { Mode } from 'node:fs';
 import { OpenAPI, i18n } from '@aomex/core';
 import { sleep } from '@aomex/internal-tools';
-import { pathToFiles, type GlobPathOptions } from '@aomex/internal-file-import';
+import { pathToFiles } from '@aomex/internal-file-import';
 import path from 'node:path';
 import {
   validateOpenapi,
@@ -16,23 +16,9 @@ import { parseFiles } from './parse-files';
 import logSymbols from 'log-symbols';
 import { appendTag } from './append-tag';
 import { styleText } from 'node:util';
+import type { GenerateOpenapiOptions } from './generate-openapi';
 
-export interface OpenapiOptions {
-  /**
-   * 指令名称。默认值：`openapi`
-   */
-  commandName?: string;
-  /**
-   * http接口路由文件
-   */
-  routers: GlobPathOptions;
-  /**
-   * Openapi基础信息
-   */
-  docs?: Omit<OpenAPI.Document, 'paths' | 'openapi' | 'info'> & {
-    openapi?: `3.0.${0 | 1 | 2 | 3}`;
-    info?: Partial<OpenAPI.Document['info']>;
-  };
+export interface GenerateOpenapiWithSpinnerOptions extends GenerateOpenapiOptions {
   /**
    * 保存到指定文件。默认值：`openapi.json`
    * - `*.json` 保存为JSON格式
@@ -44,10 +30,6 @@ export interface OpenapiOptions {
    * 设置保存文件的系统权限。
    */
   fileMode?: Mode;
-  /**
-   * 手动修复文档内容
-   */
-  fix?: (data: OpenAPI.Document) => void | Promise<void>;
 }
 
 interface SpinnerContext {
@@ -57,8 +39,17 @@ interface SpinnerContext {
   validateResult: OpenapiValidateResult;
 }
 
-export const generateDocument = async (
-  config: OpenapiOptions,
+/**
+ * 1. 生成openapi文档
+ * 2. 保存文档到文件
+ * 3. 验证
+ * 4. 控制台输出执行步骤和验证结果
+ *
+ * 如果是主动调用，则应使用 generateOpenapi()
+ * @see generateOpenapi
+ */
+export const generateOpenapiWithSpinner = async (
+  config: GenerateOpenapiWithSpinnerOptions,
 ): Promise<OpenAPI.Document> => {
   const spinner = new Listr<SpinnerContext>([], { concurrent: false, exitOnError: true });
 

@@ -1,6 +1,16 @@
 import { i18n, middleware } from '@aomex/core';
 import type { ConsoleMiddleware } from '@aomex/console';
-import { generateDocument, type OpenapiOptions } from './lib/generate-document';
+import {
+  generateOpenapiWithSpinner,
+  type GenerateOpenapiWithSpinnerOptions,
+} from './lib/generate-document-with-spinner';
+
+export interface OpenapiOptions extends GenerateOpenapiWithSpinnerOptions {
+  /**
+   * 指令名称。默认值：`openapi`
+   */
+  commandName?: string;
+}
 
 export const openapi = (options: OpenapiOptions): ConsoleMiddleware => {
   const { commandName = 'openapi' } = options;
@@ -9,7 +19,7 @@ export const openapi = (options: OpenapiOptions): ConsoleMiddleware => {
     fn: async (ctx, next) => {
       if (ctx.input.command !== commandName) return next();
       ctx.commandMatched = true;
-      await generateDocument(options);
+      await generateOpenapiWithSpinner(options);
     },
     help: {
       onDocument(doc) {

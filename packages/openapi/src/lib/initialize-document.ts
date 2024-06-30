@@ -1,9 +1,9 @@
 import type { OpenAPI } from '@aomex/core';
-import type { OpenapiOptions } from './generate-document';
+import type { GenerateOpenapiOptions } from './generate-openapi';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-export const initializeDocument = async (basic?: OpenapiOptions['docs']) => {
+export const initializeDocument = async (basic?: GenerateOpenapiOptions['docs']) => {
   const document: OpenAPI.Document = JSON.parse(JSON.stringify(basic || {}));
   document.openapi ||= '3.0.3';
   document.tags ||= [];
