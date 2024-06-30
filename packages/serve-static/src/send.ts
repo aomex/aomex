@@ -123,11 +123,12 @@ export const send = async (ctx: WebContext, options: SendOptions): Promise<boole
     }
   }
 
-  response.setHeader('Content-Length', stats.size);
+  if (!compressExt) {
+    response.setHeader('Content-Length', stats.size);
+  }
   if (!response.hasHeader('Last-Modified')) {
     response.setHeader('Last-Modified', stats.mtime.toUTCString());
   }
-
   if (!response.hasHeader('Cache-Control')) {
     const directives: string[] = [];
     directives.push(publicOrPrivate);

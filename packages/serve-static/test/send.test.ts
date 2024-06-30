@@ -2,8 +2,9 @@ import { middleware } from '@aomex/core';
 import { WebApp } from '@aomex/web';
 import request from 'supertest';
 import { send } from '../src';
-import { describe, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { join } from 'path';
+import { readFileSync } from 'fs';
 
 const fixturesDir = join(import.meta.dirname, 'fixtures');
 
@@ -120,6 +121,32 @@ describe('Cache-Control', () => {
       .get('/hello.txt')
       .expect('Cache-Control', 'public, max-age=0, immutable');
   });
+
+  test('no-cache', async () => {
+    const app = new WebApp({
+      mount: [
+        middleware.web((ctx) =>
+          send(ctx, { root: fixturesDir, cacheControl: { noCache: true } }),
+        ),
+      ],
+    });
+    await request(app.listen())
+      .get('/hello.txt')
+      .expect('Cache-Control', 'public, no-cache, max-age=0');
+  });
+
+  test('no-store', async () => {
+    const app = new WebApp({
+      mount: [
+        middleware.web((ctx) =>
+          send(ctx, { root: fixturesDir, cacheControl: { noStore: true } }),
+        ),
+      ],
+    });
+    await request(app.listen())
+      .get('/hello.txt')
+      .expect('Cache-Control', 'public, no-store, max-age=0');
+  });
 });
 
 test('root之外的文件无法获取', async () => {
@@ -134,4 +161,56 @@ test('不能通过..到root上一级获取', async () => {
     mount: [middleware.web((ctx) => send(ctx, { root: fixturesDir }))],
   });
   await request(app.listen()).get('/../send.test.ts').expect(404);
+});
+
+describe('压缩', () => {
+  test('优先使用br', async () => {
+    const app = new WebApp({
+      mount: [middleware.web((ctx) => send(ctx, { root: fixturesDir }))],
+    });
+    const brText = readFileSync(join(fixturesDir, 'compress.txt.br'), 'utf8');
+
+    await request(app.listen())
+      .get('/compress.txt')
+      .set('Accept-Encoding', 'br, deflate, gzip, zstd')
+      .expect('Content-Encoding', 'br')
+      .expect(200, brText);
+    await request(app.listen())
+      .get('/compress.txt')
+      .set('Accept-Encoding', 'gzip, deflate, br, zstd')
+      .expect('Content-Encoding', 'br')
+      .expect(200, brText);
+  });
+
+  test('gzip', async () => {
+    const app = new WebApp({
+      mount: [middleware.web((ctx) => send(ctx, { root: fixturesDir }))],
+    });
+    const gzText = readFileSync(join(fixturesDir, 'compress.txt.gz'), 'utf8');
+
+    await request(app.listen())
+      .get('/compress.txt')
+      .set('Accept-Encoding', 'deflate, gzip, zstd')
+      .expect('Content-Encoding', 'gz')
+      .expect(200, gzText);
+  });
+
+  test('禁止压缩', async () => {
+    const app = new WebApp({
+      mount: [
+        middleware.web((ctx) =>
+          send(ctx, { root: fixturesDir, useCompressedFile: false }),
+        ),
+      ],
+    });
+    const text = readFileSync(join(fixturesDir, 'compress.txt'), 'utf8');
+
+    await request(app.listen())
+      .get('/compress.txt')
+      .set('Accept-Encoding', 'br, deflate, gzip, zstd')
+      .expect(200, text)
+      .expect((res) => {
+        expect(res.headers).not.toHaveProperty('content-encoding');
+      });
+  });
 });
