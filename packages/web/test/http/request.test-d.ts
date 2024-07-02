@@ -11,7 +11,7 @@ expectType<Accepts>(request.accept);
 expectType<
   TypeEqual<{ readonly [key: string]: string | undefined }, typeof request.cookies>
 >(true);
-expectType<TypeEqual<Promise<unknown>, typeof request.body>>(true);
+expectType<TypeEqual<Record<string, unknown>, typeof request.body>>(true);
 expectType<boolean>(request.fresh);
 expectType<string>(request.host);
 expectType<string>(request.href);

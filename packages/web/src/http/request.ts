@@ -3,8 +3,6 @@ import type { TLSSocket } from 'node:tls';
 import type { LowerExternalStringHeaderKeys } from './header';
 import qs from 'qs';
 import type { WebApp } from './app';
-import formidable from 'formidable';
-import coBody from 'co-body';
 import typeIs from 'type-is';
 import requestIP from 'request-ip';
 import fresh from 'fresh';
@@ -28,6 +26,7 @@ export class WebRequest extends IncomingMessage {
   private _accept?: Accepts;
   private _cookies?: { readonly [key: string]: string | undefined };
   private _body?: any;
+  private _rawBody?: any;
   private _parsedUrl: URL | null = null;
   private _query?: any;
 
@@ -53,34 +52,8 @@ export class WebRequest extends IncomingMessage {
     return (this._cookies ||= cookie.parse(this.headers['cookie'] || ''));
   }
 
-  get body(): Promise<unknown> {
-    if (this._body) return Promise.resolve(this._body);
-
-    if (this.matchContentType('multipart/*') !== null) {
-      const form = formidable({
-        hashAlgorithm: 'md5',
-        keepExtensions: true,
-        maxFileSize: 1000 * 1024 * 1024,
-        allowEmptyFiles: true,
-      });
-
-      return (this._body = form.parse(this).then(([fields, files]) => {
-        const fixedFields = Object.fromEntries(
-          Object.entries(fields).map(([key, values]) => {
-            return [key, values == undefined || values.length > 1 ? values : values[0]];
-          }),
-        );
-        return (this._body = { ...fixedFields, ...files });
-      }));
-    }
-
-    return (this._body = coBody(this, {
-      returnRawBody: false,
-      // @ts-expect-error
-      onProtoPoisoning: 'remove',
-    }).then((fields) => {
-      return (this._body = fields);
-    }));
+  get body(): Record<string, unknown> {
+    return this._body || {};
   }
 
   get fresh(): boolean {
@@ -139,6 +112,10 @@ export class WebRequest extends IncomingMessage {
    */
   get querystring(): string {
     return this.URL.search.slice(1);
+  }
+
+  get rawBody(): string {
+    return this._rawBody || '';
   }
 
   /**

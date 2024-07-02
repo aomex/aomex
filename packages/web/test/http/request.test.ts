@@ -127,15 +127,15 @@ describe('matchContentType', () => {
 });
 
 describe('body', () => {
-  test('是异步的', async () => {
-    const { req, res } = await mockServer((agent) => agent.post('/test/api').send({}));
-    expect(req.body).toBeInstanceOf(Promise);
-    res.end();
-  });
-
-  test('临时缓存', async () => {
-    const { req, res } = await mockServer((agent) => agent.post('/test/api').send({}));
-    await expect(req.body).resolves.toBe(await req.body);
+  test('是同步的', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent.post('/test/api').send({ foo: 'bar' }),
+    );
+    expect(req.body).toMatchInlineSnapshot(`
+      {
+        "foo": "bar",
+      }
+    `);
     res.end();
   });
 
@@ -143,7 +143,7 @@ describe('body', () => {
     const { req, res } = await mockServer((agent) =>
       agent.post('/test/api').send({ test: 'abc', test1: ['a', 1] }),
     );
-    await expect(req.body).resolves.toStrictEqual({
+    expect(req.body).toStrictEqual({
       test: 'abc',
       test1: ['a', 1],
     });
@@ -155,7 +155,7 @@ describe('body', () => {
       agent.post('/test/api').field('test1', 'a').field('test2', 'b'),
     );
     expect(req.matchContentType('*/*')).toBe('multipart/form-data');
-    await expect(req.body).resolves.toStrictEqual({
+    expect(req.body).toStrictEqual({
       test1: 'a',
       test2: 'b',
     });
@@ -172,7 +172,7 @@ describe('body', () => {
         .field('test1', 'a'),
     );
 
-    const data = (await req.body) as {
+    const data = req.body as {
       file1: [typeof PersistentFile];
       file2: [typeof PersistentFile];
       test1: string;
@@ -185,6 +185,22 @@ describe('body', () => {
     expect(data.file2[0]).toHaveProperty('size', 7);
     expect(data.file2[0]).toHaveProperty('originalFilename', 'upload-2.txt');
 
+    res.end();
+  });
+
+  test('rawBody', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent.post('/test/api').send({ test: 'abc', test1: ['a', 1] }),
+    );
+    expect(req.rawBody).toMatchInlineSnapshot(`"{"test":"abc","test1":["a",1]}"`);
+    res.end();
+  });
+
+  test('不解析无效的content-type', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent.post('/test/api').set('Content-Type', 'image/jpg').send('abc'),
+    );
+    expect(req.body).toMatchInlineSnapshot(`{}`);
     res.end();
   });
 });

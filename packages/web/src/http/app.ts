@@ -10,6 +10,7 @@ import { EOL } from 'node:os';
 import type { WebMiddlewareToken } from '../override';
 import { styleText } from 'node:util';
 import type { Union2Intersection } from '@aomex/internal-tools';
+import { parseBody } from '../middleware/parse-body';
 
 export namespace WebApp {
   export interface Option<T extends WebMiddlewareToken[] | []> {
@@ -69,7 +70,7 @@ export class WebApp<
   }
 
   callback(): http.RequestListener<any, any> {
-    const fn = compose(this.middlewareList);
+    const fn = compose([parseBody(), ...this.middlewareList]);
 
     // 至少需要监听一个，否则emit会报错
     if (!this.listenerCount('error')) {
