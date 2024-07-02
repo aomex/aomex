@@ -51,9 +51,9 @@ test('不存在才设置', async () => {
 
 test('判断存在', async () => {
   await expect(cache['existsKey']('foo')).resolves.toBeFalsy();
-  await cache['setValue']('foo', 'bar', 20);
+  await cache['setValue']('foo', 'bar', 800);
   await expect(cache['existsKey']('foo')).resolves.toBeTruthy();
-  await sleep(600);
+  await sleep(1800);
   await expect(cache['existsKey']('foo')).resolves.toBeFalsy();
 });
 

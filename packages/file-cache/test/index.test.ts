@@ -54,9 +54,9 @@ test('判断存在', async () => {
   const cache = new FileCache({ filename: getFileName() });
 
   await expect(cache['existsKey']('foo')).resolves.toBeFalsy();
-  await cache['setValue']('foo', 'bar', 200);
+  await cache['setValue']('foo', 'bar', 800);
   await expect(cache['existsKey']('foo')).resolves.toBeTruthy();
-  await sleep(600);
+  await sleep(1800);
   await expect(cache['existsKey']('foo')).resolves.toBeFalsy();
 });
 
