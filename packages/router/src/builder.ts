@@ -35,7 +35,12 @@ export declare namespace Builder {
   export type Docs = Omit<
     OpenAPI.OperationObject,
     'parameters' | 'requestBody' | 'responses'
-  >;
+  > & {
+    /**
+     * 生成openapi时是否忽略当前路由。默认：`true`
+     */
+    showInOpenapi?: boolean;
+  };
 }
 
 export interface BuilderOptions<
@@ -62,7 +67,7 @@ export class Builder<
 > {
   static METHODS = <const>['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
-  public readonly docs?: Builder.Docs;
+  public readonly docs: Builder.Docs;
   protected readonly middlewareList: WebMiddlewareToken[];
   protected readonly uriPatterns: [ReturnType<typeof match>, PureUri][];
 
@@ -72,7 +77,8 @@ export class Builder<
     protected readonly methods: readonly (typeof Builder.METHODS)[number][],
     options: BuilderOptions<Props, T>,
   ) {
-    this.docs = options.docs;
+    this.docs = options.docs || {};
+    this.docs.showInOpenapi ??= true;
     this.middlewareList = [
       ...(options.mount || []),
       middleware.web((ctx, _) => options.action(ctx as any)),
