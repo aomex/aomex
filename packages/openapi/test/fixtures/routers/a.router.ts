@@ -46,3 +46,10 @@ router.post('/bar/:id', {
   ],
   action: async () => {},
 });
+
+router.get('/baz', {
+  docs: {
+    showInOpenapi: false,
+  },
+  action: () => {},
+});

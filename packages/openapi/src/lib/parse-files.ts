@@ -30,6 +30,9 @@ export const parseFiles = async (document: OpenAPI.Document, files: string[]) =>
       const builders = router['builders'];
 
       for (const builder of builders) {
+        if (builder.docs.showInOpenapi === false) continue;
+        delete builder.docs.showInOpenapi;
+
         const builderMiddlewareList = groupMiddlewareList
           .concat(builder['middlewareList'])
           .filter((middleware) => middleware instanceof WebMiddleware) as WebMiddleware[];
