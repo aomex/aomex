@@ -24,7 +24,7 @@ export namespace ConsoleDocument {
     /**
      * 是否展示在指令列表。默认值：`true`
      */
-    show?: boolean;
+    showInHelp?: boolean;
     /**
      * 总结，在指令列表中展示
      */
