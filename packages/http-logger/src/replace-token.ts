@@ -2,7 +2,7 @@ import prettyTime from 'pretty-time';
 import { bytes } from '@aomex/internal-tools';
 import { statuses } from '@aomex/web';
 import { HttpLoggerToken } from './http-logger-token';
-import { styleText } from 'util';
+import { styleText } from 'node:util';
 
 export const colorCodes = <const>{
   7: 'magenta',

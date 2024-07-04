@@ -9,7 +9,7 @@ import type {
   UpperArrayHeaderKeys,
   UpperHeaderKeys,
 } from './header';
-import stream from 'stream';
+import stream from 'node:stream';
 import destroy from 'destroy';
 import createHttpError, { type HttpError, isHttpError } from 'http-errors';
 import type { WebContext } from './context';
