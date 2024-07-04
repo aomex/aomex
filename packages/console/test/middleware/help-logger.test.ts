@@ -100,11 +100,11 @@ test('设置show=false禁止显示用法', async () => {
     fn: (_, next) => next(),
     help: {
       onDocument(doc) {
-        doc['foo'] = { summary: 'foooooo', description: 'im foo', show: true };
+        doc['foo'] = { summary: 'foooooo', description: 'im foo', showInHelp: true };
         doc['bar'] = {
           summary: 'barrrrrr',
           description: 'im bar',
-          show: false,
+          showInHelp: false,
         };
       },
     },
@@ -136,7 +136,7 @@ test('指令参数', async () => {
         doc['foo'] = {
           summary: 'foooooo',
           description: 'im foo',
-          show: true,
+          showInHelp: true,
           parameters: [
             {
               name: 'keya',
@@ -185,7 +185,7 @@ test('检测相似指令', async () => {
             doc['bar'] = {};
             doc['fool'] = { summary: 'I am foolish' };
             doc['foo'] = {};
-            doc['fools'] = { show: false };
+            doc['fools'] = { showInHelp: false };
           },
         },
       }),

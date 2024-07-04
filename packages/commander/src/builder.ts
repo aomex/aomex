@@ -43,7 +43,7 @@ export class Builder<
 
   constructor(prefix: string, commands: string[], options: BuilderOptions<Props, T>) {
     this.docs = options.docs || {};
-    this.docs.show ??= true;
+    this.docs.showInHelp ??= true;
     this.commands = commands.map((item) => prefix + item);
     this.middlewareList = [
       ...(options.mount || []),

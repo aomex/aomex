@@ -87,7 +87,7 @@ test('文档', async () => {
   });
   commander.create('schedule2', {
     docs: {
-      show: false,
+      showInHelp: false,
     },
     action: () => {},
   });
@@ -100,10 +100,10 @@ test('文档', async () => {
   expect(doc).toMatchInlineSnapshot(`
     {
       "schedule1": {
-        "show": true,
+        "showInHelp": true,
       },
       "schedule2": {
-        "show": false,
+        "showInHelp": false,
       },
     }
   `);

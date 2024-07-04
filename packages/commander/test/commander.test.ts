@@ -75,7 +75,7 @@ test('文档', async () => {
     docs: {
       summary: 'foo-x',
       description: 'desc-bar',
-      show: false,
+      showInHelp: false,
     },
     mount: [
       options({
@@ -122,7 +122,7 @@ test('文档', async () => {
             "type": "string",
           },
         ],
-        "show": true,
+        "showInHelp": true,
       },
       "foo": {
         "description": "desc-bar",
@@ -144,7 +144,7 @@ test('文档', async () => {
             "type": "string",
           },
         ],
-        "show": false,
+        "showInHelp": false,
         "summary": "foo-x",
       },
     }

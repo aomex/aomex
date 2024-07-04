@@ -32,7 +32,7 @@ export const helpLogger = (middlewareList: Middleware[]): ConsoleMiddleware => {
           app: ctx.app,
         });
         Object.entries(document).forEach(([commandName, commandItem]) => {
-          if (commandItem.show === false) return;
+          if (commandItem.showInHelp === false) return;
           cli.command(styleText('yellow', commandName), commandItem.summary || '');
         });
         cli.showHelp('log');
@@ -46,7 +46,7 @@ export const helpLogger = (middlewareList: Middleware[]): ConsoleMiddleware => {
       await collectConsoleDocument({ document, middlewareList, app: ctx.app });
 
       const commandItem = document[command];
-      if (!commandItem || commandItem.show === false) {
+      if (!commandItem || commandItem.showInHelp === false) {
         throw new Error(`找不到关于指令 "${command}" 的用法`);
       }
 
