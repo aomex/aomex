@@ -1,4 +1,4 @@
-import ipRegexp, { type Options as IpRegexOptions } from 'ip-regex';
+import { isIP, isIPv4, isIPv6 } from 'node:net';
 import type { OpenAPI } from '../../interface';
 import {
   magistrate,
@@ -8,27 +8,15 @@ import {
 } from '../base';
 import { i18n } from '../../i18n';
 
-const versions = <const>['v4', 'v6'];
-
 export declare namespace IpValidator {
-  export type Version = (typeof versions)[number];
+  export type Version = 'v4' | 'v6';
 
   export interface Options<T> extends BaseStringValidator.Options<T> {
     ipVersion: IpValidator.Version[];
   }
 }
 
-const options: IpRegexOptions = { exact: true, includeBoundaries: true };
-
 export class IpValidator<T = string> extends BaseStringValidator<T> {
-  public static patterns: {
-    [key in IpValidator.Version | 'all']: RegExp;
-  } = {
-    v4: ipRegexp.v4(options),
-    v6: ipRegexp.v6(options),
-    all: ipRegexp(options),
-  };
-
   protected declare config: IpValidator.Options<T>;
 
   constructor(version: IpValidator.Version[]) {
@@ -59,15 +47,14 @@ export class IpValidator<T = string> extends BaseStringValidator<T> {
     const { ipVersion } = this.config;
 
     let valid = false;
-    if (ipVersion.length === versions.length) {
-      valid = IpValidator.patterns.all.test(ip);
+    const hasV4 = ipVersion.includes('v4');
+    const hasV6 = ipVersion.includes('v6');
+    if (hasV4 && hasV6) {
+      valid = isIP(ip) > 0;
+    } else if (hasV4) {
+      valid = isIPv4(ip);
     } else {
-      for (let i = ipVersion.length; i-- > 0; ) {
-        if (IpValidator.patterns[ipVersion[i]!].test(ip)) {
-          valid = true;
-          break;
-        }
-      }
+      valid = isIPv6(ip);
     }
 
     if (!valid) {
