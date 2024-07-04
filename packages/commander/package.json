@@ -1,6 +1,6 @@
 {
   "name": "@aomex/commander",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "创建aomex控制台指令",
   "scripts": {
     "prepublishOnly": "tsup"
