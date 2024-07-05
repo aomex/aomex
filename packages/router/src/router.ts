@@ -1,6 +1,6 @@
 import { Middleware, compose, type ComposeFn } from '@aomex/core';
-import { type Union2Intersection } from '@aomex/internal-tools';
-import { type WebApp, type WebMiddlewareToken } from '@aomex/web';
+import type { Union2Intersection } from '@aomex/internal-tools';
+import type { WebApp, WebMiddlewareToken } from '@aomex/web';
 import { Builder, type BuilderOptions } from './builder';
 
 export interface RouterOptions<T extends WebMiddlewareToken[] | [] = any[]> {

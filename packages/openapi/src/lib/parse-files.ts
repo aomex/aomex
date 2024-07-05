@@ -1,4 +1,4 @@
-import { type OpenAPI } from '@aomex/core';
+import type { OpenAPI } from '@aomex/core';
 import { getFileValues } from '@aomex/internal-file-import';
 import { Router } from '@aomex/router';
 import { WebMiddleware, WebRequest, type OpenApiInjector } from '@aomex/web';
