@@ -84,7 +84,7 @@ export class Router<
   protected collect() {
     const collections: Record<
       (typeof Builder)['METHODS'][number],
-      { match: Builder['match']; route: ComposeFn }[]
+      { uri: string; isPureUri: boolean; match: Builder['match']; route: ComposeFn }[]
     > = {
       GET: [],
       POST: [],
@@ -96,6 +96,8 @@ export class Router<
     for (let i = 0; i < this.builders.length; ++i) {
       const builder = this.builders[i]!;
       const handler = {
+        uri: builder.uri,
+        isPureUri: builder.isPureUri(),
         match: builder.match.bind(builder),
         route: compose(this.middlewareList.concat(builder['middlewareList'])),
       };

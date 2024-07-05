@@ -56,7 +56,6 @@ export interface BuilderOptions<
   action: (ctx: Builder.Context<Props, T>) => any;
 }
 
-type PureUri = string | undefined;
 const pureUriPattern = /^[\/a-z0-9-_]+$/i;
 const duplicatedSlash = /\/{2,}/g;
 const sideSlash = /(^\/|\/$)/g;
@@ -67,39 +66,34 @@ export class Builder<
 > {
   static METHODS = <const>['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
+  public readonly uri: string;
   public readonly docs: Builder.Docs;
   protected readonly middlewareList: WebMiddlewareToken[];
-  protected readonly uriPattern: {
-    matchFn: ReturnType<typeof match>;
-    pureUri: PureUri;
-  };
+  protected readonly matchFn: ReturnType<typeof match>;
 
   constructor(
     prefix: string,
-    protected readonly uri: string,
+    uri: string,
     protected readonly methods: readonly (typeof Builder.METHODS)[number][],
     options: BuilderOptions<Props, T>,
   ) {
-    const formattedUri =
+    this.uri =
       '/' + (prefix + uri).replaceAll(duplicatedSlash, '/').replaceAll(sideSlash, '');
-
     this.docs = options.docs || {};
     this.docs.showInOpenapi ??= true;
     this.middlewareList = [
       ...(options.mount || []),
       middleware.web((ctx, _) => options.action(ctx as any)),
     ];
-    this.uriPattern = {
-      matchFn: match(formattedUri, { decode: decodeURIComponent }),
-      pureUri: pureUriPattern.test(formattedUri) ? formattedUri : void 0,
-    };
+    this.matchFn = match(this.uri, { decode: decodeURIComponent });
+  }
+
+  public isPureUri() {
+    return pureUriPattern.test(this.uri);
   }
 
   public match(pathname: string): Record<string, unknown> | false {
-    const { matchFn, pureUri } = this.uriPattern;
-
-    if (pureUri === pathname) return Object.create(null);
-    const matchResult = matchFn(pathname);
+    const matchResult = this.matchFn(pathname);
     return matchResult ? matchResult.params : false;
   }
 }

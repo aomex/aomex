@@ -10,7 +10,16 @@ import type { Builder } from './builder';
 
 export const routers = (options: GlobPathOptions | Router[]): WebMiddleware => {
   let initialized: boolean = false;
-  const collections: Record<
+  const staticCollections: Record<WebRequest['method'], Record<string, ComposeFn>> = {
+    GET: {},
+    POST: {},
+    PUT: {},
+    PATCH: {},
+    DELETE: {},
+    OPTIONS: {},
+    HEAD: {},
+  };
+  const dynamicCollections: Record<
     WebRequest['method'],
     { match: Builder['match']; route: ComposeFn }[]
   > = {
@@ -22,7 +31,8 @@ export const routers = (options: GlobPathOptions | Router[]): WebMiddleware => {
     OPTIONS: [],
     HEAD: [],
   };
-  collections.HEAD = collections.GET;
+  staticCollections.HEAD = staticCollections.GET;
+  dynamicCollections.HEAD = dynamicCollections.GET;
 
   let routers: Router[];
   let promise: Promise<void> = Promise.resolve();
@@ -46,7 +56,15 @@ export const routers = (options: GlobPathOptions | Router[]): WebMiddleware => {
         subCollections,
       ) as unknown as (typeof Builder)['METHODS'];
       methods.forEach((method) => {
-        collections[method].push(...subCollections[method]);
+        subCollections[method].forEach((item) => {
+          if (item.isPureUri) {
+            if (!Object.hasOwn(staticCollections[method], item.uri)) {
+              staticCollections[method][item.uri] = item.route;
+            }
+          } else {
+            dynamicCollections[method].push({ match: item.match, route: item.route });
+          }
+        });
       });
     }
     initialized = true;
@@ -57,14 +75,18 @@ export const routers = (options: GlobPathOptions | Router[]): WebMiddleware => {
     if (!initialized) initialize();
 
     const { method, pathname } = ctx.request;
-    const collection = collections[method];
 
-    for (let i = 0; i < collection.length; ++i) {
-      const { match, route } = collection[i]!;
-      const params = match(pathname);
+    const staticCollection = staticCollections[method] || {};
+    if (Object.hasOwn(staticCollection, pathname)) {
+      return staticCollection[pathname]!(ctx, next);
+    }
+
+    const dynamicCollection = dynamicCollections[method] || [];
+    for (let i = 0, len = dynamicCollection.length; i < len; ++i) {
+      const params = dynamicCollection[i]!.match(pathname);
       if (params) {
         ctx.request.params = params;
-        return route(ctx, next);
+        return dynamicCollection[i]!.route(ctx, next);
       }
     }
 

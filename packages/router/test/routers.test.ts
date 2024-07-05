@@ -52,33 +52,35 @@ test('路由实例只收集一次', async () => {
   spy.mockRestore();
 });
 
-test('路由分类', async () => {
+test('相同静态路径不覆盖', async () => {
   const router = new Router();
-  router.get('/foo', { action: () => {} });
-  router.post('/foo', { action: () => {} });
-
+  router.get('/foo', { action: (ctx) => ctx.send('foo!') });
+  router.get('/foo', { action: (ctx) => ctx.send('bar!') });
   const app = new WebApp({
     mount: [routers([router])],
   });
+  await supertest(app.listen()).get('/foo').expect(200, 'foo!');
+});
 
-  const spy1 = vitest.spyOn(router['builders'][0]!, 'match');
-  const spy2 = vitest.spyOn(router['builders'][1]!, 'match');
+test('相同动态路径不覆盖', async () => {
+  const router = new Router();
+  router.get('/foo/:bar', { action: (ctx) => ctx.send('foo!') });
+  router.get('/foo/:bar', { action: (ctx) => ctx.send('bar!') });
+  const app = new WebApp({
+    mount: [routers([router])],
+  });
+  await supertest(app.listen()).get('/foo/x').expect(200, 'foo!');
+});
 
-  await supertest(app.listen()).post('/foo');
-  expect(spy1).toBeCalledTimes(0);
-  expect(spy2).toBeCalledTimes(1);
-
-  spy1.mockReset();
-  spy2.mockReset();
-  await supertest(app.listen()).get('/foo');
-  expect(spy1).toBeCalledTimes(1);
-  expect(spy2).toBeCalledTimes(0);
-
-  spy1.mockReset();
-  spy2.mockReset();
-  await supertest(app.listen()).put('/foo');
-  expect(spy1).toBeCalledTimes(0);
-  expect(spy2).toBeCalledTimes(0);
+test('静态路径比动态路径优先匹配', async () => {
+  const router = new Router();
+  router.get('/:foo', { action: (ctx) => ctx.send('foo!') });
+  router.get('/bar', { action: (ctx) => ctx.send('bar!') });
+  const app = new WebApp({
+    mount: [routers([router])],
+  });
+  await supertest(app.listen()).get('/bar').expect(200, 'bar!');
+  await supertest(app.listen()).get('/baz').expect(200, 'foo!');
 });
 
 test('未匹配上路由时继续其他中间件', async () => {

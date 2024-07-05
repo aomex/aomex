@@ -53,3 +53,9 @@ test('必须完整路径匹配', () => {
     expect(builder.match(uri)).toBeFalsy();
   }
 });
+
+test('纯路径', () => {
+  expect(new Builder('', '/users', ['GET'], action).isPureUri()).toBeTruthy();
+  expect(new Builder('', '/:users', ['GET'], action).isPureUri()).toBeFalsy();
+  expect(new Builder('', '/{users}?', ['GET'], action).isPureUri()).toBeFalsy();
+});
