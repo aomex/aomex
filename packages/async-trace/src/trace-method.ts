@@ -12,15 +12,19 @@ import { asyncTrace, type AsyncTraceRecord } from './async-trace';
  * ```
  */
 export const traceMethod = <T, P extends (...args: any[]) => Promise<T>>(
-  label: string | ((...args: Parameters<P>) => string),
+  label?: string | ((...args: Parameters<P>) => string),
   callback?: (record: AsyncTraceRecord) => any,
 ) => {
-  return (originalMethod: P, _context: ClassMethodDecoratorContext) => {
+  return (originalMethod: P, context: ClassMethodDecoratorContext) => {
     return async function (this: object, ...args: Parameters<P>): Promise<any> {
       let traceId!: string;
       try {
         return await asyncTrace.run<T>(
-          typeof label === 'string' ? label : label(...args),
+          label === undefined
+            ? `${this.constructor.name}.${String(context.name)}()`
+            : typeof label === 'string'
+              ? label
+              : label(...args),
           (id) => {
             traceId = id;
             return originalMethod.apply(this, args);

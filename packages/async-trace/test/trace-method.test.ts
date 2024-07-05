@@ -57,3 +57,20 @@ test('动态标签', async () => {
     label: 'label-1-2',
   });
 });
+
+test('省略标签', async () => {
+  let snapshot!: AsyncTraceRecord;
+
+  class MyService {
+    @traceMethod(undefined, (record) => {
+      snapshot = record;
+    })
+    async plus(a: number, b: number) {
+      return a + b;
+    }
+  }
+  await new MyService().plus(1, 2);
+  expect(snapshot).toMatchObject({
+    label: 'MyService.plus()',
+  });
+});
