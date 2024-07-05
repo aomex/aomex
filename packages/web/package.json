@@ -39,7 +39,6 @@
   "dependencies": {
     "@aomex/internal-tools": "workspace:^",
     "@types/accepts": "^1.3.7",
-    "@types/content-disposition": "^0.5.8",
     "@types/cookie": "^0.6.0",
     "@types/formidable": "^3.4.5",
     "@types/http-errors": "^2.0.4",
@@ -59,6 +58,7 @@
     "vary": "^1.1.2"
   },
   "devDependencies": {
+    "@types/content-disposition": "^0.5.8",
     "@aomex/core": "workspace:^",
     "@types/co-body": "^6.1.3",
     "@types/destroy": "^1.0.3",
