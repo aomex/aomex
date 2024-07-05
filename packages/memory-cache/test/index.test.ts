@@ -13,8 +13,8 @@ test('设置/获取', async () => {
 test('携带过期时间', async () => {
   const cache = new MemoryCache();
 
-  await cache['setValue']('foo', 'bar', 200);
-  await sleep(800);
+  await cache['setValue']('foo', 'bar', 1000);
+  await sleep(2000);
   await expect(cache['getValue']('foo')).resolves.toBeNull();
 });
 
@@ -23,9 +23,9 @@ test('不存在才设置', async () => {
 
   await expect(cache['addValue']('foo', 'bar')).resolves.toBeTruthy();
   await expect(cache['addValue']('foo', 'bar')).resolves.toBeFalsy();
-  await expect(cache['addValue']('foo-1', 'bar', 200)).resolves.toBeTruthy();
+  await expect(cache['addValue']('foo-1', 'bar', 1000)).resolves.toBeTruthy();
   await expect(cache['addValue']('foo-1', 'bar')).resolves.toBeFalsy();
-  await sleep(800);
+  await sleep(2000);
   await expect(cache['addValue']('foo', 'bar')).resolves.toBeFalsy();
   await expect(cache['addValue']('foo-1', 'bar')).resolves.toBeTruthy();
 });
@@ -33,9 +33,9 @@ test('不存在才设置', async () => {
 test('判断存在', async () => {
   const cache = new MemoryCache();
   await expect(cache['existsKey']('foo')).resolves.toBeFalsy();
-  await cache['setValue']('foo', 'bar', 800);
+  await cache['setValue']('foo', 'bar', 1000);
   await expect(cache['existsKey']('foo')).resolves.toBeTruthy();
-  await sleep(1800);
+  await sleep(2000);
   await expect(cache['existsKey']('foo')).resolves.toBeFalsy();
 });
 
@@ -110,18 +110,18 @@ describe('过期时间', async () => {
   test('当缓存存在，未设置过期时间，设置成功', async () => {
     const cache = new MemoryCache();
     await cache['setValue']('foo', 'bar');
-    await expect(cache['expireValue']('foo', 400)).resolves.toBeTruthy();
+    await expect(cache['expireValue']('foo', 1000)).resolves.toBeTruthy();
     await expect(cache['getValue']('foo')).resolves.toBe('bar');
-    await sleep(800);
+    await sleep(2000);
     await expect(cache['getValue']('foo')).resolves.toBeNull();
   });
 
   test('当缓存存在，已设置过期时间，设置成功', async () => {
     const cache = new MemoryCache();
-    await cache['setValue']('foo', 'bar', 1200);
-    await expect(cache['expireValue']('foo', 400)).resolves.toBeTruthy();
+    await cache['setValue']('foo', 'bar', 5000);
+    await expect(cache['expireValue']('foo', 1000)).resolves.toBeTruthy();
     await expect(cache['getValue']('foo')).resolves.toBe('bar');
-    await sleep(800);
+    await sleep(2000);
     await expect(cache['getValue']('foo')).resolves.toBeNull();
   });
 
