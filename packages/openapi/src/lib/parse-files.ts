@@ -37,32 +37,30 @@ export const parseFiles = async (document: OpenAPI.Document, files: string[]) =>
           .concat(builder['middlewareList'])
           .filter((middleware) => middleware instanceof WebMiddleware) as WebMiddleware[];
 
-        for (const uri of builder['uris']) {
-          const pathName = normalizePath(uri);
-          const pathItem: OpenAPI.PathItemObject = (document.paths[pathName] ||= {});
+        const uri = builder['uri'];
+        const pathName = normalizePath(uri);
+        const pathItem: OpenAPI.PathItemObject = (document.paths[pathName] ||= {});
 
-          for (const method of builder['methods']) {
-            const methodName =
-              method.toLowerCase() as `${Lowercase<WebRequest['method']>}`;
-            const methodItem: OpenAPI.OperationObject = (pathItem[methodName] = {
-              ...builder.docs,
-              responses: {},
-            });
+        for (const method of builder['methods']) {
+          const methodName = method.toLowerCase() as `${Lowercase<WebRequest['method']>}`;
+          const methodItem: OpenAPI.OperationObject = (pathItem[methodName] = {
+            ...builder.docs,
+            responses: {},
+          });
 
-            data.push(
-              ...builderMiddlewareList.map((item) => {
-                return {
-                  injector: item['openapi'](),
-                  pathItem,
-                  pathName,
-                  methodItem,
-                  methodName,
-                  file,
-                  uri,
-                };
-              }),
-            );
-          }
+          data.push(
+            ...builderMiddlewareList.map((item) => {
+              return {
+                injector: item['openapi'](),
+                pathItem,
+                pathName,
+                methodItem,
+                methodName,
+                file,
+                uri,
+              };
+            }),
+          );
         }
       }
     }

@@ -60,7 +60,7 @@ test.each(<const>['get', 'post', 'put', 'delete', 'patch'])(
     const router = new Router();
     router[name]('/', { action: () => {} });
     const spy = vitest.fn();
-    router[name](['/foo', '/bar'], { action: spy });
+    router[name]('/foo', { action: spy });
 
     const app = new WebApp({
       mount: [routers([router])],
@@ -71,7 +71,7 @@ test.each(<const>['get', 'post', 'put', 'delete', 'patch'])(
       supertest(app.listen())[name]('/test'),
       supertest(app.listen())[name]('/'),
     ]);
-    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenCalledTimes(1);
   },
 );
 
