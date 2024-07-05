@@ -95,11 +95,12 @@ export class Router<
 
     for (let i = 0; i < this.builders.length; ++i) {
       const builder = this.builders[i]!;
+      const handler = {
+        match: builder.match.bind(builder),
+        route: compose(this.middlewareList.concat(builder['middlewareList'])),
+      };
       for (const method of builder['methods']) {
-        collections[method].push({
-          match: builder.match.bind(builder),
-          route: compose(this.middlewareList.concat(builder['middlewareList'])),
-        });
+        collections[method].push(handler);
       }
     }
 
