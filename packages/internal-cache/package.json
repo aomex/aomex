@@ -1,6 +1,6 @@
 {
   "name": "@aomex/internal-cache",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "缓存基础类",
   "scripts": {
     "prepublishOnly": "tsup"

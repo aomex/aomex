@@ -1,6 +1,6 @@
 {
   "name": "@aomex/web",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "aomex web层应用",
   "scripts": {
     "prepublishOnly": "tsup && node ./scripts/patch-dist.mjs"
@@ -58,9 +58,9 @@
     "vary": "^1.1.2"
   },
   "devDependencies": {
-    "@types/content-disposition": "^0.5.8",
     "@aomex/core": "workspace:^",
     "@types/co-body": "^6.1.3",
+    "@types/content-disposition": "^0.5.8",
     "@types/destroy": "^1.0.3",
     "@types/fresh": "^0.5.2",
     "@types/mime-types": "^2.1.4",

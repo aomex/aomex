@@ -1,6 +1,6 @@
 {
   "name": "@aomex/router",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "web应用路由",
   "scripts": {
     "prepublishOnly": "tsup"
