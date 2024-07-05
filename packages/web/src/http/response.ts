@@ -116,9 +116,18 @@ export class WebResponse extends ServerResponse {
     this.updateContentType();
   }
 
-  download(filePath: string, options: contentDisposition.Options = {}): void {
+  /**
+   * 下载文件
+   *
+   * @param filePath 路径
+   * @param type 附件类型。默认值：`attachment`
+   *
+   * @link https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Disposition
+   *
+   */
+  download(filePath: string, type: 'attachment' | 'inline' = 'attachment'): void {
     this.contentType = extname(filePath);
-    this.setHeader('content-disposition', contentDisposition(filePath, options));
+    this.setHeader('content-disposition', contentDisposition(filePath, { type }));
     this.body = createReadStream(filePath);
   }
 
