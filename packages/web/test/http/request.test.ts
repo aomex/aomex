@@ -82,7 +82,12 @@ test('query', async () => {
   const { req, res } = await mockServer((agent) =>
     agent.get(`/test/api?a=b&c=${encodeURIComponent('=')}`),
   );
-  expect(req.query).toStrictEqual({ a: 'b', c: '=' });
+  expect(req.query).toMatchInlineSnapshot(`
+    {
+      "a": "b",
+      "c": "=",
+    }
+  `);
   expect(req.query).toBe(req.query);
   res.end();
 });
