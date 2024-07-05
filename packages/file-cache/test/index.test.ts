@@ -32,9 +32,9 @@ test('设置/获取', async () => {
 test('携带过期时间', async () => {
   const cache = new FileCache({ filename: getFileName() });
 
-  await cache['setValue']('foo', 'bar', 200);
+  await cache['setValue']('foo', 'bar', 1000);
   await expect(cache['getValue']('foo')).resolves.toBe('bar');
-  await sleep(800);
+  await sleep(2000);
   await expect(cache['getValue']('foo')).resolves.toBeNull();
 });
 
@@ -43,9 +43,9 @@ test('不存在才设置', async () => {
 
   await expect(cache['addValue']('foo', 'bar')).resolves.toBeTruthy();
   await expect(cache['addValue']('foo', 'bar')).resolves.toBeFalsy();
-  await expect(cache['addValue']('foo-1', 'bar', 200)).resolves.toBeTruthy();
+  await expect(cache['addValue']('foo-1', 'bar', 1000)).resolves.toBeTruthy();
   await expect(cache['addValue']('foo-1', 'bar')).resolves.toBeFalsy();
-  await sleep(800);
+  await sleep(2000);
   await expect(cache['addValue']('foo', 'bar')).resolves.toBeFalsy();
   await expect(cache['addValue']('foo-1', 'bar')).resolves.toBeTruthy();
 });
@@ -54,9 +54,9 @@ test('判断存在', async () => {
   const cache = new FileCache({ filename: getFileName() });
 
   await expect(cache['existsKey']('foo')).resolves.toBeFalsy();
-  await cache['setValue']('foo', 'bar', 800);
+  await cache['setValue']('foo', 'bar', 1000);
   await expect(cache['existsKey']('foo')).resolves.toBeTruthy();
-  await sleep(1800);
+  await sleep(2000);
   await expect(cache['existsKey']('foo')).resolves.toBeFalsy();
 });
 
@@ -131,24 +131,24 @@ describe('过期时间', async () => {
   test('当缓存存在，未设置过期时间，设置成功', async () => {
     const cache = new FileCache({ filename: getFileName() });
     await cache['setValue']('foo', 'bar');
-    await expect(cache['expireValue']('foo', 400)).resolves.toBeTruthy();
+    await expect(cache['expireValue']('foo', 1000)).resolves.toBeTruthy();
     await expect(cache['getValue']('foo')).resolves.toBe('bar');
-    await sleep(800);
+    await sleep(2000);
     await expect(cache['getValue']('foo')).resolves.toBeNull();
   });
 
   test('当缓存存在，已设置过期时间，设置成功', async () => {
     const cache = new FileCache({ filename: getFileName() });
-    await cache['setValue']('foo', 'bar', 1200);
-    await expect(cache['expireValue']('foo', 400)).resolves.toBeTruthy();
+    await cache['setValue']('foo', 'bar', 5000);
+    await expect(cache['expireValue']('foo', 1000)).resolves.toBeTruthy();
     await expect(cache['getValue']('foo')).resolves.toBe('bar');
-    await sleep(800);
+    await sleep(2000);
     await expect(cache['getValue']('foo')).resolves.toBeNull();
   });
 
   test('当缓存不存在，设置失败', async () => {
     const cache = new FileCache({ filename: getFileName() });
-    await expect(cache['expireValue']('foo', 200)).resolves.toBeFalsy();
+    await expect(cache['expireValue']('foo', 1000)).resolves.toBeFalsy();
   });
 });
 
@@ -174,17 +174,17 @@ test('删除全部缓存', async () => {
   await expect(cache['getValue']('bar')).resolves.toBeNull();
 });
 
-test('垃圾回收', async () => {
+test('垃圾回收', { timeout: 9000 }, async () => {
   const cache = new FileCache({ filename: getFileName() });
 
   const db = await cache['connect']();
   const sql = `select name,value from ${cache['tableName']}`;
 
   await cache['setValue']('a', 'aaa');
-  await cache['setValue']('b', 'bbb', 200);
-  await cache['setValue']('c', 'ccc', 1200);
+  await cache['setValue']('b', 'bbb', 1000);
+  await cache['setValue']('c', 'ccc', 3000);
 
-  await sleep(600);
+  await sleep(2000);
   await expect(db.all(sql)).resolves.toStrictEqual([
     { name: 'a', value: 'aaa' },
     { name: 'b', value: 'bbb' },
@@ -195,7 +195,7 @@ test('垃圾回收', async () => {
     { name: 'a', value: 'aaa' },
     { name: 'c', value: 'ccc' },
   ]);
-  await sleep(700);
+  await sleep(2000);
   await cache['gc']();
   await expect(db.all(sql)).resolves.toStrictEqual([{ name: 'a', value: 'aaa' }]);
 });
