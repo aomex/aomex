@@ -75,9 +75,20 @@ class MyService {
     });
   }
 
-  // @ts-expect-error
   @traceMethod()
   async method100(_id: number, _visible: boolean) {
+    return {};
+  }
+
+  @traceMethod(undefined)
+  async method102(_id: number, _visible: boolean) {
+    return {};
+  }
+
+  @traceMethod(undefined, (record) => {
+    expectType<TypeEqual<AsyncTraceRecord, typeof record>>(true);
+  })
+  async method103(_id: number, _visible: boolean) {
     return {};
   }
 
