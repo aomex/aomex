@@ -69,44 +69,37 @@ export class Builder<
 
   public readonly docs: Builder.Docs;
   protected readonly middlewareList: WebMiddlewareToken[];
-  protected readonly uriPatterns: [ReturnType<typeof match>, PureUri][];
+  protected readonly uriPattern: {
+    matchFn: ReturnType<typeof match>;
+    pureUri: PureUri;
+  };
 
   constructor(
     prefix: string,
-    protected readonly uris: string[],
+    protected readonly uri: string,
     protected readonly methods: readonly (typeof Builder.METHODS)[number][],
     options: BuilderOptions<Props, T>,
   ) {
+    const formattedUri =
+      '/' + (prefix + uri).replaceAll(duplicatedSlash, '/').replaceAll(sideSlash, '');
+
     this.docs = options.docs || {};
     this.docs.showInOpenapi ??= true;
     this.middlewareList = [
       ...(options.mount || []),
       middleware.web((ctx, _) => options.action(ctx as any)),
     ];
-
-    const uriPatterns: typeof this.uriPatterns = (this.uriPatterns = []);
-    for (let i = uris.length; i-- > 0; ) {
-      const uri = (uris[i] =
-        '/' +
-        (prefix + uris[i]!).replaceAll(duplicatedSlash, '/').replaceAll(sideSlash, ''));
-      uriPatterns.push([
-        match(uri, { decode: decodeURIComponent }),
-        pureUriPattern.test(uri) ? uri : void 0,
-      ]);
-    }
+    this.uriPattern = {
+      matchFn: match(formattedUri, { decode: decodeURIComponent }),
+      pureUri: pureUriPattern.test(formattedUri) ? formattedUri : void 0,
+    };
   }
 
   public match(pathname: string): Record<string, unknown> | false {
-    const patterns = this.uriPatterns;
-    for (let i = patterns.length; i-- > 0; ) {
-      const [matchFn, pureUri] = patterns[i]!;
+    const { matchFn, pureUri } = this.uriPattern;
 
-      if (pureUri === pathname) return {};
-
-      const matchResult = matchFn(pathname);
-      if (matchResult) return matchResult.params;
-    }
-
-    return false;
+    if (pureUri === pathname) return Object.create(null);
+    const matchResult = matchFn(pathname);
+    return matchResult ? matchResult.params : false;
   }
 }

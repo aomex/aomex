@@ -1,5 +1,5 @@
 import { Middleware, compose, type ComposeFn } from '@aomex/core';
-import { toArray, type Union2Intersection } from '@aomex/internal-tools';
+import { type Union2Intersection } from '@aomex/internal-tools';
 import { type WebApp, type WebMiddlewareToken } from '@aomex/web';
 import { Builder, type BuilderOptions } from './builder';
 
@@ -23,42 +23,42 @@ export class Router<
   }
 
   public get<T extends WebMiddlewareToken[] | []>(
-    uri: string | string[],
+    uri: string,
     options: BuilderOptions<Props, T>,
   ): Builder.DTO<Props, T> {
     return this.create(uri, ['GET'], options);
   }
 
   public post<T extends WebMiddlewareToken[] | []>(
-    uri: string | string[],
+    uri: string,
     options: BuilderOptions<Props, T>,
   ): Builder.DTO<Props, T> {
     return this.create(uri, ['POST'], options);
   }
 
   public put<T extends WebMiddlewareToken[] | []>(
-    uri: string | string[],
+    uri: string,
     options: BuilderOptions<Props, T>,
   ): Builder.DTO<Props, T> {
     return this.create(uri, ['PUT'], options);
   }
 
   public patch<T extends WebMiddlewareToken[] | []>(
-    uri: string | string[],
+    uri: string,
     options: BuilderOptions<Props, T>,
   ): Builder.DTO<Props, T> {
     return this.create(uri, ['PATCH'], options);
   }
 
   public delete<T extends WebMiddlewareToken[] | []>(
-    uri: string | string[],
+    uri: string,
     options: BuilderOptions<Props, T>,
   ): Builder.DTO<Props, T> {
     return this.create(uri, ['DELETE'], options);
   }
 
   public all<T extends WebMiddlewareToken[] | []>(
-    uri: string | string[],
+    uri: string,
     options: BuilderOptions<Props, T>,
   ): Builder.DTO<Props, T> {
     return this.create(uri, Builder.METHODS, options);
@@ -66,18 +66,18 @@ export class Router<
 
   public customize<T extends WebMiddlewareToken[] | []>(
     methods: (typeof Builder.METHODS)[number][],
-    uri: string | string[],
+    uri: string,
     options: BuilderOptions<Props, T>,
   ): Builder.DTO<Props, T> {
     return this.create(uri, methods, options);
   }
 
   protected create(
-    uri: string | string[],
+    uri: string,
     methods: readonly (typeof Builder.METHODS)[number][],
     options: BuilderOptions<Props, any[]>,
   ): any {
-    const builder = new Builder(this.prefix, toArray(uri), methods, options);
+    const builder = new Builder(this.prefix, uri, methods, options);
     options.disable !== true && this.builders.push(builder);
   }
 
