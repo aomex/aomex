@@ -1,6 +1,6 @@
 import { Middleware, middleware, type OpenAPI } from '@aomex/core';
 import type { Union2Intersection } from '@aomex/internal-tools';
-import { WebContext, type WebMiddlewareToken } from '@aomex/web';
+import type { WebContext, WebMiddlewareToken } from '@aomex/web';
 import { match } from 'path-to-regexp';
 
 export declare namespace Builder {

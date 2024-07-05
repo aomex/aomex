@@ -4,7 +4,7 @@ import {
   type GlobPathOptions,
   getFileValues,
 } from '@aomex/internal-file-import';
-import { WebRequest, type WebMiddleware } from '@aomex/web';
+import type { WebRequest, WebMiddleware } from '@aomex/web';
 import { Router } from './router';
 import type { Builder } from './builder';
 

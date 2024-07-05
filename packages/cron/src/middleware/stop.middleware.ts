@@ -1,4 +1,4 @@
-import { type ConsoleMiddleware } from '@aomex/console';
+import type { ConsoleMiddleware } from '@aomex/console';
 import { i18n, middleware } from '@aomex/core';
 import type { CronOptions, ServerWriteData } from '../lib/type';
 import net from 'node:net';

@@ -1,6 +1,6 @@
 import { OpenAPI } from '@aomex/core';
 import { pathToFiles, type GlobPathOptions } from '@aomex/internal-file-import';
-import { type OpenapiValidateResult } from './validate-openapi';
+import type { OpenapiValidateResult } from './validate-openapi';
 import { methodParameterToPathParameter } from './hoist-parameter';
 import { initializeDocument } from './initialize-document';
 import { parseFiles } from './parse-files';
