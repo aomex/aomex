@@ -24,7 +24,7 @@
 # 安装
 
 ```bash
-npm create aomex --project my-aomex --pnpm
+npm create aomex --project hello-aomex
 ```
 
 # 应用平台
