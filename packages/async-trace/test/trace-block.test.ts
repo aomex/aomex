@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest';
 import { traceBlock, type AsyncTraceRecord } from '../src';
+import { sleep } from '@aomex/internal-tools';
 
 test('追踪代码段', async () => {
   let snapshot!: AsyncTraceRecord;
@@ -26,6 +27,7 @@ test('追踪记录回调执行后才返回数据', async () => {
       str += 'a';
     },
     async () => {
+      await sleep(500);
       str += 'b';
     },
   );

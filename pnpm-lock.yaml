@@ -65,9 +65,18 @@ importers:
 
   packages/async-trace:
     devDependencies:
+      '@aomex/console':
+        specifier: workspace:^
+        version: link:../console
       '@aomex/core':
         specifier: workspace:^
         version: link:../core
+      '@aomex/internal-tools':
+        specifier: workspace:^
+        version: link:../internal-tools
+      '@aomex/web':
+        specifier: workspace:^
+        version: link:../web
 
   packages/commander:
     dependencies:
