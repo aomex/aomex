@@ -25,7 +25,6 @@ export const traceBlock = async <T>(
       return logic();
     });
   } finally {
-    const record = asyncTrace.getRecord(traceId)!;
-    await callback?.(record);
+    await callback?.(asyncTrace.getRecord(traceId));
   }
 };

@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest';
 import { traceMethod, type AsyncTraceRecord } from '../src';
+import { sleep } from '@aomex/internal-tools';
 
 test('装饰异步方法', async () => {
   class Service {
@@ -26,7 +27,8 @@ test('装饰方法返回promise', async () => {
 test('获得记录', async () => {
   let snapshot!: AsyncTraceRecord;
   class Service {
-    @traceMethod('label-foo', (record) => {
+    @traceMethod('label-foo', async (record) => {
+      await sleep(500);
       snapshot = record;
     })
     async plus(a: number, b: number) {

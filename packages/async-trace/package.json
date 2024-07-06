@@ -37,6 +37,9 @@
     "@aomex/core": "^1.0.0"
   },
   "devDependencies": {
-    "@aomex/core": "workspace:^"
+    "@aomex/console": "workspace:^",
+    "@aomex/core": "workspace:^",
+    "@aomex/internal-tools": "workspace:^",
+    "@aomex/web": "workspace:^"
   }
 }

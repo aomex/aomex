@@ -13,7 +13,7 @@ export interface AsyncTraceMiddlewareProps {
  */
 export const traceMiddleware = (
   label: string,
-  callback?: (record: AsyncTraceRecord) => any,
+  callback?: (record: AsyncTraceRecord, ctx: any) => any,
 ) => {
   return middleware.mixin<AsyncTraceMiddlewareProps>(async (ctx, next) => {
     let traceId!: string;
@@ -25,7 +25,7 @@ export const traceMiddleware = (
     } finally {
       const record = asyncTrace.getRecord(traceId);
       ctx.asyncTrace = { record };
-      await callback?.(record);
+      await callback?.(record, ctx);
     }
   });
 };

@@ -30,8 +30,9 @@ test('执行后获得 ctx.asyncTrace.record', async () => {
   const ctx = {};
   let snapshot!: AsyncTraceRecord;
   const fn = compose([
-    traceMiddleware('label', (record) => {
+    traceMiddleware('label', (record, ctx) => {
       snapshot = record;
+      expect(ctx.asyncTrace.record).toBe(record);
     }),
     middleware.mixin((ctx) => {
       expect(ctx).not.toHaveProperty('asyncTrace');

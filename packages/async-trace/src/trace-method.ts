@@ -31,7 +31,7 @@ export const traceMethod = <T, P extends (...args: any[]) => Promise<T>>(
           },
         );
       } finally {
-        callback?.(asyncTrace.getRecord(traceId));
+        await callback?.(asyncTrace.getRecord(traceId));
       }
     };
   };
