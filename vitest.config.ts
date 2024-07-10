@@ -6,7 +6,7 @@ export default defineProject({
       provider: 'v8',
       enabled: true,
       include: ['packages/**/src/**'],
-      exclude: ['packages/console/src/bin.ts'],
+      exclude: ['packages/console/bin.mjs'],
       all: true,
       // lines: 99,
       // functions: 99,

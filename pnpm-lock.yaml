@@ -115,12 +115,12 @@ importers:
 
   packages/console:
     dependencies:
-      '@aomex/internal-file-import':
-        specifier: workspace:^
-        version: link:../internal-file-import
       '@aomex/internal-tools':
         specifier: workspace:^
         version: link:../internal-tools
+      glob:
+        specifier: ^10.3.10
+        version: 10.3.10
       tsx:
         specifier: ^4.15.6
         version: 4.15.6
@@ -2420,6 +2420,7 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@9.3.5:
     resolution: {integrity: sha512-e1LleDykUz2Iu+MTYdkSsuWX8lvAjAcs0Xef0lNIu0S2wOAzuTxCJtcd9S3cijlwYF18EsU3rzb8jPVobxDh9Q==}

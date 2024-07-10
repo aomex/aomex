@@ -11,7 +11,7 @@
   "publishConfig": {
     "types": "dist/index.d.ts",
     "bin": {
-      "aomex": "dist/bin.js"
+      "aomex": "bin.mjs"
     },
     "exports": {
       ".": {
@@ -24,6 +24,7 @@
   },
   "files": [
     "dist",
+    "bin.mjs",
     "LICENSE",
     "package.json",
     "README.md",
@@ -40,8 +41,8 @@
     "@aomex/core": "^1.0.0"
   },
   "dependencies": {
-    "@aomex/internal-file-import": "workspace:^",
     "@aomex/internal-tools": "workspace:^",
+    "glob": "^10.3.10",
     "tsx": "^4.15.6",
     "yargs": "^17.7.1",
     "yargs-parser": "^21.1.1"
