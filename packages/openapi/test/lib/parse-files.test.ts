@@ -91,7 +91,7 @@ test('解析文件', async () => {
           ],
           "requestBody": {
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "properties": {
                     "test": {

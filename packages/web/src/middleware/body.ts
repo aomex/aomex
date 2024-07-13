@@ -1,4 +1,11 @@
-import { validate, Validator, rule, ValidatorError, middleware } from '@aomex/core';
+import {
+  validate,
+  Validator,
+  rule,
+  ValidatorError,
+  middleware,
+  OpenAPI,
+} from '@aomex/core';
 import type { WebMiddleware } from '../override';
 
 /**
@@ -18,11 +25,15 @@ export const body = <T extends { [key: string]: P }, P extends Validator>(
     },
     openapi: {
       onMethod(methodItem) {
+        const schema = Validator.toDocument(rule.object(fields))
+          .schema as OpenAPI.SchemaObject;
+        const contentType = JSON.stringify(schema).includes('"format":"binary"')
+          ? 'multipart/form-data'
+          : 'application/json';
+
         methodItem.requestBody = {
           content: {
-            '*/*': {
-              schema: Validator.toDocument(rule.object(fields)).schema,
-            },
+            [contentType]: { schema },
           },
           required: Object.values(fields).some(
             (validator) => Validator.toDocument(validator).required,
