@@ -58,43 +58,87 @@ test('文档', () => {
     pathItem: doc.paths['/']!,
     methodName: 'get',
   });
-  expect(doc).toMatchInlineSnapshot(`
+  expect(doc['paths']).toMatchInlineSnapshot(`
     {
-      "info": {
-        "title": "",
-        "version": "",
-      },
-      "openapi": "",
-      "paths": {
-        "/": {
-          "get": {
-            "requestBody": {
-              "content": {
-                "*/*": {
-                  "schema": {
-                    "properties": {
-                      "bar": {
-                        "type": "number",
-                      },
-                      "baz": {
-                        "type": "boolean",
-                      },
-                      "foo": {
-                        "type": "string",
-                      },
+      "/": {
+        "get": {
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "bar": {
+                      "type": "number",
                     },
-                    "required": [
-                      "foo",
-                      "baz",
-                    ],
-                    "type": "object",
+                    "baz": {
+                      "type": "boolean",
+                    },
+                    "foo": {
+                      "type": "string",
+                    },
                   },
+                  "required": [
+                    "foo",
+                    "baz",
+                  ],
+                  "type": "object",
                 },
               },
-              "required": true,
             },
-            "responses": {},
+            "required": true,
           },
+          "responses": {},
+        },
+      },
+    }
+  `);
+});
+
+test('携带文件', async () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+
+  const md = body({
+    foo: rule.array(rule.file()),
+  });
+  md['openapi']().onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  expect(doc['paths']).toMatchInlineSnapshot(`
+    {
+      "/": {
+        "get": {
+          "requestBody": {
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "properties": {
+                    "foo": {
+                      "items": {
+                        "format": "binary",
+                        "type": "string",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "required": [
+                    "foo",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {},
         },
       },
     }
