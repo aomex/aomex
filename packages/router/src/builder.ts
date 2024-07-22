@@ -37,7 +37,7 @@ export declare namespace Builder {
     'parameters' | 'requestBody' | 'responses'
   > & {
     /**
-     * 生成openapi时是否忽略当前路由。默认：`true`
+     * 生成openapi时是否展示当前路由。默认：`true`
      */
     showInOpenapi?: boolean;
   };
