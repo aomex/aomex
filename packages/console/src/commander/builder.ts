@@ -1,8 +1,5 @@
-import type {
-  ConsoleContext,
-  ConsoleDocument,
-  ConsoleMiddlewareToken,
-} from '@aomex/console';
+import type { ConsoleContext } from '../cli';
+import type { ConsoleMiddlewareToken, ConsoleDocument } from '../override';
 import { Middleware, middleware } from '@aomex/core';
 import type { Union2Intersection } from '@aomex/internal-tools';
 

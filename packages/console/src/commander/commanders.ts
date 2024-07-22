@@ -5,7 +5,7 @@ import {
   getFileValues,
 } from '@aomex/internal-file-import';
 import { Commander } from './commander';
-import type { ConsoleMiddleware } from '@aomex/console';
+import type { ConsoleMiddleware } from '../override';
 
 export const commanders = (options: GlobPathOptions | Commander[]): ConsoleMiddleware => {
   let composeFn: ComposeFn;

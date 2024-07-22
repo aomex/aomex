@@ -1,6 +1,5 @@
 import { type TypeEqual, expectType } from 'ts-expect';
-import { Commander, commanders } from '../src';
-import type { ConsoleMiddleware } from '@aomex/console';
+import { Commander, commanders, ConsoleMiddleware } from '../../src';
 
 // 参数
 {

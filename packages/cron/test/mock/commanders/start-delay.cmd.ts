@@ -1,4 +1,4 @@
-import { Commander } from '@aomex/commander';
+import { Commander } from '@aomex/console';
 import { schedule } from '../../../src';
 import { sleep } from '@aomex/internal-tools';
 

@@ -41,6 +41,7 @@
     "@aomex/core": "^1.0.0"
   },
   "dependencies": {
+    "@aomex/internal-file-import": "workspace:^",
     "@aomex/internal-tools": "workspace:^",
     "glob": "^10.3.10",
     "tsx": "^4.15.6",

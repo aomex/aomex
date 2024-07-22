@@ -34,7 +34,6 @@
     "node": "^20.13.0 || ^22"
   },
   "peerDependencies": {
-    "@aomex/commander": "^1.0.0",
     "@aomex/console": "^1.0.0",
     "@aomex/core": "^1.0.0"
   },
@@ -47,7 +46,6 @@
     "spinnies": "^0.5.1"
   },
   "devDependencies": {
-    "@aomex/commander": "workspace:^",
     "@aomex/console": "workspace:^",
     "@aomex/core": "workspace:^",
     "@types/pidusage": "^2.0.5",

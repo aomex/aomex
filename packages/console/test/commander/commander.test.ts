@@ -1,7 +1,12 @@
 import { expect, test, vitest } from 'vitest';
-import { Commander, commanders } from '../src';
+import {
+  collectConsoleDocument,
+  Commander,
+  commanders,
+  ConsoleApp,
+  options,
+} from '../../src';
 import { middleware, rule } from '@aomex/core';
-import { ConsoleApp, collectConsoleDocument, options } from '@aomex/console';
 
 test('前缀', async () => {
   const commander = new Commander({ prefix: 'schedule:' });

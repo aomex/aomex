@@ -1,10 +1,15 @@
 import { expect, test, vitest } from 'vitest';
-import { Commander, commanders } from '../src';
-import { ConsoleApp, ConsoleMiddleware, collectConsoleDocument } from '@aomex/console';
-import { join } from 'node:path';
+import {
+  collectConsoleDocument,
+  Commander,
+  commanders,
+  ConsoleApp,
+  ConsoleMiddleware,
+} from '../../src';
+import { dirname, join } from 'node:path';
 import { middleware } from '@aomex/core';
 
-const dir = import.meta.dirname;
+const dir = dirname(import.meta.dirname);
 
 test('中间件', async () => {
   expect(commanders([])).toBeInstanceOf(ConsoleMiddleware);
@@ -72,7 +77,7 @@ test('缓存指令实例', async () => {
 test('未匹配上指令时继续其他中间件', async () => {
   const spy = vitest.fn();
   const app = new ConsoleApp({
-    mount: [commanders(join(dir, 'fixture')), middleware.console(spy)],
+    mount: [commanders(join(dir, 'fixture', 'commanders')), middleware.console(spy)],
   });
   await app.run('aaa1');
   expect(spy).toHaveBeenCalledTimes(0);
