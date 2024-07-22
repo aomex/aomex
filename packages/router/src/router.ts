@@ -1,4 +1,4 @@
-import { Middleware, compose, type ComposeFn } from '@aomex/core';
+import { Middleware, OpenAPI, compose, type ComposeFn } from '@aomex/core';
 import type { Union2Intersection } from '@aomex/internal-tools';
 import type { WebApp, WebMiddlewareToken } from '@aomex/web';
 import { Builder, type BuilderOptions } from './builder';
@@ -6,6 +6,7 @@ import { Builder, type BuilderOptions } from './builder';
 export interface RouterOptions<T extends WebMiddlewareToken[] | [] = any[]> {
   prefix?: string;
   mount?: T;
+  docs?: Pick<OpenAPI.OperationObject, 'tags' | 'deprecated'>;
 }
 
 export class Router<
@@ -16,10 +17,12 @@ export class Router<
   protected readonly middlewareList: WebMiddlewareToken[];
   protected readonly prefix: string;
   protected readonly builders: Builder[] = [];
+  protected readonly docs: RouterOptions['docs'];
 
   constructor(protected readonly opts: RouterOptions<T> = {}) {
     this.prefix = opts.prefix || '';
     this.middlewareList = opts.mount || [];
+    this.docs = opts.docs || {};
   }
 
   public get<T extends WebMiddlewareToken[] | []>(
@@ -77,6 +80,7 @@ export class Router<
     methods: readonly (typeof Builder.METHODS)[number][],
     options: BuilderOptions<Props, any[]>,
   ): any {
+    options.docs = { ...this.docs, ...options.docs };
     const builder = new Builder(this.prefix, uri, methods, options);
     options.disable !== true && this.builders.push(builder);
   }

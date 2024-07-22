@@ -162,3 +162,38 @@ test('一个router可注册多个route', async () => {
   expect(spy2).toHaveBeenCalledTimes(1);
   expect(spy3).toHaveBeenCalledTimes(1);
 });
+
+test('文档合并到每个route中', () => {
+  const router = new Router({ docs: { tags: ['bar', 'baz'] } });
+  router.get('/', { action: () => {} });
+  router.get('/foo', { docs: { deprecated: true }, action: () => {} });
+  router.get('/foo', { docs: { showInOpenapi: false, tags: ['foo'] }, action: () => {} });
+
+  expect(router['builders'][0]?.docs).toMatchInlineSnapshot(`
+    {
+      "showInOpenapi": true,
+      "tags": [
+        "bar",
+        "baz",
+      ],
+    }
+  `);
+  expect(router['builders'][1]?.docs).toMatchInlineSnapshot(`
+    {
+      "deprecated": true,
+      "showInOpenapi": true,
+      "tags": [
+        "bar",
+        "baz",
+      ],
+    }
+  `);
+  expect(router['builders'][2]?.docs).toMatchInlineSnapshot(`
+    {
+      "showInOpenapi": false,
+      "tags": [
+        "foo",
+      ],
+    }
+  `);
+});
