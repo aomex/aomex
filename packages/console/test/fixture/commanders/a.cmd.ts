@@ -1,4 +1,4 @@
-import { Commander } from '../../src';
+import { Commander } from '../../../src';
 
 export const commander = new Commander();
 

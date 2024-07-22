@@ -1,11 +1,8 @@
 import { Middleware, compose, middleware, type ComposeFn } from '@aomex/core';
 import { toArray, type Union2Intersection } from '@aomex/internal-tools';
 import { Builder, type BuilderOptions } from './builder';
-import {
-  ConsoleApp,
-  type ConsoleMiddleware,
-  type ConsoleMiddlewareToken,
-} from '@aomex/console';
+import type { ConsoleApp } from '../cli';
+import type { ConsoleMiddleware, ConsoleMiddlewareToken } from '../override';
 
 export interface CommanderOptions<T extends ConsoleMiddlewareToken[] | []> {
   prefix?: string;

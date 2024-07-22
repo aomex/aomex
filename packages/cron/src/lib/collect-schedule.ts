@@ -1,4 +1,4 @@
-import { Commander } from '@aomex/commander';
+import { Commander } from '@aomex/console';
 import { pathToFiles, getFileValues } from '@aomex/internal-file-import';
 import { ScheduleMiddleware } from '../middleware/schedule.middleware';
 import { ScheduleParser } from './schedule-parser';

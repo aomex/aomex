@@ -1,7 +1,6 @@
 import { middleware } from '@aomex/core';
-import { Commander } from '../src';
+import { Commander, ConsoleApp, ConsoleContext } from '../../src';
 import { expectType, type TypeEqual } from 'ts-expect';
-import { ConsoleApp, type ConsoleContext } from '@aomex/console';
 
 // 创建实例
 {
