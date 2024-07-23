@@ -1,0 +1,47 @@
+{
+  "name": "@aomex/swagger-ui",
+  "version": "1.7.0",
+  "description": "文档展示UI",
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "prepublishOnly": "tsup && sh scripts/copy-ui.sh"
+  },
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "files": [
+    "dist",
+    "public",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@aomex/core": "^1.0.0",
+    "@aomex/web": "^1.0.0"
+  },
+  "dependencies": {
+    "@aomex/serve-static": "workspace:^",
+    "swagger-ui": "^5.17.14",
+    "yaml": "^2.4.5"
+  },
+  "devDependencies": {
+    "@aomex/core": "workspace:^",
+    "@aomex/web": "workspace:^"
+  }
+}
