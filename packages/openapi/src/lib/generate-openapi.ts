@@ -1,6 +1,5 @@
 import { OpenAPI } from '@aomex/core';
 import { pathToFiles, type GlobPathOptions } from '@aomex/internal-file-import';
-import type { OpenapiValidateResult } from './validate-openapi';
 import { methodParameterToPathParameter } from './hoist-parameter';
 import { initializeDocument } from './initialize-document';
 import { parseFiles } from './parse-files';
@@ -29,7 +28,7 @@ export interface GenerateOpenapiOptions {
  */
 export const generateOpenapi = async (
   config: GenerateOpenapiOptions,
-): Promise<{ document: OpenAPI.Document } & OpenapiValidateResult> => {
+): Promise<OpenAPI.Document> => {
   const document = await initializeDocument(config.docs);
   const files = await pathToFiles(config.routers);
   const usedTags = await parseFiles(document, files);
