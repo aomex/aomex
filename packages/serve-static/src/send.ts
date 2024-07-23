@@ -9,7 +9,11 @@ export interface SendOptions {
    */
   root: string;
   /**
-   * 没有指定文件名时，自动访问这个文件。默认值：`index.html`
+   * 对请求的路径进行修改操作以满足文件查找
+   */
+  formatPath?: (pathname: string, ctx: WebContext) => string;
+  /**
+   * 没有指定文件名时，尝试拼接该属性提供的文件。默认值：`index.html`
    */
   indexFile?: string | false;
   /**
@@ -77,10 +81,14 @@ export const send = async (ctx: WebContext, options: SendOptions): Promise<boole
     } = {},
     indexFile = 'index.html',
     useCompressedFile = true,
+    formatPath,
   } = options;
   const root = path.normalize(path.resolve(options.root ?? ''));
 
   let { pathname: staticPath } = request;
+  if (formatPath) {
+    staticPath = formatPath(staticPath, ctx);
+  }
   try {
     staticPath = decodeURIComponent(staticPath);
   } catch {
