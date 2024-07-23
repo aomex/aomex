@@ -1,6 +1,7 @@
 import { Middleware, OpenAPI, compose, type ComposeFn } from '@aomex/core';
 import type { Union2Intersection } from '@aomex/internal-tools';
-import type { WebApp, WebMiddlewareToken } from '@aomex/web';
+import type { WebMiddlewareToken } from '../override';
+import type { WebApp } from '../http';
 import { Builder, type BuilderOptions } from './builder';
 
 export interface RouterOptions<T extends WebMiddlewareToken[] | [] = any[]> {

@@ -1,16 +1,15 @@
 import { expect, test, vitest } from 'vitest';
-import { Router, routers } from '../src';
-import { join } from 'node:path';
-import { WebApp } from '@aomex/web';
+import { dirname, join } from 'node:path';
 import { middleware } from '@aomex/core';
 import supertest from 'supertest';
-import { router as routerA } from './fixture/a.router';
+import { Router, routers, WebApp } from '../../src';
+import { router as routerA } from '../fixture/routers/a.router';
 
-const dir = import.meta.dirname;
+const dir = dirname(import.meta.dirname);
 
 test('从路径动态加载', async () => {
   const app = new WebApp({
-    mount: [routers(join(dir, 'fixture'))],
+    mount: [routers(join(dir, 'fixture', 'routers'))],
   });
   await supertest(app.listen()).get('/test1').expect(200, 'foo');
   await supertest(app.listen()).get('/test2').expect(200, 'bar');
@@ -31,7 +30,7 @@ test('直接传入路由', async () => {
 
 test('路由实例只收集一次', async () => {
   const app = new WebApp({
-    mount: [routers(join(dir, 'fixture'))],
+    mount: [routers(join(dir, 'fixture', 'routers'))],
   });
 
   // @ts-expect-error
@@ -86,7 +85,7 @@ test('静态路径比动态路径优先匹配', async () => {
 test('未匹配上路由时继续其他中间件', async () => {
   const spy = vitest.fn();
   const app = new WebApp({
-    mount: [routers(join(dir, 'fixture')), middleware.web(spy)],
+    mount: [routers(join(dir, 'fixture', 'routers')), middleware.web(spy)],
   });
   await supertest(app.listen()).get('/test1');
   expect(spy).toHaveBeenCalledTimes(0);
@@ -96,7 +95,7 @@ test('未匹配上路由时继续其他中间件', async () => {
 
 test('head请求与复用get请求', async () => {
   const app = new WebApp({
-    mount: [routers(join(dir, 'fixture'))],
+    mount: [routers(join(dir, 'fixture', 'routers'))],
   });
   await supertest(app.listen()).head('/test1').expect(200);
 });

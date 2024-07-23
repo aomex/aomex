@@ -1,6 +1,5 @@
 import { type TypeEqual, expectType } from 'ts-expect';
-import type { WebMiddleware } from '@aomex/web';
-import { Router, routers } from '../src';
+import { routers, Router, WebMiddleware } from '../../src';
 
 // 参数
 {
