@@ -214,3 +214,21 @@ describe('压缩', () => {
       });
   });
 });
+
+test('修改路径', async () => {
+  const app = new WebApp({
+    mount: [
+      middleware.web((ctx) =>
+        send(ctx, {
+          root: fixturesDir,
+          formatPath(pathname) {
+            return pathname.replace('/my-prefix', '');
+          },
+        }),
+      ),
+    ],
+  });
+  await request(app.listen()).get('/hello.txt').expect(200).expect('world');
+  await request(app.listen()).get('/my-prefix/hello.txt').expect(200).expect('world');
+  await request(app.listen()).get('/my-prefix/abc/hello.txt').expect(404);
+});
