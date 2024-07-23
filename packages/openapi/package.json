@@ -38,6 +38,11 @@
     "@aomex/core": "^1.0.0",
     "@aomex/web": "^1.0.0"
   },
+  "peerDependenciesMeta": {
+    "@aomex/console": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "@aomex/internal-file-import": "workspace:^",
     "@aomex/internal-tools": "workspace:^",

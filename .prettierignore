@@ -6,3 +6,4 @@ coverage/
 openapi.json
 packages/serve-static/test/fixtures/world/index.html
 /.nx/workspace-data
+packages/swagger-ui/public/swagger-ui.*
