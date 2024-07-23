@@ -1,6 +1,5 @@
 import { expect, test, vitest } from 'vitest';
-import { Router, routers } from '../src';
-import { WebApp } from '@aomex/web';
+import { Router, routers, WebApp } from '../../src';
 import { middleware } from '@aomex/core';
 import supertest from 'supertest';
 

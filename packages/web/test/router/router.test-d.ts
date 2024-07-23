@@ -1,7 +1,6 @@
 import { middleware } from '@aomex/core';
-import { Router } from '../src';
 import { type TypeEqual, expectType } from 'ts-expect';
-import { WebApp, WebContext, response } from '@aomex/web';
+import { response, Router, WebApp, WebContext } from '../../src';
 
 // 创建实例
 {

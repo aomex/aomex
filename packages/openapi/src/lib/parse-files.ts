@@ -1,7 +1,6 @@
 import type { OpenAPI } from '@aomex/core';
 import { getFileValues } from '@aomex/internal-file-import';
-import { Router } from '@aomex/router';
-import { WebMiddleware, WebRequest, type OpenApiInjector } from '@aomex/web';
+import { Router, WebMiddleware, WebRequest, type OpenApiInjector } from '@aomex/web';
 import path from 'node:path';
 import { methodToVerb } from './method-to-verb';
 import snakeCase from 'lodash.snakecase';

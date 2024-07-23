@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { Builder } from '../src';
+import { Builder } from '../../src';
 
 const action = {
   action: () => {},

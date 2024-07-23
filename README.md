@@ -38,7 +38,6 @@ npm create aomex --project hello-aomex
 
 | Name                                                               | Version                                                                                                                           | Platform    | Desc                 |
 | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------- |
-| [@aomex/router](./packages/router)                                 | [![npm](https://img.shields.io/npm/v/@aomex/router)](https://www.npmjs.com/package/@aomex/router)                                 | web         | 接口路由             |
 | [@aomex/compress](./packages/compress)                             | [![npm](https://img.shields.io/npm/v/@aomex/compress)](https://www.npmjs.com/package/@aomex/compress)                             | web         | 压缩响应内容         |
 | [@aomex/cors](./packages/cors)                                     | [![npm](https://img.shields.io/npm/v/@aomex/cors)](https://www.npmjs.com/package/@aomex/cors)                                     | web         | 跨域请求共享         |
 | [@aomex/jwt](./packages/jwt)                                       | [![npm](https://img.shields.io/npm/v/@aomex/jwt)](https://www.npmjs.com/package/@aomex/jwt)                                       | web         | 认证令牌             |
