@@ -22,7 +22,6 @@ export interface GenerateOpenapiWithSpinnerOptions extends GenerateOpenapiOption
   /**
    * 保存到指定文件。默认值：`openapi.json`
    * - `*.json` 保存为JSON格式
-   * - `*.yml`  保存为YAML格式
    * - `*.yaml` 保存为YAML格式
    */
   saveToFile?: string;
