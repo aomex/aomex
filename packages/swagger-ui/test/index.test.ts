@@ -7,6 +7,7 @@ import { middleware } from '@aomex/core';
 
 const openapiJson = path.join(import.meta.dirname, 'fixtures', 'openapi.json');
 const openapiYAML = path.join(import.meta.dirname, 'fixtures', 'openapi.yaml');
+const openapiYML = path.join(import.meta.dirname, 'fixtures', 'openapi.yml');
 
 test('中间件', () => {
   expect(swaggerUI({ openapi: openapiJson })).toBeInstanceOf(WebMiddleware);
@@ -154,6 +155,47 @@ test('动态返回openapi文档', async () => {
 test('yaml文档', async () => {
   const app = new WebApp({
     mount: [swaggerUI({ openapi: openapiYAML })],
+  });
+  await supertest(app.listen())
+    .get('/swagger')
+    .expect(200)
+    .expect('Content-Type', 'text/html; charset=utf-8')
+    .expect((res) => {
+      expect(res.text).toMatchInlineSnapshot(`
+        "<!doctype html>
+        <html lang="zh_CN">
+          <head>
+            <meta charset="utf-8" />
+            <title>bar</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+            <meta name="renderer" content="webkit" />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+            />
+            <link rel="stylesheet" href="./swagger-ui.css" />
+          </head>
+          <body>
+            <div id="swagger-ui"></div>
+            <script src="./swagger-ui.js"></script>
+            <script>
+              window.onload = () => {
+                window.ui = SwaggerUIBundle({
+                  specs: '{"version":"3.0.0","info":{"title":"bar","version":""},"paths":{}}',
+                  dom_id: '#swagger-ui',
+                });
+              };
+            </script>
+          </body>
+        </html>
+        "
+      `);
+    });
+});
+
+test('yml文档', async () => {
+  const app = new WebApp({
+    mount: [swaggerUI({ openapi: openapiYML })],
   });
   await supertest(app.listen())
     .get('/swagger')
