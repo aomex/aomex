@@ -29,10 +29,10 @@ npm create aomex --project hello-aomex
 
 # 应用平台
 
-| Name                                 | Version                                                                                             |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------- |
-| [@aomex/web](./packages/web)         | [![npm](https://img.shields.io/npm/v/@aomex/web)](https://www.npmjs.com/package/@aomex/web)         |
-| [@aomex/console](./packages/console) | [![npm](https://img.shields.io/npm/v/@aomex/console)](https://www.npmjs.com/package/@aomex/console) |
+| Name                                 | Version                                                                                             | Desc     |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------- | -------- |
+| [@aomex/web](./packages/web)         | [![npm](https://img.shields.io/npm/v/@aomex/web)](https://www.npmjs.com/package/@aomex/web)         | 外部接口 |
+| [@aomex/console](./packages/console) | [![npm](https://img.shields.io/npm/v/@aomex/console)](https://www.npmjs.com/package/@aomex/console) | 内部指令 |
 
 # 中间件
 
@@ -49,7 +49,7 @@ npm create aomex --project hello-aomex
 | [@aomex/rate-limit](./packages/rate-limit)                         | [![npm](https://img.shields.io/npm/v/@aomex/rate-limit)](https://www.npmjs.com/package/@aomex/rate-limit)                         | web         | 请求限速             |
 | [@aomex/rate-limit-redis-store](./packages/rate-limit-redis-store) | [![npm](https://img.shields.io/npm/v/@aomex/rate-limit-redis-store)](https://www.npmjs.com/package/@aomex/rate-limit-redis-store) | web         | 请求限速Redis存储    |
 | [@aomex/etag](./packages/etag)                                     | [![npm](https://img.shields.io/npm/v/@aomex/etag)](https://www.npmjs.com/package/@aomex/etag)                                     | web         | 设置etag报文         |
-| [@aomex/openapi](./packages/openapi)                               | [![npm](https://img.shields.io/npm/v/@aomex/openapi)](https://www.npmjs.com/package/@aomex/openapi)                               | console     | 生成接口文档         |
+| [@aomex/openapi](./packages/openapi)                               | [![npm](https://img.shields.io/npm/v/@aomex/openapi)](https://www.npmjs.com/package/@aomex/openapi)                               | web/console | 生成接口文档         |
 | [@aomex/swagger-ui](./packages/swagger-ui)                         | [![npm](https://img.shields.io/npm/v/@aomex/swagger-ui)](https://www.npmjs.com/package/@aomex/swagger-ui)                         | web         | swagger文档服务      |
 | [@aomex/cron](./packages/cron)                                     | [![npm](https://img.shields.io/npm/v/@aomex/cron)](https://www.npmjs.com/package/@aomex/cron)                                     | console     | 定时任务             |
 | [@aomex/async-trace](./packages/async-trace)                       | [![npm](https://img.shields.io/npm/v/@aomex/async-trace)](https://www.npmjs.com/package/@aomex/async-trace)                       | web/console | 异步逻辑链路追踪     |
