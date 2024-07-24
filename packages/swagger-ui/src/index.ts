@@ -83,7 +83,7 @@ export const swaggerUI = (opts: SwaggerUIOptions): WebMiddleware => {
         specs = JSON.stringify(docs);
       } else {
         const content = await readFile(path.resolve(openapi), 'utf8');
-        if (openapi.endsWith('yaml')) {
+        if (openapi.endsWith('.yaml') || openapi.endsWith('.yml')) {
           docs = YAML.parse(content);
           specs = JSON.stringify(docs);
         } else {
