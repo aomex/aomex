@@ -11,9 +11,11 @@ export const saveToFile = async (
   fileMode?: Mode,
 ) => {
   const dest = path.resolve(filename || 'openapi.json');
-  const content = ['.yml', '.yaml'].includes(path.extname(dest))
-    ? YAML.stringify(document)
-    : JSON.stringify(document);
+  const ext = path.extname(dest);
+  const content =
+    ext.endsWith('.yaml') || ext.endsWith('.yml')
+      ? YAML.stringify(document)
+      : JSON.stringify(document);
   const size = bytes(Buffer.byteLength(content), { unitSeparator: '' });
 
   await mkdir(path.dirname(dest), { recursive: true });
