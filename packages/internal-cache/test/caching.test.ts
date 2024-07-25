@@ -18,11 +18,11 @@ test('设置值', async () => {
   const caching = new MockCache({});
 
   // @ts-expect-error
-  const spy = vitest.spyOn(caching, 'setValue').mockImplementation(async () => true);
+  const spy = vitest.spyOn(caching, 'setValue').mockImplementation(() => true);
 
   await caching.set('foo', 'bar');
   expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', undefined);
-  expect(spy).toReturnWith(true);
+  expect(spy).toHaveReturnedWith(true);
 
   await caching.set('foo', ['bar']);
   expect(spy).toHaveBeenLastCalledWith('foo', '["bar"]', undefined);
