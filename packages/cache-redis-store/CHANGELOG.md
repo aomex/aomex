@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/aomex/aomex/compare/v2.0.0...v2.0.1) (2024-07-26)
+
+
+### Bug Fixes
+
+* **cache-redis-store:** 包名错误 ([b6839f8](https://github.com/aomex/aomex/commit/b6839f89a7291ba0cfa765c5acd79233d789d052))
+
+
+
+
+
 # [2.0.0](https://github.com/aomex/aomex/compare/v1.7.0...v2.0.0) (2024-07-26)
 
 
