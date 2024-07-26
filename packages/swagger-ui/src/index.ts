@@ -94,9 +94,9 @@ export const swaggerUI = (opts: SwaggerUIOptions): WebMiddleware => {
 
       html = await readFile(htmlFile, 'utf8');
       html = html
-        .replace('#title#', docs.info.title)
-        .replace('#specs#', specs)
-        .replace('#lang#', i18n.getLocale());
+        .replaceAll('#title#', docs.info.title)
+        .replaceAll('#prefix#', uriPrefix)
+        .replaceAll('#lang#', i18n.getLocale());
       resolve(undefined);
     });
     return promise;
