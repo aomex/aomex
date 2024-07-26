@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/aomex/aomex/compare/v1.7.0...v2.0.0) (2024-07-26)
+
+
+### Bug Fixes
+
+* **openapi:** generateOpenapi返回了错误的类型 ([8850020](https://github.com/aomex/aomex/commit/88500207da300caf8bfaa2fffe717bc63e1ca73d))
+* **openapi:** 保存文件时使用更严格的方式判断后缀 ([a69ae0f](https://github.com/aomex/aomex/commit/a69ae0f791e18d6b322313709b3874e4efffd128))
+
+
+### Features
+
+* **cache:** 新的缓存库 ([cca0b52](https://github.com/aomex/aomex/commit/cca0b52d86029fb1303cd9bd1f362d2dd8b406b6))
+* **console:** commander合并到console库 ([e41df73](https://github.com/aomex/aomex/commit/e41df73517ddefbad253d1decede8cc938e31f26))
+* **serve-static:** 增加formatPath参数 ([226d8cd](https://github.com/aomex/aomex/commit/226d8cd914b907679bf0b68e0b00e21bc25cf42e))
+* **swagger-ui:** swagger服务 ([c024922](https://github.com/aomex/aomex/commit/c02492206a9c7bc38964ee7a687a7e8bcf9b3f65))
+* **swagger-ui:** 识别.yml后缀 ([bd8b716](https://github.com/aomex/aomex/commit/bd8b71642c93bb3a5e60412d73f6c5d4d4351907))
+* **web:** router库合并到web库 ([7268973](https://github.com/aomex/aomex/commit/72689738b9a7eb1eb77c9b0bb651d47e58ed5532))
+* **web:** 路由组支持设置文档说明 ([1452ecc](https://github.com/aomex/aomex/commit/1452ecc5ae6d50c5b4f230967dca5cbf58b1378d))
+
+
+### BREAKING CHANGES
+
+* **cache:** 1. 删除了memory-cache,redis-cache,file-cache
+2. 采用适配器形式创建缓存实例
+* **web:** @aomex/router已被删除
+* **console:** @aomex/commander已被删除
+
+
+
+
+
 # [1.7.0](https://github.com/aomex/aomex/compare/v1.6.0...v1.7.0) (2024-07-13)
 
 

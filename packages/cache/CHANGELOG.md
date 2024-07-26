@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/aomex/aomex/compare/v1.7.0...v2.0.0) (2024-07-26)
+
+
+### Features
+
+* **cache:** 新的缓存库 ([cca0b52](https://github.com/aomex/aomex/commit/cca0b52d86029fb1303cd9bd1f362d2dd8b406b6))
+
+
+### BREAKING CHANGES
+
+* **cache:** 1. 删除了memory-cache,redis-cache,file-cache
+2. 采用适配器形式创建缓存实例
+
+
+
+
+
 # [1.7.0](https://github.com/aomex/aomex/compare/v1.6.0...v1.7.0) (2024-07-13)
 
 **Note:** Version bump only for package @aomex/internal-cache
