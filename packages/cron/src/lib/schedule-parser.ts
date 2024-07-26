@@ -1,13 +1,13 @@
 import { scriptName } from '@aomex/console';
-import { MemoryCache } from '@aomex/memory-cache';
-import type { CronOptions, CronStore, ScheduleOptions } from './type';
+import { CacheMemoryStore, Caching } from '@aomex/cache';
+import type { CronOptions, ScheduleOptions } from './type';
 import cronParser from 'cron-parser';
 
 export class ScheduleParser {
   protected _time?: string;
   protected _seconds?: number[];
   protected _argv?: string[];
-  protected _store?: CronStore;
+  protected _cache?: Caching;
 
   constructor(
     protected readonly options: ScheduleOptions & CronOptions & { command: string },
@@ -25,8 +25,8 @@ export class ScheduleParser {
     return Math.max(1, this.options.concurrent || 1);
   }
 
-  public get store(): CronStore {
-    return (this._store ??= this.options.store || new MemoryCache());
+  public get cache(): Caching {
+    return (this._cache ??= this.options.store || new Caching(CacheMemoryStore, {}));
   }
 
   public get time(): string {

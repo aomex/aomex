@@ -40,7 +40,7 @@
   "dependencies": {
     "@aomex/internal-file-import": "workspace:^",
     "@aomex/internal-tools": "workspace:^",
-    "@aomex/memory-cache": "workspace:^",
+    "@aomex/cache": "workspace:^",
     "cron-parser": "^4.9.0",
     "pidusage": "^3.0.2",
     "spinnies": "^0.5.1"
