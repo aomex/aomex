@@ -34,15 +34,15 @@ test('获取html', async () => {
               name="viewport"
               content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
             />
-            <link rel="stylesheet" href="./swagger-ui.css" />
+            <link rel="stylesheet" href="/swagger/swagger-ui.css" />
           </head>
           <body>
             <div id="swagger-ui"></div>
-            <script src="./swagger-ui.js"></script>
+            <script src="/swagger/swagger-ui-bundle.js"></script>
             <script>
               window.onload = () => {
                 window.ui = SwaggerUIBundle({
-                  specs: '{"version":"3.0.0","info":{"title":"foo","version":""},"paths":{}}',
+                  url: '/swagger/openapi.json',
                   dom_id: '#swagger-ui',
                 });
               };
@@ -132,15 +132,15 @@ test('动态返回openapi文档', async () => {
               name="viewport"
               content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
             />
-            <link rel="stylesheet" href="./swagger-ui.css" />
+            <link rel="stylesheet" href="/swagger/swagger-ui.css" />
           </head>
           <body>
             <div id="swagger-ui"></div>
-            <script src="./swagger-ui.js"></script>
+            <script src="/swagger/swagger-ui-bundle.js"></script>
             <script>
               window.onload = () => {
                 window.ui = SwaggerUIBundle({
-                  specs: '{"openapi":"3.0.0","info":{"title":"a-title","version":"0.0.0"},"paths":{}}',
+                  url: '/swagger/openapi.json',
                   dom_id: '#swagger-ui',
                 });
               };
@@ -173,15 +173,15 @@ test('yaml文档', async () => {
               name="viewport"
               content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
             />
-            <link rel="stylesheet" href="./swagger-ui.css" />
+            <link rel="stylesheet" href="/swagger/swagger-ui.css" />
           </head>
           <body>
             <div id="swagger-ui"></div>
-            <script src="./swagger-ui.js"></script>
+            <script src="/swagger/swagger-ui-bundle.js"></script>
             <script>
               window.onload = () => {
                 window.ui = SwaggerUIBundle({
-                  specs: '{"version":"3.0.0","info":{"title":"bar","version":""},"paths":{}}',
+                  url: '/swagger/openapi.json',
                   dom_id: '#swagger-ui',
                 });
               };
@@ -214,15 +214,15 @@ test('yml文档', async () => {
               name="viewport"
               content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
             />
-            <link rel="stylesheet" href="./swagger-ui.css" />
+            <link rel="stylesheet" href="/swagger/swagger-ui.css" />
           </head>
           <body>
             <div id="swagger-ui"></div>
-            <script src="./swagger-ui.js"></script>
+            <script src="/swagger/swagger-ui-bundle.js"></script>
             <script>
               window.onload = () => {
                 window.ui = SwaggerUIBundle({
-                  specs: '{"version":"3.0.0","info":{"title":"bar","version":""},"paths":{}}',
+                  url: '/swagger/openapi.json',
                   dom_id: '#swagger-ui',
                 });
               };

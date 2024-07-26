@@ -9,15 +9,15 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
     />
-    <link rel="stylesheet" href="./swagger-ui.css" />
+    <link rel="stylesheet" href="#prefix#/swagger-ui.css" />
   </head>
   <body>
     <div id="swagger-ui"></div>
-    <script src="./swagger-ui.js"></script>
+    <script src="#prefix#/swagger-ui-bundle.js"></script>
     <script>
       window.onload = () => {
         window.ui = SwaggerUIBundle({
-          specs: '#specs#',
+          url: '#prefix#/openapi.json',
           dom_id: '#swagger-ui',
         });
       };
