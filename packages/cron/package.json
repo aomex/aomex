@@ -1,6 +1,6 @@
 {
   "name": "@aomex/cron",
-  "version": "1.7.0",
+  "version": "2.0.0",
   "description": "定时任务",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -38,9 +38,9 @@
     "@aomex/core": "^1.0.0"
   },
   "dependencies": {
+    "@aomex/cache": "workspace:^",
     "@aomex/internal-file-import": "workspace:^",
     "@aomex/internal-tools": "workspace:^",
-    "@aomex/cache": "workspace:^",
     "cron-parser": "^4.9.0",
     "pidusage": "^3.0.2",
     "spinnies": "^0.5.1"
