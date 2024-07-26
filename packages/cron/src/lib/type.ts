@@ -1,11 +1,12 @@
+import type { Caching } from '@aomex/cache';
 import type { GlobPathOptions } from '@aomex/internal-file-import';
 
 export interface CronOptions {
   path: GlobPathOptions;
   /**
-   * 集群服务共享状态。默认值：`MemoryCache`
+   * 集群服务共享状态。默认使用内存缓存，只能约束当前进程
    */
-  store?: CronStore;
+  store?: Caching;
   /**
    * 服务端口。默认值：`9786`
    */
@@ -85,15 +86,6 @@ export type ScheduleOptions = (ScheduleTimeObject | ScheduleTimeString) & {
    */
   overlap?: boolean;
 };
-
-export interface CronStore {
-  get(key: string): Promise<string | null>;
-  set(key: string, value: string, duration?: number): Promise<boolean>;
-  add(key: string, value: string, duration?: number): Promise<boolean>;
-  increment(key: string): Promise<number>;
-  decrement(key: string): Promise<number>;
-  expires(key: string, duration: number): Promise<boolean>;
-}
 
 export type ServerWriteData =
   | {

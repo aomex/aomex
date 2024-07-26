@@ -1,7 +1,7 @@
 {
-  "name": "@aomex/memory-cache",
+  "name": "@aomex/redis-cache",
   "version": "1.7.0",
-  "description": "内存缓存",
+  "description": "aomex基于redis的缓存实现",
   "scripts": {
     "prepublishOnly": "tsup"
   },
@@ -34,7 +34,8 @@
     "node": "^20.13.0 || ^22"
   },
   "dependencies": {
-    "@aomex/internal-cache": "workspace:^"
+    "@aomex/cache": "workspace:^",
+    "ioredis": "^5.4.1"
   },
   "devDependencies": {
     "@aomex/internal-tools": "workspace:^"

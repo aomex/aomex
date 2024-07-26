@@ -1,5 +1,5 @@
 import { type TypeEqual, expectType } from 'ts-expect';
-import { Caching } from '../src';
+import { Caching } from '../src/caching';
 
 let caching!: Caching;
 
@@ -29,14 +29,14 @@ let caching!: Caching;
 
 // add
 {
-  expectType<boolean>(await caching.add('', ''));
-  await caching.add('', 1);
-  await caching.add('', {});
-  await caching.add('', []);
-  await caching.add('', false);
-  await caching.add('', '', 100);
+  expectType<boolean>(await caching.setNX('', ''));
+  await caching.setNX('', 1);
+  await caching.setNX('', {});
+  await caching.setNX('', []);
+  await caching.setNX('', false);
+  await caching.setNX('', '', 100);
   // @ts-expect-error
-  await caching.add('', '', '100');
+  await caching.setNX('', '', '100');
 }
 
 // delete
@@ -51,26 +51,6 @@ let caching!: Caching;
   expectType<boolean>(await caching.deleteAll());
   // @ts-expect-error
   await caching.deleteAll('');
-}
-
-// getOrSet
-{
-  expectType<string>(await caching.getOrSet('', () => ''));
-  expectType<string>(await caching.getOrSet('', async () => ''));
-  expectType<number>(await caching.getOrSet('', () => Promise.resolve(123)));
-  expectType<string>(await caching.getOrSet('', () => '', 100));
-}
-
-// getAndDelete
-{
-  const result1 = await caching.getAndDelete('');
-  expectType<TypeEqual<Caching.Types | null, typeof result1>>(true);
-
-  const result2 = await caching.getAndDelete('', 1);
-  expectType<TypeEqual<number, typeof result2>>(true);
-
-  const result3 = await caching.getAndDelete<string>('');
-  expectType<TypeEqual<string | null, typeof result3>>(true);
 }
 
 // exists
@@ -92,6 +72,6 @@ let caching!: Caching;
 
 // expires
 {
-  const result = await caching.expires('', 20);
+  const result = await caching.expire('', 20);
   expectType<TypeEqual<boolean, typeof result>>(true);
 }

@@ -1,12 +1,12 @@
 import cronParser from 'cron-parser';
 import type { ScheduleParser } from './schedule-parser';
-import type { CronStore } from './type';
 import { spawn } from 'node:child_process';
+import type { Caching } from '@aomex/cache';
 
 export class Job {
   public runningLevel: number = 0;
   public readonly cronExpression: cronParser.CronExpression;
-  public readonly store: CronStore;
+  public readonly cache: Caching;
   public handle: { timer: NodeJS.Timeout; resolve: (data: void) => void } | null = null;
   public stopping = false;
   public readonly processData: {
@@ -20,7 +20,7 @@ export class Job {
 
   constructor(public readonly schedule: ScheduleParser) {
     this.cronExpression = cronParser.parseExpression(this.schedule.time);
-    this.store = schedule.store;
+    this.cache = schedule.cache;
     this.processData = {
       execArgv: [...process.execArgv],
       node: process.argv0,
@@ -119,34 +119,34 @@ export class Job {
 
   async win(jobKey: string): Promise<boolean> {
     if (!this.schedule.overlap) {
-      let runningJobKey = await this.store.get(this.runningKey);
+      let runningJobKey = await this.cache.get(this.runningKey);
       if (!runningJobKey) {
-        await this.store.add(this.runningKey, jobKey, 10_000);
-        runningJobKey = await this.store.get(this.runningKey);
+        await this.cache.setNX(this.runningKey, jobKey, 10_000);
+        runningJobKey = await this.cache.get(this.runningKey);
       }
       if (runningJobKey !== jobKey) return false;
     }
 
-    const index = await this.store.increment(jobKey);
+    const index = await this.cache.increment(jobKey);
     return index <= this.schedule.concurrent;
   }
 
   ping(jobKey: string) {
     const timer = setInterval(() => {
-      this.store.set(this.runningKey, jobKey, 10_000);
+      this.cache.set(this.runningKey, jobKey, 10_000);
     }, 3_000);
     return () => clearInterval(timer);
   }
 
   async done(jobKey: string) {
     const doneKey = jobKey + ':done';
-    const count = await this.store.increment(doneKey);
+    const count = await this.cache.increment(doneKey);
     // 当前时间点任务已全部结束
     if (count === this.schedule.concurrent) {
       await Promise.all([
-        this.store.expires(this.runningKey, -1),
-        this.store.expires(jobKey, 7200_000),
-        this.store.expires(doneKey, 7200_000),
+        this.cache.expire(this.runningKey, -1),
+        this.cache.expire(jobKey, 7200_000),
+        this.cache.expire(doneKey, 7200_000),
       ]);
     }
   }

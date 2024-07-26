@@ -1,7 +1,7 @@
 {
-  "name": "@aomex/redis-cache",
+  "name": "@aomex/cache",
   "version": "1.7.0",
-  "description": "aomex基于redis的缓存实现",
+  "description": "缓存基础类",
   "scripts": {
     "prepublishOnly": "tsup"
   },
@@ -26,19 +26,17 @@
     "README.md",
     "CHANGELOG.md"
   ],
-  "keywords": [],
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "engines": {
     "node": "^20.13.0 || ^22"
   },
-  "dependencies": {
-    "@aomex/internal-cache": "workspace:^",
-    "ioredis": "^5.4.1"
+  "peerDependencies": {
+    "@aomex/core": "^1.0.0"
   },
   "devDependencies": {
-    "@aomex/internal-cache": "workspace:^",
+    "@aomex/core": "workspace:^",
     "@aomex/internal-tools": "workspace:^"
   }
 }

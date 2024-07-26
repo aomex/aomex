@@ -34,7 +34,7 @@ npm create aomex --project hello-aomex
 | [@aomex/web](./packages/web)         | [![npm](https://img.shields.io/npm/v/@aomex/web)](https://www.npmjs.com/package/@aomex/web)         | 外部接口 |
 | [@aomex/console](./packages/console) | [![npm](https://img.shields.io/npm/v/@aomex/console)](https://www.npmjs.com/package/@aomex/console) | 内部指令 |
 
-# 中间件
+# 核心库
 
 | Name                                                               | Version                                                                                                                           | Platform    | Desc                 |
 | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------- |
@@ -53,16 +53,10 @@ npm create aomex --project hello-aomex
 | [@aomex/swagger-ui](./packages/swagger-ui)                         | [![npm](https://img.shields.io/npm/v/@aomex/swagger-ui)](https://www.npmjs.com/package/@aomex/swagger-ui)                         | web         | swagger文档服务      |
 | [@aomex/cron](./packages/cron)                                     | [![npm](https://img.shields.io/npm/v/@aomex/cron)](https://www.npmjs.com/package/@aomex/cron)                                     | console     | 定时任务             |
 | [@aomex/async-trace](./packages/async-trace)                       | [![npm](https://img.shields.io/npm/v/@aomex/async-trace)](https://www.npmjs.com/package/@aomex/async-trace)                       | web/console | 异步逻辑链路追踪     |
+| [@aomex/cache](./packages/cache)                                   | [![npm](https://img.shields.io/npm/v/@aomex/cache)](https://www.npmjs.com/package/@aomex/cache)                                   | web/console | 缓存库               |
+| [@aomex/cache-redis-store](./packages/cache-redis-store)           | [![npm](https://img.shields.io/npm/v/@aomex/cache-redis-store)](https://www.npmjs.com/package/@aomex/cache-redis-store)           | web/console | 缓存库redis引擎      |
 
-# 缓存库
-
-| Name                                           | Version                                                                                                       |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| [@aomex/memory-cache](./packages/memory-cache) | [![npm](https://img.shields.io/npm/v/@aomex/memory-cache)](https://www.npmjs.com/package/@aomex/memory-cache) |
-| [@aomex/file-cache](./packages/file-cache)     | [![npm](https://img.shields.io/npm/v/@aomex/file-cache)](https://www.npmjs.com/package/@aomex/file-cache)     |
-| [@aomex/redis-cache](./packages/redis-cache)   | [![npm](https://img.shields.io/npm/v/@aomex/redis-cache)](https://www.npmjs.com/package/@aomex/redis-cache)   |
-
-# 第三方推荐搭配
+# 第三方搭配
 
 | Name                                                 | Version                                                                                   | Desc                                |
 | ---------------------------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------- |
@@ -71,4 +65,4 @@ npm create aomex --project hello-aomex
 | [winston](https://github.com/winstonjs/winston)      | [![npm](https://img.shields.io/npm/v/winston)](https://www.npmjs.com/package/winston)     | 通用的日志库                        |
 | [vitest](https://github.com/vitest-dev/vitest)       | [![npm](https://img.shields.io/npm/v/vitest)](https://www.npmjs.com/package/vitest)       | 测试框架                            |
 | [tsc-alias](https://github.com/justkey007/tsc-alias) | [![npm](https://img.shields.io/npm/v/tsc-alias)](https://www.npmjs.com/package/tsc-alias) | 补全`.js`后缀                       |
-| [volta](https://volta.sh/)                           | -                                                                                         | 不同项目自动切换node和pnpm/yarn版本 |
+| [volta](https://volta.sh/)                           |                                                                                           | 不同项目自动切换node和pnpm/yarn版本 |
