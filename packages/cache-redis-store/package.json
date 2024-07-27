@@ -1,6 +1,6 @@
 {
   "name": "@aomex/cache-redis-store",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "aomex缓存库redis适配器",
   "scripts": {
     "prepublishOnly": "tsup"
