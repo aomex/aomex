@@ -5,6 +5,7 @@ import type { Caching } from '@aomex/cache';
 
 export class Job {
   public runningLevel: number = 0;
+  public readonly runningKey: string;
   public readonly cronExpression: cronParser.CronExpression;
   public readonly cache: Caching;
   public handle: { timer: NodeJS.Timeout; resolve: (data: void) => void } | null = null;
@@ -19,6 +20,7 @@ export class Job {
   protected childPIDs = new Set<string>();
 
   constructor(public readonly schedule: ScheduleParser) {
+    this.runningKey = `cron-job|arg:${schedule.argv}|exp:${schedule.time}|con:${schedule.concurrent}`;
     this.cronExpression = cronParser.parseExpression(this.schedule.time);
     this.cache = schedule.cache;
     this.processData = {
@@ -74,19 +76,15 @@ export class Job {
     return [...this.childPIDs];
   }
 
-  async consume(nextTime: number) {
+  async consume(time: number) {
     try {
       ++this.runningLevel;
-      const jobKey = this.getUniqueKey(nextTime);
-      const isWinner = await this.win(jobKey);
-      if (isWinner) {
-        const pong = this.ping(jobKey);
-        try {
-          await this.runChildProcess();
-        } finally {
-          pong();
-          await this.done(jobKey);
-        }
+      if (!(await this.win(time))) return;
+      const pong = this.ping();
+      try {
+        await this.runChildProcess();
+      } finally {
+        await pong();
       }
     } finally {
       --this.runningLevel;
@@ -117,45 +115,42 @@ export class Job {
     });
   }
 
-  async win(jobKey: string): Promise<boolean> {
-    if (!this.schedule.overlap) {
-      let runningJobKey = await this.cache.get(this.runningKey);
-      if (!runningJobKey) {
-        await this.cache.setNX(this.runningKey, jobKey, 10_000);
-        runningJobKey = await this.cache.get(this.runningKey);
-      }
-      if (runningJobKey !== jobKey) return false;
+  async win(time: number): Promise<boolean> {
+    if (Infinity === this.schedule.concurrent) return true;
+
+    // 同一时间点任务可能因为服务器各异导致触发时间不一致，造成重复执行，因此需要抹平时差。
+    {
+      const currentKey = `${this.runningKey}|now:${time}`;
+      const count = await this.cache.increment(currentKey);
+      await this.cache.expire(currentKey, 1800_000 /* 30分钟 */);
+      if (count > this.schedule.concurrent) return false;
     }
 
-    const index = await this.cache.increment(jobKey);
-    return index <= this.schedule.concurrent;
+    const count = await this.cache.increment(this.runningKey);
+    if (count <= this.schedule.concurrent) {
+      await this.cache.expire(this.runningKey, 8_000);
+      return true;
+    }
+
+    await this.cache.decrement(this.runningKey);
+    return false;
   }
 
-  ping(jobKey: string) {
+  /**
+   * 设置过期时间，防止进程崩溃或者被强制关闭后计数器数字累积
+   */
+  ping() {
     const timer = setInterval(() => {
-      this.cache.set(this.runningKey, jobKey, 10_000);
+      this.cache.expire(this.runningKey, 8_000);
     }, 3_000);
-    return () => clearInterval(timer);
+
+    return async () => {
+      clearInterval(timer);
+      await this.done();
+    };
   }
 
-  async done(jobKey: string) {
-    const doneKey = jobKey + ':done';
-    const count = await this.cache.increment(doneKey);
-    // 当前时间点任务已全部结束
-    if (count === this.schedule.concurrent) {
-      await Promise.all([
-        this.cache.expire(this.runningKey, -1),
-        this.cache.expire(jobKey, 7200_000),
-        this.cache.expire(doneKey, 7200_000),
-      ]);
-    }
-  }
-
-  getUniqueKey(timestamp: number) {
-    return `cron-job|argv:${this.schedule.argv};expression:${this.schedule.time};now:${timestamp};`;
-  }
-
-  get runningKey() {
-    return this.getUniqueKey(-1);
+  async done() {
+    await this.cache.decrement(this.runningKey);
   }
 }

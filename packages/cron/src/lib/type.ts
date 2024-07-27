@@ -2,7 +2,7 @@ import type { Caching } from '@aomex/cache';
 import type { GlobPathOptions } from '@aomex/internal-file-import';
 
 export interface CronOptions {
-  path: GlobPathOptions;
+  commanders: GlobPathOptions;
   /**
    * 集群服务共享状态。默认使用内存缓存，只能约束当前进程
    */
@@ -71,20 +71,11 @@ export type ScheduleOptions = (ScheduleTimeObject | ScheduleTimeString) & {
    */
   args?: (string | number)[];
   /**
-   * 同一个时间点的任务能被并发执行的数量。默认值：`1`
+   * 任务（不限触发时间）能被集群并发执行的数量。默认值：`1`
    *
-   * 注意：一个服务只能执行一次。并发数量 <= 集群数量。
-   *
-   * 如果想在所有集群上都执行，则设置为`Infinity`
+   * 如果不希望有任何限制，则设置为`Infinity`
    */
   concurrent?: number;
-  /**
-   * 任务能否重叠执行。默认值：`false`
-   *
-   * - `true`，当前时间点任务无需等待上一个任务完成，即允许重叠。
-   * - `false`，当前时间点任务被触发时，如果上一个时间点任务尚未完成，则当前时间点任务会被忽略。
-   */
-  overlap?: boolean;
 };
 
 export type ServerWriteData =

@@ -30,7 +30,7 @@ test('连接服务', async () => {
   server.listen(port);
 
   const app = new ConsoleApp({
-    mount: [stop({ path: '', port })],
+    mount: [stop({ commanders: '', port })],
   });
   const code = await app.run('cron:stop');
   await new Promise((resolve) => server.close(resolve));
@@ -44,7 +44,7 @@ test('无效指令继续往后执行', { timeout: 9_000 }, async () => {
   const app = new ConsoleApp({
     mount: [
       stop({
-        path: join(testDir, '..', 'package.json'),
+        commanders: join(testDir, '..', 'package.json'),
         port,
       }),
       middleware.console(spy),
@@ -59,7 +59,7 @@ test('无效指令继续往后执行', { timeout: 9_000 }, async () => {
 
 test('监听了无效的端口', { timeout: 9_000 }, async () => {
   const app = new ConsoleApp({
-    mount: [stop({ path: '', port })],
+    mount: [stop({ commanders: '', port })],
   });
   const spy = vitest.spyOn(console, 'warn');
   await expect(app.run('cron:stop')).resolves.toBe(0);
