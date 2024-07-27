@@ -32,7 +32,7 @@ test('连接服务', async () => {
   server.listen(port);
 
   const app = new ConsoleApp({
-    mount: [stats({ path: '', port })],
+    mount: [stats({ commanders: '', port })],
   });
   const code = await app.run('cron:stats');
   await new Promise((resolve) => server.close(resolve));
@@ -70,7 +70,7 @@ test('接收消息', { timeout: 9_000 }, async () => {
   server.listen(port);
 
   const app = new ConsoleApp({
-    mount: [stats({ path: '', port })],
+    mount: [stats({ commanders: '', port })],
   });
   const spy1 = vitest.spyOn(Spinnies.prototype, 'add');
   const spy2 = vitest.spyOn(Spinnies.prototype, 'update');
@@ -96,7 +96,7 @@ test('无效指令继续往后执行', { timeout: 9_000 }, async () => {
   const app = new ConsoleApp({
     mount: [
       stats({
-        path: join(testDir, '..', 'package.json'),
+        commanders: join(testDir, '..', 'package.json'),
         port,
       }),
       middleware.console(spy),
@@ -111,7 +111,7 @@ test('无效指令继续往后执行', { timeout: 9_000 }, async () => {
 
 test('监听了无效的端口', { timeout: 9_000 }, async () => {
   const app = new ConsoleApp({
-    mount: [stats({ path: '', port })],
+    mount: [stats({ commanders: '', port })],
   });
   const spy = vitest.spyOn(console, 'warn');
   await expect(app.run('cron:stats')).resolves.toBe(0);

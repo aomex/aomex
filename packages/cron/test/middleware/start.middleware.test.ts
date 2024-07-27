@@ -19,7 +19,9 @@ beforeEach(() => {
 
 test('无任务时自动结束', async () => {
   const app = new ConsoleApp({
-    mount: [start({ path: join(testDir, 'mock', 'commanders', 'empty.cmd.ts'), port })],
+    mount: [
+      start({ commanders: join(testDir, 'mock', 'commanders', 'empty.cmd.ts'), port }),
+    ],
   });
   await expect(app.run('cron:start')).resolves.toBe(0);
 });
@@ -29,7 +31,9 @@ test('执行任务', async () => {
     await sleep(1000);
   });
   const app = new ConsoleApp({
-    mount: [start({ path: join(testDir, 'mock', 'commanders', 'start.cmd.ts'), port })],
+    mount: [
+      start({ commanders: join(testDir, 'mock', 'commanders', 'start.cmd.ts'), port }),
+    ],
   });
   const promise = app.run('cron:start');
   await sleep(500);
@@ -42,7 +46,10 @@ test('执行任务', async () => {
 test('等待长任务完成后才能中断', { timeout: 9_000 }, async () => {
   const app = new ConsoleApp({
     mount: [
-      start({ path: join(testDir, 'mock', 'commanders', 'start-delay.cmd.ts'), port }),
+      start({
+        commanders: join(testDir, 'mock', 'commanders', 'start-delay.cmd.ts'),
+        port,
+      }),
     ],
   });
   const spy = vitest.spyOn(Job.prototype, 'start').mockImplementation(async function (
@@ -81,7 +88,7 @@ test('使用监听获取正在执行的任务', { timeout: 9_000 }, async () => 
   const app = new ConsoleApp({
     mount: [
       start({
-        path: join(testDir, 'mock', 'commanders', 'start-delay.cmd.ts'),
+        commanders: join(testDir, 'mock', 'commanders', 'start-delay.cmd.ts'),
         port,
       }),
     ],
@@ -123,10 +130,10 @@ test('使用cron:stop结束任务', { timeout: 9_000 }, async () => {
   const app = new ConsoleApp({
     mount: [
       start({
-        path: join(testDir, 'mock', 'commanders', 'start-delay.cmd.ts'),
+        commanders: join(testDir, 'mock', 'commanders', 'start-delay.cmd.ts'),
         port,
       }),
-      stop({ path: '', port }),
+      stop({ commanders: '', port }),
     ],
   });
   const spy = vitest
@@ -147,7 +154,7 @@ test('不是cron:start指令则继续往后执行', async () => {
   const spy = vitest.fn();
   const app = new ConsoleApp({
     mount: [
-      start({ path: join(testDir, 'mock', 'commanders', 'empty.cmd.ts'), port }),
+      start({ commanders: join(testDir, 'mock', 'commanders', 'empty.cmd.ts'), port }),
       middleware.console(spy),
     ],
   });

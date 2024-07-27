@@ -5,7 +5,7 @@ import { ScheduleParser } from './schedule-parser';
 import type { CronOptions } from './type';
 
 export const collectSchedules = async (opts: CronOptions) => {
-  const files = await pathToFiles(opts.path);
+  const files = await pathToFiles(opts.commanders);
   const commanders = await getFileValues<Commander>(
     files,
     (item) => !!item && item instanceof Commander,

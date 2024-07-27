@@ -7,7 +7,8 @@ import { stop } from './stop.middleware';
 import { stats } from './stats.middleware';
 
 export const cron = (options: string | CronOptions): ConsoleMiddleware => {
-  const opts: CronOptions = typeof options === 'string' ? { path: options } : options;
+  const opts: CronOptions =
+    typeof options === 'string' ? { commanders: options } : options;
   const middlewareList = [start(opts), eject(opts), stop(opts), stats(opts)];
   const fn = compose(middlewareList);
 

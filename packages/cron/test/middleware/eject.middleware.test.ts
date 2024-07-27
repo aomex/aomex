@@ -10,7 +10,7 @@ test('导出任务列表', async () => {
   const app = new ConsoleApp({
     mount: [
       eject({
-        path: join(testDir, 'mock', 'commanders', 'eject.cmd.ts'),
+        commanders: join(testDir, 'mock', 'commanders', 'eject.cmd.ts'),
       }),
     ],
   });
@@ -30,7 +30,7 @@ test('无效指令继续往后执行', async () => {
   const app = new ConsoleApp({
     mount: [
       eject({
-        path: join(testDir, '..', 'package.json'),
+        commanders: join(testDir, '..', 'package.json'),
       }),
       middleware.console(spy),
     ],

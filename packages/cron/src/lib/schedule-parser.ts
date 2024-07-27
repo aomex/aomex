@@ -17,10 +17,6 @@ export class ScheduleParser {
     return this.options.command;
   }
 
-  public get overlap(): boolean {
-    return this.options.overlap ?? false;
-  }
-
   public get concurrent(): number {
     return Math.max(1, this.options.concurrent || 1);
   }
@@ -75,7 +71,6 @@ export class ScheduleParser {
       time: this.time,
       argv: this.argv,
       concurrent: this.concurrent,
-      overlap: this.overlap,
     };
   }
 }
