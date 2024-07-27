@@ -66,11 +66,8 @@ export class Caching<S extends Store = Store, T extends object = object> {
    * 设置缓存。如果缓存已经存在，则设置失败，返回`false`
    *
    * ```typescript
-   * await cache.exists('key'); // false
-   * await cache.setNX('key', 'value'); // true
-   *
-   * await cache.exists('key'); // true
-   * await cache.setNX('key', 'value'); // false
+   * await cache.setNX('foo', 'bar'); // true
+   * await cache.setNX('foo', 'baz'); // false
    * ```
    */
   async setNX(key: string, value: Caching.Types, durationMs?: number): Promise<boolean> {
@@ -83,7 +80,10 @@ export class Caching<S extends Store = Store, T extends object = object> {
   /**
    * 将一个或多个值按顺序插入到列表头部。当 key 存在但不是列表类型时，返回一个错误。
    *
-   * 假设当前一个列表 foo=[s]，执行 `leftPush('foo', a, b, c)` 后列表 foo=[a, b, c, s]
+   * ```typescript
+   * await cache.leftPush('foo', 'a'); // ['a']
+   * await cache.leftPush('foo', 'b', 'c'); // ['b', 'c', 'a']
+   * ```
    */
   async leftPush(key: string, ...values: Caching.Types[]): Promise<boolean> {
     if (!values.length) return false;
@@ -106,11 +106,13 @@ export class Caching<S extends Store = Store, T extends object = object> {
   }
 
   /**
-   * 将key中储存的数字值增一。
+   * 将key中储存的数字值增一。如果key不存在，那么key的值会先被初始化为0，然后再执行操作。如果值包含错误的类型，或字符串类型的值不能表示为数字，那么返回一个错误。
    *
-   * 如果key不存在，那么key的值会先被初始化为0，然后再执行操作。
-   *
-   * 如果值包含错误的类型，或字符串类型的值不能表示为数字，那么返回一个错误。
+   * ```typescript
+   * await cache.increment('foo'); // 1
+   * await cache.increment('foo'); // 2
+   * await cache.increment('foo'); // 3
+   * ```
    */
   async increment(key: string): Promise<number> {
     await this.store.connect();
@@ -132,19 +134,23 @@ export class Caching<S extends Store = Store, T extends object = object> {
    * - 不存在则返回`-2`
    * - 未设置过期时间则返回`-1`
    * - 已设置过期时间则返回剩余时间，单位**毫秒**
+   *
+   * ```typescript
+   * await cache.ttl('foo');          // -2
+   * await cache.set('foo', 'bar');
+   * await cache.ttl('foo');          // -1
+   * await cache.expire('foo', 60000);
+   * await cache.ttl('foo');          // 59000
+   * ```
    */
-  async ttl(key: string) {
+  async ttl(key: string): Promise<number> {
     await this.store.connect();
     const hashKey = this.buildKey(key);
     return this.store.ttlKey(hashKey);
   }
 
   /**
-   * 将key中储存的数字值减一。
-   *
-   * 如果key不存在，那么key的值会先被初始化为0，然后再执行操作。
-   *
-   * 如果值包含错误的类型，或字符串类型的值不能表示为数字，那么返回一个错误。
+   * 将key中储存的数字值减一。如果key不存在，那么key的值会先被初始化为0，然后再执行操作。如果值包含错误的类型，或字符串类型的值不能表示为数字，那么返回一个错误
    */
   async decrement(key: string): Promise<number> {
     await this.store.connect();
@@ -162,7 +168,7 @@ export class Caching<S extends Store = Store, T extends object = object> {
   }
 
   /**
-   * 删除所有缓存。若指定了keyPrefix，则只删除有该前缀的缓存
+   * 删除所有缓存
    */
   async deleteAll(): Promise<boolean> {
     await this.store.connect();
