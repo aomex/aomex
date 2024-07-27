@@ -6,7 +6,7 @@ export interface CronOptions {
   /**
    * 集群服务共享状态。默认使用内存缓存，只能约束当前进程
    */
-  store?: Caching;
+  cache?: Caching;
   /**
    * 服务端口。默认值：`9786`
    */

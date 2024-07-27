@@ -22,7 +22,7 @@ export class ScheduleParser {
   }
 
   public get cache(): Caching {
-    return (this._cache ??= this.options.store || new Caching(CacheMemoryStore, {}));
+    return (this._cache ??= this.options.cache || new Caching(CacheMemoryStore, {}));
   }
 
   public get time(): string {
