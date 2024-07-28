@@ -1,6 +1,6 @@
 {
   "name": "@aomex/rate-limit",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "请求限速",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
