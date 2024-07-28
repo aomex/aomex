@@ -1,5 +1,6 @@
 import { toArray } from '@aomex/internal-tools';
 import {
+  AnyOfValidator,
   AnyValidator,
   ArrayValidator,
   BigIntValidator,
@@ -43,6 +44,22 @@ export class Rule {
    */
   any() {
     return new AnyValidator();
+  }
+
+  /**
+   * 规则以管道形式执行，需要至少匹配一个规则
+   * ```typescript
+   * rule.anyOf([rule.number(), rule.string()]);
+   * ```
+   */
+  anyOf<T extends Validator[], A extends Validator, B extends Validator>(
+    rules: [rule1: A, rule2: B, ...others: T],
+  ): AnyOfValidator<
+    | Validator.Infer<A>
+    | Validator.Infer<B>
+    | { [K in keyof T]: Validator.Infer<T[K]> }[number]
+  > {
+    return new AnyOfValidator(rules);
   }
 
   array(): ArrayValidator<unknown[]>;
@@ -145,7 +162,7 @@ export class Rule {
   }
 
   /**
-   * 只能匹配其中一个验证器，如果能匹配多个则失败
+   * 必须且只能匹配其中一个规则，如果匹配上多个则失败
    * ```typescript
    * rule.oneOf([rule.number(), rule.string()]);
    * ```

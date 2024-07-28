@@ -50,6 +50,9 @@ i18n.register('zh_CN', 'core', {
       not_match_rule: '{{label}}：未匹配规则',
       match_multiple_rule: '{{label}}：匹配超过1个规则',
     },
+    any_of: {
+      not_match_rule: '{{label}}：未匹配规则',
+    },
     url: {
       must_be_url: '{{label}}：必须是URL格式',
       unsupported_scheme: '{{label}}：URL包含不支持的协议：{{scheme}}',

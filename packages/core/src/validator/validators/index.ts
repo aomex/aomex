@@ -1,4 +1,5 @@
 export * from './any';
+export * from './any-of';
 export * from './array';
 export * from './bigInt';
 export * from './boolean';
