@@ -1,5 +1,6 @@
 import { toArray } from '@aomex/internal-tools';
 import {
+  AllOfValidator,
   AnyOfValidator,
   AnyValidator,
   ArrayValidator,
@@ -33,6 +34,21 @@ export class Rule {
     this.prototype[name] = () => new SubValidator();
   }
 
+  /**
+   * 规则以管道形式执行，需要匹配所有规则
+   * ```typescript
+   * rule.allOf([rule.number(), rule.string()]);
+   * ```
+   */
+  allOf<T extends Validator[], A extends Validator, B extends Validator>(
+    rules: [rule1: A, rule2: B, ...others: T],
+  ): AllOfValidator<
+    | Validator.Infer<A>
+    | Validator.Infer<B>
+    | { [K in keyof T]: Validator.Infer<T[K]> }[number]
+  > {
+    return new AllOfValidator(rules);
+  }
   /**
    * 允许任何类型：
    * - string
