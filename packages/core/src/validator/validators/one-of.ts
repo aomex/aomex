@@ -34,14 +34,26 @@ export class OneOfValidator<T = never> extends Validator<T> {
     label: string,
   ): Promise<magistrate.Result<any>> {
     const { validators } = this.config;
+    let matched: magistrate.Result<any> | undefined;
 
     for (let i = 0; i < validators.length; ++i) {
       const validator = validators[i]! as OneOfValidator;
       const result = await validator.validate(value, key, label);
-      if (magistrate.noError(result)) return result;
+      if (magistrate.noError(result)) {
+        if (!matched) {
+          matched = result;
+        } else {
+          return magistrate.fail(
+            i18n.t('core.validator.one_of.match_multiple_rule', { label }),
+          );
+        }
+      }
     }
 
-    return magistrate.fail(i18n.t('core.validator.one_of.not_match_rule', { label }));
+    return (
+      matched ||
+      magistrate.fail(i18n.t('core.validator.one_of.not_match_rule', { label }))
+    );
   }
 
   protected override copyConfig(prev: OneOfValidator): this {
