@@ -24,8 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 暂时没有 @types/node@22.x
-        node-dts: [20.x]
+        node-dts: [20.x, 22.x]
         ts: [5.4.x, 5.5.x]
     steps:
       - uses: actions/checkout@v4
