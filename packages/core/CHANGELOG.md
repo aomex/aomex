@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/aomex/aomex/compare/v2.0.2...v2.1.0) (2024-07-28)
+
+
+### Bug Fixes
+
+* **core:** rule.oneOf验证器匹配超过一个规则未报错 ([9052e20](https://github.com/aomex/aomex/commit/9052e2099fa0516c40d7824c898293563d2d4407))
+
+
+### Features
+
+* **core:** 增加allOf验证器 ([d74feb1](https://github.com/aomex/aomex/commit/d74feb1c463d4febbcf0980e314b2fc15373911d))
+* **core:** 增加allOf验证器 ([81e24cc](https://github.com/aomex/aomex/commit/81e24cc78c11d5122b92b4ee6f47132e894e5e4b))
+
+
+
+
+
 ## [2.0.2](https://github.com/aomex/aomex/compare/v2.0.1...v2.0.2) (2024-07-27)
 
 **Note:** Version bump only for package @aomex/core
