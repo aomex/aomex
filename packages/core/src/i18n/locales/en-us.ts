@@ -50,6 +50,9 @@ i18n.register('en_US', 'core', {
       not_match_rule: '{{label}}: does not match rule',
       match_multiple_rule: '{{label}}: match more than one rule',
     },
+    any_of: {
+      not_match_rule: '{{label}}: does not match rule',
+    },
     url: {
       must_be_url: '{{label}}: must be URL format',
       unsupported_scheme: '{{label}}: URL contains unsupported scheme: {{scheme}}',
