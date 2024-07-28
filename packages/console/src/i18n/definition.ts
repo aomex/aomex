@@ -9,6 +9,12 @@ declare module '@aomex/core' {
           command: string;
           recommended: string;
         }>;
+        help: {
+          option: I18nMessage;
+          command: I18nMessage;
+          version: I18nMessage<{ scriptName: string }>;
+          no_usage: I18nMessage<{ command: string }>;
+        };
       };
     }
   }

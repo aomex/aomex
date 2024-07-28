@@ -20,8 +20,10 @@ export const helpLogger = (middlewareList: Middleware[]): ConsoleMiddleware => {
         const cli = yargs([])
           .locale(i18n.getLocale())
           .scriptName(scriptName)
-          .usage(`${scriptName} [指令] [选项]`)
-          .describe('version', `显示${scriptName}版本号`)
+          .usage(
+            `${scriptName} ${i18n.t('console.help.command')} ${i18n.t('console.help.option')}`,
+          )
+          .describe('version', i18n.t('console.help.version', { scriptName }))
           .alias('v', 'version')
           .alias('h', 'help');
 
@@ -47,7 +49,7 @@ export const helpLogger = (middlewareList: Middleware[]): ConsoleMiddleware => {
 
       const commandItem = document[command];
       if (!commandItem || commandItem.showInHelp === false) {
-        throw new Error(`找不到关于指令 "${command}" 的用法`);
+        throw new Error(i18n.t('console.help.no_usage', { command }));
       }
 
       const cli = yargs([])
@@ -58,7 +60,7 @@ export const helpLogger = (middlewareList: Middleware[]): ConsoleMiddleware => {
       const { description, parameters = [] } = commandItem;
 
       cli.usage(
-        `${scriptName} ${command} [选项]${description ? '\n\n' + styleText('bold', description) : ''}`,
+        `${scriptName} ${command} ${i18n.t('console.help.option')}${description ? '\n\n' + styleText('bold', description) : ''}`,
       );
 
       parameters.forEach((parameter) => {
