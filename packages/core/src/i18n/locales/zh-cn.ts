@@ -53,6 +53,9 @@ i18n.register('zh_CN', 'core', {
     any_of: {
       not_match_rule: '{{label}}：未匹配规则',
     },
+    all_of: {
+      not_match_all: '{{label}}：未匹配所有规则',
+    },
     url: {
       must_be_url: '{{label}}：必须是URL格式',
       unsupported_scheme: '{{label}}：URL包含不支持的协议：{{scheme}}',

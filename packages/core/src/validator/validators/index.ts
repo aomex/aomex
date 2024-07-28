@@ -1,3 +1,4 @@
+export * from './all-of';
 export * from './any';
 export * from './any-of';
 export * from './array';

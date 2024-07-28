@@ -60,6 +60,9 @@ declare module '../i18n' {
           any_of: {
             not_match_rule: I18nMessage<{ label: string }>;
           };
+          all_of: {
+            not_match_all: I18nMessage<{ label: string }>;
+          };
         };
         middleware: {
           call_next_multiple: I18nMessage;
