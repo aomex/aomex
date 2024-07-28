@@ -2,14 +2,34 @@ import { expect, test } from 'vitest';
 import {
   ArrayValidator,
   BigIntValidator,
+  HashValidator,
   OneOfValidator,
+  StringValidator,
+  UrlValidator,
   magistrate,
 } from '../../../src';
 
-test('匹配到任意一个规则即可', async () => {
+test('匹配其中一个规则即可', async () => {
   const validator = new OneOfValidator([new ArrayValidator(), new BigIntValidator()]);
   await expect(validator['validate'](123n)).resolves.toStrictEqual(magistrate.ok(123n));
   await expect(validator['validate'](['x'])).resolves.toStrictEqual(magistrate.ok(['x']));
+});
+
+test('匹配多个则报错', async () => {
+  const validator = new OneOfValidator([
+    new StringValidator(),
+    new UrlValidator(),
+    new HashValidator('md5'),
+  ]);
+  await expect(validator['validate']('x')).resolves.toStrictEqual(magistrate.ok('x'));
+  await expect(validator['validate']('http://www.example.com')).resolves
+    .toMatchInlineSnapshot(`
+    {
+      "errors": [
+        "：匹配超过1个规则",
+      ],
+    }
+  `);
 });
 
 test('匹配不上则报错', async () => {

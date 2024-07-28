@@ -47,7 +47,8 @@ i18n.register('en_US', 'core', {
       can_not_be_empty: 'enum values can not be empty: "{{item}}"',
     },
     one_of: {
-      not_match_rule: '{{label}}: does not match rules',
+      not_match_rule: '{{label}}: does not match rule',
+      match_multiple_rule: '{{label}}: match more than one rule',
     },
     url: {
       must_be_url: '{{label}}: must be URL format',

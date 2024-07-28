@@ -145,7 +145,7 @@ export class Rule {
   }
 
   /**
-   * 匹配其中一个验证器
+   * 只能匹配其中一个验证器，如果能匹配多个则失败
    * ```typescript
    * rule.oneOf([rule.number(), rule.string()]);
    * ```
