@@ -1,4 +1,6 @@
 import {
+  AllOfValidator,
+  AnyOfValidator,
   AnyValidator,
   ArrayValidator,
   BigIntValidator,
@@ -25,6 +27,54 @@ import { expectType } from 'ts-expect';
 // any
 {
   expectType<AnyValidator<AnyValidator.Type>>(rule.any());
+}
+
+// allof
+{
+  expectType<AllOfValidator<{ foo: string } & { bar: number }>>(
+    rule.allOf([
+      rule.object({ foo: rule.string() }),
+      rule.object({ bar: rule.number() }),
+    ]),
+  );
+
+  expectType<AllOfValidator<{ foo: string } & { bar: number | null }>>(
+    rule.allOf([
+      rule.object({ foo: rule.string() }),
+      rule.object({ bar: rule.number().nullable() }),
+    ]),
+  );
+
+  expectType<AllOfValidator<{ foo: string } & { bar: number }>>(
+    rule.allOf([
+      rule.object({ foo: rule.string() }),
+      rule.object({ bar: rule.number() }).nullable(),
+    ]),
+  );
+
+  expectType<AllOfValidator<({ foo: string } & { bar: number }) | null>>(
+    rule.allOf([
+      rule.object({ foo: rule.string() }).nullable(),
+      rule.object({ bar: rule.number() }).nullable(),
+    ]),
+  );
+}
+
+// anyof
+{
+  expectType<AnyOfValidator<{ foo: string } | { bar: number }>>(
+    rule.anyOf([
+      rule.object({ foo: rule.string() }),
+      rule.object({ bar: rule.number() }),
+    ]),
+  );
+
+  expectType<AnyOfValidator<{ foo: string } | { bar: number } | null>>(
+    rule.anyOf([
+      rule.object({ foo: rule.string() }),
+      rule.object({ bar: rule.number() }).nullable(),
+    ]),
+  );
 }
 
 // array
