@@ -1,4 +1,4 @@
-import { toArray } from '@aomex/internal-tools';
+import { toArray, type Union2Intersection } from '@aomex/internal-tools';
 import {
   AllOfValidator,
   AnyOfValidator,
@@ -43,9 +43,9 @@ export class Rule {
   allOf<T extends Validator[], A extends Validator, B extends Validator>(
     rules: [rule1: A, rule2: B, ...others: T],
   ): AllOfValidator<
-    | Validator.Infer<A>
-    | Validator.Infer<B>
-    | { [K in keyof T]: Validator.Infer<T[K]> }[number]
+    Validator.Infer<A> &
+      Validator.Infer<B> &
+      Union2Intersection<{ [K in keyof T]: Validator.Infer<T[K]> }[number]>
   > {
     return new AllOfValidator(rules);
   }
