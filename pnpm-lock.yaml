@@ -75,6 +75,52 @@ importers:
         specifier: workspace:^
         version: link:../web
 
+  packages/auth:
+    devDependencies:
+      '@aomex/core':
+        specifier: workspace:^
+        version: link:../core
+      '@aomex/web':
+        specifier: workspace:^
+        version: link:../web
+
+  packages/auth-bearer-adapter:
+    devDependencies:
+      '@aomex/auth':
+        specifier: workspace:^
+        version: link:../auth
+      '@aomex/core':
+        specifier: workspace:^
+        version: link:../core
+      '@aomex/web':
+        specifier: workspace:^
+        version: link:../web
+
+  packages/auth-jwt-adapter:
+    dependencies:
+      '@aomex/auth-bearer-adapter':
+        specifier: workspace:^
+        version: link:../auth-bearer-adapter
+      '@types/jsonwebtoken':
+        specifier: ^9.0.6
+        version: 9.0.6
+      jsonwebtoken:
+        specifier: ^9.0.2
+        version: 9.0.2
+    devDependencies:
+      '@aomex/auth':
+        specifier: workspace:^
+        version: link:../auth
+      '@aomex/core':
+        specifier: workspace:^
+        version: link:../core
+      '@aomex/internal-tools':
+        specifier: workspace:^
+        version: link:../internal-tools
+      '@aomex/web':
+        specifier: workspace:^
+        version: link:../web
+
   packages/cache:
     devDependencies:
       '@aomex/core':
@@ -277,25 +323,6 @@ importers:
       bytes:
         specifier: ^3.1.2
         version: 3.1.2
-
-  packages/jwt:
-    dependencies:
-      '@aomex/internal-tools':
-        specifier: workspace:^
-        version: link:../internal-tools
-      '@types/jsonwebtoken':
-        specifier: ^9.0.6
-        version: 9.0.6
-      jsonwebtoken:
-        specifier: ^9.0.2
-        version: 9.0.2
-    devDependencies:
-      '@aomex/core':
-        specifier: workspace:^
-        version: link:../core
-      '@aomex/web':
-        specifier: workspace:^
-        version: link:../web
 
   packages/openapi:
     dependencies:
