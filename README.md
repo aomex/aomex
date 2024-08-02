@@ -40,7 +40,6 @@ npm create aomex --project hello-aomex
 | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------- |
 | [@aomex/compress](./packages/compress)                             | [![npm](https://img.shields.io/npm/v/@aomex/compress)](https://www.npmjs.com/package/@aomex/compress)                             | web         | 压缩响应内容         |
 | [@aomex/cors](./packages/cors)                                     | [![npm](https://img.shields.io/npm/v/@aomex/cors)](https://www.npmjs.com/package/@aomex/cors)                                     | web         | 跨域请求共享         |
-| [@aomex/jwt](./packages/jwt)                                       | [![npm](https://img.shields.io/npm/v/@aomex/jwt)](https://www.npmjs.com/package/@aomex/jwt)                                       | web         | 认证令牌             |
 | [@aomex/http-logger](./packages/http-logger)                       | [![npm](https://img.shields.io/npm/v/@aomex/http-logger)](https://www.npmjs.com/package/@aomex/http-logger)                       | web         | http请求日志         |
 | [@aomex/helmet](./packages/helmet)                                 | [![npm](https://img.shields.io/npm/v/@aomex/helmet)](https://www.npmjs.com/package/@aomex/helmet)                                 | web         | 设置安全报文         |
 | [@aomex/pretty-json](./packages/pretty-json)                       | [![npm](https://img.shields.io/npm/v/@aomex/pretty-json)](https://www.npmjs.com/package/@aomex/pretty-json)                       | web         | 美化响应输出         |
@@ -55,6 +54,14 @@ npm create aomex --project hello-aomex
 | [@aomex/async-trace](./packages/async-trace)                       | [![npm](https://img.shields.io/npm/v/@aomex/async-trace)](https://www.npmjs.com/package/@aomex/async-trace)                       | web/console | 异步逻辑链路追踪     |
 | [@aomex/cache](./packages/cache)                                   | [![npm](https://img.shields.io/npm/v/@aomex/cache)](https://www.npmjs.com/package/@aomex/cache)                                   | web/console | 缓存库               |
 | [@aomex/cache-redis-store](./packages/cache-redis-store)           | [![npm](https://img.shields.io/npm/v/@aomex/cache-redis-store)](https://www.npmjs.com/package/@aomex/cache-redis-store)           | web/console | 缓存库redis引擎      |
+
+# 认证
+
+| Name                                                         | Version                                                                                                                     | Desc                |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| [@aomex/auth](./packages/auth)                               | [![npm](https://img.shields.io/npm/v/@aomex/auth)](https://www.npmjs.com/package/@aomex/auth)                               | 身份认证统一入口    |
+| [@aomex/auth-bearer-adapter](./packages/auth-bearer-adapter) | [![npm](https://img.shields.io/npm/v/@aomex/auth-bearer-adapter)](https://www.npmjs.com/package/@aomex/auth-bearer-adapter) | Bearer 方案         |
+| [@aomex/auth-jwt-adapter](./packages/auth-jwt-adapter)       | [![npm](https://img.shields.io/npm/v/@aomex/auth-jwt-adapter)](https://www.npmjs.com/package/@aomex/auth-jwt-adapter)       | Json Web Token 方案 |
 
 # 第三方搭配
 

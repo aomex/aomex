@@ -1,24 +1,13 @@
 {
-  "name": "@aomex/jwt",
+  "name": "@aomex/auth",
   "version": "2.1.0",
-  "description": "JWT通行令牌",
-  "repository": "git@github.com:aomex/aomex.git",
-  "homepage": "https://aomex.js.org",
-  "license": "MIT",
-  "type": "module",
-  "sideEffects": false,
+  "description": "身份认证统一入口",
   "scripts": {
     "prepublishOnly": "tsup"
   },
+  "type": "module",
   "types": "src/index.ts",
   "exports": "./src/index.ts",
-  "files": [
-    "dist",
-    "LICENSE",
-    "package.json",
-    "README.md",
-    "CHANGELOG.md"
-  ],
   "publishConfig": {
     "types": "dist/index.d.ts",
     "exports": {
@@ -30,17 +19,22 @@
     },
     "access": "public"
   },
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
   "engines": {
     "node": "^20.13.0 || ^22"
   },
   "peerDependencies": {
     "@aomex/core": "^2.0.0",
     "@aomex/web": "^2.0.0"
-  },
-  "dependencies": {
-    "@aomex/internal-tools": "workspace:^",
-    "@types/jsonwebtoken": "^9.0.6",
-    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "@aomex/core": "workspace:^",
