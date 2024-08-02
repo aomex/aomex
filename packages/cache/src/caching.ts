@@ -1,33 +1,19 @@
 import { createHash } from 'node:crypto';
-import { Store } from './store';
+import { CacheAdapter } from './cache-adapter';
 
 export namespace Caching {
-  export interface Options {
-    /**
-     * 删除过期缓存防止占用空间，加快读取速度。概率取值范围：`1-100`。默认值：`10`
-     */
-    gcProbability?: number;
-  }
-
   export type Types = string | number | object | boolean;
 }
 
-export class Caching<S extends Store = Store, T extends object = object> {
-  protected readonly gcProbability: number;
-  readonly store: S;
-
-  constructor(StoreClass: new (config: T) => S, config: T & Caching.Options) {
-    this.gcProbability = (config.gcProbability ?? 10) / 100;
-    this.store = new StoreClass(config);
-    this.store.connect();
-  }
+export class Caching<T extends CacheAdapter = CacheAdapter> {
+  constructor(readonly adapter: T) {}
 
   /**
    * 查看缓存是否存在
    */
   async exists(key: string): Promise<boolean> {
-    await this.store.connect();
-    return this.store.existsKey(this.buildKey(key));
+    await this.adapter.connect();
+    return this.adapter.existsKey(this.buildKey(key));
   }
 
   /**
@@ -41,9 +27,9 @@ export class Caching<S extends Store = Store, T extends object = object> {
   async get<T>(key: string, defaultValue: T): Promise<T>;
   async get<T extends Caching.Types>(key: string): Promise<T | null>;
   async get(key: string, defaultValue?: Caching.Types): Promise<any> {
-    await this.store.connect();
+    await this.adapter.connect();
     const hashKey = this.buildKey(key);
-    const result = await this.store.getValue(hashKey);
+    const result = await this.adapter.getValue(hashKey);
     return this.parseValue(result, defaultValue);
   }
 
@@ -56,10 +42,9 @@ export class Caching<S extends Store = Store, T extends object = object> {
    * ```
    */
   async set(key: string, value: Caching.Types, durationMs?: number): Promise<boolean> {
-    await this.store.connect();
-    await this.applyGC();
+    await this.adapter.connect();
     const hashKey = this.buildKey(key);
-    return this.store.setValue(hashKey, JSON.stringify(value), durationMs);
+    return this.adapter.setValue(hashKey, JSON.stringify(value), durationMs);
   }
 
   /**
@@ -71,10 +56,9 @@ export class Caching<S extends Store = Store, T extends object = object> {
    * ```
    */
   async setNX(key: string, value: Caching.Types, durationMs?: number): Promise<boolean> {
-    await this.store.connect();
-    await this.applyGC();
+    await this.adapter.connect();
     const hashKey = this.buildKey(key);
-    return this.store.setNotExistValue(hashKey, JSON.stringify(value), durationMs);
+    return this.adapter.setNotExistValue(hashKey, JSON.stringify(value), durationMs);
   }
 
   /**
@@ -87,9 +71,9 @@ export class Caching<S extends Store = Store, T extends object = object> {
    */
   async leftPush(key: string, ...values: Caching.Types[]): Promise<boolean> {
     if (!values.length) return false;
-    await this.store.connect();
+    await this.adapter.connect();
     const hashKey = this.buildKey(key);
-    return this.store.leftPushValue(
+    return this.adapter.leftPushValue(
       hashKey,
       ...values.map((value) => JSON.stringify(value)),
     );
@@ -99,9 +83,9 @@ export class Caching<S extends Store = Store, T extends object = object> {
    * 移除列表的最后一个元素，返回值为被移除的元素
    */
   async rightPop<T extends Caching.Types>(key: string): Promise<T | null> {
-    await this.store.connect();
+    await this.adapter.connect();
     const hashKey = this.buildKey(key);
-    const result = await this.store.rightPopValue(hashKey);
+    const result = await this.adapter.rightPopValue(hashKey);
     return this.parseValue(result);
   }
 
@@ -115,18 +99,18 @@ export class Caching<S extends Store = Store, T extends object = object> {
    * ```
    */
   async increment(key: string): Promise<number> {
-    await this.store.connect();
+    await this.adapter.connect();
     const hashKey = this.buildKey(key);
-    return this.store.increaseValue(hashKey);
+    return this.adapter.increaseValue(hashKey);
   }
 
   /**
    * 重新设置缓存时间。如果key不存在，则返回`false`
    */
   async expire(key: string, durationMs: number): Promise<boolean> {
-    await this.store.connect();
+    await this.adapter.connect();
     const hashKey = this.buildKey(key);
-    return this.store.expireKey(hashKey, durationMs);
+    return this.adapter.expireKey(hashKey, durationMs);
   }
 
   /**
@@ -144,35 +128,35 @@ export class Caching<S extends Store = Store, T extends object = object> {
    * ```
    */
   async ttl(key: string): Promise<number> {
-    await this.store.connect();
+    await this.adapter.connect();
     const hashKey = this.buildKey(key);
-    return this.store.ttlKey(hashKey);
+    return this.adapter.ttlKey(hashKey);
   }
 
   /**
    * 将key中储存的数字值减一。如果key不存在，那么key的值会先被初始化为0，然后再执行操作。如果值包含错误的类型，或字符串类型的值不能表示为数字，那么返回一个错误
    */
   async decrement(key: string): Promise<number> {
-    await this.store.connect();
+    await this.adapter.connect();
     const hashKey = this.buildKey(key);
-    return this.store.decreaseValue(hashKey);
+    return this.adapter.decreaseValue(hashKey);
   }
 
   /**
    * 删除指定缓存
    */
   async delete(key: string): Promise<boolean> {
-    await this.store.connect();
+    await this.adapter.connect();
     const hashKey = this.buildKey(key);
-    return this.store.deleteValue(hashKey);
+    return this.adapter.deleteValue(hashKey);
   }
 
   /**
    * 删除所有缓存
    */
   async deleteAll(): Promise<boolean> {
-    await this.store.connect();
-    return this.store.deleteAllValues();
+    await this.adapter.connect();
+    return this.adapter.deleteAllValues();
   }
 
   protected buildKey(key: string): string {
@@ -189,10 +173,5 @@ export class Caching<S extends Store = Store, T extends object = object> {
     } catch {
       return null;
     }
-  }
-
-  protected async applyGC() {
-    if (Math.random() > this.gcProbability) return;
-    await this.store.gc();
   }
 }

@@ -1,12 +1,12 @@
 import type { RedisOptions } from 'ioredis';
 import RedisMemoryServer from 'redis-memory-server';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
-import { CacheRedisStore } from '../src';
+import { CacheRedisAdapter } from '../src';
 import { sleep } from '@aomex/internal-tools';
 
 let redisServer: RedisMemoryServer;
 let opts: RedisOptions;
-let store: CacheRedisStore;
+let store: CacheRedisAdapter;
 
 beforeAll(async () => {
   redisServer = await RedisMemoryServer.create();
@@ -15,7 +15,7 @@ beforeAll(async () => {
     host: await redisServer.getHost(),
     port: await redisServer.getPort(),
   };
-  store = new CacheRedisStore({ ...opts });
+  store = new CacheRedisAdapter({ ...opts });
 }, 50_000 /* 首次下载redis */);
 
 afterEach(async () => {
@@ -214,8 +214,8 @@ test('删除全部缓存', async () => {
 });
 
 test('删除全部指定前缀缓存', async () => {
-  const cache1 = new CacheRedisStore({ ...opts, keyPrefix: 'aaaa:', db: 0 });
-  const cache2 = new CacheRedisStore({ ...opts, keyPrefix: 'bbbb:', db: 0 });
+  const cache1 = new CacheRedisAdapter({ ...opts, keyPrefix: 'aaaa:', db: 0 });
+  const cache2 = new CacheRedisAdapter({ ...opts, keyPrefix: 'bbbb:', db: 0 });
 
   await cache1.setValue('foo', '1');
   await cache1.setValue('bar', '1');

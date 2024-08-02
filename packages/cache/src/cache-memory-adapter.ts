@@ -1,7 +1,7 @@
 import { i18n } from '@aomex/core';
-import { Store } from './store';
+import { CacheAdapter } from './cache-adapter';
 
-export class CacheMemoryStore extends Store {
+export class CacheMemoryAdapter extends CacheAdapter {
   private data = new Map<string, { value: string | string[]; expires?: number }>();
 
   override async existsKey(key: string): Promise<boolean> {
@@ -151,14 +151,5 @@ export class CacheMemoryStore extends Store {
   ): boolean {
     this.data.set(key, { value, expires: duration ? Date.now() + duration : undefined });
     return true;
-  }
-
-  override async gc() {
-    const now = Date.now();
-    this.data = new Map(
-      Array.from(this.data.entries()).filter(
-        ([_, item]) => !item.expires || item.expires > now,
-      ),
-    );
   }
 }

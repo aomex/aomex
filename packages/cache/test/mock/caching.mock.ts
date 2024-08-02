@@ -1,6 +1,6 @@
-import { Store } from '../../src';
+import { CacheAdapter } from '../../src';
 
-export class MockStore extends Store {
+export class MockStore extends CacheAdapter {
   override ttlKey(): Promise<number> {
     throw new Error('Method not implemented.');
   }

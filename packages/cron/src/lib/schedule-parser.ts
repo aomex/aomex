@@ -1,5 +1,5 @@
 import { scriptName } from '@aomex/console';
-import { CacheMemoryStore, Caching } from '@aomex/cache';
+import { CacheMemoryAdapter, Caching } from '@aomex/cache';
 import type { CronOptions, ScheduleOptions } from './type';
 import cronParser from 'cron-parser';
 
@@ -22,7 +22,7 @@ export class ScheduleParser {
   }
 
   public get cache(): Caching {
-    return (this._cache ??= this.options.cache || new Caching(CacheMemoryStore, {}));
+    return (this._cache ??= this.options.cache || new Caching(new CacheMemoryAdapter()));
   }
 
   public get time(): string {

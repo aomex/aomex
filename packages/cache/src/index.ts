@@ -1,4 +1,4 @@
 export * from './i18n';
 export * from './caching';
-export * from './store';
-export * from './cache-memory-store';
+export * from './cache-adapter';
+export * from './cache-memory-adapter';
