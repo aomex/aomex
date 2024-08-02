@@ -1,6 +1,5 @@
-export abstract class Store {
+export abstract class CacheAdapter {
   async connect() {}
-  async gc() {}
 
   abstract existsKey(key: string): Promise<boolean>;
   abstract getValue(key: string): Promise<string | null>;

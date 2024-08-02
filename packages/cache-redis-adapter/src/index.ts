@@ -1,7 +1,7 @@
-import { Store } from '@aomex/cache';
+import { CacheAdapter } from '@aomex/cache';
 import { Redis, type RedisOptions } from 'ioredis';
 
-export class CacheRedisStore extends Store {
+export class CacheRedisAdapter extends CacheAdapter {
   public readonly redis: Redis;
   protected version?: string;
 

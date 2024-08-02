@@ -1,5 +1,5 @@
 {
-  "name": "@aomex/cache-redis-store",
+  "name": "@aomex/cache-redis-adapter",
   "version": "2.1.0",
   "description": "aomex缓存库redis适配器",
   "scripts": {

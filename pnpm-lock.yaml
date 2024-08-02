@@ -130,7 +130,7 @@ importers:
         specifier: workspace:^
         version: link:../internal-tools
 
-  packages/cache-redis-store:
+  packages/cache-redis-adapter:
     dependencies:
       '@aomex/cache':
         specifier: workspace:^

@@ -2,7 +2,7 @@ import { expect, test, vitest } from 'vitest';
 import { MockStore } from './mock/caching.mock';
 import { Caching } from '../src';
 
-const caching = new Caching(MockStore, {});
+const caching = new Caching(new MockStore());
 
 test('key长度', () => {
   expect(caching['buildKey']('foo')).toBe('foo');
@@ -174,26 +174,4 @@ test('删除全部', async () => {
   expect(spy).toBeCalledWith();
 
   spy.mockRestore();
-});
-
-test('回收已过期缓存', async () => {
-  const caching = new Caching(MockStore, { gcProbability: 15 });
-  const randomSpy = vitest
-    .spyOn(Math, 'random')
-    .mockImplementationOnce(() => 0.1)
-    .mockImplementationOnce(() => 0.3);
-
-  const spy = vitest.spyOn(MockStore.prototype, 'gc');
-  const spy1 = vitest
-    .spyOn(MockStore.prototype, 'setValue')
-    .mockImplementation(async () => true);
-
-  await caching.set('foo', 'bar');
-  expect(spy).toBeCalledTimes(1);
-  await caching.set('foo', 'bar');
-  expect(spy).toBeCalledTimes(1);
-
-  randomSpy.mockRestore();
-  spy.mockRestore();
-  spy1.mockRestore();
 });
