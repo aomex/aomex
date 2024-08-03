@@ -36,22 +36,21 @@ npm create aomex --project hello-aomex
 
 # 核心库
 
-| Name                                                     | Version                                                                                                                 | Platform    | Desc                 |
-| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------- |
-| [@aomex/compress](./packages/compress)                   | [![npm](https://img.shields.io/npm/v/@aomex/compress)](https://www.npmjs.com/package/@aomex/compress)                   | web         | 压缩响应内容         |
-| [@aomex/cors](./packages/cors)                           | [![npm](https://img.shields.io/npm/v/@aomex/cors)](https://www.npmjs.com/package/@aomex/cors)                           | web         | 跨域请求共享         |
-| [@aomex/http-logger](./packages/http-logger)             | [![npm](https://img.shields.io/npm/v/@aomex/http-logger)](https://www.npmjs.com/package/@aomex/http-logger)             | web         | http请求日志         |
-| [@aomex/helmet](./packages/helmet)                       | [![npm](https://img.shields.io/npm/v/@aomex/helmet)](https://www.npmjs.com/package/@aomex/helmet)                       | web         | 设置安全报文         |
-| [@aomex/pretty-json](./packages/pretty-json)             | [![npm](https://img.shields.io/npm/v/@aomex/pretty-json)](https://www.npmjs.com/package/@aomex/pretty-json)             | web         | 美化响应输出         |
-| [@aomex/serve-static](./packages/serve-static)           | [![npm](https://img.shields.io/npm/v/@aomex/serve-static)](https://www.npmjs.com/package/@aomex/serve-static)           | web         | 静态文件服务         |
-| [@aomex/response-time](./packages/response-time)         | [![npm](https://img.shields.io/npm/v/@aomex/response-time)](https://www.npmjs.com/package/@aomex/response-time)         | web         | 设置服务响应时长报文 |
-| [@aomex/rate-limit](./packages/rate-limit)               | [![npm](https://img.shields.io/npm/v/@aomex/rate-limit)](https://www.npmjs.com/package/@aomex/rate-limit)               | web         | 请求限速             |
-| [@aomex/etag](./packages/etag)                           | [![npm](https://img.shields.io/npm/v/@aomex/etag)](https://www.npmjs.com/package/@aomex/etag)                           | web         | 设置etag报文         |
-| [@aomex/openapi](./packages/openapi)                     | [![npm](https://img.shields.io/npm/v/@aomex/openapi)](https://www.npmjs.com/package/@aomex/openapi)                     | web/console | 生成接口文档         |
-| [@aomex/swagger-ui](./packages/swagger-ui)               | [![npm](https://img.shields.io/npm/v/@aomex/swagger-ui)](https://www.npmjs.com/package/@aomex/swagger-ui)               | web         | swagger文档服务      |
-| [@aomex/cron](./packages/cron)                           | [![npm](https://img.shields.io/npm/v/@aomex/cron)](https://www.npmjs.com/package/@aomex/cron)                           | console     | 定时任务             |
-| [@aomex/async-trace](./packages/async-trace)             | [![npm](https://img.shields.io/npm/v/@aomex/async-trace)](https://www.npmjs.com/package/@aomex/async-trace)             | web/console | 异步逻辑链路追踪     |
-| [@aomex/cache-redis-store](./packages/cache-redis-store) | [![npm](https://img.shields.io/npm/v/@aomex/cache-redis-store)](https://www.npmjs.com/package/@aomex/cache-redis-store) | web/console | 缓存库redis引擎      |
+| Name                                             | Version                                                                                                         | Platform    | Desc                 |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- | ----------- | -------------------- |
+| [@aomex/compress](./packages/compress)           | [![npm](https://img.shields.io/npm/v/@aomex/compress)](https://www.npmjs.com/package/@aomex/compress)           | web         | 压缩响应内容         |
+| [@aomex/cors](./packages/cors)                   | [![npm](https://img.shields.io/npm/v/@aomex/cors)](https://www.npmjs.com/package/@aomex/cors)                   | web         | 跨域请求共享         |
+| [@aomex/http-logger](./packages/http-logger)     | [![npm](https://img.shields.io/npm/v/@aomex/http-logger)](https://www.npmjs.com/package/@aomex/http-logger)     | web         | http请求日志         |
+| [@aomex/helmet](./packages/helmet)               | [![npm](https://img.shields.io/npm/v/@aomex/helmet)](https://www.npmjs.com/package/@aomex/helmet)               | web         | 设置安全报文         |
+| [@aomex/pretty-json](./packages/pretty-json)     | [![npm](https://img.shields.io/npm/v/@aomex/pretty-json)](https://www.npmjs.com/package/@aomex/pretty-json)     | web         | 美化响应输出         |
+| [@aomex/serve-static](./packages/serve-static)   | [![npm](https://img.shields.io/npm/v/@aomex/serve-static)](https://www.npmjs.com/package/@aomex/serve-static)   | web         | 静态文件服务         |
+| [@aomex/response-time](./packages/response-time) | [![npm](https://img.shields.io/npm/v/@aomex/response-time)](https://www.npmjs.com/package/@aomex/response-time) | web         | 设置服务响应时长报文 |
+| [@aomex/rate-limit](./packages/rate-limit)       | [![npm](https://img.shields.io/npm/v/@aomex/rate-limit)](https://www.npmjs.com/package/@aomex/rate-limit)       | web         | 请求限速             |
+| [@aomex/etag](./packages/etag)                   | [![npm](https://img.shields.io/npm/v/@aomex/etag)](https://www.npmjs.com/package/@aomex/etag)                   | web         | 设置etag报文         |
+| [@aomex/openapi](./packages/openapi)             | [![npm](https://img.shields.io/npm/v/@aomex/openapi)](https://www.npmjs.com/package/@aomex/openapi)             | web/console | 生成接口文档         |
+| [@aomex/swagger-ui](./packages/swagger-ui)       | [![npm](https://img.shields.io/npm/v/@aomex/swagger-ui)](https://www.npmjs.com/package/@aomex/swagger-ui)       | web         | swagger文档服务      |
+| [@aomex/cron](./packages/cron)                   | [![npm](https://img.shields.io/npm/v/@aomex/cron)](https://www.npmjs.com/package/@aomex/cron)                   | console     | 定时任务             |
+| [@aomex/async-trace](./packages/async-trace)     | [![npm](https://img.shields.io/npm/v/@aomex/async-trace)](https://www.npmjs.com/package/@aomex/async-trace)     | web/console | 异步逻辑链路追踪     |
 
 # 缓存
 
