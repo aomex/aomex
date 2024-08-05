@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/aomex/aomex/compare/v2.1.0...v2.2.0) (2024-08-05)
+
+
+### Bug Fixes
+
+* **core:** rule.allOf返回了联合类型 ([061121c](https://github.com/aomex/aomex/commit/061121cd42f6f326a367e98434391aa3e1664379))
+
+
+### Features
+
+* **auth:** 身份认证中间件 ([03d0f43](https://github.com/aomex/aomex/commit/03d0f436e8bf51ee8100dbb7d44f9cb96089cffb))
+* **cache:** 适配器模式 ([ac8c318](https://github.com/aomex/aomex/commit/ac8c318ec67d6f880c8d291fc341f5156a6b47d9))
+
+
+
+
+
 # [2.1.0](https://github.com/aomex/aomex/compare/v2.0.2...v2.1.0) (2024-07-28)
 
 
