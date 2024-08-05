@@ -44,7 +44,7 @@
     "@aomex/internal-file-import": "workspace:^",
     "@aomex/internal-tools": "workspace:^",
     "glob": "^10.3.10",
-    "tsx": "^4.15.6",
+    "tsx": "^4.16.5",
     "yargs": "^17.7.1",
     "yargs-parser": "^21.1.1"
   },
