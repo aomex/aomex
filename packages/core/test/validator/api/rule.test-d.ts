@@ -209,6 +209,7 @@ import { expectType } from 'ts-expect';
 // uuid
 {
   expectType<UuidValidator<string>>(rule.uuid('v4'));
+  rule.uuid();
   rule.uuid('v1');
   rule.uuid('v2');
   rule.uuid('v3');

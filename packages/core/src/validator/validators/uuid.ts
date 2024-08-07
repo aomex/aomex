@@ -25,7 +25,7 @@ const createRegexp = (version: number | 'all') => {
 };
 
 export class UuidValidator<T = string> extends BaseStringValidator<T> {
-  public static versions = <const>['v1', 'v2', 'v3', 'v4', 'v5'];
+  public static versions = <const>['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8'];
 
   public static patterns: {
     [key in UuidValidator.Version | 'all']: RegExp;
@@ -35,6 +35,9 @@ export class UuidValidator<T = string> extends BaseStringValidator<T> {
     v3: createRegexp(3),
     v4: createRegexp(4),
     v5: createRegexp(5),
+    v6: createRegexp(6),
+    v7: createRegexp(7),
+    v8: createRegexp(8),
     all: createRegexp('all'),
   };
 

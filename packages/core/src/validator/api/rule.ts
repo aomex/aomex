@@ -218,14 +218,17 @@ export class Rule {
    * rule.uuid(['v4', 'v5', 'v6']);
    * ```
    */
+  uuid(): UuidValidator<string>;
   uuid(version: UuidValidator.Version): UuidValidator<string>;
   uuid(
     versions: [UuidValidator.Version, ...UuidValidator.Version[]],
   ): UuidValidator<string>;
   uuid(
-    versions: UuidValidator.Version | [UuidValidator.Version, ...UuidValidator.Version[]],
+    versions?:
+      | UuidValidator.Version
+      | [UuidValidator.Version, ...UuidValidator.Version[]],
   ) {
-    return new UuidValidator(toArray(versions));
+    return new UuidValidator(toArray(versions || UuidValidator.versions));
   }
 }
 
