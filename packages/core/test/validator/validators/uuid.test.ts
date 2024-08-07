@@ -24,7 +24,7 @@ test('版本必须对应', async () => {
 
 test('所有版本都支持的情况', async () => {
   await expect(
-    new UuidValidator(['v1', 'v2', 'v3', 'v4', 'v5'])['validate'](
+    new UuidValidator([...UuidValidator.versions])['validate'](
       '59eb9789-08de-4286-abb2-cc2ef12045ea',
     ),
   ).resolves.toStrictEqual(magistrate.ok('59eb9789-08de-4286-abb2-cc2ef12045ea'));

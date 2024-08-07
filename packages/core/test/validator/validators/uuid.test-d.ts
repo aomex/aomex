@@ -53,9 +53,11 @@ const validator = new TargetValidator(['v4']);
   new UuidValidator(['v3']);
   new UuidValidator(['v4']);
   new UuidValidator(['v5']);
-  new UuidValidator(['v1', 'v2', 'v3', 'v4', 'v5']);
+  new UuidValidator(['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8']);
   // @ts-expect-error
-  new UuidValidator(['v6']);
+  new UuidValidator(['v16']);
   // @ts-expect-error
   new UuidValidator(['1']);
+  // @ts-expect-error
+  new UuidValidator(1);
 }

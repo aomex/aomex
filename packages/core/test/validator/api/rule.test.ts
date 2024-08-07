@@ -1,5 +1,7 @@
 import { expect, test } from 'vitest';
 import {
+  AllOfValidator,
+  AnyOfValidator,
   AnyValidator,
   ArrayValidator,
   BigIntValidator,
@@ -21,8 +23,16 @@ import {
   rule,
 } from '../../../src';
 
+test('allOf', () => {
+  expect(rule.allOf([rule.stream(), rule.number()])).toBeInstanceOf(AllOfValidator);
+});
+
 test('any', () => {
   expect(rule.any()).toBeInstanceOf(AnyValidator);
+});
+
+test('anyOf', () => {
+  expect(rule.anyOf([rule.stream(), rule.number()])).toBeInstanceOf(AnyOfValidator);
 });
 
 test('array', () => {
@@ -91,4 +101,16 @@ test('url', () => {
 
 test('uuid', () => {
   expect(rule.uuid('v4')).toBeInstanceOf(UuidValidator);
+  expect(rule.uuid()['config'].uuidVersion).toMatchInlineSnapshot(`
+    [
+      "v1",
+      "v2",
+      "v3",
+      "v4",
+      "v5",
+      "v6",
+      "v7",
+      "v8",
+    ]
+  `);
 });
