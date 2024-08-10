@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0 (2024-08-10)
+
+
+### Bug Fixes
+
+* 未更新peerDependencies ([66ac871](https://github.com/aomex/aomex/commit/66ac8719ad443f5ab868d37ed1a49f4cc40decc2))
+
+
+### Features
+
+* **async-trace:** traceMiddleware的记录回调函数增加ctx参数 ([aef3e55](https://github.com/aomex/aomex/commit/aef3e55f96c05565e78b475063588f76e56ba908))
+* **async-trace:** 追踪方法时允许不传参数 ([c7c7bc2](https://github.com/aomex/aomex/commit/c7c7bc28c0d05679e248bbeb6ba904b4a98851d5))
+* 初始化 ([a370720](https://github.com/aomex/aomex/commit/a37072001cf19f09687623add2442236ab19d7ed))
+
+
+
+
+
 # [2.2.0](https://github.com/aomex/aomex/compare/v2.1.0...v2.2.0) (2024-08-05)
 
 **Note:** Version bump only for package @aomex/async-trace

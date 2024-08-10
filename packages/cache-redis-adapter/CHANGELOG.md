@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0 (2024-08-10)
+
+
+### Features
+
+* **cache:** 适配器模式 ([d414863](https://github.com/aomex/aomex/commit/d41486377489db660c26a4752c94dfff07ea6942))
+
+
+
+
+
 # [2.2.0](https://github.com/aomex/aomex/compare/v2.1.0...v2.2.0) (2024-08-05)
 
 

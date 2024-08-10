@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0 (2024-08-10)
+
+
+### Bug Fixes
+
+* **swagger-ui:** 网页资源加载失败 ([18444f3](https://github.com/aomex/aomex/commit/18444f385d99f6b50089aa7a780a7c753599d08b))
+* **swagger-ui:** 静态文件未发布到npm ([84f6225](https://github.com/aomex/aomex/commit/84f62254f09a6daa382e5cd0acf4f4e87a8ad7ae))
+* 未更新peerDependencies ([66ac871](https://github.com/aomex/aomex/commit/66ac8719ad443f5ab868d37ed1a49f4cc40decc2))
+
+
+### Features
+
+* **swagger-ui:** swagger服务 ([fcdbca2](https://github.com/aomex/aomex/commit/fcdbca22afb467bbb7096952fbe75e6447495f0d))
+* **swagger-ui:** 识别.yml后缀 ([55341d9](https://github.com/aomex/aomex/commit/55341d923e555bd76b17be3312339cadc8013243))
+
+
+
+
+
 # [2.2.0](https://github.com/aomex/aomex/compare/v2.1.0...v2.2.0) (2024-08-05)
 
 **Note:** Version bump only for package @aomex/swagger-ui

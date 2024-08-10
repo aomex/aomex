@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0 (2024-08-10)
+
+
+### Bug Fixes
+
+* **serve-static:** 发送压缩文件时不能设置content-length ([19c0e82](https://github.com/aomex/aomex/commit/19c0e820a4ca0a71862c7ae2cb23d81145c08bae))
+* 未更新peerDependencies ([66ac871](https://github.com/aomex/aomex/commit/66ac8719ad443f5ab868d37ed1a49f4cc40decc2))
+
+
+### Features
+
+* **serve-static:** 增加formatPath参数 ([fa962cc](https://github.com/aomex/aomex/commit/fa962cce5ca0b519b07751276571f52d8c844ccc))
+* **serve-static:** 增加静态文件服务 ([9f562f9](https://github.com/aomex/aomex/commit/9f562f96c97da50ef7bc1fad35e0c033efa63df5))
+
+
+
+
+
 # [2.2.0](https://github.com/aomex/aomex/compare/v2.1.0...v2.2.0) (2024-08-05)
 
 **Note:** Version bump only for package @aomex/serve-static

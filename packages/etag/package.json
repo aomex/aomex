@@ -1,6 +1,6 @@
 {
   "name": "@aomex/etag",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "响应实体标签",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",

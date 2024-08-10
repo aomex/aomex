@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0 (2024-08-10)
+
+
+### Bug Fixes
+
+* **console:** 帮助信息未国际化 ([e3a156b](https://github.com/aomex/aomex/commit/e3a156b0e79c2a14266e312c7a0e157010fb2db2))
+* 打包时遇到类型报错 ([37817fe](https://github.com/aomex/aomex/commit/37817fe4007f4ae08d84d0d33df0d1bb58919546))
+* 未更新peerDependencies ([66ac871](https://github.com/aomex/aomex/commit/66ac8719ad443f5ab868d37ed1a49f4cc40decc2))
+
+
+### Features
+
+* **console:** commander合并到console库 ([8b3961b](https://github.com/aomex/aomex/commit/8b3961b80cace7c1d76540475090b03a215ae47f))
+* **console:** 未找到指令时，只提示最匹配的一个指令 ([b990569](https://github.com/aomex/aomex/commit/b990569cbf8922546233ed501987bd4c8ef84073))
+* **core:** 删除中间件链条概念 ([48d50cc](https://github.com/aomex/aomex/commit/48d50cc0dc892859b6467344f03a38c111325fc0))
+* 初始化 ([a370720](https://github.com/aomex/aomex/commit/a37072001cf19f09687623add2442236ab19d7ed))
+
+
+### BREAKING CHANGES
+
+* **console:** @aomex/commander已被删除
+
+
+
+
+
 # [2.2.0](https://github.com/aomex/aomex/compare/v2.1.0...v2.2.0) (2024-08-05)
 
 **Note:** Version bump only for package @aomex/console
