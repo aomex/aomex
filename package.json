@@ -3,7 +3,6 @@
   "private": true,
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
-  "author": "geekact <fanwenhua1990@gmail.com>",
   "license": "MIT",
   "type": "module",
   "scripts": {
