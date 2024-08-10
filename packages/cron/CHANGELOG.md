@@ -3,33 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# 3.0.0 (2024-08-10)
-
-
-### Bug Fixes
-
-* **cron:** overlap和concurrent概念重叠 ([02b8bfd](https://github.com/aomex/aomex/commit/02b8bfdcd9bb9312877a4598e39d5541a90cd204))
-* 未更新peerDependencies ([66ac871](https://github.com/aomex/aomex/commit/66ac8719ad443f5ab868d37ed1a49f4cc40decc2))
-
-
-### Features
-
-* **cache:** 新的缓存库 ([3689c79](https://github.com/aomex/aomex/commit/3689c7991894c6dd8dc3d07979cd05c6e9cf9a34))
-* **cache:** 适配器模式 ([d414863](https://github.com/aomex/aomex/commit/d41486377489db660c26a4752c94dfff07ea6942))
-* **console:** commander合并到console库 ([8b3961b](https://github.com/aomex/aomex/commit/8b3961b80cace7c1d76540475090b03a215ae47f))
-* **core:** 删除中间件链条概念 ([48d50cc](https://github.com/aomex/aomex/commit/48d50cc0dc892859b6467344f03a38c111325fc0))
-* 初始化 ([a370720](https://github.com/aomex/aomex/commit/a37072001cf19f09687623add2442236ab19d7ed))
-
-
-### BREAKING CHANGES
-
-* **cache:** 1. 删除了memory-cache,redis-cache,file-cache
-2. 采用适配器形式创建缓存实例
-* **console:** @aomex/commander已被删除
-
-
-
-
 
 # [2.2.0](https://github.com/aomex/aomex/compare/v2.1.0...v2.2.0) (2024-08-05)
 

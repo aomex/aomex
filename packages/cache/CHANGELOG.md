@@ -3,25 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# 3.0.0 (2024-08-10)
-
-
-### Bug Fixes
-
-* 未更新peerDependencies ([66ac871](https://github.com/aomex/aomex/commit/66ac8719ad443f5ab868d37ed1a49f4cc40decc2))
-
-
-### Features
-
-* **cache:** 新的缓存库 ([3689c79](https://github.com/aomex/aomex/commit/3689c7991894c6dd8dc3d07979cd05c6e9cf9a34))
-* **cache:** 适配器模式 ([d414863](https://github.com/aomex/aomex/commit/d41486377489db660c26a4752c94dfff07ea6942))
-
-
-### BREAKING CHANGES
-
-* **cache:** 1. 删除了memory-cache,redis-cache,file-cache
-2. 采用适配器形式创建缓存实例
-
 
 
 

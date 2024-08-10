@@ -3,20 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# 3.0.0 (2024-08-10)
-
-
-### Bug Fixes
-
-* 未更新peerDependencies ([66ac871](https://github.com/aomex/aomex/commit/66ac8719ad443f5ab868d37ed1a49f4cc40decc2))
-
-
-### Features
-
-* **core:** 删除中间件链条概念 ([48d50cc](https://github.com/aomex/aomex/commit/48d50cc0dc892859b6467344f03a38c111325fc0))
-* 初始化 ([a370720](https://github.com/aomex/aomex/commit/a37072001cf19f09687623add2442236ab19d7ed))
-
-
 
 
 

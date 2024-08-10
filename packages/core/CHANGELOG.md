@@ -5,22 +5,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # 3.0.0 (2024-08-10)
 
-
-### Bug Fixes
-
-* **core:** rule.allOf返回了联合类型 ([fff9edf](https://github.com/aomex/aomex/commit/fff9edf11d3da7b60b286a194e86f7ffb67c39aa))
-* **core:** rule.oneOf验证器匹配超过一个规则未报错 ([a0e2fe1](https://github.com/aomex/aomex/commit/a0e2fe1e9837464ba3e7042ff12b001c2c064486))
-
-
 ### Features
 
 * **core:** uuid增加6/7/8三个版本 ([d37c2b0](https://github.com/aomex/aomex/commit/d37c2b09744a747c692b8c48dd2968e1315cbfb4))
-* **core:** 删除中间件链条概念 ([48d50cc](https://github.com/aomex/aomex/commit/48d50cc0dc892859b6467344f03a38c111325fc0))
-* **core:** 增加allOf验证器 ([ff9df59](https://github.com/aomex/aomex/commit/ff9df5986fc13e975abc8b0a79f3b7cc61216e3c))
-* **core:** 增加allOf验证器 ([d44538d](https://github.com/aomex/aomex/commit/d44538dec8db6f7fc1563e8a1f1eca417d46b50d))
-* **core:** 数字验证器增加precision方法 ([946a52d](https://github.com/aomex/aomex/commit/946a52db8514ca1e0e899ec6433075ccab594c0b))
-* 初始化 ([a370720](https://github.com/aomex/aomex/commit/a37072001cf19f09687623add2442236ab19d7ed))
-
 
 
 

@@ -3,33 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# 3.0.0 (2024-08-10)
-
-
-### Bug Fixes
-
-* 打包时遇到类型报错 ([37817fe](https://github.com/aomex/aomex/commit/37817fe4007f4ae08d84d0d33df0d1bb58919546))
-* 未更新peerDependencies ([66ac871](https://github.com/aomex/aomex/commit/66ac8719ad443f5ab868d37ed1a49f4cc40decc2))
-
-
-### Features
-
-* **core:** 删除中间件链条概念 ([48d50cc](https://github.com/aomex/aomex/commit/48d50cc0dc892859b6467344f03a38c111325fc0))
-* **web:** request.body改为同步获取 ([d1d00bc](https://github.com/aomex/aomex/commit/d1d00bc3de4e9997e6c8b33fdd4b465201f686bd))
-* **web:** response.download修改签名 ([acf09ac](https://github.com/aomex/aomex/commit/acf09ac4fea0543811e39bbc6ffcbd69f86c0047))
-* **web:** router库合并到web库 ([d7c71fe](https://github.com/aomex/aomex/commit/d7c71feb9eeeabc1509522e655d4afedee274140))
-* **web:** 开启debug时如实响应5xx错误信息 ([1dc9cd2](https://github.com/aomex/aomex/commit/1dc9cd2ac234548e3d90632df221a64959243d2e))
-* **web:** 请求实体包含二进制类型时，采用multipart/form-data的文档格式 ([d9cf1b6](https://github.com/aomex/aomex/commit/d9cf1b6c4c9a85dae5b1235c7ab188204f4d2508))
-* 初始化 ([a370720](https://github.com/aomex/aomex/commit/a37072001cf19f09687623add2442236ab19d7ed))
-
-
-### BREAKING CHANGES
-
-* **web:** @aomex/router已被删除
-
-
-
-
 
 # [2.2.0](https://github.com/aomex/aomex/compare/v2.1.0...v2.2.0) (2024-08-05)
 

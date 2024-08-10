@@ -3,34 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# 3.0.0 (2024-08-10)
-
-
-### Bug Fixes
-
-* **openapi:** generateOpenapi返回了错误的类型 ([78da9f9](https://github.com/aomex/aomex/commit/78da9f905f41e67a499f1459b46639a5354cd24b))
-* **openapi:** 保存文件时使用更严格的方式判断后缀 ([8e47e7f](https://github.com/aomex/aomex/commit/8e47e7fb2be8f64693f2743b33b2473812bbe55b))
-* 未更新peerDependencies ([66ac871](https://github.com/aomex/aomex/commit/66ac8719ad443f5ab868d37ed1a49f4cc40decc2))
-
-
-### Features
-
-* **core:** 删除中间件链条概念 ([48d50cc](https://github.com/aomex/aomex/commit/48d50cc0dc892859b6467344f03a38c111325fc0))
-* **openapi:** 允许自定义指令名称 ([720041f](https://github.com/aomex/aomex/commit/720041f02d660d0856d21d4f392aaaf02e60ff1b))
-* **openapi:** 增加generateOpenapi函数快速生成文档 ([2f73b9a](https://github.com/aomex/aomex/commit/2f73b9a361318207f41afeb68d63ddf9b7720fac))
-* **router:** 删除路径数组格式 ([b69abe9](https://github.com/aomex/aomex/commit/b69abe9185d59b670bd7ba547a2f032c7a9d0b02))
-* **router:** 路由增加文档属性 showInOpenapi ([2ca60ab](https://github.com/aomex/aomex/commit/2ca60ab17ea1e4bb7a7c9b5ab797f0f1633a45fb))
-* **web:** router库合并到web库 ([d7c71fe](https://github.com/aomex/aomex/commit/d7c71feb9eeeabc1509522e655d4afedee274140))
-* **web:** 请求实体包含二进制类型时，采用multipart/form-data的文档格式 ([d9cf1b6](https://github.com/aomex/aomex/commit/d9cf1b6c4c9a85dae5b1235c7ab188204f4d2508))
-* 初始化 ([a370720](https://github.com/aomex/aomex/commit/a37072001cf19f09687623add2442236ab19d7ed))
-
-
-### BREAKING CHANGES
-
-* **web:** @aomex/router已被删除
-
-
-
 
 
 # [2.2.0](https://github.com/aomex/aomex/compare/v2.1.0...v2.2.0) (2024-08-05)

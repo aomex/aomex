@@ -5,66 +5,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # 3.0.0 (2024-08-10)
 
-
-### Bug Fixes
-
-* **cache-redis-store:** 包名错误 ([b8533f5](https://github.com/aomex/aomex/commit/b8533f53945b8ca63df297f7148b7f291ee7c807))
-* **console:** 帮助信息未国际化 ([e3a156b](https://github.com/aomex/aomex/commit/e3a156b0e79c2a14266e312c7a0e157010fb2db2))
-* **core:** rule.allOf返回了联合类型 ([fff9edf](https://github.com/aomex/aomex/commit/fff9edf11d3da7b60b286a194e86f7ffb67c39aa))
-* **core:** rule.oneOf验证器匹配超过一个规则未报错 ([a0e2fe1](https://github.com/aomex/aomex/commit/a0e2fe1e9837464ba3e7042ff12b001c2c064486))
-* **cron:** overlap和concurrent概念重叠 ([02b8bfd](https://github.com/aomex/aomex/commit/02b8bfdcd9bb9312877a4598e39d5541a90cd204))
-* **openapi:** generateOpenapi返回了错误的类型 ([78da9f9](https://github.com/aomex/aomex/commit/78da9f905f41e67a499f1459b46639a5354cd24b))
-* **openapi:** 保存文件时使用更严格的方式判断后缀 ([8e47e7f](https://github.com/aomex/aomex/commit/8e47e7fb2be8f64693f2743b33b2473812bbe55b))
-* **serve-static:** 发送压缩文件时不能设置content-length ([19c0e82](https://github.com/aomex/aomex/commit/19c0e820a4ca0a71862c7ae2cb23d81145c08bae))
-* **swagger-ui:** 网页资源加载失败 ([18444f3](https://github.com/aomex/aomex/commit/18444f385d99f6b50089aa7a780a7c753599d08b))
-* **swagger-ui:** 静态文件未发布到npm ([84f6225](https://github.com/aomex/aomex/commit/84f62254f09a6daa382e5cd0acf4f4e87a8ad7ae))
-* 打包时遇到类型报错 ([37817fe](https://github.com/aomex/aomex/commit/37817fe4007f4ae08d84d0d33df0d1bb58919546))
-* 未更新peerDependencies ([66ac871](https://github.com/aomex/aomex/commit/66ac8719ad443f5ab868d37ed1a49f4cc40decc2))
-
-
 ### Features
 
-* **async-trace:** traceMiddleware的记录回调函数增加ctx参数 ([aef3e55](https://github.com/aomex/aomex/commit/aef3e55f96c05565e78b475063588f76e56ba908))
-* **async-trace:** 追踪方法时允许不传参数 ([c7c7bc2](https://github.com/aomex/aomex/commit/c7c7bc28c0d05679e248bbeb6ba904b4a98851d5))
-* **auth:** 身份认证中间件 ([101626f](https://github.com/aomex/aomex/commit/101626f2ec9f65dd8bec29ebacaa1998fd3d7862))
-* **cache:** 新的缓存库 ([3689c79](https://github.com/aomex/aomex/commit/3689c7991894c6dd8dc3d07979cd05c6e9cf9a34))
-* **cache:** 适配器模式 ([d414863](https://github.com/aomex/aomex/commit/d41486377489db660c26a4752c94dfff07ea6942))
-* **console:** commander合并到console库 ([8b3961b](https://github.com/aomex/aomex/commit/8b3961b80cace7c1d76540475090b03a215ae47f))
-* **console:** 未找到指令时，只提示最匹配的一个指令 ([b990569](https://github.com/aomex/aomex/commit/b990569cbf8922546233ed501987bd4c8ef84073))
 * **core:** uuid增加6/7/8三个版本 ([d37c2b0](https://github.com/aomex/aomex/commit/d37c2b09744a747c692b8c48dd2968e1315cbfb4))
-* **core:** 删除中间件链条概念 ([48d50cc](https://github.com/aomex/aomex/commit/48d50cc0dc892859b6467344f03a38c111325fc0))
-* **core:** 增加allOf验证器 ([ff9df59](https://github.com/aomex/aomex/commit/ff9df5986fc13e975abc8b0a79f3b7cc61216e3c))
-* **core:** 增加allOf验证器 ([d44538d](https://github.com/aomex/aomex/commit/d44538dec8db6f7fc1563e8a1f1eca417d46b50d))
-* **core:** 数字验证器增加precision方法 ([946a52d](https://github.com/aomex/aomex/commit/946a52db8514ca1e0e899ec6433075ccab594c0b))
-* **openapi:** 允许自定义指令名称 ([720041f](https://github.com/aomex/aomex/commit/720041f02d660d0856d21d4f392aaaf02e60ff1b))
-* **openapi:** 增加generateOpenapi函数快速生成文档 ([2f73b9a](https://github.com/aomex/aomex/commit/2f73b9a361318207f41afeb68d63ddf9b7720fac))
-* **router:** 删除路径数组格式 ([b69abe9](https://github.com/aomex/aomex/commit/b69abe9185d59b670bd7ba547a2f032c7a9d0b02))
-* **router:** 路由增加文档属性 showInOpenapi ([2ca60ab](https://github.com/aomex/aomex/commit/2ca60ab17ea1e4bb7a7c9b5ab797f0f1633a45fb))
-* **serve-static:** 增加formatPath参数 ([fa962cc](https://github.com/aomex/aomex/commit/fa962cce5ca0b519b07751276571f52d8c844ccc))
-* **serve-static:** 增加静态文件服务 ([9f562f9](https://github.com/aomex/aomex/commit/9f562f96c97da50ef7bc1fad35e0c033efa63df5))
-* **swagger-ui:** swagger服务 ([fcdbca2](https://github.com/aomex/aomex/commit/fcdbca22afb467bbb7096952fbe75e6447495f0d))
-* **swagger-ui:** 识别.yml后缀 ([55341d9](https://github.com/aomex/aomex/commit/55341d923e555bd76b17be3312339cadc8013243))
-* **web:** request.body改为同步获取 ([d1d00bc](https://github.com/aomex/aomex/commit/d1d00bc3de4e9997e6c8b33fdd4b465201f686bd))
-* **web:** response.download修改签名 ([acf09ac](https://github.com/aomex/aomex/commit/acf09ac4fea0543811e39bbc6ffcbd69f86c0047))
-* **web:** router库合并到web库 ([d7c71fe](https://github.com/aomex/aomex/commit/d7c71feb9eeeabc1509522e655d4afedee274140))
-* **web:** 开启debug时如实响应5xx错误信息 ([1dc9cd2](https://github.com/aomex/aomex/commit/1dc9cd2ac234548e3d90632df221a64959243d2e))
-* **web:** 请求实体包含二进制类型时，采用multipart/form-data的文档格式 ([d9cf1b6](https://github.com/aomex/aomex/commit/d9cf1b6c4c9a85dae5b1235c7ab188204f4d2508))
-* **web:** 路由组支持设置文档说明 ([63f2fe0](https://github.com/aomex/aomex/commit/63f2fe0afce5dc247bc6a56bd63611595f4ca6de))
-* 初始化 ([a370720](https://github.com/aomex/aomex/commit/a37072001cf19f09687623add2442236ab19d7ed))
-
-
-### Performance Improvements
-
-* **router:** 多个method共享匹配逻辑 ([786a391](https://github.com/aomex/aomex/commit/786a3917dd8471ce535fc603d21962b0adfd2091))
-* **router:** 路由细分为动静态路由，加速匹配 ([dcbfbf9](https://github.com/aomex/aomex/commit/dcbfbf94d299dc45b592c01359d20b98b993b554))
-
-
-### BREAKING CHANGES
-
-* **cache:** 1. 删除了memory-cache,redis-cache,file-cache
-2. 采用适配器形式创建缓存实例
-* **web:** @aomex/router已被删除
-* **console:** @aomex/commander已被删除
 
 
 
