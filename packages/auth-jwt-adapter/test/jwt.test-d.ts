@@ -31,3 +31,23 @@ import { authentication } from '@aomex/auth';
     >
   >(true);
 }
+
+// 返回处理过的值
+{
+  const jwt = jwtAdapter<{ userId: number }, { hello: string }>({
+    secret: '',
+    async onVerified({ payload }) {
+      expectType<{ userId: Number }>(payload);
+      return { hello: 'world' };
+    },
+  });
+  const md = authentication(jwt);
+  expectType<
+    TypeEqual<
+      WebMiddleware<{
+        readonly auth: { hello: string };
+      }>,
+      typeof md
+    >
+  >(true);
+}

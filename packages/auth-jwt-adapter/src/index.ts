@@ -27,17 +27,23 @@ type SecretProvider =
       privateKey: Secret;
     };
 
-export type JwtAdapterOptions<Payload extends string | object = object> = SecretProvider &
+export type JwtAdapterOptions<
+  Payload extends string | object,
+  VerifiedPayload = Payload,
+> = SecretProvider &
   Pick<BearerAdapterOptions<Payload>, 'tokenLoaders'> & {
+    /**
+     * 验证令牌时的额外参数。需要和生成令牌时保持一致
+     */
     verifyOptions?: Omit<VerifyOptions, 'complete'>;
     /**
-     * 验证成功后的回调，对payload做进一步判断
+     * 验证成功后的回调，对payload做额外处理。如果token或者payload无效，则返回`false`
      */
     onVerified?(data: {
       payload: Payload;
       ctx: WebContext;
       token: string;
-    }): Promise<Payload | false>;
+    }): Promise<VerifiedPayload | false>;
     /**
      * 更换密码或者密钥后，为了能验证旧的JWT令牌，请提供旧的密码或者公钥
      */
@@ -46,8 +52,9 @@ export type JwtAdapterOptions<Payload extends string | object = object> = Secret
 
 export class AuthenticationJwtAdapter<
   Payload extends object | string,
-> extends AuthenticationBaseBearerAdapter<Payload> {
-  constructor(protected readonly opts: JwtAdapterOptions<Payload>) {
+  VerifiedPayload extends object | string = Payload,
+> extends AuthenticationBaseBearerAdapter<VerifiedPayload> {
+  constructor(protected readonly opts: JwtAdapterOptions<Payload, VerifiedPayload>) {
     super(opts.tokenLoaders);
   }
 
@@ -62,7 +69,9 @@ export class AuthenticationJwtAdapter<
     );
   }
 
-  protected override async authenticate(ctx: WebContext): Promise<Payload | false> {
+  protected override async authenticate(
+    ctx: WebContext,
+  ): Promise<VerifiedPayload | false> {
     const token = this.loadToken(ctx);
     if (!token) return false;
 
@@ -81,7 +90,9 @@ export class AuthenticationJwtAdapter<
 
     if (!payload) return false;
 
-    return onVerified ? onVerified({ payload, ctx, token }) : payload;
+    return onVerified
+      ? onVerified({ payload, ctx, token })
+      : (payload as unknown as VerifiedPayload);
   }
 
   protected override openapi(): OpenApiInjector {
@@ -104,6 +115,9 @@ export class AuthenticationJwtAdapter<
   }
 }
 
-export const jwtAdapter = <Payload extends object | string>(
-  opts: JwtAdapterOptions<Payload>,
-) => new AuthenticationJwtAdapter<Payload>(opts);
+export const jwtAdapter = <
+  Payload extends object | string,
+  VerifiedPayload extends object | string = Payload,
+>(
+  opts: JwtAdapterOptions<Payload, VerifiedPayload>,
+) => new AuthenticationJwtAdapter<Payload, VerifiedPayload>(opts);
