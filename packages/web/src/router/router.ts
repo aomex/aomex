@@ -26,6 +26,9 @@ export class Router<
     this.docs = opts.docs || {};
   }
 
+  /**
+   * 接收Get和Head请求，路径规则请参考：https://www.npmjs.com/package/path-to-regexp
+   */
   public get<T extends WebMiddlewareToken[] | []>(
     uri: string,
     options: BuilderOptions<Props, T>,
@@ -33,6 +36,9 @@ export class Router<
     return this.create(uri, ['GET'], options);
   }
 
+  /**
+   * 接收Post请求，路径规则请参考：https://www.npmjs.com/package/path-to-regexp
+   */
   public post<T extends WebMiddlewareToken[] | []>(
     uri: string,
     options: BuilderOptions<Props, T>,
@@ -40,6 +46,9 @@ export class Router<
     return this.create(uri, ['POST'], options);
   }
 
+  /**
+   * 接收Put请求，路径规则请参考：https://www.npmjs.com/package/path-to-regexp
+   */
   public put<T extends WebMiddlewareToken[] | []>(
     uri: string,
     options: BuilderOptions<Props, T>,
@@ -47,6 +56,9 @@ export class Router<
     return this.create(uri, ['PUT'], options);
   }
 
+  /**
+   * 接收Patch请求，路径规则请参考：https://www.npmjs.com/package/path-to-regexp
+   */
   public patch<T extends WebMiddlewareToken[] | []>(
     uri: string,
     options: BuilderOptions<Props, T>,
@@ -54,6 +66,9 @@ export class Router<
     return this.create(uri, ['PATCH'], options);
   }
 
+  /**
+   * 接收Delete请求，路径规则请参考：https://www.npmjs.com/package/path-to-regexp
+   */
   public delete<T extends WebMiddlewareToken[] | []>(
     uri: string,
     options: BuilderOptions<Props, T>,
@@ -61,6 +76,9 @@ export class Router<
     return this.create(uri, ['DELETE'], options);
   }
 
+  /**
+   * 接收所有请求方法，路径规则请参考：https://www.npmjs.com/package/path-to-regexp
+   */
   public all<T extends WebMiddlewareToken[] | []>(
     uri: string,
     options: BuilderOptions<Props, T>,
@@ -68,6 +86,9 @@ export class Router<
     return this.create(uri, Builder.METHODS, options);
   }
 
+  /**
+   * 接收指定的请求方法，路径规则请参考：https://www.npmjs.com/package/path-to-regexp
+   */
   public customize<T extends WebMiddlewareToken[] | []>(
     methods: (typeof Builder.METHODS)[number][],
     uri: string,
