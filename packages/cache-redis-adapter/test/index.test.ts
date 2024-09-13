@@ -1,7 +1,7 @@
 import type { RedisOptions } from 'ioredis';
 import RedisMemoryServer from 'redis-memory-server';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
-import { CacheRedisAdapter } from '../src';
+import { CacheRedisAdapter, redisAdapter } from '../src';
 import { sleep } from '@aomex/internal-tools';
 
 let redisServer: RedisMemoryServer;
@@ -15,7 +15,7 @@ beforeAll(async () => {
     host: await redisServer.getHost(),
     port: await redisServer.getPort(),
   };
-  store = new CacheRedisAdapter({ ...opts });
+  store = redisAdapter({ ...opts });
 }, 50_000 /* 首次下载redis */);
 
 afterEach(async () => {

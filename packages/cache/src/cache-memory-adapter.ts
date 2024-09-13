@@ -153,3 +153,5 @@ export class CacheMemoryAdapter extends CacheAdapter {
     return true;
   }
 }
+
+export const memoryAdapter = () => new CacheMemoryAdapter();

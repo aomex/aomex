@@ -100,3 +100,5 @@ end
     return result;
   }
 }
+
+export const redisAdapter = (config: RedisOptions) => new CacheRedisAdapter(config);
