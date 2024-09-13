@@ -1,6 +1,6 @@
 import { Middleware, middleware, type OpenAPI } from '@aomex/core';
 import type { Union2Intersection } from '@aomex/internal-tools';
-import { match } from 'path-to-regexp';
+import { match, type MatchFunction, type ParamData } from 'path-to-regexp';
 import type { WebMiddlewareToken } from '../override';
 import type { WebContext } from '../http';
 
@@ -70,7 +70,7 @@ export class Builder<
   public readonly uri: string;
   public readonly docs: Builder.Docs;
   protected readonly middlewareList: WebMiddlewareToken[];
-  protected readonly matchFn: ReturnType<typeof match>;
+  protected readonly matchFn: MatchFunction<ParamData>;
 
   constructor(
     prefix: string,
@@ -86,7 +86,7 @@ export class Builder<
       ...(options.mount || []),
       middleware.web((ctx, _) => options.action(ctx as any)),
     ];
-    this.matchFn = match(this.uri, { decode: decodeURIComponent });
+    this.matchFn = match(this.uri);
   }
 
   public isPureUri() {
