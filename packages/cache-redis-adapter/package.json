@@ -33,11 +33,13 @@
   "engines": {
     "node": "^20.13.0 || ^22"
   },
-  "dependencies": {
-    "@aomex/cache": "workspace:^",
-    "ioredis": "^5.4.1"
+  "peerDependencies": {
+    "@aomex/cache": "^3.0.0",
+    "ioredis": ">=5"
   },
   "devDependencies": {
-    "@aomex/internal-tools": "workspace:^"
+    "@aomex/cache": "workspace:^",
+    "@aomex/internal-tools": "workspace:^",
+    "ioredis": "^5.4.1"
   }
 }
