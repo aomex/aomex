@@ -34,8 +34,8 @@
     "node": "^20.13.0 || ^22"
   },
   "peerDependencies": {
-    "@aomex/auth": "^2.0.0",
-    "@aomex/web": "^2.0.0"
+    "@aomex/auth": "^3.0.0",
+    "@aomex/web": "^3.0.0"
   },
   "dependencies": {
     "@aomex/auth-bearer-adapter": "workspace:^",

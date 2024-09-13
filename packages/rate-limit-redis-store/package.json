@@ -34,7 +34,7 @@
     "node": "^20.13.0 || ^22"
   },
   "peerDependencies": {
-    "@aomex/rate-limit": "^2.0.0"
+    "@aomex/rate-limit": "^3.0.0"
   },
   "dependencies": {
     "ioredis": "^5.4.1"
