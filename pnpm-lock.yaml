@@ -131,17 +131,16 @@ importers:
         version: link:../internal-tools
 
   packages/cache-redis-adapter:
-    dependencies:
+    devDependencies:
       '@aomex/cache':
         specifier: workspace:^
         version: link:../cache
-      ioredis:
-        specifier: ^5.4.1
-        version: 5.4.1
-    devDependencies:
       '@aomex/internal-tools':
         specifier: workspace:^
         version: link:../internal-tools
+      ioredis:
+        specifier: ^5.4.1
+        version: 5.4.1
 
   packages/compress:
     dependencies:
@@ -396,10 +395,6 @@ importers:
         version: link:../web
 
   packages/rate-limit-redis-store:
-    dependencies:
-      ioredis:
-        specifier: ^5.4.1
-        version: 5.4.1
     devDependencies:
       '@aomex/internal-tools':
         specifier: workspace:^
@@ -407,6 +402,9 @@ importers:
       '@aomex/rate-limit':
         specifier: workspace:^
         version: link:../rate-limit
+      ioredis:
+        specifier: ^5.4.1
+        version: 5.4.1
 
   packages/response-time:
     devDependencies:

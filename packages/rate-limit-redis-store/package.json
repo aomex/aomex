@@ -34,13 +34,12 @@
     "node": "^20.13.0 || ^22"
   },
   "peerDependencies": {
-    "@aomex/rate-limit": "^3.0.0"
-  },
-  "dependencies": {
-    "ioredis": "^5.4.1"
+    "@aomex/rate-limit": "^3.0.0",
+    "ioredis": ">=5"
   },
   "devDependencies": {
     "@aomex/internal-tools": "workspace:^",
-    "@aomex/rate-limit": "workspace:^"
+    "@aomex/rate-limit": "workspace:^",
+    "ioredis": "^5.4.1"
   }
 }
