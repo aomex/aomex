@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.1](https://github.com/aomex/aomex/compare/v3.1.0...v3.1.1) (2024-09-13)
+
+
+### Bug Fixes
+
+* **cache-redis-adapter:** 依赖了需要用户安装的库 ([cb8ae3c](https://github.com/aomex/aomex/commit/cb8ae3c3c08a875b9ba2b6b5cc4ab65216152093))
+* **core:** 打包后相对路径定义的模块无效 ([8b6e705](https://github.com/aomex/aomex/commit/8b6e7055814efd2f6743700b7718d03b7a1ff0df))
+* **rate-limit-redis-store:** 依赖了需要用户安装的库 ([0bf9dff](https://github.com/aomex/aomex/commit/0bf9dff627a769e9d8181e61efb954381a9d59c1))
+
+
+
+
+
 # [3.1.0](https://github.com/aomex/aomex/compare/v3.0.0...v3.1.0) (2024-09-13)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.1](https://github.com/aomex/aomex/compare/v3.1.0...v3.1.1) (2024-09-13)
+
+
+### Bug Fixes
+
+* **rate-limit-redis-store:** 依赖了需要用户安装的库 ([0bf9dff](https://github.com/aomex/aomex/commit/0bf9dff627a769e9d8181e61efb954381a9d59c1))
+
+
+
+
+
 # [3.1.0](https://github.com/aomex/aomex/compare/v3.0.0...v3.1.0) (2024-09-13)
 
 

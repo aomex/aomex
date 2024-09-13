@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.1](https://github.com/aomex/aomex/compare/v3.1.0...v3.1.1) (2024-09-13)
+
+
+### Bug Fixes
+
+* **core:** 打包后相对路径定义的模块无效 ([8b6e705](https://github.com/aomex/aomex/commit/8b6e7055814efd2f6743700b7718d03b7a1ff0df))
+
+
+
+
+
 # [3.1.0](https://github.com/aomex/aomex/compare/v3.0.0...v3.1.0) (2024-09-13)
 
 **Note:** Version bump only for package @aomex/core

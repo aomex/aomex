@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.1](https://github.com/aomex/aomex/compare/v3.1.0...v3.1.1) (2024-09-13)
+
+
+### Bug Fixes
+
+* **cache-redis-adapter:** 依赖了需要用户安装的库 ([cb8ae3c](https://github.com/aomex/aomex/commit/cb8ae3c3c08a875b9ba2b6b5cc4ab65216152093))
+
+
+
+
+
 # [3.1.0](https://github.com/aomex/aomex/compare/v3.0.0...v3.1.0) (2024-09-13)
 
 
