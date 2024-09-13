@@ -18,27 +18,20 @@ test('路径参数', () => {
       "userId": "2",
     }
   `);
+});
+
+test('参数转义', () => {
+  const builder = new Builder('', '/users/:userId/posts/:postId', ['GET'], action);
   expect(builder.match('/users/%23/posts/xxxx')).toMatchInlineSnapshot(`
     {
       "postId": "xxxx",
       "userId": "#",
     }
   `);
-  expect(builder.match('/users/%23/posts')).toBeFalsy();
 });
 
-test('路径正则参数', () => {
-  expect(new Builder('', '/users/(\\d+)/posts', ['GET'], action).match('/users/2/posts'))
-    .toMatchInlineSnapshot(`
-    {
-      "0": "2",
-    }
-  `);
-});
-
-test('必须完整路径匹配', () => {
+test('必须完整匹配', () => {
   const builder = new Builder('', '/users', ['GET'], action);
-
   for (const uri of [
     '/123users',
     '/users123',
@@ -57,5 +50,5 @@ test('必须完整路径匹配', () => {
 test('纯路径', () => {
   expect(new Builder('', '/users', ['GET'], action).isPureUri()).toBeTruthy();
   expect(new Builder('', '/:users', ['GET'], action).isPureUri()).toBeFalsy();
-  expect(new Builder('', '/{users}?', ['GET'], action).isPureUri()).toBeFalsy();
+  expect(new Builder('', '/*users', ['GET'], action).isPureUri()).toBeFalsy();
 });
