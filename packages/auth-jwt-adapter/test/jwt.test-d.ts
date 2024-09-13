@@ -1,26 +1,26 @@
-import { JWTAdapter } from '../src';
+import { jwtAdapter } from '../src';
 import { type TypeEqual, expectType } from 'ts-expect';
 import type { WebMiddleware } from '@aomex/web';
 import { authentication } from '@aomex/auth';
 
 // 密码
 {
-  new JWTAdapter({ secret: '' });
-  new JWTAdapter({ publicKey: '', privateKey: '' });
+  jwtAdapter({ secret: '' });
+  jwtAdapter({ publicKey: '', privateKey: '' });
 
   // @ts-expect-error
-  new JWTAdapter();
+  jwtAdapter();
   // @ts-expect-error
-  new JWTAdapter({});
+  jwtAdapter({});
   // @ts-expect-error
-  new JWTAdapter({ publicKey: '' });
+  jwtAdapter({ publicKey: '' });
   // @ts-expect-error
-  new JWTAdapter({ privateKey: '' });
+  jwtAdapter({ privateKey: '' });
 }
 
 // 泛型
 {
-  const jwt = new JWTAdapter<{ userId: number }>({ secret: '' });
+  const jwt = jwtAdapter<{ userId: number }>({ secret: '' });
   const md = authentication(jwt);
   expectType<
     TypeEqual<

@@ -43,7 +43,7 @@ export interface BearerAdapterOptions<T extends object | string> {
   tokenLoaders?: TokenLoaderItem[];
 }
 
-export abstract class BaseBearerAdapter<
+export abstract class AuthenticationBaseBearerAdapter<
   T extends object | string,
 > extends AuthenticationAdapter<T> {
   protected readonly loaders: TokenLoaderItem[];
@@ -110,7 +110,9 @@ export abstract class BaseBearerAdapter<
  *
  * 解析优先级： 自定义 -> header -> body -> query -> cookie
  */
-export class BearerAdapter<T extends object | string> extends BaseBearerAdapter<T> {
+export class AuthenticationBearerAdapter<
+  T extends object | string,
+> extends AuthenticationBaseBearerAdapter<T> {
   constructor(protected readonly opts: BearerAdapterOptions<T>) {
     super(opts.tokenLoaders);
   }
@@ -138,3 +140,6 @@ export class BearerAdapter<T extends object | string> extends BaseBearerAdapter<
     return token ? onLoaded(token, ctx) : false;
   }
 }
+
+export const bearerAdapter = <T extends object | string>(opts: BearerAdapterOptions<T>) =>
+  new AuthenticationBearerAdapter<T>(opts);

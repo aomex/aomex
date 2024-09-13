@@ -4,7 +4,10 @@ import jsonWebToken, {
   type SignOptions,
 } from 'jsonwebtoken'; // CommonJS
 import { WebContext, type OpenApiInjector } from '@aomex/web';
-import { BaseBearerAdapter, type BearerAdapterOptions } from '@aomex/auth-bearer-adapter';
+import {
+  AuthenticationBaseBearerAdapter,
+  type BearerAdapterOptions,
+} from '@aomex/auth-bearer-adapter';
 
 type SecretProvider =
   | {
@@ -24,7 +27,7 @@ type SecretProvider =
       privateKey: Secret;
     };
 
-export type JWTAdapterOptions<Payload extends string | object = object> = SecretProvider &
+export type JwtAdapterOptions<Payload extends string | object = object> = SecretProvider &
   Pick<BearerAdapterOptions<Payload>, 'tokenLoaders'> & {
     verifyOptions?: Omit<VerifyOptions, 'complete'>;
     /**
@@ -41,11 +44,11 @@ export type JWTAdapterOptions<Payload extends string | object = object> = Secret
     legacySecretOrPublicKey?: Secret[];
   };
 
-export class JWTAdapter<
+export class AuthenticationJwtAdapter<
   Payload extends object | string,
-> extends BaseBearerAdapter<Payload> {
-  constructor(protected readonly options: JWTAdapterOptions<Payload>) {
-    super(options.tokenLoaders);
+> extends AuthenticationBaseBearerAdapter<Payload> {
+  constructor(protected readonly opts: JwtAdapterOptions<Payload>) {
+    super(opts.tokenLoaders);
   }
 
   /**
@@ -54,7 +57,7 @@ export class JWTAdapter<
   signature(payload: Payload, opts?: SignOptions): string {
     return jsonWebToken.sign(
       payload,
-      'secret' in this.options ? this.options.secret : this.options.privateKey,
+      'secret' in this.opts ? this.opts.secret : this.opts.privateKey,
       opts,
     );
   }
@@ -63,14 +66,14 @@ export class JWTAdapter<
     const token = this.loadToken(ctx);
     if (!token) return false;
 
-    const { legacySecretOrPublicKey = [], onVerified } = this.options;
+    const { legacySecretOrPublicKey = [], onVerified } = this.opts;
     const secrets: Secret[] =
-      'secret' in this.options ? [this.options.secret] : [this.options.publicKey];
+      'secret' in this.opts ? [this.opts.secret] : [this.opts.publicKey];
     secrets.push(...legacySecretOrPublicKey);
     let payload: Payload | undefined;
     for (const secret of secrets) {
       try {
-        payload = jsonWebToken.verify(token, secret, this.options.verifyOptions) as any;
+        payload = jsonWebToken.verify(token, secret, this.opts.verifyOptions) as any;
       } catch {
         // no catch
       }
@@ -100,3 +103,7 @@ export class JWTAdapter<
     };
   }
 }
+
+export const jwtAdapter = <Payload extends object | string>(
+  opts: JwtAdapterOptions<Payload>,
+) => new AuthenticationJwtAdapter<Payload>(opts);

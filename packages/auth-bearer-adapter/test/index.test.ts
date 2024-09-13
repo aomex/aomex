@@ -2,11 +2,11 @@ import supertest from 'supertest';
 import { expect, test } from 'vitest';
 import { authentication } from '@aomex/auth';
 import { WebApp } from '@aomex/web';
-import { BearerAdapter } from '../src';
+import { AuthenticationBearerAdapter } from '../src';
 import { middleware } from '@aomex/core';
 
 test('无令牌', async () => {
-  const bearer = new BearerAdapter({
+  const bearer = new AuthenticationBearerAdapter({
     async onLoaded(token) {
       return token + 'foo';
     },
@@ -18,7 +18,7 @@ test('无令牌', async () => {
 });
 
 test('报头令牌', async () => {
-  const bearer = new BearerAdapter({
+  const bearer = new AuthenticationBearerAdapter({
     async onLoaded(token) {
       return token + 'foo';
     },
@@ -42,7 +42,7 @@ test('报头令牌', async () => {
 });
 
 test('报头令牌格式错误', async () => {
-  const bearer = new BearerAdapter({
+  const bearer = new AuthenticationBearerAdapter({
     async onLoaded(token) {
       return token + 'foo';
     },
@@ -55,7 +55,7 @@ test('报头令牌格式错误', async () => {
 });
 
 test('从cookie获取令牌', async () => {
-  const bearer = new BearerAdapter({
+  const bearer = new AuthenticationBearerAdapter({
     async onLoaded(token) {
       return token + 'foo';
     },
@@ -78,7 +78,7 @@ test('从cookie获取令牌', async () => {
 });
 
 test('从查询字符串获取令牌', async () => {
-  const bearer = new BearerAdapter({
+  const bearer = new AuthenticationBearerAdapter({
     async onLoaded(token) {
       return token + 'foo';
     },
@@ -98,7 +98,7 @@ test('从查询字符串获取令牌', async () => {
 });
 
 test('从请求实体获取令牌', async () => {
-  const bearer = new BearerAdapter({
+  const bearer = new AuthenticationBearerAdapter({
     async onLoaded(token) {
       return token + 'foo';
     },
@@ -118,7 +118,7 @@ test('从请求实体获取令牌', async () => {
 });
 
 test('按顺序获取', async () => {
-  const bearer = new BearerAdapter({
+  const bearer = new AuthenticationBearerAdapter({
     async onLoaded(token) {
       return token + 'foo';
     },
@@ -158,7 +158,7 @@ test('按顺序获取', async () => {
 });
 
 test('签名', () => {
-  const bearer = new BearerAdapter({
+  const bearer = new AuthenticationBearerAdapter({
     async onLoaded(token) {
       return token + 'foo';
     },

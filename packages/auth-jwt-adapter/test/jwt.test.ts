@@ -1,7 +1,7 @@
 import { OpenAPI } from '@aomex/core';
 import { WebApp } from '@aomex/web';
 import { expect, test } from 'vitest';
-import { JWTAdapter } from '../src';
+import { jwtAdapter } from '../src';
 import supertest from 'supertest';
 import jsonwebtoken from 'jsonwebtoken';
 import { sleep } from '@aomex/internal-tools';
@@ -10,7 +10,7 @@ import { readFileSync } from 'fs';
 import { authentication } from '@aomex/auth';
 
 test('报头令牌', async () => {
-  const jwt = new JWTAdapter({ secret: 'secrets' });
+  const jwt = jwtAdapter({ secret: 'secrets' });
   const app = new WebApp({
     mount: [authentication(jwt)],
   });
@@ -23,7 +23,7 @@ test('报头令牌', async () => {
 });
 
 test('报头令牌无效', async () => {
-  const jwt = new JWTAdapter({ secret: 'secrets' });
+  const jwt = jwtAdapter({ secret: 'secrets' });
   const app = new WebApp({
     mount: [authentication(jwt)],
   });
@@ -34,7 +34,7 @@ test('报头令牌无效', async () => {
 });
 
 test('密码错误', async () => {
-  const jwt = new JWTAdapter({
+  const jwt = jwtAdapter({
     secret: 'secrets',
   });
   const app = new WebApp({
@@ -49,7 +49,7 @@ test('密码错误', async () => {
 });
 
 test('多个密码', async () => {
-  const jwt = new JWTAdapter({
+  const jwt = jwtAdapter({
     secret: 'secrets',
     legacySecretOrPublicKey: ['different-secret', 'some-other-secret'],
   });
@@ -70,7 +70,7 @@ test('多个密码', async () => {
 });
 
 test('令牌时效性', async () => {
-  const jwt = new JWTAdapter({ secret: 'secrets' });
+  const jwt = jwtAdapter({ secret: 'secrets' });
   const app = new WebApp({
     mount: [authentication(jwt)],
   });
@@ -88,7 +88,10 @@ test('令牌时效性', async () => {
 });
 
 test('验证成功后再次判断', async () => {
-  const jwt = new JWTAdapter({ secret: 'secrets', onVerified: async () => false });
+  const jwt = jwtAdapter({
+    secret: 'secrets',
+    onVerified: async () => false,
+  });
   const app = new WebApp({
     mount: [authentication(jwt)],
   });
@@ -101,7 +104,10 @@ test('验证成功后再次判断', async () => {
 });
 
 test('issuer匹配失败', async () => {
-  const jwt = new JWTAdapter({ secret: 'secrets', verifyOptions: { issuer: 'foo' } });
+  const jwt = jwtAdapter({
+    secret: 'secrets',
+    verifyOptions: { issuer: 'foo' },
+  });
   const app = new WebApp({
     mount: [authentication(jwt)],
   });
@@ -115,7 +121,7 @@ test('issuer匹配失败', async () => {
 
 test('密钥对', async () => {
   const dir = import.meta.dirname;
-  const jwt = new JWTAdapter({
+  const jwt = jwtAdapter({
     publicKey: readFileSync(join(dir, 'fixture', 'public-key.pem')),
     privateKey: readFileSync(join(dir, 'fixture', 'private-key.pem')),
     verifyOptions: {
@@ -136,7 +142,7 @@ test('密钥对', async () => {
 
 test('错误的密钥对', async () => {
   const dir = import.meta.dirname;
-  const jwt = new JWTAdapter({
+  const jwt = jwtAdapter({
     publicKey: readFileSync(join(dir, 'fixture', 'wrong-public-key.pem')),
     privateKey: readFileSync(join(dir, 'fixture', 'private-key.pem')),
     verifyOptions: {
@@ -156,7 +162,7 @@ test('错误的密钥对', async () => {
 });
 
 test('文档', () => {
-  const jwt = new JWTAdapter({ secret: 'secrets' });
+  const jwt = jwtAdapter({ secret: 'secrets' });
   const doc: OpenAPI.Document = {
     openapi: '',
     info: { title: '', version: '' },

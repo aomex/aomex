@@ -1,11 +1,11 @@
 import { authentication } from '@aomex/auth';
-import { BearerAdapter } from '../src';
+import { bearerAdapter } from '../src';
 import { expectType, type TypeEqual } from 'ts-expect';
 import { WebMiddleware } from '@aomex/web';
 
 // 泛型
 {
-  const jwt = new BearerAdapter<{ userId: number }>({
+  const jwt = bearerAdapter<{ userId: number }>({
     async onLoaded() {
       return false;
     },
