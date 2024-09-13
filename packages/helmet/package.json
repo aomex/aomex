@@ -1,6 +1,6 @@
 {
   "name": "@aomex/helmet",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "设置安全报文",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",

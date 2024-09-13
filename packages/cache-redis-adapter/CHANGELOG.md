@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/aomex/aomex/compare/v3.0.0...v3.1.0) (2024-09-13)
+
+
+### Features
+
+* **cache:** 适配器提供函数入口 ([f626b13](https://github.com/aomex/aomex/commit/f626b13bdc6a6740ef6da29e75d60e7510793c0c))
+
+
+
+
+
 
 # [2.2.0](https://github.com/aomex/aomex/compare/v2.1.0...v2.2.0) (2024-08-05)
 
