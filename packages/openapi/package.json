@@ -50,7 +50,7 @@
     "@stoplight/spectral-rulesets": "^1.19.1",
     "listr2": "^8.2.1",
     "lodash.snakecase": "^4.1.1",
-    "log-symbols": "^6.0.0",
+    "log-symbols": "^7.0.0",
     "yaml": "^2.4.5"
   },
   "devDependencies": {
