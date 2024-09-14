@@ -24,15 +24,15 @@
 # 安装
 
 ```bash
-npm create aomex --project hello-aomex
+npx create-aomex@latest --project=hello-aomex
 ```
 
 # 应用平台
 
-| Name                                 | Version                                                                                             | Desc     |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------- | -------- |
-| [@aomex/web](./packages/web)         | [![npm](https://img.shields.io/npm/v/@aomex/web)](https://www.npmjs.com/package/@aomex/web)         | 外部接口 |
-| [@aomex/console](./packages/console) | [![npm](https://img.shields.io/npm/v/@aomex/console)](https://www.npmjs.com/package/@aomex/console) | 内部指令 |
+| Name                                 | Version                                                                                             | Desc           |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------- | -------------- |
+| [@aomex/web](./packages/web)         | [![npm](https://img.shields.io/npm/v/@aomex/web)](https://www.npmjs.com/package/@aomex/web)         | web接口服务    |
+| [@aomex/console](./packages/console) | [![npm](https://img.shields.io/npm/v/@aomex/console)](https://www.npmjs.com/package/@aomex/console) | 控制台指令服务 |
 
 # 核心库
 
