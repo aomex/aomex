@@ -9,7 +9,6 @@ declare module '@aomex/core' {
         stop: I18nMessage;
         stats: I18nMessage;
         not_started: I18nMessage<{ port: number }>;
-        use_stop: I18nMessage;
       };
     }
   }

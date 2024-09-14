@@ -4,7 +4,6 @@ import { Job } from '../lib/job';
 import type { CronOptions, ServerWriteData } from '../lib/type';
 import net, { Socket } from 'node:net';
 import { DEFAULT_PORT } from '../lib/constant';
-import { styleText } from 'node:util';
 
 const commandName = 'cron:start';
 
@@ -88,7 +87,6 @@ export const start = (opts: CronOptions) => {
       // CTRL + C
       // 子进程也会被立即杀死，但是job.start仍然在生产任务
       process.once('SIGINT', async () => {
-        console.warn(styleText('yellowBright', i18n.t('cron.use_stop')));
         stopJobs(() => {});
       });
 
