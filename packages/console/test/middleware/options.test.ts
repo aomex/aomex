@@ -3,7 +3,6 @@ import {
   ConsoleApp,
   ConsoleInput,
   ConsoleMiddleware,
-  ConsoleTerminal,
   options,
   type ConsoleDocument,
   ConsoleContext,
@@ -12,7 +11,6 @@ import { compose, middleware, rule } from '@aomex/core';
 import { collectConsoleDocument } from '../../src/utils';
 
 const app = new ConsoleApp();
-const terminal = new ConsoleTerminal();
 
 test('中间件', () => {
   expect(options({})).toBeInstanceOf(ConsoleMiddleware);
@@ -29,7 +27,6 @@ test('解析参数', async () => {
   const ctx = new ConsoleContext(
     app,
     new ConsoleInput(app, ['--foo', 'test1', '--no-baz', '--other', 'data']),
-    terminal,
   );
   await fn(ctx);
   expect(ctx).toHaveProperty('options');
@@ -67,7 +64,6 @@ test('别名', async () => {
       '--other',
       'data',
     ]),
-    terminal,
   );
   await fn(ctx);
   expect(ctx).toHaveProperty('options');

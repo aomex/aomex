@@ -4,7 +4,6 @@ import { styleText } from 'node:util';
 import { hideBin } from 'yargs/helpers';
 import { I18n, Middleware, compose, i18n } from '@aomex/core';
 import { ConsoleInput } from './input';
-import { ConsoleTerminal } from './terminal';
 import { ConsoleContext } from './context';
 import { helpLogger } from '../middleware/help-logger';
 import type { ConsoleMiddlewareToken } from '../override';
@@ -68,8 +67,7 @@ export class ConsoleApp<
       this,
       commands.length ? commands : hideBin(process.argv),
     );
-    const terminal = new ConsoleTerminal();
-    const ctx = new ConsoleContext(this, input, terminal);
+    const ctx = new ConsoleContext(this, input);
 
     // 至少需要一个监听者，否则程序会报错
     if (!this.listenerCount('error')) {
