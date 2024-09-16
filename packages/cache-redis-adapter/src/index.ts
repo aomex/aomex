@@ -7,7 +7,7 @@ export class CacheRedisAdapter extends CacheAdapter {
 
   constructor(config: RedisOptions) {
     super();
-    this.redis = new Redis(config);
+    this.redis = new Redis({ ...config, lazyConnect: true });
   }
 
   getValue(key: string): Promise<string | null> {
