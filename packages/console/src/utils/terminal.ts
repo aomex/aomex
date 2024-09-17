@@ -83,7 +83,7 @@ class Terminal {
    * @link https://www.npmjs.com/package/table
    */
   generateTable(data: unknown[][], config?: TableUserConfig): string {
-    return table(data, config);
+    return table(data, config).replace(/\n$/, '');
   }
 
   /**
