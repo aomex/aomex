@@ -1,14 +1,12 @@
 import '../../src';
-import { ConsoleApp } from '@aomex/console';
+import { ConsoleApp, terminal } from '@aomex/console';
 import { middleware } from '@aomex/core';
 import { beforeEach, expect, test, vitest } from 'vitest';
 import { dirname, join } from 'path';
 import { stats } from '../../src/middleware/stats.middleware';
 import { createServer } from 'net';
 import type { ServerWriteData } from '../../src';
-import Spinnies from 'spinnies';
 import { sleep } from '@aomex/internal-tools';
-import { styleText } from 'util';
 import { getPort } from '../mock/get-port';
 
 const testDir = dirname(import.meta.dirname);
@@ -72,23 +70,23 @@ test('接收消息', { timeout: 9_000 }, async () => {
   const app = new ConsoleApp({
     mount: [stats({ commanders: '', port })],
   });
-  const spy1 = vitest.spyOn(Spinnies.prototype, 'add');
-  const spy2 = vitest.spyOn(Spinnies.prototype, 'update');
+  const spy = vitest.spyOn(process.stdout, 'write');
   app.run('cron:stats');
   await sleep(2000);
   await new Promise((resolve) => server.close(resolve));
 
-  expect(spy1).toHaveBeenCalledWith('pid-12345', {
-    status: 'non-spinnable',
-    text: 'foo:bar -t (cpu: 0%, memory: 0B, time: 0s, pid: 12345)',
-  });
-  expect(spy2).toHaveBeenCalledWith('pid-12345', {
-    status: 'non-spinnable',
-    text: 'foo:bar -t (cpu: 0%, memory: 0B, time: 0s, pid: 12345)',
-  });
+  expect(spy).toHaveBeenCalledWith(
+    `
+╔════════════╤═══════╤═══════╤════════╤══════╗
+║ Schedule   │ PID   │ CPU   │ Memory │ Time ║
+╟────────────┼───────┼───────┼────────┼──────╢
+║ foo:bar -t │ 12345 │ 0.00% │ 0B     │ 0s   ║
+╚════════════╧═══════╧═══════╧════════╧══════╝
 
-  spy1.mockRestore();
-  spy2.mockRestore();
+`.replace(/^\n\s*/, ''),
+  );
+
+  spy.mockRestore();
 });
 
 test('无效指令继续往后执行', { timeout: 9_000 }, async () => {
@@ -113,9 +111,9 @@ test('监听了无效的端口', { timeout: 9_000 }, async () => {
   const app = new ConsoleApp({
     mount: [stats({ commanders: '', port })],
   });
-  const spy = vitest.spyOn(console, 'warn');
+  const spy = vitest.spyOn(terminal, 'printWarning');
   await expect(app.run('cron:stats')).resolves.toBe(0);
-  expect(spy).toHaveBeenCalledWith(styleText('yellow', `定时任务未启动，端口：${port}`));
+  expect(spy).toHaveBeenCalledWith(`定时任务未启动，端口：${port}`);
 
   spy.mockRestore();
 });

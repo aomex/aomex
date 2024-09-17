@@ -1,12 +1,11 @@
 import '../../src';
-import { ConsoleApp } from '@aomex/console';
+import { ConsoleApp, terminal } from '@aomex/console';
 import { middleware } from '@aomex/core';
 import { beforeEach, expect, test, vitest } from 'vitest';
 import { dirname, join } from 'path';
 import { stop } from '../../src/middleware/stop.middleware';
 import { createServer } from 'net';
 import { getPort } from '../mock/get-port';
-import { styleText } from 'util';
 
 const testDir = dirname(import.meta.dirname);
 
@@ -61,9 +60,9 @@ test('监听了无效的端口', { timeout: 9_000 }, async () => {
   const app = new ConsoleApp({
     mount: [stop({ commanders: '', port })],
   });
-  const spy = vitest.spyOn(console, 'warn');
+  const spy = vitest.spyOn(terminal, 'printWarning');
   await expect(app.run('cron:stop')).resolves.toBe(0);
-  expect(spy).toHaveBeenCalledWith(styleText('yellow', `定时任务未启动，端口：${port}`));
+  expect(spy).toHaveBeenCalledWith(`定时任务未启动，端口：${port}`);
 
   spy.mockRestore();
 });

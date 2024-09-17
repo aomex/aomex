@@ -1,10 +1,8 @@
-import type { ConsoleMiddleware } from '@aomex/console';
+import { terminal, type ConsoleMiddleware } from '@aomex/console';
 import { i18n, middleware } from '@aomex/core';
 import type { CronOptions, ServerWriteData } from '../lib/type';
 import net from 'node:net';
-import Spinnies from 'spinnies';
 import { CONNECT_REFUSED, DEFAULT_PORT } from '../lib/constant';
-import { styleText } from 'node:util';
 
 const commandName = 'cron:stop';
 
@@ -19,7 +17,8 @@ export const stop = (opts: CronOptions): ConsoleMiddleware => {
         client.write(commandName);
       });
 
-      const spinner = new Spinnies();
+      const logSession = terminal.applySession();
+      let schedules: { label: string; status: 'loading' | 'success' }[] = [];
 
       await new Promise((resolve, reject): void => {
         // 多次resolve不会报错
@@ -27,7 +26,7 @@ export const stop = (opts: CronOptions): ConsoleMiddleware => {
         client.on('error', (err) => {
           // @ts-expect-error
           if (err.code === CONNECT_REFUSED) {
-            console.warn(styleText('yellow', i18n.t('cron.not_started', { port: PORT })));
+            terminal.printWarning(i18n.t('cron.not_started', { port: PORT }));
             resolve(undefined);
           } else {
             reject(err);
@@ -40,18 +39,24 @@ export const stop = (opts: CronOptions): ConsoleMiddleware => {
             .split('\n')
             .filter(Boolean)
             .forEach((stringifyData) => {
-              const json = JSON.parse(stringifyData) as ServerWriteData;
-              if ('list' in json) {
-                json.list.forEach((item) => {
-                  spinner.add(item, { text: item });
+              const response = JSON.parse(stringifyData) as ServerWriteData;
+              if ('list' in response) {
+                schedules = response.list.map((item) => {
+                  return { label: item, status: 'loading' };
                 });
-              } else if ('done' in json) {
-                spinner.succeed(json.done);
-                if (!spinner.hasActiveSpinners()) {
-                  client.destroy();
-                }
+              } else if ('done' in response) {
+                schedules.find(({ label }) => label === response.done)!.status =
+                  'success';
               }
             });
+
+          logSession.update(
+            schedules.map((item) => `:${item.status}: ${item.label}`).join('\n'),
+          );
+          if (schedules.every((item) => item.status === 'success')) {
+            client.destroy();
+            logSession.commit();
+          }
         });
       });
     },

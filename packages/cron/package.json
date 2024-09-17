@@ -34,7 +34,7 @@
     "node": "^20.13.0 || ^22"
   },
   "peerDependencies": {
-    "@aomex/console": "^3.0.0",
+    "@aomex/console": "^3.2.0",
     "@aomex/core": "^3.0.0"
   },
   "dependencies": {
@@ -42,13 +42,11 @@
     "@aomex/internal-file-import": "workspace:^",
     "@aomex/internal-tools": "workspace:^",
     "cron-parser": "^4.9.0",
-    "pidusage": "^3.0.2",
-    "spinnies": "^0.5.1"
+    "pidusage": "^3.0.2"
   },
   "devDependencies": {
     "@aomex/console": "workspace:^",
     "@aomex/core": "workspace:^",
-    "@types/pidusage": "^2.0.5",
-    "@types/spinnies": "^0.5.3"
+    "@types/pidusage": "^2.0.5"
   }
 }
