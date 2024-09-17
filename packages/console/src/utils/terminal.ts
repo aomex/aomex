@@ -258,8 +258,18 @@ class Terminal {
             task.status = status;
             statusChanged = true;
           },
-          title: task.title,
-          suffix: task.suffix,
+          get title() {
+            return task.title;
+          },
+          set title(t) {
+            task.title = t;
+          },
+          get suffix() {
+            return task.suffix;
+          },
+          set suffix(s) {
+            task.suffix = s;
+          },
         });
         if (!statusChanged) {
           task.status = 'success';
