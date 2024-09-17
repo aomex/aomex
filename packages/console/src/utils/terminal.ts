@@ -279,10 +279,12 @@ class Terminal {
         const result = await Promise.allSettled(
           tasks.map((task) => handleTask(ctx, task)),
         );
-        const errors = result
-          .filter((item) => item.status === 'fulfilled')
-          .map((item) => item.value.error)
-          .filter((item) => item !== null);
+        const errors: Error[] = [];
+        for (const item of result) {
+          if (item.status === 'fulfilled' && item.value.error !== null) {
+            errors.push(item.value.error);
+          }
+        }
         if (errors.length) return { errors, context: ctx };
       } else {
         for (const task of tasks) {
