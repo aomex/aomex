@@ -42,6 +42,7 @@
     "@aomex/internal-file-import": "workspace:^",
     "@aomex/internal-tools": "workspace:^",
     "cron-parser": "^4.9.0",
+    "format-duration": "^3.0.2",
     "pidusage": "^3.0.2"
   },
   "devDependencies": {

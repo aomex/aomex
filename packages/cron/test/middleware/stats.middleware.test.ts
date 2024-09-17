@@ -44,20 +44,20 @@ test('接收消息', { timeout: 9_000 }, async () => {
     socket.on('data', () => {
       socket.write(
         JSON.stringify({
-          runners: [{ pid: '12345', argv: ['foo:bar', '-t'] }],
-        } as ServerWriteData) +
+          runners: [{ pid: '12345', command: 'foo:bar -t', schedule: '* * * * *' }],
+        } satisfies ServerWriteData) +
           '\n' +
           JSON.stringify({
-            runners: [{ pid: '12345', argv: ['foo:bar', '-t'] }],
-          } as ServerWriteData) +
+            runners: [{ pid: '12345', command: 'foo:bar -t', schedule: '* * * * *' }],
+          } satisfies ServerWriteData) +
           '\n' +
           JSON.stringify({
             runners: [],
-          } as ServerWriteData) +
+          } satisfies ServerWriteData) +
           '\n' +
           JSON.stringify({
-            runners: [{ pid: '12345', argv: ['foo:bar', '-t'] }],
-          } as ServerWriteData) +
+            runners: [{ pid: '12345', command: 'foo:bar -t', schedule: '* * * * *' }],
+          } satisfies ServerWriteData) +
           '\n',
       );
     });
@@ -70,20 +70,17 @@ test('接收消息', { timeout: 9_000 }, async () => {
   const app = new ConsoleApp({
     mount: [stats({ commanders: '', port })],
   });
-  const spy = vitest.spyOn(process.stdout, 'write');
+  let outputs: string[] = [];
+  const spy = vitest.spyOn(process.stdout, 'write').mockImplementation((str) => {
+    outputs.push(str.toString());
+    return true;
+  });
   app.run('cron:stats');
   await sleep(2000);
   await new Promise((resolve) => server.close(resolve));
 
-  expect(spy).toHaveBeenCalledWith(
-    `
-╔════════════╤═══════╤═══════╤════════╤══════╗
-║ Schedule   │ PID   │ CPU   │ Memory │ Time ║
-╟────────────┼───────┼───────┼────────┼──────╢
-║ foo:bar -t │ 12345 │ 0.00% │ 0B     │ 0s   ║
-╚════════════╧═══════╧═══════╧════════╧══════╝
-
-`.replace(/^\n\s*/, ''),
+  expect(terminal.stripStyle(outputs.join(''))).toContain(
+    '12345     foo:bar -t                * * * * *     0.00%     0B         00:00',
   );
 
   spy.mockRestore();

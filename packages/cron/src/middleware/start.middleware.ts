@@ -19,7 +19,7 @@ export const start = (opts: CronOptions) => {
 
       const jobs = schedules.map((schedule) => new Job(schedule));
 
-      const stopJobs = async (callback: (job: Job, remain: number) => void) => {
+      const stopJobs = async (callback: (remain: number) => void) => {
         jobs.forEach((job) => job.stop());
         let remain = jobs.length;
         await Promise.all(
@@ -29,7 +29,7 @@ export const start = (opts: CronOptions) => {
                 if (!job.runningLevel) {
                   clearInterval(timer);
                   resolve(void 0);
-                  callback(job, --remain);
+                  callback(--remain);
                 }
               }, 300);
             });
@@ -37,16 +37,28 @@ export const start = (opts: CronOptions) => {
         );
       };
 
+      const collectRunners = () => {
+        return jobs.reduce<{ pid: string; command: string; schedule: string }[]>(
+          (carry, job) =>
+            carry.concat(
+              job.getPIDs().map((pid) => ({
+                pid,
+                command: job.schedule.argv.join(' '),
+                schedule: job.schedule.time,
+              })),
+            ),
+          [],
+        );
+      };
+
       const sendStopMessages = async (socket: Socket) => {
         socket.write(
-          JSON.stringify({
-            list: schedules.map((item) => item.toCrontab()),
-          } satisfies ServerWriteData) + '\n',
+          JSON.stringify({ runners: collectRunners() } satisfies ServerWriteData) + '\n',
         );
-        await stopJobs((job) => {
+        await stopJobs(() => {
           socket.write(
             JSON.stringify({
-              done: job.schedule.toCrontab(),
+              runningPIDs: jobs.flatMap((job) => job.getPIDs()),
             } satisfies ServerWriteData) + '\n',
           );
         });
@@ -55,18 +67,7 @@ export const start = (opts: CronOptions) => {
 
       const sendStatsMessage = (socket: Socket) => {
         socket.write(
-          JSON.stringify({
-            runners: jobs.reduce<{ pid: string; argv: string[] }[]>(
-              (carry, job) =>
-                carry.concat(
-                  job.getPIDs().map((pid) => ({
-                    pid,
-                    argv: job.schedule.argv,
-                  })),
-                ),
-              [],
-            ),
-          } satisfies ServerWriteData) + '\n',
+          JSON.stringify({ runners: collectRunners() } satisfies ServerWriteData) + '\n',
         );
       };
 
@@ -92,7 +93,7 @@ export const start = (opts: CronOptions) => {
 
       await Promise.all(jobs.map((job) => job.start()));
       // 确保执行中的任务已经完成
-      await stopJobs((_, remain) => {
+      await stopJobs((remain) => {
         if (!remain) server.close();
       });
     },

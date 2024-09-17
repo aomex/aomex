@@ -3,6 +3,9 @@ import { i18n, middleware } from '@aomex/core';
 import type { CronOptions, ServerWriteData } from '../lib/type';
 import net from 'node:net';
 import { CONNECT_REFUSED, DEFAULT_PORT } from '../lib/constant';
+import { bytes, sleep } from '@aomex/internal-tools';
+import formatDuration from 'format-duration';
+import pidusage from 'pidusage';
 
 const commandName = 'cron:stop';
 
@@ -18,7 +21,89 @@ export const stop = (opts: CronOptions): ConsoleMiddleware => {
       });
 
       const logSession = terminal.applySession();
-      let schedules: { label: string; status: 'loading' | 'success' }[] = [];
+      let runners: {
+        cpu: number;
+        memory: number;
+        elapsed: number;
+        pid: string;
+        command: string;
+        schedule: string;
+        status: 'loading' | 'success';
+      }[] = [];
+
+      let timer: NodeJS.Timeout;
+      (function loop() {
+        timer = setTimeout(async () => {
+          let stats: Awaited<ReturnType<typeof pidusage>>;
+          try {
+            const pids = runners
+              .filter(({ status }) => status === 'loading')
+              .map(({ pid }) => pid);
+            stats = pids.length ? await pidusage(pids) : {};
+          } catch {
+            stats = {};
+          }
+          runners = runners
+            .map((runner) => {
+              if (runner.status === 'success') return runner;
+              const stat = stats[runner.pid];
+              if (!stat) return runner;
+              return {
+                ...runner,
+                cpu: stat.cpu,
+                memory: stat.memory,
+                elapsed: stat.elapsed,
+              };
+            })
+            .sort((a, b) => b.elapsed - a.elapsed);
+
+          if (runners.length) {
+            logSession.update(
+              terminal
+                .generateTable(
+                  [
+                    ['', 'PID', 'COMMAND', 'SCHEDULE', 'CPU', 'MEMORY', 'TIME'],
+                    ...runners.map(
+                      ({ pid, command, schedule, elapsed, cpu, memory, status }) => {
+                        return [
+                          `:${status}:`,
+                          pid,
+                          command.padEnd(24, ' '),
+                          schedule,
+                          `${cpu.toFixed(2)}%`,
+                          bytes(memory),
+                          formatDuration(elapsed, { leading: true }),
+                        ];
+                      },
+                    ),
+                  ],
+                  {
+                    columnDefault: { paddingRight: 4 },
+                    columns: {
+                      0: { paddingLeft: 0, paddingRight: 0 },
+                      2: { paddingRight: 1, width: 24, wrapWord: true },
+                    },
+                    drawVerticalLine: () => false,
+                    drawHorizontalLine: () => false,
+                  },
+                )
+                .replace(/^\s+/, '  '),
+            );
+          }
+
+          if (runners.every((item) => item.status === 'success')) {
+            logSession.commit();
+            client.destroy();
+          } else {
+            loop();
+          }
+        }, 100);
+      })();
+
+      process.once('SIGINT', () => {
+        clearTimeout(timer);
+        client.destroy();
+      });
 
       await new Promise((resolve, reject): void => {
         // 多次resolve不会报错
@@ -32,33 +117,33 @@ export const stop = (opts: CronOptions): ConsoleMiddleware => {
             reject(err);
           }
         });
-        client.on('data', (data) => {
+        client.on('data', async (data) => {
           // 数据可能会堆积下发，直接用JSON.parse容易出错
-          data
-            .toString()
-            .split('\n')
-            .filter(Boolean)
-            .forEach((stringifyData) => {
-              const response = JSON.parse(stringifyData) as ServerWriteData;
-              if ('list' in response) {
-                schedules = response.list.map((item) => {
-                  return { label: item, status: 'loading' };
-                });
-              } else if ('done' in response) {
-                schedules.find(({ label }) => label === response.done)!.status =
-                  'success';
-              }
-            });
-
-          logSession.update(
-            schedules.map((item) => `:${item.status}: ${item.label}`).join('\n'),
-          );
-          if (schedules.every((item) => item.status === 'success')) {
-            client.destroy();
-            logSession.commit();
+          for (const stringifyData of data.toString().split('\n').filter(Boolean)) {
+            const jsonData = JSON.parse(stringifyData) as ServerWriteData;
+            if ('runners' in jsonData) {
+              runners = jsonData.runners.map((runner) => {
+                return {
+                  ...runner,
+                  cpu: 0,
+                  memory: 0,
+                  elapsed: 0,
+                  status: 'loading' as const,
+                };
+              });
+            } else if ('runningPIDs' in jsonData) {
+              runners.forEach((item) => {
+                if (!jsonData.runningPIDs.includes(item.pid)) {
+                  item.status = 'success';
+                }
+              });
+            }
           }
         });
       });
+
+      // 让终端日志渲染完
+      await sleep(300);
     },
     help: {
       onDocument(doc) {

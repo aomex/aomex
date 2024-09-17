@@ -75,9 +75,9 @@ test('等待长任务完成后才能中断', { timeout: 9_000 }, async () => {
 
   await expect(promise).resolves.toBe(0);
   expect(str).toMatchInlineSnapshot(`
-    "{"list":["*/2 * * * * * aomex schedule:n","*/2 * * * * * aomex schedule:t"]}
-    {"done":"*/2 * * * * * aomex schedule:n"}
-    {"done":"*/2 * * * * * aomex schedule:t"}
+    "{"runners":[]}
+    {"runningPIDs":[]}
+    {"runningPIDs":[]}
     "
   `);
 
@@ -118,7 +118,7 @@ test('使用监听获取正在执行的任务', { timeout: 9_000 }, async () => 
 
   await promise;
   expect(str).toMatchInlineSnapshot(`
-    "{"runners":[{"pid":"1123","argv":["schedule:n"]},{"pid":"1123","argv":["schedule:t"]}]}
+    "{"runners":[{"pid":"1123","command":"schedule:n","schedule":"*/2 * * * * *"},{"pid":"1123","command":"schedule:t","schedule":"*/2 * * * * *"}]}
     "
   `);
 

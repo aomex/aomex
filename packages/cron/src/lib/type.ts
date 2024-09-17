@@ -80,11 +80,8 @@ export type ScheduleOptions = (ScheduleTimeObject | ScheduleTimeString) & {
 
 export type ServerWriteData =
   | {
-      list: string[];
+      runningPIDs: string[];
     }
   | {
-      done: string;
-    }
-  | {
-      runners: { pid: string; argv: string[] }[];
+      runners: { pid: string; command: string; schedule: string }[];
     };

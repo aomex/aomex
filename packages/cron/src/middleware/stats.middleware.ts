@@ -5,6 +5,7 @@ import net from 'node:net';
 import pidusage from 'pidusage';
 import { bytes } from '@aomex/internal-tools';
 import { CONNECT_REFUSED, DEFAULT_PORT } from '../lib/constant';
+import formatDuration from 'format-duration';
 
 const commandName = 'cron:stats';
 
@@ -36,9 +37,7 @@ export const stats = (opts: CronOptions): ConsoleMiddleware => {
         client.on('error', (err) => {
           // @ts-expect-error
           if (err.code === CONNECT_REFUSED) {
-            console.warn(
-              terminal.printWarning(i18n.t('cron.not_started', { port: PORT })),
-            );
+            terminal.printWarning(i18n.t('cron.not_started', { port: PORT }));
             resolve(undefined);
           } else {
             reject(err);
@@ -47,30 +46,50 @@ export const stats = (opts: CronOptions): ConsoleMiddleware => {
         client.on('data', async (data) => {
           // 数据可能会堆积下发，直接用JSON.parse容易出错
           for (const stringifyData of data.toString().split('\n').filter(Boolean)) {
-            const json = JSON.parse(stringifyData) as ServerWriteData;
-            if (!('runners' in json)) return;
+            const jsonData = JSON.parse(stringifyData) as ServerWriteData;
+            if (!('runners' in jsonData)) return;
 
             let stats: Awaited<ReturnType<typeof pidusage>>;
             try {
-              stats = await pidusage(json.runners.map((item) => item.pid));
+              stats = await pidusage(jsonData.runners.map((item) => item.pid));
             } catch {
               stats = {};
             }
 
             logSession.update(
-              terminal.generateTable([
-                ['Schedule', 'PID', 'CPU', 'Memory', 'Time'],
-                ...json.runners.map(({ pid, argv }) => {
-                  const stat = stats[pid] || { cpu: 0, memory: 0, elapsed: 0 };
-                  return [
-                    argv.join(' '),
-                    pid,
-                    `${stat.cpu.toFixed(2)}%`,
-                    bytes(stat.memory),
-                    `${stat.elapsed / 1000}s`,
-                  ];
-                }),
-              ]),
+              terminal.generateTable(
+                [
+                  ['PID', 'COMMAND', 'SCHEDULE', 'CPU', 'MEMORY', 'TIME'],
+                  ...jsonData.runners
+                    .map((runner) => {
+                      const stat = stats[runner.pid] || { cpu: 0, memory: 0, elapsed: 0 };
+                      return { ...runner, ...stat };
+                    })
+                    .sort((a, b) => b.elapsed - a.elapsed)
+                    .map(({ pid, command, schedule, elapsed, cpu, memory }) => {
+                      return [
+                        pid,
+                        command.padEnd(24, ' '),
+                        schedule,
+                        `${cpu.toFixed(2)}%`,
+                        bytes(memory),
+                        formatDuration(elapsed, { leading: true }),
+                      ];
+                    }),
+                ],
+                {
+                  columnDefault: { paddingRight: 4 },
+                  columns: {
+                    1: {
+                      paddingRight: 1,
+                      width: 24,
+                      wrapWord: true,
+                    },
+                  },
+                  drawVerticalLine: () => false,
+                  drawHorizontalLine: () => false,
+                },
+              ),
             );
           }
         });
