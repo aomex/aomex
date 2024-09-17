@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/aomex/aomex/compare/v3.1.1...v3.2.0) (2024-09-17)
+
+
+### Bug Fixes
+
+* **console:** typescript@5.4在filter场景无法收窄类型 ([f8bbe56](https://github.com/aomex/aomex/commit/f8bbe56b4d7098f26e01e6db8dfd7a332c1a616c))
+
+
+### Features
+
+* **console:** 增加终端实用函数 ([1a172f6](https://github.com/aomex/aomex/commit/1a172f654b049eb3e975dbc08c883de708f02869))
+
+
+
+
+
 ## [3.1.1](https://github.com/aomex/aomex/compare/v3.1.0...v3.1.1) (2024-09-13)
 
 **Note:** Version bump only for package @aomex/console

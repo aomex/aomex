@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/aomex/aomex/compare/v3.1.1...v3.2.0) (2024-09-17)
+
+
+### Features
+
+* **cache-redis-adapter:** redis启用延迟连接 ([9a72142](https://github.com/aomex/aomex/commit/9a721421e6b8db273b052a3678ee6daaef12f5da))
+
+
+
+
+
 ## [3.1.1](https://github.com/aomex/aomex/compare/v3.1.0...v3.1.1) (2024-09-13)
 
 
