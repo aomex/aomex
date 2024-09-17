@@ -11,11 +11,9 @@ import {
 import { methodParameterToPathParameter } from './hoist-parameter';
 import { saveToFile } from './save-to-file';
 import { initializeDocument } from './initialize-document';
-import { Listr } from 'listr2';
 import { parseFiles } from './parse-files';
-import logSymbols from 'log-symbols';
 import { appendTag } from './append-tag';
-import { styleText } from 'node:util';
+import { terminal } from '@aomex/console';
 import type { GenerateOpenapiOptions } from './generate-openapi';
 
 export interface GenerateOpenapiWithSpinnerOptions extends GenerateOpenapiOptions {
@@ -49,102 +47,97 @@ interface SpinnerContext {
  */
 export const generateOpenapiWithSpinner = async (
   config: GenerateOpenapiWithSpinnerOptions,
-): Promise<OpenAPI.Document> => {
-  const spinner = new Listr<SpinnerContext>([], { concurrent: false, exitOnError: true });
-
-  spinner.add({
-    title: i18n.t('openapi.initialize'),
-    task: async (ctx) => {
-      ctx.document = await initializeDocument(config.docs);
+): Promise<OpenAPI.Document | null> => {
+  const { error, context } = await terminal.runTasks<SpinnerContext>([
+    {
+      title: i18n.t('openapi.initialize'),
+      task: async (ctx) => {
+        ctx.document = await initializeDocument(config.docs);
+      },
     },
-  });
-
-  spinner.add({
-    title: i18n.t('openapi.search_routers_files'),
-    task: async (ctx) => {
-      ctx.files = await pathToFiles(config.routers);
-      await sleep(500);
+    {
+      title: i18n.t('openapi.search_routers_files'),
+      task: async (ctx) => {
+        ctx.files = await pathToFiles(config.routers);
+        await sleep(500);
+      },
     },
-  });
-
-  spinner.add({
-    title: i18n.t('openapi.parse_routers'),
-    task: async (ctx) => {
-      ctx.usedTags = await parseFiles(ctx.document, ctx.files);
-      await sleep(500);
+    {
+      title: i18n.t('openapi.parse_routers'),
+      task: async (ctx) => {
+        ctx.usedTags = await parseFiles(ctx.document, ctx.files);
+        await sleep(500);
+      },
     },
-  });
-
-  spinner.add({
-    title: i18n.t('openapi.add_tag'),
-    task: (ctx, task) => {
-      const undefinedTags = appendTag(ctx.document, ctx.usedTags);
-      if (undefinedTags.length) {
-        task.title += ' ' + styleText('gray', undefinedTags.join(','));
-      } else {
-        task.skip();
-      }
+    {
+      title: i18n.t('openapi.add_tag'),
+      task: async (ctx, task) => {
+        const undefinedTags = appendTag(ctx.document, ctx.usedTags);
+        if (undefinedTags.length) {
+          task.suffix = terminal.style('gray', undefinedTags.join(','));
+        } else {
+          task.status = 'skip';
+        }
+      },
     },
-  });
-
-  spinner.add({
-    title: i18n.t('openapi.hand_fix_documentation'),
-    skip: !config.fix,
-    task: async (ctx) => {
-      await config.fix!(ctx.document);
-      await sleep(500);
+    {
+      title: i18n.t('openapi.hand_fix_documentation'),
+      skip: !config.fix,
+      task: async (ctx) => {
+        await config.fix!(ctx.document);
+        await sleep(500);
+      },
     },
-  });
-
-  spinner.add({
-    title: i18n.t('openapi.optimize_parameter'),
-    task: async (ctx) => {
-      methodParameterToPathParameter(ctx.document);
-      await sleep(500);
+    {
+      title: i18n.t('openapi.optimize_parameter'),
+      task: async (ctx) => {
+        methodParameterToPathParameter(ctx.document);
+        await sleep(500);
+      },
     },
-  });
-
-  spinner.add({
-    title: i18n.t('openapi.save_to_file'),
-    task: async (ctx, task) => {
-      const result = await saveToFile(ctx.document, config.saveToFile, config.fileMode);
-      task.title +=
-        ' ' +
-        styleText(['blue', 'underline'], path.relative(process.cwd(), result.dest)) +
-        styleText('green', ` [${result.size}]`);
+    {
+      title: i18n.t('openapi.save_to_file'),
+      task: async (ctx, task) => {
+        const result = await saveToFile(ctx.document, config.saveToFile, config.fileMode);
+        task.suffix =
+          terminal.style(
+            ['blue', 'underline'],
+            path.relative(process.cwd(), result.dest),
+          ) + terminal.style('green', ` [${result.size}]`);
+      },
     },
-  });
+    {
+      title: i18n.t('openapi.validate'),
+      task: async (ctx, task) => {
+        const result = (ctx.validateResult = await validateOpenapi(ctx.document));
+        await sleep(500);
 
-  spinner.add({
-    title: i18n.t('openapi.validate'),
-    task: async (ctx, task) => {
-      const result = (ctx.validateResult = await validateOpenapi(ctx.document));
-      await sleep(500);
-
-      if (result.errors.length || result.warnings.length) {
-        task.title +=
-          ' ' +
-          styleText(
+        if (result.errors.length || result.warnings.length) {
+          task.suffix = terminal.style(
             'yellow',
             i18n.t('openapi.has_error', {
               error_count: result.errors.length,
               warning_count: result.warnings.length,
             }),
           );
-      } else {
-        task.title += ' ' + styleText('green', i18n.t('openapi.no_error'));
-      }
+        } else {
+          task.suffix = terminal.style('green', i18n.t('openapi.no_error'));
+        }
+      },
     },
-  });
+  ]);
 
-  const context = await spinner.run({} as SpinnerContext);
+  if (error) return null;
 
+  const logSession = terminal.applySession();
   const { errors, warnings } = context.validateResult;
   for (const error of errors) {
-    console.log(`  ${logSymbols.error} ${formatValidateMessage(error)}`);
+    logSession.update(`  :error: ${formatValidateMessage(error)}`);
+    logSession.commit();
   }
   for (const warning of warnings) {
-    console.log(`  ${logSymbols.warning} ${formatValidateMessage(warning)}`);
+    logSession.update(`  :warning: ${formatValidateMessage(warning)}`);
+    logSession.commit();
   }
 
   return JSON.parse(JSON.stringify(context.document));
@@ -152,5 +145,5 @@ export const generateOpenapiWithSpinner = async (
 
 const formatValidateMessage = (item: OpenapiValidateResultItem) => {
   let pathname = item.path.length ? item.path.join('.') : '';
-  return `${styleText('gray', `[${pathname || '.'}]`)} ${item.message}`;
+  return `${terminal.style('gray', `[${pathname || '.'}]`)} ${item.message}`;
 };
