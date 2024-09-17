@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.1](https://github.com/aomex/aomex/compare/v3.2.0...v3.2.1) (2024-09-17)
+
+
+### Bug Fixes
+
+* **console:** generateTable结尾多生成了一个换行符 ([0c1f145](https://github.com/aomex/aomex/commit/0c1f145bfa03017add8f3f59a1372ace5f85555c))
+
+
+### Performance Improvements
+
+* **cron:** 美化终端列表 ([5b18187](https://github.com/aomex/aomex/commit/5b18187b1c8f94fa290c52ad74c0a15d791ea4dc))
+
+
+
+
+
 # [3.2.0](https://github.com/aomex/aomex/compare/v3.1.1...v3.2.0) (2024-09-17)
 
 
