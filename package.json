@@ -28,7 +28,7 @@
     "@types/supertest": "^6.0.2",
     "@vitest/coverage-v8": "^2.0.4",
     "husky": "^9.0.11",
-    "lerna": "^8.1.6",
+    "lerna": "^8.1.8",
     "only-allow": "^1.2.1",
     "prettier": "^3.3.2",
     "read-package-up": "^11.0.0",
