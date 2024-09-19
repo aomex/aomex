@@ -1,6 +1,6 @@
 # aomex
 
-流畅的 node.js 框架，启发自[koa](https://github.com/koajs/koa)和[yii](https://github.com/yiisoft/yii2)
+流畅的 node.js 框架
 
 [![node version](https://img.shields.io/node/v/@aomex/core?logo=node.js)](https://nodejs.org)
 [![npm peer typescript version](https://img.shields.io/npm/dependency-version/@aomex/core/peer/typescript?logo=typescript)](https://github.com/microsoft/TypeScript)
@@ -16,15 +16,15 @@
 - 中间件
 - 数据验证
 - 缓存
-- 国际化
+- i18n
 - 定时任务
-- 接口文档生成器
-- 极限TS类型提示
 
 # 安装
 
+使用脚手架一键安装
+
 ```bash
-npx create-aomex@latest --project=hello-aomex
+npx create-aomex@latest
 ```
 
 # 应用平台
