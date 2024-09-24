@@ -71,7 +71,7 @@ export class BooleanValidator<T = boolean> extends Validator<T> {
       return magistrate.ok(false);
     }
 
-    return magistrate.fail(i18n.t('core.validator.boolean.must_be_boolean', { label }));
+    return magistrate.fail(i18n.t('validator.boolean.must_be_boolean', { label }));
   }
 
   protected declare copy: () => BooleanValidator<T>;

@@ -28,7 +28,7 @@ export interface SendOptions {
   /**
    * 设置 Cache-Control 报文
    *
-   * @link https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Cache-Control
+   * @link https://developer.mozilla.org/zh_CN/docs/Web/HTTP/Headers/Cache-Control
    */
   cacheControl?: {
     /**

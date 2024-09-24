@@ -1,6 +1,7 @@
-import { i18n } from '@aomex/core';
+import { I18n } from '@aomex/core';
+import { zh } from './zh-cn';
 
-i18n.register('en_US', 'openapi', {
+export const en = I18n.satisfies(zh).define({
   initialize: 'initialize document',
   search_routers_files: 'search web routers files',
   parse_routers: 'parse routers',

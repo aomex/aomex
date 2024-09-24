@@ -99,15 +99,13 @@ export class ArrayValidator<T = unknown[]> extends Validator<T> {
     }
 
     if (!Array.isArray(items)) {
-      return magistrate.fail(i18n.t('core.validator.array.must_be_array', { label }));
+      return magistrate.fail(i18n.t('validator.array.must_be_array', { label }));
     }
 
     const length = items.length;
 
     if (length < min || length > max) {
-      return magistrate.fail(
-        i18n.t('core.validator.array.length_not_in_range', { label }),
-      );
+      return magistrate.fail(i18n.t('validator.array.length_not_in_range', { label }));
     }
 
     if (itemValidator) {

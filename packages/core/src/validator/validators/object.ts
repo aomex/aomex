@@ -71,7 +71,7 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
         } catch {}
       }
       if (!valid) {
-        return magistrate.fail(i18n.t('core.validator.object.must_be_object', { label }));
+        return magistrate.fail(i18n.t('validator.object.must_be_object', { label }));
       }
     }
 

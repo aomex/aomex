@@ -3,7 +3,7 @@ import https from 'node:https';
 import stream from 'node:stream';
 import { WebRequest } from './request';
 import { WebResponse } from './response';
-import { I18n, Middleware, compose, i18n } from '@aomex/core';
+import { I18n, Middleware, compose, middleware } from '@aomex/core';
 import { WebContext } from './context';
 import type { HttpError } from 'http-errors';
 import { EOL } from 'node:os';
@@ -11,6 +11,7 @@ import type { WebMiddlewareToken } from '../override';
 import { styleText } from 'node:util';
 import type { Union2Intersection } from '@aomex/internal-tools';
 import { parseBody } from '../middleware/parse-body';
+import { i18n } from '../i18n';
 
 export namespace WebApp {
   export interface Option<T extends WebMiddlewareToken[] | []> {
@@ -37,7 +38,7 @@ export namespace WebApp {
      * ```
      */
     mount?: T;
-    locale?: I18n.LocaleName;
+    language?: 'zh_CN' | 'en_US' | (string & {});
   }
 
   export type Infer<T> =
@@ -61,7 +62,7 @@ export class WebApp<
   constructor(protected readonly options: WebApp.Option<T> = {}) {
     super();
     this.middlewareList = [];
-    i18n.setLocale(options.locale || 'zh_CN');
+    options.language && i18n.setLanguage(options.language);
     this.middlewareList = options.mount || [];
   }
 
@@ -70,7 +71,15 @@ export class WebApp<
   }
 
   callback(): http.RequestListener<any, any> {
-    const fn = compose([parseBody(), ...this.middlewareList]);
+    const fn = compose([
+      middleware.mixin((_, next) => {
+        return this.options.language
+          ? I18n.provider(this.options.language, next)
+          : next();
+      }),
+      parseBody(),
+      ...this.middlewareList,
+    ]);
 
     // 至少需要监听一个，否则emit会报错
     if (!this.listenerCount('error')) {

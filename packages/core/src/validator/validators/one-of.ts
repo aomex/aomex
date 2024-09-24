@@ -44,15 +44,14 @@ export class OneOfValidator<T = never> extends Validator<T> {
           matched = result;
         } else {
           return magistrate.fail(
-            i18n.t('core.validator.one_of.match_multiple_rule', { label }),
+            i18n.t('validator.one_of.match_multiple_rule', { label }),
           );
         }
       }
     }
 
     return (
-      matched ||
-      magistrate.fail(i18n.t('core.validator.one_of.not_match_rule', { label }))
+      matched || magistrate.fail(i18n.t('validator.one_of.not_match_rule', { label }))
     );
   }
 

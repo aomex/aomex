@@ -1,5 +1,5 @@
 import type { Mode } from 'node:fs';
-import { OpenAPI, i18n } from '@aomex/core';
+import { OpenAPI } from '@aomex/core';
 import { sleep } from '@aomex/internal-tools';
 import { pathToFiles } from '@aomex/internal-file-import';
 import path from 'node:path';
@@ -15,6 +15,7 @@ import { parseFiles } from './parse-files';
 import { appendTag } from './append-tag';
 import { terminal } from '@aomex/console';
 import type { GenerateOpenapiOptions } from './generate-openapi';
+import { i18n } from '../i18n';
 
 export interface GenerateOpenapiWithSpinnerOptions extends GenerateOpenapiOptions {
   /**
@@ -50,27 +51,27 @@ export const generateOpenapiWithSpinner = async (
 ): Promise<OpenAPI.Document | null> => {
   const { error, context } = await terminal.runTasks<SpinnerContext>([
     {
-      title: i18n.t('openapi.initialize'),
+      title: i18n.t('initialize'),
       task: async (ctx) => {
         ctx.document = await initializeDocument(config.docs);
       },
     },
     {
-      title: i18n.t('openapi.search_routers_files'),
+      title: i18n.t('search_routers_files'),
       task: async (ctx) => {
         ctx.files = await pathToFiles(config.routers);
         await sleep(500);
       },
     },
     {
-      title: i18n.t('openapi.parse_routers'),
+      title: i18n.t('parse_routers'),
       task: async (ctx) => {
         ctx.usedTags = await parseFiles(ctx.document, ctx.files);
         await sleep(500);
       },
     },
     {
-      title: i18n.t('openapi.add_tag'),
+      title: i18n.t('add_tag'),
       task: async (ctx, task) => {
         const undefinedTags = appendTag(ctx.document, ctx.usedTags);
         if (undefinedTags.length) {
@@ -81,7 +82,7 @@ export const generateOpenapiWithSpinner = async (
       },
     },
     {
-      title: i18n.t('openapi.hand_fix_documentation'),
+      title: i18n.t('hand_fix_documentation'),
       skip: !config.fix,
       task: async (ctx) => {
         await config.fix!(ctx.document);
@@ -89,14 +90,14 @@ export const generateOpenapiWithSpinner = async (
       },
     },
     {
-      title: i18n.t('openapi.optimize_parameter'),
+      title: i18n.t('optimize_parameter'),
       task: async (ctx) => {
         methodParameterToPathParameter(ctx.document);
         await sleep(500);
       },
     },
     {
-      title: i18n.t('openapi.save_to_file'),
+      title: i18n.t('save_to_file'),
       task: async (ctx, task) => {
         const result = await saveToFile(ctx.document, config.saveToFile, config.fileMode);
         task.suffix =
@@ -107,7 +108,7 @@ export const generateOpenapiWithSpinner = async (
       },
     },
     {
-      title: i18n.t('openapi.validate'),
+      title: i18n.t('validate'),
       task: async (ctx, task) => {
         const result = (ctx.validateResult = await validateOpenapi(ctx.document));
         await sleep(500);
@@ -115,13 +116,13 @@ export const generateOpenapiWithSpinner = async (
         if (result.errors.length || result.warnings.length) {
           task.suffix = terminal.style(
             'yellow',
-            i18n.t('openapi.has_error', {
+            i18n.t('has_error', {
               error_count: result.errors.length,
               warning_count: result.warnings.length,
             }),
           );
         } else {
-          task.suffix = terminal.style('green', i18n.t('openapi.no_error'));
+          task.suffix = terminal.style('green', i18n.t('no_error'));
         }
       },
     },

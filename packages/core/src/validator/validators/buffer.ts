@@ -72,7 +72,7 @@ export class BufferValidator<T = Buffer> extends Validator<T> {
     }
 
     if (!buffer) {
-      return magistrate.fail(i18n.t('core.validator.buffer.must_be_buffer', { label }));
+      return magistrate.fail(i18n.t('validator.buffer.must_be_buffer', { label }));
     }
 
     return magistrate.ok(buffer);

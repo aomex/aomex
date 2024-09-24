@@ -36,7 +36,7 @@ export class EmailValidator<T = string> extends BaseStringValidator<T> {
     label: string,
   ): magistrate.Result<string> {
     if (!emailValidator.validate(email)) {
-      return magistrate.fail(i18n.t('core.validator.string.must_be_email', { label }));
+      return magistrate.fail(i18n.t('validator.string.must_be_email', { label }));
     }
     return magistrate.ok(email);
   }

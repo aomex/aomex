@@ -41,7 +41,7 @@ export class AllOfValidator<T = never> extends Validator<T> {
       if (magistrate.noError(result)) {
         value = result.ok;
       } else {
-        return magistrate.fail(i18n.t('core.validator.all_of.not_match_all', { label }));
+        return magistrate.fail(i18n.t('validator.all_of.not_match_all', { label }));
       }
     }
 

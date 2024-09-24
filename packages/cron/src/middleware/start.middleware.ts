@@ -1,9 +1,10 @@
-import { i18n, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import { collectSchedules } from '../lib/collect-schedule';
 import { Job } from '../lib/job';
 import type { CronOptions, ServerWriteData } from '../lib/type';
 import net, { Socket } from 'node:net';
 import { DEFAULT_PORT } from '../lib/constant';
+import { i18n } from '../i18n';
 
 const commandName = 'cron:start';
 
@@ -99,7 +100,7 @@ export const start = (opts: CronOptions) => {
     },
     help: {
       onDocument(doc) {
-        doc[commandName] = { summary: i18n.t('cron.start') };
+        doc[commandName] = { summary: i18n.t('start') };
       },
     },
   });

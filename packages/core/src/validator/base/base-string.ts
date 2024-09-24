@@ -61,7 +61,7 @@ export abstract class BaseStringValidator<T = string> extends Validator<T> {
   ): magistrate.Result<any> | Promise<magistrate.Result<any>> {
     const { pattern, lengthRange } = this.config;
     if (typeof value !== 'string') {
-      return magistrate.fail(i18n.t('core.validator.string.must_be_string', { label }));
+      return magistrate.fail(i18n.t('validator.string.must_be_string', { label }));
     }
 
     value = this.getTrimValue(value);
@@ -70,16 +70,12 @@ export abstract class BaseStringValidator<T = string> extends Validator<T> {
       const { min = 0, max = Infinity } = lengthRange;
       const length = value.length;
       if (length < min || length > max) {
-        return magistrate.fail(
-          i18n.t('core.validator.string.length_not_in_range', { label }),
-        );
+        return magistrate.fail(i18n.t('validator.string.length_not_in_range', { label }));
       }
     }
 
     if (pattern && !pattern.test(value)) {
-      return magistrate.fail(
-        i18n.t('core.validator.string.not_match_pattern', { label }),
-      );
+      return magistrate.fail(i18n.t('validator.string.not_match_pattern', { label }));
     }
 
     return this.validateString(value, key, label);

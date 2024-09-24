@@ -1,7 +1,8 @@
-import { i18n, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import type { ConsoleMiddleware } from '@aomex/console';
 import { collectSchedules } from '../lib/collect-schedule';
 import type { CronOptions } from '../lib/type';
+import { i18n } from '../i18n';
 
 const commandName = 'cron:eject';
 
@@ -18,7 +19,7 @@ export const eject = (opts: CronOptions): ConsoleMiddleware => {
     help: {
       onDocument(doc) {
         doc[commandName] = {
-          summary: i18n.t('cron.eject'),
+          summary: i18n.t('eject'),
         };
       },
     },

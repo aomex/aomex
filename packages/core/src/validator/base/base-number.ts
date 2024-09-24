@@ -78,7 +78,7 @@ export abstract class BaseNumberValidator<T = number> extends Validator<T> {
     }
 
     if (!Number.isFinite(num)) {
-      return magistrate.fail(i18n.t('core.validator.number.must_be_number', { label }));
+      return magistrate.fail(i18n.t('validator.number.must_be_number', { label }));
     }
 
     if (precision !== undefined) {
@@ -89,7 +89,7 @@ export abstract class BaseNumberValidator<T = number> extends Validator<T> {
       (minInclusive ? num < min : num <= min) ||
       (maxInclusive ? num > max : num >= max)
     ) {
-      return magistrate.fail(i18n.t('core.validator.number.not_in_range', { label }));
+      return magistrate.fail(i18n.t('validator.number.not_in_range', { label }));
     }
 
     return this.validateNumber(num, key, label);

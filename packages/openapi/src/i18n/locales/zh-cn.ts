@@ -1,6 +1,6 @@
-import { i18n } from '@aomex/core';
+import { I18n } from '@aomex/core';
 
-i18n.register('zh_CN', 'openapi', {
+export const zh = I18n.define({
   initialize: '初始化文档',
   search_routers_files: '搜索路由文件',
   parse_routers: '解析路由',

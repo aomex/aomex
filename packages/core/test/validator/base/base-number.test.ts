@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { MockNumberValidator } from '../../mock/mock-number-validator';
-import { i18n, magistrate } from '../../../src';
+import { magistrate } from '../../../src';
+import { i18n } from '../../../src/i18n';
 
 describe('链式调用返回新的实例', () => {
   const validator = new MockNumberValidator();
@@ -30,14 +31,14 @@ describe('大小', () => {
     await expect(validator['validate'](10)).resolves.toStrictEqual(magistrate.ok(10));
     await expect(validator['validate'](11)).resolves.toStrictEqual(magistrate.ok(11));
     await expect(validator['validate'](9)).resolves.toStrictEqual(
-      magistrate.fail(i18n.t('core.validator.number.not_in_range', { label: '' })),
+      magistrate.fail(i18n.t('validator.number.not_in_range', { label: '' })),
     );
   });
 
   test('最小值（不包含）', async () => {
     const validator = new MockNumberValidator().min(10, false);
     await expect(validator['validate'](10)).resolves.toStrictEqual(
-      magistrate.fail(i18n.t('core.validator.number.not_in_range', { label: '' })),
+      magistrate.fail(i18n.t('validator.number.not_in_range', { label: '' })),
     );
   });
 
@@ -46,14 +47,14 @@ describe('大小', () => {
     await expect(validator['validate'](9)).resolves.toStrictEqual(magistrate.ok(9));
     await expect(validator['validate'](10)).resolves.toStrictEqual(magistrate.ok(10));
     await expect(validator['validate'](11)).resolves.toStrictEqual(
-      magistrate.fail(i18n.t('core.validator.number.not_in_range', { label: '' })),
+      magistrate.fail(i18n.t('validator.number.not_in_range', { label: '' })),
     );
   });
 
   test('最大值（不包含）', async () => {
     const validator = new MockNumberValidator().max(10, false);
     await expect(validator['validate'](10)).resolves.toStrictEqual(
-      magistrate.fail(i18n.t('core.validator.number.not_in_range', { label: '' })),
+      magistrate.fail(i18n.t('validator.number.not_in_range', { label: '' })),
     );
   });
 });
@@ -66,7 +67,7 @@ test('宽松模式下，字符串转换为数字', async () => {
 test('严格模式下，字符串禁止转换为数字', async () => {
   const validator = new MockNumberValidator().strict();
   await expect(validator['validate']('123')).resolves.toStrictEqual(
-    magistrate.fail(i18n.t('core.validator.number.must_be_number', { label: '' })),
+    magistrate.fail(i18n.t('validator.number.must_be_number', { label: '' })),
   );
 });
 

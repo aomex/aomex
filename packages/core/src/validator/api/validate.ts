@@ -28,7 +28,7 @@ export const validate = async <T extends ValidatorToken>(
 };
 
 const defaultErrorFormatter = (errors: magistrate.Fail['errors']) => {
-  let msg = i18n.t('core.validator.validation_failed');
+  let msg: string = i18n.t('validator.validation_failed');
 
   msg += '\n';
   errors.forEach((err) => {

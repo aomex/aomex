@@ -1,10 +1,11 @@
-import { Middleware, i18n, middleware } from '@aomex/core';
+import { Middleware, middleware } from '@aomex/core';
 import yargs from 'yargs';
 import { scriptName, version } from '../utils';
 import type { ConsoleDocument, ConsoleMiddleware } from '../override';
 import { collectConsoleDocument } from '../utils';
 import { styleText } from 'node:util';
 import { getDistance } from '../utils/get-distance';
+import { i18n } from '../i18n';
 
 export const helpLogger = (middlewareList: Middleware[]): ConsoleMiddleware => {
   return middleware.console(async (ctx, next) => {
@@ -18,12 +19,10 @@ export const helpLogger = (middlewareList: Middleware[]): ConsoleMiddleware => {
         console.log(version);
       } else {
         const cli = yargs([])
-          .locale(i18n.getLocale())
+          .locale(i18n.language)
           .scriptName(scriptName)
-          .usage(
-            `${scriptName} ${i18n.t('console.help.command')} ${i18n.t('console.help.option')}`,
-          )
-          .describe('version', i18n.t('console.help.version', { scriptName }))
+          .usage(`${scriptName} ${i18n.t('help.command')} ${i18n.t('help.option')}`)
+          .describe('version', i18n.t('help.version', { scriptName }))
           .alias('v', 'version')
           .alias('h', 'help');
 
@@ -49,18 +48,18 @@ export const helpLogger = (middlewareList: Middleware[]): ConsoleMiddleware => {
 
       const commandItem = document[command];
       if (!commandItem || commandItem.showInHelp === false) {
-        throw new Error(i18n.t('console.help.no_usage', { command }));
+        throw new Error(i18n.t('help.no_usage', { command }));
       }
 
       const cli = yargs([])
-        .locale(i18n.getLocale())
+        .locale(i18n.language)
         .scriptName(scriptName)
         .version(false)
         .help(false);
       const { description, parameters = [] } = commandItem;
 
       cli.usage(
-        `${scriptName} ${command} ${i18n.t('console.help.option')}${description ? '\n\n' + styleText('bold', description) : ''}`,
+        `${scriptName} ${command} ${i18n.t('help.option')}${description ? '\n\n' + styleText('bold', description) : ''}`,
       );
 
       parameters.forEach((parameter) => {
@@ -94,11 +93,11 @@ export const helpLogger = (middlewareList: Middleware[]): ConsoleMiddleware => {
 
       throw new Error(
         recommendCommand
-          ? i18n.t('console.command_found_recommended', {
+          ? i18n.t('command_found_recommended', {
               command,
               recommended: recommendCommand[0],
             })
-          : i18n.t('console.command_not_found', { command }),
+          : i18n.t('command_not_found', { command }),
       );
     }
   });

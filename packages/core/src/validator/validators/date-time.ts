@@ -63,11 +63,11 @@ export class DateTimeValidator<T = Date> extends Validator<T> {
   ): magistrate.Result<Date> {
     const date = this.toDate(value);
     if (date === false || date.toString() === 'Invalid Date') {
-      return magistrate.fail(i18n.t('core.validator.dateTime.must_be_date', { label }));
+      return magistrate.fail(i18n.t('validator.dateTime.must_be_date', { label }));
     }
 
     if (!this.compare(date)) {
-      return magistrate.fail(i18n.t('core.validator.dateTime.not_in_range', { label }));
+      return magistrate.fail(i18n.t('validator.dateTime.not_in_range', { label }));
     }
 
     return magistrate.ok(date);

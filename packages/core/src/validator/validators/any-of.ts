@@ -47,7 +47,7 @@ export class AnyOfValidator<T = never> extends Validator<T> {
 
     return matched
       ? magistrate.ok(value)
-      : magistrate.fail(i18n.t('core.validator.any_of.not_match_rule', { label }));
+      : magistrate.fail(i18n.t('validator.any_of.not_match_rule', { label }));
   }
 
   protected override copyConfig(prev: AnyOfValidator): this {

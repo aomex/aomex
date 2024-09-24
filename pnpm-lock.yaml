@@ -215,6 +215,9 @@ importers:
       '@aomex/internal-tools':
         specifier: workspace:^
         version: link:../internal-tools
+      '@i18nx/node':
+        specifier: ^0.2.0
+        version: 0.2.0
       '@types/node':
         specifier: ^20 || ^22
         version: 20.12.7
@@ -951,6 +954,14 @@ packages:
   '@hutson/parse-repository-url@3.0.2':
     resolution: {integrity: sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==}
     engines: {node: '>=6.9.0'}
+
+  '@i18nx/core@0.2.0':
+    resolution: {integrity: sha512-nd23Wzx1dizc6f8Jf0rIr+IdUh4EK6of+tPNkwv2B2YhvIeuhDfUGMyXEW4BvLFYNEHPFuSYtkEC6qoJeAgpXw==}
+    engines: {node: ^18 || ^20 || ^22}
+
+  '@i18nx/node@0.2.0':
+    resolution: {integrity: sha512-08CSt1NVC8FOmEWXQLrwBccY6PzXvLI2OOyO3ohdQkx6r1W4QlNTb9VfggfXTCsfQopDF0z8l39mNvuHKjkJOg==}
+    engines: {node: ^18 || ^20 || ^22}
 
   '@ioredis/commands@1.2.0':
     resolution: {integrity: sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==}
@@ -4731,6 +4742,10 @@ packages:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
 
+  topic@3.0.2:
+    resolution: {integrity: sha512-oEtBTr5ThelLVw3S4yqEyuTFeS0tgE5gDF7Si00eSJBN1Mve//OGX0sFrxDOed7wlR7ZMGKi44itxXjXlRiaGg==}
+    engines: {node: '>=12'}
+
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
 
@@ -5466,6 +5481,14 @@ snapshots:
   '@hapi/bourne@3.0.0': {}
 
   '@hutson/parse-repository-url@3.0.2': {}
+
+  '@i18nx/core@0.2.0':
+    dependencies:
+      topic: 3.0.2
+
+  '@i18nx/node@0.2.0':
+    dependencies:
+      '@i18nx/core': 0.2.0
 
   '@ioredis/commands@1.2.0': {}
 
@@ -10061,6 +10084,8 @@ snapshots:
   toggle-selection@1.0.6: {}
 
   toidentifier@1.0.1: {}
+
+  topic@3.0.2: {}
 
   tr46@0.0.3: {}
 

@@ -1,5 +1,5 @@
-import { i18n } from '@aomex/core';
 import { CacheAdapter } from './cache-adapter';
+import { i18n } from './i18n';
 
 export class CacheMemoryAdapter extends CacheAdapter {
   private data = new Map<string, { value: string | string[]; expires?: number }>();
@@ -80,7 +80,7 @@ export class CacheMemoryAdapter extends CacheAdapter {
     }
 
     if (Number.isNaN(value) || !Number.isInteger(value)) {
-      throw new Error(i18n.t('cache.not_integer'));
+      throw new Error(i18n.t('not_integer'));
     }
 
     this.setValueSync(key, String(--value));
@@ -138,7 +138,7 @@ export class CacheMemoryAdapter extends CacheAdapter {
     }
 
     if (!isValid) {
-      throw new Error(i18n.t('cache.wrong_type'));
+      throw new Error(i18n.t('wrong_type'));
     }
 
     return value as any;

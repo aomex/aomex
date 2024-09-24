@@ -1,6 +1,6 @@
-import { i18n } from '@aomex/core';
+import { I18n } from '@aomex/core';
 
-i18n.register('zh_CN', 'cron', {
+export const zh = I18n.define({
   eject: '导出定时任务列表',
   start: '启动定时任务',
   stop: '退出定时任务',

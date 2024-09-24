@@ -1,10 +1,11 @@
 import { describe, expect, test, vitest } from 'vitest';
 import { WebApp } from '../../src';
-import { i18n, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import supertest from 'supertest';
 import { Server } from 'http';
 import fs from 'node:fs';
 import { join } from 'path';
+import { i18n } from '../../src/i18n';
 
 describe('debug', () => {
   test('通过配置开启', () => {
@@ -151,11 +152,28 @@ describe('日志', () => {
   });
 });
 
-test('设置语言', () => {
-  new WebApp({ locale: 'zh_CN' });
-  expect(i18n.getLocale()).toBe('zh_CN');
-  new WebApp({ locale: 'en_US' });
-  expect(i18n.getLocale()).toBe('en_US');
+test('设置语言', async () => {
+  const app1 = new WebApp({
+    language: 'zh_CN',
+    mount: [
+      middleware.mixin(() => {
+        expect(i18n.language).toBe('zh_CN');
+      }),
+    ],
+  });
+  expect(i18n.language).toBe('zh_CN');
+  await supertest(app1.listen()).get('/');
+
+  const app2 = new WebApp({
+    language: 'en_US',
+    mount: [
+      middleware.mixin(() => {
+        expect(i18n.language).toBe('en_US');
+      }),
+    ],
+  });
+  expect(i18n.language).toBe('en_US');
+  await supertest(app2.listen()).get('/');
 });
 
 test('https', async () => {

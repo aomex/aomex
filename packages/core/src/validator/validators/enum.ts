@@ -16,10 +16,10 @@ export class EnumValidator<const T = never> extends Validator<T> {
     this.config.ranges = ranges;
     ranges.forEach((item) => {
       if (this.isEmpty(item)) {
-        throw new Error(i18n.t('core.validator.enum.can_not_be_empty', { item }));
+        throw new Error(i18n.t('validator.enum.can_not_be_empty', { item }));
       }
       if (typeof item !== 'string' && typeof item !== 'number') {
-        throw new Error(i18n.t('core.validator.enum.only_support_string_number'));
+        throw new Error(i18n.t('validator.enum.only_support_string_number'));
       }
     });
   }
@@ -61,7 +61,7 @@ export class EnumValidator<const T = never> extends Validator<T> {
       }
     }
 
-    return magistrate.fail(i18n.t('core.validator.enum.not_in_range', { label }));
+    return magistrate.fail(i18n.t('validator.enum.not_in_range', { label }));
   }
 
   protected override toDocument(): OpenAPI.SchemaObject {

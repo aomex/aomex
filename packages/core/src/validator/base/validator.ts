@@ -191,7 +191,7 @@ export abstract class Validator<T = unknown> {
           return magistrate.ok(
             this.config.transform ? await this.config.transform(value) : value,
           );
-        return magistrate.fail(i18n.t('core.validator.required', { label }));
+        return magistrate.fail(i18n.t('validator.required', { label }));
       }
     }
 

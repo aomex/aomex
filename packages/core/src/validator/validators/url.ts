@@ -53,14 +53,14 @@ export class UrlValidator<T = string> extends BaseStringValidator<T> {
 
     // http:/example.com 这种单斜杆的格式URL也能解析，因此需要使用正则先过滤
     if (!/^[a-z0-9]+:\/\/.+/.test(url) || !URL.canParse(url)) {
-      return magistrate.fail(i18n.t('core.validator.url.must_be_url', { label }));
+      return magistrate.fail(i18n.t('validator.url.must_be_url', { label }));
     }
 
     const parsedUrl = new URL(url);
     const scheme = parsedUrl.protocol.slice(0, -1);
     if (!allowedScheme.includes(scheme)) {
       return magistrate.fail(
-        i18n.t('core.validator.url.unsupported_scheme', { label, scheme }),
+        i18n.t('validator.url.unsupported_scheme', { label, scheme }),
       );
     }
 

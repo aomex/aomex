@@ -26,7 +26,7 @@ export class StreamValidator<T = stream.Stream> extends Validator<T> {
     label: string,
   ): magistrate.Result<stream.Stream> {
     if (!(value instanceof stream.Stream)) {
-      return magistrate.fail(i18n.t('core.validator.stream.must_be_stream', { label }));
+      return magistrate.fail(i18n.t('validator.stream.must_be_stream', { label }));
     }
 
     return magistrate.ok(value);

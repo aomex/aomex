@@ -67,7 +67,7 @@ export class BigIntValidator<T = bigint> extends Validator<T> {
       }
 
       if (num === undefined) {
-        return magistrate.fail(i18n.t('core.validator.number.must_be_bigint', { label }));
+        return magistrate.fail(i18n.t('validator.number.must_be_bigint', { label }));
       }
     } else {
       num = value;
@@ -77,7 +77,7 @@ export class BigIntValidator<T = bigint> extends Validator<T> {
       (minInclusive ? num < min : num <= min) ||
       (maxInclusive ? num > max : num >= max)
     ) {
-      return magistrate.fail(i18n.t('core.validator.number.not_in_range', { label }));
+      return magistrate.fail(i18n.t('validator.number.not_in_range', { label }));
     }
 
     return magistrate.ok(num);

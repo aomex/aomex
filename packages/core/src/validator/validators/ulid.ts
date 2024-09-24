@@ -36,7 +36,7 @@ export class UlidValidator<T = string> extends BaseStringValidator<T> {
     label: string,
   ): magistrate.Result<string> {
     if (!pattern.test(ulid)) {
-      return magistrate.fail(i18n.t('core.validator.string.must_be_ulid', { label }));
+      return magistrate.fail(i18n.t('validator.string.must_be_ulid', { label }));
     }
     return magistrate.ok(ulid);
   }

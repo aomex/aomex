@@ -1,9 +1,10 @@
-import { i18n, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import type { ConsoleMiddleware } from '@aomex/console';
 import {
   generateOpenapiWithSpinner,
   type GenerateOpenapiWithSpinnerOptions,
 } from './lib/generate-document-with-spinner';
+import { i18n } from './i18n';
 
 export interface OpenapiOptions extends GenerateOpenapiWithSpinnerOptions {
   /**
@@ -23,7 +24,7 @@ export const openapi = (options: OpenapiOptions): ConsoleMiddleware => {
     },
     help: {
       onDocument(doc) {
-        doc[commandName] = { summary: i18n.t('openapi.help_summary') };
+        doc[commandName] = { summary: i18n.t('help_summary') };
       },
     },
   });

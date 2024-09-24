@@ -1,4 +1,3 @@
-export * from './i18n';
 export * from './http';
 export * from './override';
 export * from './middleware';

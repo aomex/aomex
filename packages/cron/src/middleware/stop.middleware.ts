@@ -1,11 +1,12 @@
 import { terminal, type ConsoleMiddleware } from '@aomex/console';
-import { i18n, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
 import type { CronOptions, ServerWriteData } from '../lib/type';
 import net from 'node:net';
 import { CONNECT_REFUSED, DEFAULT_PORT } from '../lib/constant';
 import { bytes, sleep } from '@aomex/internal-tools';
 import formatDuration from 'format-duration';
 import pidusage from 'pidusage';
+import { i18n } from '../i18n';
 
 const commandName = 'cron:stop';
 
@@ -111,7 +112,7 @@ export const stop = (opts: CronOptions): ConsoleMiddleware => {
         client.on('error', (err) => {
           // @ts-expect-error
           if (err.code === CONNECT_REFUSED) {
-            terminal.printWarning(i18n.t('cron.not_started', { port: PORT }));
+            terminal.printWarning(i18n.t('not_started', { port: PORT }));
             resolve(undefined);
           } else {
             reject(err);
@@ -147,7 +148,7 @@ export const stop = (opts: CronOptions): ConsoleMiddleware => {
     },
     help: {
       onDocument(doc) {
-        doc[commandName] = { summary: i18n.t('cron.stop') };
+        doc[commandName] = { summary: i18n.t('stop') };
       },
     },
   });

@@ -1,6 +1,6 @@
-import { i18n } from '../i18n';
+import { I18n } from '@i18nx/node';
 
-i18n.register('zh_CN', 'core', {
+export const zh = I18n.define({
   validator: {
     required: '{{label}}：必填',
     validation_failed: '验证失败：',

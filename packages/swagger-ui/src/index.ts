@@ -1,4 +1,4 @@
-import { compose, i18n, middleware, OpenAPI } from '@aomex/core';
+import { compose, I18n, middleware, OpenAPI } from '@aomex/core';
 import { serveStatic } from '@aomex/serve-static';
 import type { WebContext, WebMiddleware } from '@aomex/web';
 import { readFile } from 'node:fs/promises';
@@ -55,6 +55,11 @@ export const swaggerUI = (opts: SwaggerUIOptions): WebMiddleware => {
   const publicDir = path.join(import.meta.dirname, '..', 'public');
   const htmlFile = path.join(publicDir, 'index.html');
 
+  const i18n = new I18n({
+    locales: { zh_CN: {}, en_US: {} },
+    defaultLanguage: 'zh_CN',
+  });
+
   const staticFn = compose([
     serveStatic({
       root: publicDir,
@@ -96,7 +101,7 @@ export const swaggerUI = (opts: SwaggerUIOptions): WebMiddleware => {
       html = html
         .replaceAll('#title#', docs.info.title)
         .replaceAll('#prefix#', uriPrefix)
-        .replaceAll('#lang#', i18n.getLocale());
+        .replaceAll('#lang#', i18n.language);
       resolve(undefined);
     });
     return promise;

@@ -1,6 +1,6 @@
-import { i18n } from '@aomex/core';
+import { I18n } from '@aomex/core';
 
-i18n.register('zh_CN', 'web', {
+export const zh = I18n.define({
   validator: {
     file: {
       must_be_file: '{{label}}：必须是文件类型',

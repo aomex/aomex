@@ -22,7 +22,7 @@ import typeIs from 'type-is';
 import type { OutgoingHttpHeaders } from 'node:http';
 import cookie, { type CookieSerializeOptions } from 'cookie';
 import { MIMEType } from 'node:util';
-import { i18n } from '@aomex/core';
+import { i18n } from '../i18n';
 
 export type Body = string | object | Stream | Buffer | null;
 export type BodyType = 'string' | 'json' | 'stream' | 'buffer' | 'null';
@@ -122,7 +122,7 @@ export class WebResponse extends ServerResponse {
    * @param filePath 路径
    * @param type 附件类型。默认值：`attachment`
    *
-   * @link https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Disposition
+   * @link https://developer.mozilla.org/zh_CN/docs/Web/HTTP/Headers/Content-Disposition
    *
    */
   download(filePath: string, type: 'attachment' | 'inline' = 'attachment'): void {
@@ -228,7 +228,7 @@ export class WebResponse extends ServerResponse {
 
     if (this.req.accept.types('text/html')) {
       this.contentType = 'text/html';
-      this.body = i18n.t('web.response.redirect', {
+      this.body = i18n.t('response.redirect', {
         url: `<a href="${href}">${url
           .replaceAll('&', '&amp;')
           .replaceAll('<', '&lt;')
@@ -238,7 +238,7 @@ export class WebResponse extends ServerResponse {
       });
     } else {
       this.contentType = 'text/plain';
-      this.body = i18n.t('web.response.redirect', { url });
+      this.body = i18n.t('response.redirect', { url });
     }
   }
 

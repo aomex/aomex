@@ -16,7 +16,7 @@ export const compose = (middlewareList: Middleware[]): ComposeFn => {
     let lastIndex = -1;
     const dispatch = async (i: number): Promise<void> => {
       if (i <= lastIndex) {
-        throw new Error(i18n.t('core.middleware.call_next_multiple'));
+        throw new Error(i18n.t('middleware.call_next_multiple'));
       }
       const finished = (lastIndex = i) === total;
       const fn = finished ? next : fns[lastIndex];

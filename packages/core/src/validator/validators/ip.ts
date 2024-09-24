@@ -59,7 +59,7 @@ export class IpValidator<T = string> extends BaseStringValidator<T> {
 
     if (!valid) {
       return magistrate.fail(
-        i18n.t('core.validator.string.must_be_ip', {
+        i18n.t('validator.string.must_be_ip', {
           label,
           versions: ipVersion.toString(),
         }),

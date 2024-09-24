@@ -2,12 +2,13 @@ import EventEmitter from 'node:events';
 import { EOL } from 'node:os';
 import { styleText } from 'node:util';
 import { hideBin } from 'yargs/helpers';
-import { I18n, Middleware, compose, i18n } from '@aomex/core';
+import { I18n, Middleware, compose, middleware } from '@aomex/core';
 import { ConsoleInput } from './input';
 import { ConsoleContext } from './context';
 import { helpLogger } from '../middleware/help-logger';
 import type { ConsoleMiddlewareToken } from '../override';
 import type { Union2Intersection } from '@aomex/internal-tools';
+import { i18n } from '../i18n';
 
 export namespace ConsoleApp {
   export interface Option<T extends ConsoleMiddlewareToken[] | []> {
@@ -26,7 +27,7 @@ export namespace ConsoleApp {
      * ```
      */
     mount?: T;
-    locale?: I18n.LocaleName;
+    language?: 'zh_CN' | 'en_US' | (string & {});
   }
 
   export type Infer<T> =
@@ -50,7 +51,7 @@ export class ConsoleApp<
 
   constructor(protected readonly options: ConsoleApp.Option<T> = {}) {
     super();
-    i18n.setLocale(options.locale || 'zh_CN');
+    options.language && i18n.setLanguage(options.language);
     this.middlewareList = options.mount || [];
   }
 
@@ -75,7 +76,15 @@ export class ConsoleApp<
     }
 
     try {
-      await compose([helpLogger(this.middlewareList), ...this.middlewareList])(ctx);
+      await compose([
+        middleware.mixin((_, next) => {
+          return this.options.language
+            ? I18n.provider(this.options.language, next)
+            : next();
+        }),
+        helpLogger(this.middlewareList),
+        ...this.middlewareList,
+      ])(ctx);
       return 0;
     } catch (e) {
       // @ts-ignore

@@ -1,6 +1,7 @@
-import { i18n } from '@aomex/core';
+import { I18n } from '@aomex/core';
+import { zh } from './zh-cn';
 
-i18n.register('en_US', 'web', {
+export const en = I18n.satisfies(zh).define({
   validator: {
     file: {
       must_be_file: '{{label}}: must be file',

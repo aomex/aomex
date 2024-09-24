@@ -6,10 +6,10 @@ import {
   magistrate,
   OpenAPI,
   Rule,
-  i18n,
 } from '@aomex/core';
 import { bytes } from '@aomex/internal-tools';
 import typeIs from 'type-is';
+import { i18n } from '../i18n';
 
 declare module '@aomex/core' {
   export interface Rule {
@@ -94,11 +94,11 @@ export class FileValidator<T = FileValidator.FormidableFile> extends Validator<T
     }
 
     if (!(file instanceof PersistentFile)) {
-      return magistrate.fail(i18n.t('web.validator.file.must_be_file', { label }));
+      return magistrate.fail(i18n.t('validator.file.must_be_file', { label }));
     }
 
     if (maxSize !== void 0 && file.size > maxSize) {
-      return magistrate.fail(i18n.t('web.validator.file.too_large', { label }));
+      return magistrate.fail(i18n.t('validator.file.too_large', { label }));
     }
 
     const hasMimeTypeLimitation = mimeTypes && mimeTypes.length;
@@ -107,9 +107,7 @@ export class FileValidator<T = FileValidator.FormidableFile> extends Validator<T
       hasMimeTypeLimitation &&
       (!file.mimetype || !typeIs.is(file.mimetype, ...mimeTypes))
     ) {
-      return magistrate.fail(
-        i18n.t('web.validator.file.unsupported_mimetype', { label }),
-      );
+      return magistrate.fail(i18n.t('validator.file.unsupported_mimetype', { label }));
     }
 
     return magistrate.ok(file);

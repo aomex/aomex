@@ -1,6 +1,7 @@
 import { afterAll, expect, test, vitest } from 'vitest';
 import { ConsoleApp } from '../../src';
-import { i18n, middleware } from '@aomex/core';
+import { middleware } from '@aomex/core';
+import { i18n } from '../../src/i18n';
 
 let consoleSpy = vitest.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -86,9 +87,26 @@ test('自定义报错回调', async () => {
   expect(msg).toMatchInlineSnapshot(`"指令 "foo" 不存在"`);
 });
 
-test('设置语言', () => {
-  new ConsoleApp({ locale: 'zh_CN' });
-  expect(i18n.getLocale()).toBe('zh_CN');
-  new ConsoleApp({ locale: 'en_US' });
-  expect(i18n.getLocale()).toBe('en_US');
+test('设置语言', async () => {
+  const app1 = new ConsoleApp({
+    language: 'zh_CN',
+    mount: [
+      middleware.mixin(() => {
+        expect(i18n.language).toBe('zh_CN');
+      }),
+    ],
+  });
+  expect(i18n.language).toBe('zh_CN');
+  await app1.run('foo:bar');
+
+  const app2 = new ConsoleApp({
+    language: 'en_US',
+    mount: [
+      middleware.mixin(() => {
+        expect(i18n.language).toBe('en_US');
+      }),
+    ],
+  });
+  expect(i18n.language).toBe('en_US');
+  await app2.run('foo:bar');
 });

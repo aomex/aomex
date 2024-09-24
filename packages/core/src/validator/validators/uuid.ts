@@ -86,7 +86,7 @@ export class UuidValidator<T = string> extends BaseStringValidator<T> {
 
     if (!valid) {
       return magistrate.fail(
-        i18n.t('core.validator.string.must_be_uuid', {
+        i18n.t('validator.string.must_be_uuid', {
           label,
           versions: uuidVersion.join(','),
         }),

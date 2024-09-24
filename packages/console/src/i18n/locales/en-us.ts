@@ -1,6 +1,7 @@
-import { i18n } from '@aomex/core';
+import { I18n } from '@aomex/core';
+import { zh } from './zh-cn';
 
-i18n.register('en_US', 'console', {
+export const en = I18n.satisfies(zh).define({
   command_not_found: 'command "{{command}}" not found',
   command_found_recommended:
     'command "{{command}}" not found, did you mean "aomex {{recommended}}"?',

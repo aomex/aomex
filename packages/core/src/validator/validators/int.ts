@@ -25,7 +25,7 @@ export class IntValidator<T = number> extends BaseNumberValidator<T> {
     label: string,
   ): magistrate.Result<number> {
     if (!Number.isInteger(num)) {
-      return magistrate.fail(i18n.t('core.validator.number.must_be_integer', { label }));
+      return magistrate.fail(i18n.t('validator.number.must_be_integer', { label }));
     }
 
     return magistrate.ok(num);

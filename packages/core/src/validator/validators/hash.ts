@@ -76,7 +76,7 @@ export class HashValidator<T = string> extends BaseStringValidator<T> {
 
     const length = HashValidator.algorithmLength[algorithm];
     if (!HashValidator.algorithmPattern[length]!.test(hash)) {
-      return magistrate.fail(i18n.t('core.validator.string.must_be_hash', { label }));
+      return magistrate.fail(i18n.t('validator.string.must_be_hash', { label }));
     }
 
     return magistrate.ok(hash);
