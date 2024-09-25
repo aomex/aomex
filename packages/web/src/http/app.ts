@@ -11,7 +11,6 @@ import type { WebMiddlewareToken } from '../override';
 import { styleText } from 'node:util';
 import type { Union2Intersection } from '@aomex/internal-tools';
 import { parseBody } from '../middleware/parse-body';
-import { i18n } from '../i18n';
 
 export namespace WebApp {
   export interface Option<T extends WebMiddlewareToken[] | []> {
@@ -62,7 +61,6 @@ export class WebApp<
   constructor(protected readonly options: WebApp.Option<T> = {}) {
     super();
     this.middlewareList = [];
-    options.language && i18n.setLanguage(options.language);
     this.middlewareList = options.mount || [];
   }
 

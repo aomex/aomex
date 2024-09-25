@@ -161,7 +161,6 @@ test('设置语言', async () => {
       }),
     ],
   });
-  expect(i18n.language).toBe('zh_CN');
   await supertest(app1.listen()).get('/');
 
   const app2 = new WebApp({
@@ -172,7 +171,6 @@ test('设置语言', async () => {
       }),
     ],
   });
-  expect(i18n.language).toBe('en_US');
   await supertest(app2.listen()).get('/');
 });
 
