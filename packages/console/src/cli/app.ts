@@ -8,7 +8,6 @@ import { ConsoleContext } from './context';
 import { helpLogger } from '../middleware/help-logger';
 import type { ConsoleMiddlewareToken } from '../override';
 import type { Union2Intersection } from '@aomex/internal-tools';
-import { i18n } from '../i18n';
 
 export namespace ConsoleApp {
   export interface Option<T extends ConsoleMiddlewareToken[] | []> {
@@ -51,7 +50,6 @@ export class ConsoleApp<
 
   constructor(protected readonly options: ConsoleApp.Option<T> = {}) {
     super();
-    options.language && i18n.setLanguage(options.language);
     this.middlewareList = options.mount || [];
   }
 

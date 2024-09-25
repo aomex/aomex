@@ -96,7 +96,6 @@ test('设置语言', async () => {
       }),
     ],
   });
-  expect(i18n.language).toBe('zh_CN');
   await app1.run('foo:bar');
 
   const app2 = new ConsoleApp({
@@ -107,6 +106,5 @@ test('设置语言', async () => {
       }),
     ],
   });
-  expect(i18n.language).toBe('en_US');
   await app2.run('foo:bar');
 });
