@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.4](https://github.com/aomex/aomex/compare/v3.2.3...v3.2.4) (2024-09-25)
+
+
+### Bug Fixes
+
+* **console:** 设置单个i18n语言没有意义 ([1984782](https://github.com/aomex/aomex/commit/198478221c5822cd9c6b4179238e03a314a0ad2e))
+
+
+
+
+
 ## [3.2.3](https://github.com/aomex/aomex/compare/v3.2.2...v3.2.3) (2024-09-25)
 
 **Note:** Version bump only for package @aomex/console

@@ -1,6 +1,6 @@
 {
   "name": "@aomex/cron",
-  "version": "3.2.3",
+  "version": "3.2.4",
   "description": "定时任务",
   "scripts": {
     "prepublishOnly": "tsup"

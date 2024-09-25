@@ -1,6 +1,6 @@
 {
   "name": "@aomex/core",
-  "version": "3.2.3",
+  "version": "3.2.4",
   "description": "aomex核心库",
   "scripts": {
     "prepublishOnly": "tsup && node scripts/post-build.mjs"
