@@ -17,7 +17,7 @@ export const mockServer = async (
     const server = createServer(
       {
         IncomingMessage: WebRequest,
-        // @ts-expect-error
+        // @ts-ignore
         ServerResponse: WebResponse,
       },
       (req: WebRequest, res: WebResponse) => {
