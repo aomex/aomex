@@ -216,8 +216,8 @@ importers:
         specifier: workspace:^
         version: link:../internal-tools
       '@i18nx/node':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.2.1
+        version: 0.2.1
       '@types/node':
         specifier: ^20 || ^22
         version: 20.12.7
@@ -955,12 +955,12 @@ packages:
     resolution: {integrity: sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==}
     engines: {node: '>=6.9.0'}
 
-  '@i18nx/core@0.2.0':
-    resolution: {integrity: sha512-nd23Wzx1dizc6f8Jf0rIr+IdUh4EK6of+tPNkwv2B2YhvIeuhDfUGMyXEW4BvLFYNEHPFuSYtkEC6qoJeAgpXw==}
+  '@i18nx/core@0.2.1':
+    resolution: {integrity: sha512-wgLp89gwPA1eZwTOtTtqqTTsph8vLGS8HxlkT+tfYxZUcchGE+dTc0PJWvIEiOW0yXXcLb3ShdgyvfzQGFfS3g==}
     engines: {node: ^18 || ^20 || ^22}
 
-  '@i18nx/node@0.2.0':
-    resolution: {integrity: sha512-08CSt1NVC8FOmEWXQLrwBccY6PzXvLI2OOyO3ohdQkx6r1W4QlNTb9VfggfXTCsfQopDF0z8l39mNvuHKjkJOg==}
+  '@i18nx/node@0.2.1':
+    resolution: {integrity: sha512-wHL5TDZ/gOcjzs++ljT2HXaaTu6qQ8vNXBmOZx9QcgyoPYN3DFMqu7hYgyIoR92I2NBQD6N2FsGsJ+PBSnPcSQ==}
     engines: {node: ^18 || ^20 || ^22}
 
   '@ioredis/commands@1.2.0':
@@ -5482,13 +5482,13 @@ snapshots:
 
   '@hutson/parse-repository-url@3.0.2': {}
 
-  '@i18nx/core@0.2.0':
+  '@i18nx/core@0.2.1':
     dependencies:
       topic: 3.0.2
 
-  '@i18nx/node@0.2.0':
+  '@i18nx/node@0.2.1':
     dependencies:
-      '@i18nx/core': 0.2.0
+      '@i18nx/core': 0.2.1
 
   '@ioredis/commands@1.2.0': {}
 

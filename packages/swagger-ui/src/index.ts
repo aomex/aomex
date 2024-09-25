@@ -56,7 +56,7 @@ export const swaggerUI = (opts: SwaggerUIOptions): WebMiddleware => {
   const htmlFile = path.join(publicDir, 'index.html');
 
   const i18n = new I18n({
-    locales: { zh_CN: {}, en_US: {} },
+    resources: { zh_CN: {}, en_US: {} },
     defaultLanguage: 'zh_CN',
   });
 
