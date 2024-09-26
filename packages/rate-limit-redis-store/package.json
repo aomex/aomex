@@ -1,6 +1,6 @@
 {
   "name": "@aomex/rate-limit-redis-store",
-  "version": "3.2.4",
+  "version": "3.3.0",
   "description": "请求限速redis存储引擎",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
