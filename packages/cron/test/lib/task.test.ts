@@ -5,7 +5,7 @@ import { join } from 'path';
 import { tmpdir } from 'os';
 import { writeFileSync } from 'fs';
 
-test.only('并发达上限后，同一时间点任务不能再触发', async () => {
+test('并发达上限后，同一时间点任务不能再触发', async () => {
   const cron = new Cron({ commanders: '', command: '', concurrent: 2 });
   const task = new Task(cron, 1);
 
@@ -46,13 +46,13 @@ describe('重叠', () => {
   });
 
   test('[overlap=false] 上一次任务已经执行完，当前任务立即执行', async () => {
-    const cron = new Cron({ commanders: '', command: '', concurrent: 3 });
+    const cron = new Cron({ commanders: '', command: '', concurrent: 2 });
     const task1_0 = new Task(cron, 1);
     const task1_1 = new Task(cron, 1);
 
     await expect(task1_0.win()).resolves.toBeTruthy();
-    await expect(task1_0.win()).resolves.toBeTruthy();
     await expect(task1_1.win()).resolves.toBeTruthy();
+    await expect(task1_0.win()).resolves.toBeFalsy();
     await expect(task1_1.win()).resolves.toBeFalsy();
 
     const task2 = new Task(cron, 2);
