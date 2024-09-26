@@ -1,6 +1,6 @@
 import { terminal, type ConsoleMiddleware } from '@aomex/console';
 import { middleware } from '@aomex/core';
-import type { CronOptions, ServerWriteData } from '../lib/type';
+import type { CronsOptions, ServerWriteData } from '../lib/type';
 import net from 'node:net';
 import pidusage from 'pidusage';
 import { bytes } from '@aomex/internal-tools';
@@ -10,7 +10,7 @@ import { i18n } from '../i18n';
 
 const commandName = 'cron:stats';
 
-export const stats = (opts: CronOptions): ConsoleMiddleware => {
+export const stats = (opts: CronsOptions): ConsoleMiddleware => {
   return middleware.console({
     fn: async (ctx, next) => {
       if (ctx.input.command !== commandName) return next();

@@ -4,10 +4,11 @@ import { beforeEach, expect, test, vitest } from 'vitest';
 import { start } from '../../src/middleware/start.middleware';
 import { dirname, join } from 'path';
 import { sleep } from '@aomex/internal-tools';
-import { Job } from '../../src/lib/job';
+import { Task } from '../../src/lib/task';
 import { createConnection } from 'net';
 import { stop } from '../../src/middleware/stop.middleware';
 import { getPort } from '../mock/get-port';
+import { Cron } from '../../src/lib/cron';
 
 const testDir = dirname(import.meta.dirname);
 
@@ -27,7 +28,7 @@ test('无任务时自动结束', async () => {
 });
 
 test('执行任务', async () => {
-  const spy = vitest.spyOn(Job.prototype, 'start').mockImplementation(async () => {
+  const spy = vitest.spyOn(Cron.prototype, 'start').mockImplementation(async () => {
     await sleep(1000);
   });
   const app = new ConsoleApp({
@@ -52,8 +53,8 @@ test('等待长任务完成后才能中断', { timeout: 9_000 }, async () => {
       }),
     ],
   });
-  const spy = vitest.spyOn(Job.prototype, 'start').mockImplementation(async function (
-    this: Job,
+  const spy = vitest.spyOn(Cron.prototype, 'start').mockImplementation(async function (
+    this: Cron,
   ) {
     this.runningLevel = 5;
     await sleep(5000);
@@ -95,10 +96,10 @@ test('使用监听获取正在执行的任务', { timeout: 9_000 }, async () => 
   });
 
   const startSpy = vitest
-    .spyOn(Job.prototype, 'start')
+    .spyOn(Cron.prototype, 'start')
     .mockImplementation(() => sleep(3000));
   const getPIDSpy = vitest
-    .spyOn(Job.prototype, 'getPIDs')
+    .spyOn(Cron.prototype, 'getPIDs')
     .mockImplementation(() => ['1123']);
   const promise = app.run('cron:start');
   await sleep(500);
@@ -137,7 +138,7 @@ test('使用cron:stop结束任务', { timeout: 9_000 }, async () => {
     ],
   });
   const spy = vitest
-    .spyOn(Job.prototype, 'runChildProcess')
+    .spyOn(Task.prototype, 'runChildProcess')
     .mockImplementation(async () => {
       await sleep(5000);
     });

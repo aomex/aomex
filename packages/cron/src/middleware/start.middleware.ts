@@ -1,33 +1,30 @@
 import { middleware } from '@aomex/core';
-import { collectSchedules } from '../lib/collect-schedule';
-import { Job } from '../lib/job';
-import type { CronOptions, ServerWriteData } from '../lib/type';
+import { collectCrontab as collectCrontab } from '../lib/collect-crontab';
+import type { CronsOptions, ServerWriteData } from '../lib/type';
 import net, { Socket } from 'node:net';
 import { DEFAULT_PORT } from '../lib/constant';
 import { i18n } from '../i18n';
 
 const commandName = 'cron:start';
 
-export const start = (opts: CronOptions) => {
+export const start = (opts: CronsOptions) => {
   return middleware.console({
     fn: async (ctx, next) => {
       if (ctx.input.command !== commandName) return next();
 
       ctx.commandMatched = true;
-      const schedules = await collectSchedules(opts);
+      const crontab = await collectCrontab(opts);
 
-      if (!schedules.length) return;
+      if (!crontab.length) return;
 
-      const jobs = schedules.map((schedule) => new Job(schedule));
-
-      const stopJobs = async (callback: (remain: number) => void) => {
-        jobs.forEach((job) => job.stop());
-        let remain = jobs.length;
+      const stopTasks = async (callback: (remain: number) => void) => {
+        crontab.forEach((cron) => cron.stop());
+        let remain = crontab.length;
         await Promise.all(
-          jobs.map((job) => {
+          crontab.map((cron) => {
             return new Promise((resolve) => {
               const timer = setInterval(() => {
-                if (!job.runningLevel) {
+                if (!cron.runningLevel) {
                   clearInterval(timer);
                   resolve(void 0);
                   callback(--remain);
@@ -39,13 +36,13 @@ export const start = (opts: CronOptions) => {
       };
 
       const collectRunners = () => {
-        return jobs.reduce<{ pid: string; command: string; schedule: string }[]>(
-          (carry, job) =>
+        return crontab.reduce<{ pid: string; command: string; schedule: string }[]>(
+          (carry, cron) =>
             carry.concat(
-              job.getPIDs().map((pid) => ({
+              cron.getPIDs().map((pid) => ({
                 pid,
-                command: job.schedule.argv.join(' '),
-                schedule: job.schedule.time,
+                command: cron.argv.join(' '),
+                schedule: cron.time,
               })),
             ),
           [],
@@ -56,10 +53,10 @@ export const start = (opts: CronOptions) => {
         socket.write(
           JSON.stringify({ runners: collectRunners() } satisfies ServerWriteData) + '\n',
         );
-        await stopJobs(() => {
+        await stopTasks(() => {
           socket.write(
             JSON.stringify({
-              runningPIDs: jobs.flatMap((job) => job.getPIDs()),
+              runningPIDs: crontab.flatMap((cron) => cron.getPIDs()),
             } satisfies ServerWriteData) + '\n',
           );
         });
@@ -87,14 +84,14 @@ export const start = (opts: CronOptions) => {
       server.listen(opts.port || DEFAULT_PORT);
 
       // CTRL + C
-      // 子进程也会被立即杀死，但是job.start仍然在生产任务
+      // 子进程也会被立即杀死，但是task.start仍然在生产任务
       process.once('SIGINT', async () => {
-        stopJobs(() => {});
+        stopTasks(() => {});
       });
 
-      await Promise.all(jobs.map((job) => job.start()));
+      await Promise.all(crontab.map((cron) => cron.start()));
       // 确保执行中的任务已经完成
-      await stopJobs((remain) => {
+      await stopTasks((remain) => {
         if (!remain) server.close();
       });
     },

@@ -1,26 +1,17 @@
-import { compose, middleware } from '@aomex/core';
-import type { ConsoleMiddleware } from '@aomex/console';
-import { start } from './start.middleware';
-import { eject } from './eject.middleware';
+import { ConsoleMiddleware } from '@aomex/console';
 import type { CronOptions } from '../lib/type';
-import { stop } from './stop.middleware';
-import { stats } from './stats.middleware';
 
-export const cron = (options: string | CronOptions): ConsoleMiddleware => {
-  const opts: CronOptions =
-    typeof options === 'string' ? { commanders: options } : options;
-  const middlewareList = [start(opts), eject(opts), stop(opts), stats(opts)];
-  const fn = compose(middlewareList);
+export class CronMiddleware extends ConsoleMiddleware<object> {
+  constructor(protected readonly options: CronOptions) {
+    super(async (_, next) => next());
+  }
+}
 
-  return middleware.console({
-    fn,
-    help: {
-      async onDocument(_, { children }) {
-        await children(middlewareList);
-      },
-      async postDocument(_, { children }) {
-        await children(middlewareList);
-      },
-    },
-  });
+/**
+ * 收集定时任务
+ *
+ * 如果传递字符串，则为cron时间表达式（支持秒）。如：`1-10,20 * * * *`
+ */
+export const cron = (options: CronOptions | string): CronMiddleware => {
+  return new CronMiddleware(typeof options === 'string' ? { time: options } : options);
 };

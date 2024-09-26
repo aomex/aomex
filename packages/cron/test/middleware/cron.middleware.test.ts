@@ -1,38 +1,33 @@
 import { expect, test } from 'vitest';
-import { cron } from '../../src';
-import {
-  ConsoleApp,
-  ConsoleMiddleware,
-  collectConsoleDocument,
-  type ConsoleDocument,
-} from '@aomex/console';
+import { CronMiddleware, cron } from '../../src';
 
-test('是中间件组', () => {
-  expect(cron('')).toBeInstanceOf(ConsoleMiddleware);
+test('中间件', () => {
+  expect(cron('')).toBeInstanceOf(CronMiddleware);
 });
 
-test('文档', async () => {
-  const docs: ConsoleDocument.Document = {};
-
-  await collectConsoleDocument({
-    document: docs,
-    middlewareList: [cron('')],
-    app: new ConsoleApp(),
-  });
-  expect(docs).toMatchInlineSnapshot(`
+test('传递字符串为定时表达式', () => {
+  const md = cron('* * * * *');
+  expect(md['options']).toMatchInlineSnapshot(`
     {
-      "cron:eject": {
-        "summary": "导出定时任务列表",
-      },
-      "cron:start": {
-        "summary": "启动定时任务",
-      },
-      "cron:stats": {
-        "summary": "查看定时任务执行状态",
-      },
-      "cron:stop": {
-        "summary": "退出定时任务",
-      },
+      "time": "* * * * *",
+    }
+  `);
+});
+
+test('传递对象', () => {
+  const md = cron({
+    minute: 2,
+    hour: '*',
+    args: ['-t', '10'],
+  });
+  expect(md['options']).toMatchInlineSnapshot(`
+    {
+      "args": [
+        "-t",
+        "10",
+      ],
+      "hour": "*",
+      "minute": 2,
     }
   `);
 });

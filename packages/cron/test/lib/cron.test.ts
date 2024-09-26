@@ -1,9 +1,10 @@
-import { expect, test } from 'vitest';
-import { ScheduleParser } from '../../src/lib/schedule-parser';
+import { describe, expect, test, vitest } from 'vitest';
+import { Cron } from '../../src/lib/cron';
+import { sleep } from '@aomex/internal-tools';
 
 test('时间', () => {
   expect(
-    new ScheduleParser({
+    new Cron({
       time: '0 *   1-4 *   2',
       command: '',
       commanders: '',
@@ -11,7 +12,7 @@ test('时间', () => {
   ).toMatchInlineSnapshot(`"0 * 1-4 * 2"`);
 
   expect(
-    new ScheduleParser({
+    new Cron({
       time: '*/2  0 *   1-4 *   2',
       command: '',
       commanders: '',
@@ -19,7 +20,7 @@ test('时间', () => {
   ).toMatchInlineSnapshot(`"*/2 0 * 1-4 * 2"`);
 
   expect(
-    new ScheduleParser({
+    new Cron({
       second: '*/10',
       minute: 5,
       hour: 3,
@@ -32,7 +33,7 @@ test('时间', () => {
   ).toMatchInlineSnapshot(`"*/10 5 3 */2 10 2-5"`);
 
   expect(
-    new ScheduleParser({
+    new Cron({
       minute: 5,
       command: '',
       commanders: '',
@@ -40,7 +41,7 @@ test('时间', () => {
   ).toMatchInlineSnapshot(`"5 * * * *"`);
 
   expect(
-    new ScheduleParser({
+    new Cron({
       time: '*/2',
       command: '',
       commanders: '',
@@ -49,7 +50,7 @@ test('时间', () => {
 
   expect(
     () =>
-      new ScheduleParser({
+      new Cron({
         time: '* * * * * * *',
         command: '',
         commanders: '',
@@ -58,47 +59,42 @@ test('时间', () => {
 });
 
 test('concurrent默认是1', async () => {
-  expect(new ScheduleParser({ time: '', command: '', commanders: '' }).concurrent).toBe(
-    1,
-  );
+  expect(new Cron({ time: '', command: '', commanders: '' }).concurrent).toBe(1);
   expect(
-    new ScheduleParser({ time: '', command: '', commanders: '', concurrent: -2 })
-      .concurrent,
+    new Cron({ time: '', command: '', commanders: '', concurrent: -2 }).concurrent,
   ).toBe(1);
   expect(
-    new ScheduleParser({ time: '', command: '', commanders: '', concurrent: 0 })
-      .concurrent,
+    new Cron({ time: '', command: '', commanders: '', concurrent: 0 }).concurrent,
   ).toBe(1);
   expect(
-    new ScheduleParser({ time: '', command: '', commanders: '', concurrent: 2 })
-      .concurrent,
+    new Cron({ time: '', command: '', commanders: '', concurrent: 2 }).concurrent,
   ).toBe(2);
 });
 
-test('转换为列表', async () => {
+test('转换为字符串', async () => {
   expect(
-    new ScheduleParser({
+    new Cron({
       time: '* * * * * *',
       command: 'schedule:command',
       commanders: '/path/to',
-    }).toCrontab(),
+    }).toString(),
   ).toMatchInlineSnapshot(`"* * * * * * aomex schedule:command"`);
 
   expect(
-    new ScheduleParser({
+    new Cron({
       time: '* * */2 * *',
       command: 'schedule:command',
       commanders: '/path/to',
       args: ['--hello', 'world', '-x', 'foo bar'],
       concurrent: 5,
-    }).toCrontab(),
+    }).toString(),
   ).toMatchInlineSnapshot(
     `"* * */2 * * aomex schedule:command --hello world -x "foo bar""`,
   );
 });
 
 test('转换为对象', async () => {
-  const parser = new ScheduleParser({
+  const parser = new Cron({
     time: '* * */2 * *',
     command: 'schedule:command',
     commanders: '/path/to',
@@ -116,7 +112,26 @@ test('转换为对象', async () => {
       ],
       "command": "schedule:command",
       "concurrent": 5,
+      "overlap": false,
       "time": "* * */2 * *",
     }
   `);
+});
+
+describe('执行', () => {
+  test('start后可以通过stop退出', async () => {
+    const cron = new Cron({ commanders: '', command: '', time: '* * * * *' });
+    const spy = vitest.fn();
+    const promise = cron.start().finally(spy);
+    await sleep(1000);
+    expect(spy).toBeCalledTimes(0);
+    cron.stop();
+    await promise;
+  });
+
+  test('没有下一个任务时自动结束', async () => {
+    const cron = new Cron({ commanders: '', command: '', time: '* * * * *' });
+    vitest.spyOn(cron.cronExpression, 'hasNext').mockImplementation(() => false);
+    await cron.start();
+  });
 });

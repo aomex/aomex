@@ -1,11 +1,11 @@
 import { Commander } from '@aomex/console';
-import { schedule } from '../../../src';
+import { cron } from '../../../src';
 
 export const commander = new Commander();
 
 commander.create('schedule:m', {
   mount: [
-    schedule({
+    cron({
       second: '*/2',
     }),
   ],
