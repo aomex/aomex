@@ -20,6 +20,8 @@ export class WebRequest extends IncomingMessage {
 
   declare url: string;
   declare method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS' | 'HEAD';
+  declare headers: IncomingMessage['headers'];
+  declare rawHeaders: IncomingMessage['rawHeaders'];
 
   params: Record<string, unknown> = {};
 
