@@ -107,12 +107,14 @@ import { expectType } from 'ts-expect';
 
 // dateTime
 {
+  rule.dateTime('yy-mm-dd');
+  rule.dateTime('abc', 'yyy-mm-dd');
   expectType<DateTimeValidator<Date>>(rule.dateTime());
   // @ts-expect-error
   expectType<DateTimeValidator<object>>(rule.dateTime());
 }
 
-// dateTime
+// email
 {
   expectType<EmailValidator<string>>(rule.email());
 }

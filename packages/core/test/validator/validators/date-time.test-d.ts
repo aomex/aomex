@@ -8,6 +8,12 @@ import {
 type DefaultType = Date;
 const validator = new TargetValidator();
 
+// 构造函数
+{
+  new TargetValidator(['yyyy-MM-dd']);
+  new TargetValidator(['yyyy-MM-dd', 'MM-dd', 'dd']);
+}
+
 // 可选
 {
   const v = validator.optional();

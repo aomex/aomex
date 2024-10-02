@@ -1,6 +1,7 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
 import { magistrate, type TransformedValidator, Validator } from '../base';
+import { DateTime } from 'luxon';
 
 export declare namespace DateTimeValidator {
   export interface Options<T = Date> extends Validator.Options<T> {
@@ -9,13 +10,20 @@ export declare namespace DateTimeValidator {
     max?: () => Date;
     maxInclusive?: boolean;
     parseFromTimestamp?: boolean;
+    formats?: string[];
   }
 }
 
-const unixTimeWithMS = /^[0-9]{10}\.[0-9]{3}$/;
+const regTimestamp = /^[0-9.]+$/;
+const regUnixTimeWithMS = /^[0-9]{10}\.[0-9]{3}$/;
 
 export class DateTimeValidator<T = Date> extends Validator<T> {
   protected declare config: DateTimeValidator.Options<T>;
+
+  constructor(formats?: [string, ...string[]]) {
+    super();
+    this.config.formats = formats;
+  }
 
   public declare docs: (
     docs: Validator.PartialOpenAPISchema,
@@ -45,7 +53,9 @@ export class DateTimeValidator<T = Date> extends Validator<T> {
   }
 
   /**
-   * 尝试把时间戳数字解析成时间对象。支持如下格式：
+   * 尝试把时间戳数字解析成时间对象。默认已开启
+   *
+   * 支持如下格式：
    * - 13位：1711257956199
    * - 14位：1711257956.199
    * - 10位：1711257956
@@ -74,19 +84,36 @@ export class DateTimeValidator<T = Date> extends Validator<T> {
   }
 
   protected toDate(value: any): false | Date {
-    const { parseFromTimestamp } = this.config;
+    const { parseFromTimestamp = true, formats } = this.config;
 
     if (value instanceof Date) return value;
-    if (typeof value === 'string') return new Date(value);
-    if (parseFromTimestamp && typeof value === 'number') {
+
+    if (
+      parseFromTimestamp &&
+      (typeof value === 'number' ||
+        (typeof value === 'string' && regTimestamp.test(value)))
+    ) {
       const timestamp = value.toString();
       // unix时间戳
-      if (timestamp.length === 10) return new Date(Number(value + '000'));
+      if (timestamp.length === 10)
+        return DateTime.fromSeconds(Number(timestamp)).toJSDate();
       // 带毫秒的时间戳
-      if (timestamp.length === 13) return new Date(value);
+      if (timestamp.length === 13)
+        return DateTime.fromMillis(Number(timestamp)).toJSDate();
       // 带毫秒的unix时间戳
-      if (timestamp.length === 14 && unixTimeWithMS.test(timestamp)) {
-        return new Date(Number(timestamp.replace('.', '')));
+      if (timestamp.length === 14 && regUnixTimeWithMS.test(timestamp)) {
+        return DateTime.fromSeconds(Number(timestamp)).toJSDate();
+      }
+    }
+
+    if (typeof value === 'string') {
+      if (formats && formats.length) {
+        for (const format of formats) {
+          const date = DateTime.fromFormat(value, format, { setZone: true });
+          if (date.isValid) return date.toJSDate();
+        }
+      } else {
+        return DateTime.fromISO(value).toJSDate();
       }
     }
 

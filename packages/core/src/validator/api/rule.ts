@@ -111,8 +111,15 @@ export class Rule {
     return new BufferValidator<T>();
   }
 
-  dateTime() {
-    return new DateTimeValidator();
+  dateTime(): DateTimeValidator<Date>;
+  /**
+   * @param format 设置解析字符串的格式，支持同时指定不同的格式并从左到右依次尝试。如果是标准的ISO时间格式或者时间戳则无需指定。
+   *
+   * @link https://moment.github.io/luxon/#/formatting?id=table-of-tokens
+   */
+  dateTime(format: string, ...formats: string[]): DateTimeValidator<Date>;
+  dateTime(format?: string, ...formats: string[]): DateTimeValidator<Date> {
+    return new DateTimeValidator(format ? [format, ...formats] : undefined);
   }
 
   email() {

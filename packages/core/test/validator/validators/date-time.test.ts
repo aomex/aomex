@@ -37,9 +37,69 @@ test('解析TZ字符串', async () => {
   expect(result).toStrictEqual(magistrate.ok(now));
 });
 
+test('字符串带时区', async () => {
+  const validator = new DateTimeValidator();
+  const now = new Date('2022-02-02T00:00:00+05:00');
+  const result = await validator['validate']('2022-02-02T00:00:00+05:00');
+  expect(result).toStrictEqual(magistrate.ok(now));
+});
+
+test('字符串带时区和毫秒', async () => {
+  const validator = new DateTimeValidator();
+  const now = new Date('2022-02-02T00:00:00.020+05:00');
+  const result = await validator['validate']('2022-02-02T00:00:00.020+05:00');
+  expect(result).toStrictEqual(magistrate.ok(now));
+
+  // @ts-expect-error
+  expect((result.ok as Date).toISOString()).toBe('2022-02-01T19:00:00.020Z');
+});
+
+test('解析格式', async () => {
+  const validator = new DateTimeValidator(['yyyy---MM----dd', 'yyyy---MM-ddZZ']);
+  await expect(validator['validate']('2024---10-01')).resolves.toMatchInlineSnapshot(`
+    {
+      "errors": [
+        "：必须是时间类型",
+      ],
+    }
+  `);
+  await expect(validator['validate']('2024---10----01')).resolves.toMatchInlineSnapshot(`
+    {
+      "ok": 2024-09-30T16:00:00.000Z,
+    }
+  `);
+  await expect(validator['validate']('2024---10-01+02:00')).resolves
+    .toMatchInlineSnapshot(`
+    {
+      "ok": 2024-09-30T22:00:00.000Z,
+    }
+  `);
+});
+
 describe('时间戳', () => {
-  test('默认不解析时间戳', async () => {
+  test('默认解析时间戳', async () => {
     const validator = new DateTimeValidator();
+    const now = new Date(1711257956199);
+    const result = await validator['validate'](1711257956199);
+    expect(result).toStrictEqual(magistrate.ok(now));
+  });
+
+  test('从unix时间戳恢复', async () => {
+    const validator = new DateTimeValidator();
+    const now = new Date(1711257956000);
+    const result = await validator['validate'](1711257956);
+    expect(result).toStrictEqual(magistrate.ok(now));
+  });
+
+  test('从带毫秒的unix时间戳恢复', async () => {
+    const validator = new DateTimeValidator();
+    const now = new Date(1711257956123);
+    const result = await validator['validate'](1711257956.123);
+    expect(result).toStrictEqual(magistrate.ok(now));
+  });
+
+  test('关闭解析时间戳', async () => {
+    const validator = new DateTimeValidator().parseFromTimestamp(false);
     const result = await validator['validate'](1711257956199);
     expect(result).toMatchInlineSnapshot(`
       {
@@ -48,27 +108,6 @@ describe('时间戳', () => {
         ],
       }
     `);
-  });
-
-  test('开启从时间戳恢复', async () => {
-    const validator = new DateTimeValidator().parseFromTimestamp(true);
-    const now = new Date(1711257956199);
-    const result = await validator['validate'](1711257956199);
-    expect(result).toStrictEqual(magistrate.ok(now));
-  });
-
-  test('从unix时间戳恢复', async () => {
-    const validator = new DateTimeValidator().parseFromTimestamp(true);
-    const now = new Date(1711257956000);
-    const result = await validator['validate'](1711257956);
-    expect(result).toStrictEqual(magistrate.ok(now));
-  });
-
-  test('从带毫秒的unix时间戳恢复', async () => {
-    const validator = new DateTimeValidator().parseFromTimestamp(true);
-    const now = new Date(1711257956123);
-    const result = await validator['validate'](1711257956.123);
-    expect(result).toStrictEqual(magistrate.ok(now));
   });
 });
 
