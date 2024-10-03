@@ -4,17 +4,6 @@ import { Caching } from '../src';
 
 const caching = new Caching(new MockStore());
 
-test('key长度', () => {
-  expect(caching['buildKey']('foo')).toBe('foo');
-  expect(caching['buildKey']('foo'.repeat(10) + 'f')).toBe(
-    'foofoofoofoofoofoofoofoofoofoof',
-  );
-  expect(caching['buildKey']('foo'.repeat(10) + 'fo')).toBe(
-    'a11a78b82ab930387e553f725c37c488',
-  );
-  expect(caching['buildKey']('foo'.repeat(20))).toBe('4c73f7f210f32dbe0b4079f1d280ac37');
-});
-
 test('设置值', async () => {
   const spy = vitest
     .spyOn(MockStore.prototype, 'setValue')

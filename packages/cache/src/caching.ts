@@ -1,4 +1,3 @@
-import { createHash } from 'node:crypto';
 import { CacheAdapter } from './cache-adapter';
 
 export namespace Caching {
@@ -13,7 +12,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    */
   async exists(key: string): Promise<boolean> {
     await this.adapter.connect();
-    return this.adapter.existsKey(this.buildKey(key));
+    return this.adapter.existsKey(key);
   }
 
   /**
@@ -28,8 +27,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   async get<T extends Caching.Types>(key: string): Promise<T | null>;
   async get(key: string, defaultValue?: Caching.Types): Promise<any> {
     await this.adapter.connect();
-    const hashKey = this.buildKey(key);
-    const result = await this.adapter.getValue(hashKey);
+    const result = await this.adapter.getValue(key);
     return this.parseValue(result, defaultValue);
   }
 
@@ -43,8 +41,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    */
   async set(key: string, value: Caching.Types, durationMs?: number): Promise<boolean> {
     await this.adapter.connect();
-    const hashKey = this.buildKey(key);
-    return this.adapter.setValue(hashKey, JSON.stringify(value), durationMs);
+    return this.adapter.setValue(key, JSON.stringify(value), durationMs);
   }
 
   /**
@@ -57,8 +54,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    */
   async setNX(key: string, value: Caching.Types, durationMs?: number): Promise<boolean> {
     await this.adapter.connect();
-    const hashKey = this.buildKey(key);
-    return this.adapter.setNotExistValue(hashKey, JSON.stringify(value), durationMs);
+    return this.adapter.setNotExistValue(key, JSON.stringify(value), durationMs);
   }
 
   /**
@@ -72,9 +68,8 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   async leftPush(key: string, ...values: Caching.Types[]): Promise<boolean> {
     if (!values.length) return false;
     await this.adapter.connect();
-    const hashKey = this.buildKey(key);
     return this.adapter.leftPushValue(
-      hashKey,
+      key,
       ...values.map((value) => JSON.stringify(value)),
     );
   }
@@ -84,8 +79,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    */
   async rightPop<T extends Caching.Types>(key: string): Promise<T | null> {
     await this.adapter.connect();
-    const hashKey = this.buildKey(key);
-    const result = await this.adapter.rightPopValue(hashKey);
+    const result = await this.adapter.rightPopValue(key);
     return this.parseValue(result);
   }
 
@@ -100,8 +94,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    */
   async increment(key: string): Promise<number> {
     await this.adapter.connect();
-    const hashKey = this.buildKey(key);
-    return this.adapter.increaseValue(hashKey);
+    return this.adapter.increaseValue(key);
   }
 
   /**
@@ -109,8 +102,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    */
   async expire(key: string, durationMs: number): Promise<boolean> {
     await this.adapter.connect();
-    const hashKey = this.buildKey(key);
-    return this.adapter.expireKey(hashKey, durationMs);
+    return this.adapter.expireKey(key, durationMs);
   }
 
   /**
@@ -129,8 +121,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    */
   async ttl(key: string): Promise<number> {
     await this.adapter.connect();
-    const hashKey = this.buildKey(key);
-    return this.adapter.ttlKey(hashKey);
+    return this.adapter.ttlKey(key);
   }
 
   /**
@@ -138,8 +129,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    */
   async decrement(key: string): Promise<number> {
     await this.adapter.connect();
-    const hashKey = this.buildKey(key);
-    return this.adapter.decreaseValue(hashKey);
+    return this.adapter.decreaseValue(key);
   }
 
   /**
@@ -147,8 +137,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    */
   async delete(key: string): Promise<boolean> {
     await this.adapter.connect();
-    const hashKey = this.buildKey(key);
-    return this.adapter.deleteValue(hashKey);
+    return this.adapter.deleteValue(key);
   }
 
   /**
@@ -157,10 +146,6 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   async deleteAll(): Promise<boolean> {
     await this.adapter.connect();
     return this.adapter.deleteAllValues();
-  }
-
-  protected buildKey(key: string): string {
-    return key.length < 32 ? key : createHash('md5').update(key).digest('hex');
   }
 
   protected parseValue(value: string | null, defaultValue?: Caching.Types) {
