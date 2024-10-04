@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { StringValidator, magistrate } from '../../../src';
+import { StringValidator, ValidateResult } from '../../../src';
 
 describe('链式调用返回新的实例', () => {
   const validator = new StringValidator();
@@ -24,7 +24,9 @@ test('默认允许空字符串', async () => {
 
 test('设置allowEmptyString允许空字符串', async () => {
   const validator = new StringValidator().allowEmptyString();
-  await expect(validator['validate']('')).resolves.toStrictEqual(magistrate.ok(''));
+  await expect(validator['validate']('')).resolves.toStrictEqual(
+    ValidateResult.accept(''),
+  );
 });
 
 test('获取文档', () => {

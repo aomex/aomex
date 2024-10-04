@@ -1,7 +1,7 @@
 import emailValidator from 'email-validator';
 import type { OpenAPI } from '../../interface';
 import {
-  magistrate,
+  ValidateResult,
   type TransformedValidator,
   BaseStringValidator,
   Validator,
@@ -34,11 +34,11 @@ export class EmailValidator<T = string> extends BaseStringValidator<T> {
     email: string,
     _key: string,
     label: string,
-  ): magistrate.Result<string> {
+  ): ValidateResult.Any<string> {
     if (!emailValidator.validate(email)) {
-      return magistrate.fail(i18n.t('validator.string.must_be_email', { label }));
+      return ValidateResult.deny(i18n.t('validator.string.must_be_email', { label }));
     }
-    return magistrate.ok(email);
+    return ValidateResult.accept(email);
   }
 
   protected override toDocument(): OpenAPI.SchemaObject {

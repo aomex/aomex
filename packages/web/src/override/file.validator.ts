@@ -3,7 +3,7 @@ import mimeTypes from 'mime-types';
 import {
   Validator,
   type TransformedValidator,
-  magistrate,
+  ValidateResult,
   OpenAPI,
   Rule,
 } from '@aomex/core';
@@ -86,19 +86,17 @@ export class FileValidator<T = FileValidator.FormidableFile> extends Validator<T
     file: FileValidator.FormidableFile,
     _key: string,
     label: string,
-  ): magistrate.Result<FileValidator.FormidableFile> {
+  ): ValidateResult.Any<FileValidator.FormidableFile> {
     const { maxSize, mimeTypes } = this.config;
 
-    if (Array.isArray(file)) {
-      file = file[0];
-    }
+    if (Array.isArray(file)) file = file[0];
 
     if (!(file instanceof PersistentFile)) {
-      return magistrate.fail(i18n.t('validator.file.must_be_file', { label }));
+      return ValidateResult.deny(i18n.t('validator.file.must_be_file', { label }));
     }
 
     if (maxSize !== void 0 && file.size > maxSize) {
-      return magistrate.fail(i18n.t('validator.file.too_large', { label }));
+      return ValidateResult.deny(i18n.t('validator.file.too_large', { label }));
     }
 
     const hasMimeTypeLimitation = mimeTypes && mimeTypes.length;
@@ -107,10 +105,12 @@ export class FileValidator<T = FileValidator.FormidableFile> extends Validator<T
       hasMimeTypeLimitation &&
       (!file.mimetype || !typeIs.is(file.mimetype, ...mimeTypes))
     ) {
-      return magistrate.fail(i18n.t('validator.file.unsupported_mimetype', { label }));
+      return ValidateResult.deny(
+        i18n.t('validator.file.unsupported_mimetype', { label }),
+      );
     }
 
-    return magistrate.ok(file);
+    return ValidateResult.accept(file);
   }
 
   protected declare copy: () => FileValidator<T>;

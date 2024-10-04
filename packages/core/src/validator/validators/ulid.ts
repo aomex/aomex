@@ -1,7 +1,7 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
 import {
-  magistrate,
+  ValidateResult,
   type TransformedValidator,
   BaseStringValidator,
   Validator,
@@ -34,11 +34,11 @@ export class UlidValidator<T = string> extends BaseStringValidator<T> {
     ulid: string,
     _key: string,
     label: string,
-  ): magistrate.Result<string> {
+  ): ValidateResult.Any<string> {
     if (!pattern.test(ulid)) {
-      return magistrate.fail(i18n.t('validator.string.must_be_ulid', { label }));
+      return ValidateResult.deny(i18n.t('validator.string.must_be_ulid', { label }));
     }
-    return magistrate.ok(ulid);
+    return ValidateResult.accept(ulid);
   }
 
   protected override toDocument(): OpenAPI.SchemaObject {

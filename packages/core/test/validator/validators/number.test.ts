@@ -1,11 +1,15 @@
 import { expect, test } from 'vitest';
-import { NumberValidator, magistrate } from '../../../src';
+import { NumberValidator, ValidateResult } from '../../../src';
 
 test('可以是整数或者浮点数', async () => {
   const validator = new NumberValidator();
 
-  await expect(validator['validate'](123)).resolves.toStrictEqual(magistrate.ok(123));
-  await expect(validator['validate'](123.4)).resolves.toStrictEqual(magistrate.ok(123.4));
+  await expect(validator['validate'](123)).resolves.toStrictEqual(
+    ValidateResult.accept(123),
+  );
+  await expect(validator['validate'](123.4)).resolves.toStrictEqual(
+    ValidateResult.accept(123.4),
+  );
 });
 
 test('获取文档', () => {

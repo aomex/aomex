@@ -1,5 +1,5 @@
 import { i18n } from '../../i18n';
-import { magistrate, Validator, ValidatorError } from '../base';
+import { ValidateResult, Validator, ValidateDeniedError } from '../base';
 import { toValidator, type ValidatorToken } from './to-validator';
 
 /**
@@ -13,7 +13,9 @@ export const validate = async <T extends ValidatorToken>(
   untrusted: any,
   validators: T,
   options: {
-    errorFormatter?: (errors: magistrate.Fail['errors']) => string | Promise<string>;
+    errorFormatter?: (
+      errors: ValidateResult.Denied['errors'],
+    ) => string | Promise<string>;
   } = {},
 ): Promise<Validator.Infer<T>> => {
   const { errorFormatter = defaultErrorFormatter } = options;
@@ -21,13 +23,13 @@ export const validate = async <T extends ValidatorToken>(
   const source = await untrusted;
   const trusted = await validator['validate'](source);
 
-  if (magistrate.noError(trusted)) return trusted.ok;
+  if (ValidateResult.noError(trusted)) return trusted.data;
 
   const msg = await errorFormatter(trusted.errors!);
-  throw new ValidatorError(msg, trusted.errors);
+  throw new ValidateDeniedError(msg, trusted.errors);
 };
 
-const defaultErrorFormatter = (errors: magistrate.Fail['errors']) => {
+const defaultErrorFormatter = (errors: ValidateResult.Denied['errors']) => {
   let msg: string = i18n.t('validator.validation_failed');
 
   msg += '\n';

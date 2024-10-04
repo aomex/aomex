@@ -1,6 +1,6 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
-import { magistrate, type TransformedValidator, Validator } from '../base';
+import { ValidateResult, type TransformedValidator, Validator } from '../base';
 
 export declare namespace EnumValidator {
   export interface Options<T> extends Validator.Options<T> {
@@ -46,10 +46,10 @@ export class EnumValidator<const T = never> extends Validator<T> {
     value: any,
     _key: string,
     label: string,
-  ): magistrate.Result<any> {
+  ): ValidateResult.Any<any> {
     const { ranges, strict } = this.config;
 
-    if (ranges.includes(value)) return magistrate.ok(value);
+    if (ranges.includes(value)) return ValidateResult.accept(value);
 
     if (!strict && typeof value === 'string') {
       const num = Number(value);
@@ -57,11 +57,11 @@ export class EnumValidator<const T = never> extends Validator<T> {
         const matched = ranges.find((item) =>
           typeof item === 'number' ? item === num : false,
         );
-        if (matched) return magistrate.ok(matched);
+        if (matched) return ValidateResult.accept(matched);
       }
     }
 
-    return magistrate.fail(i18n.t('validator.enum.not_in_range', { label }));
+    return ValidateResult.deny(i18n.t('validator.enum.not_in_range', { label }));
   }
 
   protected override toDocument(): OpenAPI.SchemaObject {

@@ -1,10 +1,10 @@
 import { expect, test } from 'vitest';
-import { IpValidator, magistrate } from '../../../src';
+import { IpValidator, ValidateResult } from '../../../src';
 
 test('ipv4格式', async () => {
   const validator = new IpValidator(['v4']);
   await expect(validator['validate']('10.0.0.0')).resolves.toStrictEqual(
-    magistrate.ok('10.0.0.0'),
+    ValidateResult.accept('10.0.0.0'),
   );
   await expect(validator['validate']('::1')).resolves.toMatchInlineSnapshot(`
     {
@@ -18,7 +18,9 @@ test('ipv4格式', async () => {
 test('ipv6格式', async () => {
   const validator = new IpValidator(['v6']);
   for (const data of ['2001:0db8:3c4d:0015:0000:0000:1a2f:1a2b', '::1', '::']) {
-    await expect(validator['validate'](data)).resolves.toStrictEqual(magistrate.ok(data));
+    await expect(validator['validate'](data)).resolves.toStrictEqual(
+      ValidateResult.accept(data),
+    );
   }
   await expect(validator['validate']('0.0.0.0')).resolves.toMatchInlineSnapshot(`
     {
@@ -32,7 +34,9 @@ test('ipv6格式', async () => {
 test('v4,v6混合', async () => {
   const validator = new IpValidator(['v6']);
   for (const data of ['2001:0db8:3c4d:0015:0000:0000:1a2f:1a2b', '::1', '::']) {
-    await expect(validator['validate'](data)).resolves.toStrictEqual(magistrate.ok(data));
+    await expect(validator['validate'](data)).resolves.toStrictEqual(
+      ValidateResult.accept(data),
+    );
   }
 });
 

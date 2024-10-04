@@ -1,6 +1,6 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
-import { magistrate, type TransformedValidator, Validator } from '../base';
+import { ValidateResult, type TransformedValidator, Validator } from '../base';
 
 export declare namespace ArrayValidator {
   export interface Options<T> extends Validator.Options<T> {
@@ -75,7 +75,7 @@ export class ArrayValidator<T = unknown[]> extends Validator<T> {
     value: any,
     key: string,
     label: string,
-  ): Promise<magistrate.Result<any[]>> {
+  ): Promise<ValidateResult.Any<any[]>> {
     const {
       force,
       lengthRange: { min = 0, max = Infinity },
@@ -99,17 +99,19 @@ export class ArrayValidator<T = unknown[]> extends Validator<T> {
     }
 
     if (!Array.isArray(items)) {
-      return magistrate.fail(i18n.t('validator.array.must_be_array', { label }));
+      return ValidateResult.deny(i18n.t('validator.array.must_be_array', { label }));
     }
 
     const length = items.length;
 
     if (length < min || length > max) {
-      return magistrate.fail(i18n.t('validator.array.length_not_in_range', { label }));
+      return ValidateResult.deny(
+        i18n.t('validator.array.length_not_in_range', { label }),
+      );
     }
 
     if (itemValidator) {
-      let error: magistrate.Fail = {
+      let error: ValidateResult.Denied = {
         errors: [],
       };
 
@@ -121,8 +123,8 @@ export class ArrayValidator<T = unknown[]> extends Validator<T> {
             label && key ? `${label}.${index}` : index.toString(),
           );
 
-          if (magistrate.noError(result)) {
-            arr[index] = result.ok;
+          if (ValidateResult.noError(result)) {
+            arr[index] = result.data;
           } else {
             error.errors = error.errors.concat(result.errors!);
           }
@@ -132,7 +134,7 @@ export class ArrayValidator<T = unknown[]> extends Validator<T> {
       if (error.errors.length) return error;
     }
 
-    return magistrate.ok(items);
+    return ValidateResult.accept(items);
   }
 
   protected declare copy: () => ArrayValidator<T>;

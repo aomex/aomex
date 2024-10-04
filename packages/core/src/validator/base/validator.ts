@@ -1,6 +1,6 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
-import { magistrate } from './magistrate';
+import { ValidateResult } from './validate-result';
 
 export declare namespace Validator {
   export class TDefault {
@@ -181,29 +181,29 @@ export abstract class Validator<T = unknown> {
     value: any,
     key: string = '',
     label: string = '',
-  ): Promise<magistrate.Result<any>> {
+  ): Promise<ValidateResult.Any<any>> {
     const { defaultValue, required } = this.config;
 
     if (this.isEmpty(value)) {
       value = this.getDefaultValue(defaultValue);
       if (this.isEmpty(value)) {
         if (!required)
-          return magistrate.ok(
+          return ValidateResult.accept(
             this.config.transform ? await this.config.transform(value) : value,
           );
-        return magistrate.fail(i18n.t('validator.required', { label }));
+        return ValidateResult.deny(i18n.t('validator.required', { label }));
       }
     }
 
     if (this.isValidNull(value)) {
-      return magistrate.ok(
+      return ValidateResult.accept(
         this.config.transform ? await this.config.transform(value) : value,
       );
     }
 
     const result = await this.validateValue(value, key, label);
-    if (magistrate.noError(result) && this.config.transform) {
-      result.ok = await this.config.transform(result.ok);
+    if (ValidateResult.noError(result) && this.config.transform) {
+      result.data = await this.config.transform(result.data);
     }
     return result;
   }
@@ -226,7 +226,7 @@ export abstract class Validator<T = unknown> {
     value: any,
     key: string,
     label: string,
-  ): Promise<magistrate.Result<any>> | magistrate.Result<any>;
+  ): Promise<ValidateResult.Any<any>> | ValidateResult.Any<any>;
 
   protected copy(): Validator {
     return new this.SubClass().copyConfig(this);

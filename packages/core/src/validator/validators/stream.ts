@@ -1,7 +1,7 @@
 import stream from 'node:stream';
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
-import { magistrate, type TransformedValidator, Validator } from '../base';
+import { ValidateResult, type TransformedValidator, Validator } from '../base';
 
 export declare namespace StreamValidator {
   export interface Options<T = stream.Stream> extends Validator.Options<T> {}
@@ -24,12 +24,12 @@ export class StreamValidator<T = stream.Stream> extends Validator<T> {
     value: stream.Stream,
     _key: string,
     label: string,
-  ): magistrate.Result<stream.Stream> {
+  ): ValidateResult.Any<stream.Stream> {
     if (!(value instanceof stream.Stream)) {
-      return magistrate.fail(i18n.t('validator.stream.must_be_stream', { label }));
+      return ValidateResult.deny(i18n.t('validator.stream.must_be_stream', { label }));
     }
 
-    return magistrate.ok(value);
+    return ValidateResult.accept(value);
   }
 
   protected declare copy: () => this;

@@ -6,13 +6,17 @@ import {
   OneOfValidator,
   StringValidator,
   UrlValidator,
-  magistrate,
+  ValidateResult,
 } from '../../../src';
 
 test('匹配其中一个规则即可', async () => {
   const validator = new OneOfValidator([new ArrayValidator(), new BigIntValidator()]);
-  await expect(validator['validate'](123n)).resolves.toStrictEqual(magistrate.ok(123n));
-  await expect(validator['validate'](['x'])).resolves.toStrictEqual(magistrate.ok(['x']));
+  await expect(validator['validate'](123n)).resolves.toStrictEqual(
+    ValidateResult.accept(123n),
+  );
+  await expect(validator['validate'](['x'])).resolves.toStrictEqual(
+    ValidateResult.accept(['x']),
+  );
 });
 
 test('匹配多个则报错', async () => {
@@ -21,7 +25,9 @@ test('匹配多个则报错', async () => {
     new UrlValidator(),
     new HashValidator('md5'),
   ]);
-  await expect(validator['validate']('x')).resolves.toStrictEqual(magistrate.ok('x'));
+  await expect(validator['validate']('x')).resolves.toStrictEqual(
+    ValidateResult.accept('x'),
+  );
   await expect(validator['validate']('http://www.example.com')).resolves
     .toMatchInlineSnapshot(`
     {
@@ -49,7 +55,7 @@ test('空值也由子验证器处理', async () => {
     new BigIntValidator().optional().transform(() => 'OK'),
   ]);
   await expect(validator['validate'](undefined)).resolves.toStrictEqual(
-    magistrate.ok('OK'),
+    ValidateResult.accept('OK'),
   );
 });
 

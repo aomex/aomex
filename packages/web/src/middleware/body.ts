@@ -2,7 +2,7 @@ import {
   validate,
   Validator,
   rule,
-  ValidatorError,
+  ValidateDeniedError,
   middleware,
   OpenAPI,
 } from '@aomex/core';
@@ -20,7 +20,7 @@ export const body = <T extends { [key: string]: P }, P extends Validator>(
         ctx.body = await validate(ctx.request.body, fields);
         return next();
       } catch (e) {
-        ctx.throw(e instanceof ValidatorError ? 400 : 500, e as Error);
+        ctx.throw(e instanceof ValidateDeniedError ? 400 : 500, e as Error);
       }
     },
     openapi: {

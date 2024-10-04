@@ -5,7 +5,7 @@ import {
   AllOfValidator,
   StringValidator,
   UrlValidator,
-  magistrate,
+  ValidateResult,
 } from '../../../src';
 
 test('管道', async () => {
@@ -14,14 +14,14 @@ test('管道', async () => {
     new StringValidator().transform((data) => data + 'def'),
   ]);
   await expect(validator['validate']('x')).resolves.toStrictEqual(
-    magistrate.ok('xabcdef'),
+    ValidateResult.accept('xabcdef'),
   );
 });
 
 test('必须匹配所有规则', async () => {
   const validator = new AllOfValidator([new StringValidator(), new UrlValidator()]);
   await expect(validator['validate']('http://www.example.com')).resolves.toStrictEqual(
-    magistrate.ok('http://www.example.com'),
+    ValidateResult.accept('http://www.example.com'),
   );
   await expect(validator['validate']('x')).resolves.toMatchInlineSnapshot(`
     {

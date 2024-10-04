@@ -1,7 +1,7 @@
-import { BaseNumberValidator, magistrate } from '../../src';
+import { BaseNumberValidator, ValidateResult } from '../../src';
 
 export class MockNumberValidator extends BaseNumberValidator {
-  protected override validateNumber(num: number): magistrate.Result<number> {
-    return magistrate.ok(num);
+  protected override validateNumber(num: number): ValidateResult.Any<number> {
+    return ValidateResult.accept(num);
   }
 }

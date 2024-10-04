@@ -1,6 +1,6 @@
 import type { OpenAPI } from '../../interface';
 import {
-  magistrate,
+  ValidateResult,
   type TransformedValidator,
   BaseStringValidator,
   Validator,
@@ -46,8 +46,8 @@ export class StringValidator<T = string> extends BaseStringValidator<T> {
     return super.isEmpty(value);
   }
 
-  protected validateString(value: string): magistrate.Result<string> {
-    return magistrate.ok(value);
+  protected validateString(value: string): ValidateResult.Any<string> {
+    return ValidateResult.accept(value);
   }
 
   protected declare copy: () => StringValidator<T>;

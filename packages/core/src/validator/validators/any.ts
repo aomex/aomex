@@ -1,5 +1,5 @@
 import type { OpenAPI } from '../../interface';
-import { magistrate, type TransformedValidator, Validator } from '../base';
+import { ValidateResult, type TransformedValidator, Validator } from '../base';
 
 export declare namespace AnyValidator {
   type Type = number | string | boolean | any[] | Validator.TObject | bigint | Buffer;
@@ -19,8 +19,8 @@ export class AnyValidator<T = AnyValidator.Type> extends Validator<T> {
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
-  protected validateValue(value: any): magistrate.Result<any> {
-    return magistrate.ok(value);
+  protected validateValue(value: any): ValidateResult.Any<any> {
+    return ValidateResult.accept(value);
   }
 
   protected override toDocument(): OpenAPI.SchemaObject {

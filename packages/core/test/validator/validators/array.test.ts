@@ -1,4 +1,4 @@
-import { ArrayValidator, magistrate } from '../../../src';
+import { ArrayValidator, ValidateResult } from '../../../src';
 import { expect, test, describe } from 'vitest';
 
 describe('链式调用返回新的实例', () => {
@@ -20,14 +20,16 @@ describe('链式调用返回新的实例', () => {
 test('未指定元素类型时，允许传入混合数组', async () => {
   const validator = new ArrayValidator();
   const data = [1, 'abc', {}];
-  await expect(validator['validate'](data)).resolves.toStrictEqual(magistrate.ok(data));
+  await expect(validator['validate'](data)).resolves.toStrictEqual(
+    ValidateResult.accept(data),
+  );
 });
 
 test('指定元素类型', async () => {
   const validator = new ArrayValidator(new ArrayValidator());
   const data = [1, 'abc', {}];
   await expect(validator['validate']([[], []])).resolves.toStrictEqual(
-    magistrate.ok([[], []]),
+    ValidateResult.accept([[], []]),
   );
   await expect(validator['validate'](data)).resolves.toMatchInlineSnapshot(`
     {
@@ -44,21 +46,21 @@ describe('强制转换', () => {
   test('允许分割字符串', async () => {
     const validator = new ArrayValidator().forceToArray('separator');
     await expect(validator['validate']('a,bcd,c')).resolves.toStrictEqual(
-      magistrate.ok(['a', 'bcd', 'c']),
+      ValidateResult.accept(['a', 'bcd', 'c']),
     );
   });
 
   test('允许指定分割字符串', async () => {
     const validator = new ArrayValidator().forceToArray('separator', '-');
     await expect(validator['validate']('a,bcd-c')).resolves.toStrictEqual(
-      magistrate.ok(['a,bcd', 'c']),
+      ValidateResult.accept(['a,bcd', 'c']),
     );
   });
 
   test('允许强制把非数组转换为数组', async () => {
     const validator = new ArrayValidator().forceToArray('block');
     await expect(validator['validate']('a,bcd,c')).resolves.toStrictEqual(
-      magistrate.ok(['a,bcd,c']),
+      ValidateResult.accept(['a,bcd,c']),
     );
   });
 });
@@ -67,7 +69,7 @@ describe('长度', () => {
   test('具体长度', async () => {
     const validator = new ArrayValidator().length(2);
     await expect(validator['validate'](['a', 'b'])).resolves.toStrictEqual(
-      magistrate.ok(['a', 'b']),
+      ValidateResult.accept(['a', 'b']),
     );
     await expect(validator['validate'](['a', 'b', 'c'])).resolves.toMatchInlineSnapshot(`
       {
@@ -81,10 +83,10 @@ describe('长度', () => {
   test('最短长度', async () => {
     const validator = new ArrayValidator().length({ min: 2 });
     await expect(validator['validate'](['a', 'b'])).resolves.toStrictEqual(
-      magistrate.ok(['a', 'b']),
+      ValidateResult.accept(['a', 'b']),
     );
     await expect(validator['validate'](['a', 'b', 'c'])).resolves.toStrictEqual(
-      magistrate.ok(['a', 'b', 'c']),
+      ValidateResult.accept(['a', 'b', 'c']),
     );
     await expect(validator['validate'](['a'])).resolves.toMatchInlineSnapshot(`
       {
@@ -98,10 +100,10 @@ describe('长度', () => {
   test('最大长度', async () => {
     const validator = new ArrayValidator().length({ max: 2 });
     await expect(validator['validate'](['a'], '')).resolves.toStrictEqual(
-      magistrate.ok(['a']),
+      ValidateResult.accept(['a']),
     );
     await expect(validator['validate'](['a', 'b'])).resolves.toStrictEqual(
-      magistrate.ok(['a', 'b']),
+      ValidateResult.accept(['a', 'b']),
     );
     await expect(validator['validate'](['a', 'b', 'c'])).resolves.toMatchInlineSnapshot(`
       {

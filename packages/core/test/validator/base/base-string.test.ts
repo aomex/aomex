@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { MockStringValidator } from '../../mock/mock-string-validator';
-import { magistrate } from '../../../src';
+import { ValidateResult } from '../../../src';
 
 describe('链式调用返回新的实例', () => {
   const validator = new MockStringValidator();
@@ -28,7 +28,7 @@ describe('长度', () => {
   test('具体长度', async () => {
     const validator = new MockStringValidator()['length'](10);
     await expect(validator['validate']('0123456789')).resolves.toStrictEqual(
-      magistrate.ok('0123456789'),
+      ValidateResult.accept('0123456789'),
     );
     await expect(validator['validate']('0123456')).resolves.toMatchInlineSnapshot(`
       {
@@ -42,10 +42,10 @@ describe('长度', () => {
   test('最小长度', async () => {
     const validator = new MockStringValidator()['length']({ min: 5 });
     await expect(validator['validate']('0123456')).resolves.toStrictEqual(
-      magistrate.ok('0123456'),
+      ValidateResult.accept('0123456'),
     );
     await expect(validator['validate']('01234')).resolves.toStrictEqual(
-      magistrate.ok('01234'),
+      ValidateResult.accept('01234'),
     );
     await expect(validator['validate']('0123')).resolves.toMatchInlineSnapshot(`
       {
@@ -59,10 +59,10 @@ describe('长度', () => {
   test('最大长度', async () => {
     const validator = new MockStringValidator()['length']({ max: 5 });
     await expect(validator['validate']('0123')).resolves.toStrictEqual(
-      magistrate.ok('0123'),
+      ValidateResult.accept('0123'),
     );
     await expect(validator['validate']('01234')).resolves.toStrictEqual(
-      magistrate.ok('01234'),
+      ValidateResult.accept('01234'),
     );
     await expect(validator['validate']('0123456')).resolves.toMatchInlineSnapshot(`
       {
@@ -83,7 +83,7 @@ describe('长度', () => {
       }
     `);
     await expect(validator['validate']('01234')).resolves.toStrictEqual(
-      magistrate.ok('01234'),
+      ValidateResult.accept('01234'),
     );
     await expect(validator['validate']('0123456')).resolves.toMatchInlineSnapshot(`
       {
@@ -124,7 +124,9 @@ test('去除两边空格', async () => {
       ],
     }
   `);
-  await expect(validator['validate'](' a  ')).resolves.toStrictEqual(magistrate.ok('a'));
+  await expect(validator['validate'](' a  ')).resolves.toStrictEqual(
+    ValidateResult.accept('a'),
+  );
 });
 
 test('匹配格式', async () => {
@@ -136,5 +138,7 @@ test('匹配格式', async () => {
       ],
     }
   `);
-  await expect(validator['validate']('abc')).resolves.toStrictEqual(magistrate.ok('abc'));
+  await expect(validator['validate']('abc')).resolves.toStrictEqual(
+    ValidateResult.accept('abc'),
+  );
 });

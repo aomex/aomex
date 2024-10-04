@@ -1,6 +1,6 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
-import { magistrate } from './magistrate';
+import { ValidateResult } from './validate-result';
 import { Validator } from './validator';
 
 export declare namespace BaseNumberValidator {
@@ -63,7 +63,7 @@ export abstract class BaseNumberValidator<T = number> extends Validator<T> {
     num: number,
     key: string,
     label: string,
-  ): magistrate.Result<number> {
+  ): ValidateResult.Any<number> {
     const {
       min = -Infinity,
       max = Infinity,
@@ -78,7 +78,7 @@ export abstract class BaseNumberValidator<T = number> extends Validator<T> {
     }
 
     if (!Number.isFinite(num)) {
-      return magistrate.fail(i18n.t('validator.number.must_be_number', { label }));
+      return ValidateResult.deny(i18n.t('validator.number.must_be_number', { label }));
     }
 
     if (precision !== undefined) {
@@ -89,7 +89,7 @@ export abstract class BaseNumberValidator<T = number> extends Validator<T> {
       (minInclusive ? num < min : num <= min) ||
       (maxInclusive ? num > max : num >= max)
     ) {
-      return magistrate.fail(i18n.t('validator.number.not_in_range', { label }));
+      return ValidateResult.deny(i18n.t('validator.number.not_in_range', { label }));
     }
 
     return this.validateNumber(num, key, label);
@@ -99,7 +99,7 @@ export abstract class BaseNumberValidator<T = number> extends Validator<T> {
     num: number,
     key: string,
     label: string,
-  ): magistrate.Result<number>;
+  ): ValidateResult.Any<number>;
 
   protected declare copy: () => BaseNumberValidator<T>;
 

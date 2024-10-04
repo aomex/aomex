@@ -4,7 +4,7 @@ import {
   type TransformedValidator,
   BaseNumberValidator,
   Validator,
-  magistrate,
+  ValidateResult,
 } from '../base';
 
 export class IntValidator<T = number> extends BaseNumberValidator<T> {
@@ -23,12 +23,12 @@ export class IntValidator<T = number> extends BaseNumberValidator<T> {
     num: number,
     _key: string,
     label: string,
-  ): magistrate.Result<number> {
+  ): ValidateResult.Any<number> {
     if (!Number.isInteger(num)) {
-      return magistrate.fail(i18n.t('validator.number.must_be_integer', { label }));
+      return ValidateResult.deny(i18n.t('validator.number.must_be_integer', { label }));
     }
 
-    return magistrate.ok(num);
+    return ValidateResult.accept(num);
   }
 
   protected override toDocument(): OpenAPI.SchemaObject {

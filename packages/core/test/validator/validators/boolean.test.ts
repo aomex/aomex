@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { BooleanValidator, magistrate } from '../../../src';
+import { BooleanValidator, ValidateResult } from '../../../src';
 
 describe('链式调用返回新的实例', () => {
   const validator = new BooleanValidator();
@@ -20,7 +20,9 @@ describe('链式调用返回新的实例', () => {
 test('测试真值', async () => {
   const validator = new BooleanValidator();
   for (const data of BooleanValidator['defaultTruthyValues']) {
-    await expect(validator['validate'](data)).resolves.toStrictEqual(magistrate.ok(true));
+    await expect(validator['validate'](data)).resolves.toStrictEqual(
+      ValidateResult.accept(true),
+    );
   }
 });
 
@@ -28,7 +30,7 @@ test('测试假值', async () => {
   const validator = new BooleanValidator();
   for (const data of BooleanValidator['defaultFalsyValues']) {
     await expect(validator['validate'](data)).resolves.toStrictEqual(
-      magistrate.ok(false),
+      ValidateResult.accept(false),
     );
   }
 });
@@ -47,10 +49,10 @@ test('不在范围内则报错', async () => {
 test('自定义范围', async () => {
   await expect(
     new BooleanValidator().setTruthyValues(['yes'])['validate']('yes'),
-  ).resolves.toStrictEqual(magistrate.ok(true));
+  ).resolves.toStrictEqual(ValidateResult.accept(true));
   await expect(
     new BooleanValidator().setFalsyValues(['yes'])['validate']('yes'),
-  ).resolves.toStrictEqual(magistrate.ok(false));
+  ).resolves.toStrictEqual(ValidateResult.accept(false));
 });
 
 test('获取文档', () => {

@@ -1,6 +1,6 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
-import { magistrate, type TransformedValidator, Validator } from '../base';
+import { ValidateResult, type TransformedValidator, Validator } from '../base';
 
 export declare namespace BufferValidator {
   export interface Options<T = Buffer> extends Validator.Options<T> {
@@ -43,7 +43,7 @@ export class BufferValidator<T = Buffer> extends Validator<T> {
     value: any,
     _key: string,
     label: string,
-  ): magistrate.Result<Buffer> {
+  ): ValidateResult.Any<Buffer> {
     const { fromEncodings = [] } = this.config;
     let buffer: Buffer | undefined;
 
@@ -72,10 +72,10 @@ export class BufferValidator<T = Buffer> extends Validator<T> {
     }
 
     if (!buffer) {
-      return magistrate.fail(i18n.t('validator.buffer.must_be_buffer', { label }));
+      return ValidateResult.deny(i18n.t('validator.buffer.must_be_buffer', { label }));
     }
 
-    return magistrate.ok(buffer);
+    return ValidateResult.accept(buffer);
   }
 
   protected declare copy: () => this;

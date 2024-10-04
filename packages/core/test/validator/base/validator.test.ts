@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { MockValidator } from '../../mock/mock-validator';
-import { Validator, magistrate } from '../../../src/validator/base';
+import { Validator, ValidateResult } from '../../../src/validator/base';
 import { sleep } from '@aomex/internal-tools';
 
 describe('链式调用返回新的实例', () => {
@@ -47,7 +47,7 @@ describe('transform()', () => {
   test('正常执行指定的transform函数', async () => {
     const validator = new MockValidator()['transform']((data) => data + '-hello');
     const result = await validator['validate']('test');
-    expect(result).toStrictEqual(magistrate.ok('test-hello'));
+    expect(result).toStrictEqual(ValidateResult.accept('test-hello'));
   });
 
   test('可选的情况下也要执行transform', async () => {
@@ -55,11 +55,11 @@ describe('transform()', () => {
       ['optional']()
       ['transform']((data) => data + '-hello');
     const result1 = await validator['validate'](undefined);
-    expect(result1).toStrictEqual(magistrate.ok('undefined-hello'));
+    expect(result1).toStrictEqual(ValidateResult.accept('undefined-hello'));
     const result2 = await validator['validate']('');
-    expect(result2).toStrictEqual(magistrate.ok('undefined-hello'));
+    expect(result2).toStrictEqual(ValidateResult.accept('undefined-hello'));
     const result3 = await validator['validate'](null);
-    expect(result3).toStrictEqual(magistrate.ok('undefined-hello'));
+    expect(result3).toStrictEqual(ValidateResult.accept('undefined-hello'));
   });
 
   test('开启nullable时也要执行transform', async () => {
@@ -67,7 +67,7 @@ describe('transform()', () => {
       ['nullable']()
       ['transform']((data) => data + '-hello');
     const result3 = await validator['validate'](null);
-    expect(result3).toStrictEqual(magistrate.ok('null-hello'));
+    expect(result3).toStrictEqual(ValidateResult.accept('null-hello'));
   });
 
   test('支持异步transform函数', async () => {
@@ -76,7 +76,7 @@ describe('transform()', () => {
       return data + '-hello';
     });
     const result = await validator['validate']('test');
-    expect(result).toStrictEqual(magistrate.ok('test-hello'));
+    expect(result).toStrictEqual(ValidateResult.accept('test-hello'));
   });
 });
 
@@ -95,7 +95,7 @@ describe('optional()', async () => {
   test('允许为空', async () => {
     for (const value of empty) {
       await expect(validator['optional']()['validate'](value, '')).resolves.toStrictEqual(
-        magistrate.ok(undefined),
+        ValidateResult.accept(undefined),
       );
     }
   });
@@ -105,14 +105,14 @@ describe('default', () => {
   test('设置默认值后可以不传参数', async () => {
     const validator = new MockValidator()['default']('test1');
     await expect(validator['validate'](undefined)).resolves.toStrictEqual(
-      magistrate.ok('test1'),
+      ValidateResult.accept('test1'),
     );
   });
 
   test('默认值可以是函数', async () => {
     const validator = new MockValidator()['default'](() => 'test1');
     await expect(validator['validate'](undefined)).resolves.toStrictEqual(
-      magistrate.ok('test1'),
+      ValidateResult.accept('test1'),
     );
   });
 });
@@ -120,7 +120,7 @@ describe('default', () => {
 test('开启nullable()时允许传递null', async () => {
   const validator = new MockValidator()['nullable']();
   await expect(validator['validate'](null, '')).resolves.toStrictEqual(
-    magistrate.ok(null),
+    ValidateResult.accept(null),
   );
 });
 

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { BufferValidator, magistrate } from '../../../src';
+import { BufferValidator, ValidateResult } from '../../../src';
 
 describe('链式调用返回新的实例', () => {
   const validator = new BufferValidator();
@@ -15,7 +15,7 @@ test('检测缓冲类型', async () => {
   const validator = new BufferValidator();
   const buffer = Buffer.from([]);
   await expect(validator['validate'](buffer)).resolves.toStrictEqual(
-    magistrate.ok(buffer),
+    ValidateResult.accept(buffer),
   );
 });
 
@@ -34,7 +34,7 @@ test('从十六进制恢复', async () => {
   const validator = new BufferValidator().parseFrom('hex');
   for (const data of ['0001', '0x0001', '0X0001']) {
     await expect(validator['validate'](data)).resolves.toStrictEqual(
-      magistrate.ok(Buffer.from([0, 1])),
+      ValidateResult.accept(Buffer.from([0, 1])),
     );
   }
   await expect(validator['validate']('zzz')).resolves.toMatchInlineSnapshot(`
@@ -49,7 +49,7 @@ test('从十六进制恢复', async () => {
 test('从base64字符串恢复', async () => {
   const validator = new BufferValidator().parseFrom('base64');
   await expect(validator['validate']('AAE=')).resolves.toStrictEqual(
-    magistrate.ok(Buffer.from([0, 1])),
+    ValidateResult.accept(Buffer.from([0, 1])),
   );
   await expect(validator['validate']('AAE')).resolves.toMatchInlineSnapshot(`
     {

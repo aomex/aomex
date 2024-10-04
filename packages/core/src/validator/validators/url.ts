@@ -1,7 +1,7 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
 import {
-  magistrate,
+  ValidateResult,
   type TransformedValidator,
   BaseStringValidator,
   Validator,
@@ -48,23 +48,23 @@ export class UrlValidator<T = string> extends BaseStringValidator<T> {
     url: string,
     _key: string,
     label: string,
-  ): magistrate.Result<string> {
+  ): ValidateResult.Any<string> {
     const { allowedScheme } = this.config;
 
     // http:/example.com 这种单斜杆的格式URL也能解析，因此需要使用正则先过滤
     if (!/^[a-z0-9]+:\/\/.+/.test(url) || !URL.canParse(url)) {
-      return magistrate.fail(i18n.t('validator.url.must_be_url', { label }));
+      return ValidateResult.deny(i18n.t('validator.url.must_be_url', { label }));
     }
 
     const parsedUrl = new URL(url);
     const scheme = parsedUrl.protocol.slice(0, -1);
     if (!allowedScheme.includes(scheme)) {
-      return magistrate.fail(
+      return ValidateResult.deny(
         i18n.t('validator.url.unsupported_scheme', { label, scheme }),
       );
     }
 
-    return magistrate.ok(url);
+    return ValidateResult.accept(url);
   }
 
   protected declare copy: () => UrlValidator<T>;

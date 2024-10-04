@@ -1,5 +1,5 @@
 export * from './validator';
-export * from './magistrate';
 export * from './base-string';
 export * from './base-number';
-export * from './validator-error';
+export * from './validate-result';
+export * from './validate-denied-error';

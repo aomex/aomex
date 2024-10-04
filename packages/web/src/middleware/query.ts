@@ -1,4 +1,4 @@
-import { middleware, validate, Validator, ValidatorError } from '@aomex/core';
+import { middleware, validate, Validator, ValidateDeniedError } from '@aomex/core';
 import type { WebMiddleware } from '../override';
 
 /**
@@ -13,7 +13,7 @@ export const query = <T extends { [key: string]: P }, P extends Validator>(
         ctx.query = await validate(ctx.request.query, fields);
         return next();
       } catch (e) {
-        ctx.throw(e instanceof ValidatorError ? 400 : 500, e as Error);
+        ctx.throw(e instanceof ValidateDeniedError ? 400 : 500, e as Error);
       }
     },
     openapi: {

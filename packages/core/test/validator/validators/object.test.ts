@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { ObjectValidator, magistrate } from '../../../src';
+import { ObjectValidator, ValidateResult } from '../../../src';
 import { describe } from 'node:test';
 
 test('返回副本', async () => {
@@ -7,9 +7,9 @@ test('返回副本', async () => {
   const data = { key: 'value' };
   const result = await validator['validate'](data);
   // @ts-expect-error
-  expect(result['ok']).toStrictEqual(data);
+  expect(result['data']).toStrictEqual(data);
   // @ts-expect-error
-  expect(result['ok']).not.toBe(data);
+  expect(result['data']).not.toBe(data);
 });
 
 test('提供属性验证器后，仅保留指定部分', async () => {
@@ -17,7 +17,7 @@ test('提供属性验证器后，仅保留指定部分', async () => {
     data: new ObjectValidator(),
   });
   const result = await validator['validate']({ data: {}, key: 'value' });
-  expect(result).toStrictEqual(magistrate.ok({ data: {} }));
+  expect(result).toStrictEqual(ValidateResult.accept({ data: {} }));
 });
 
 test('属性验证失败报错', async () => {
@@ -50,7 +50,7 @@ describe('解析字符串', () => {
     const validator = new ObjectValidator();
     const data = { key: 'value' };
     const result = await validator['validate'](JSON.stringify(data));
-    expect(result).toStrictEqual(magistrate.ok(data));
+    expect(result).toStrictEqual(ValidateResult.accept(data));
   });
 
   test('非法字符串', async () => {
@@ -90,7 +90,7 @@ describe('解析字符串', () => {
     const validator = new ObjectValidator().strict().parseFromString();
     const data = { key: 'value' };
     const result = await validator['validate'](JSON.stringify(data));
-    expect(result).toStrictEqual(magistrate.ok(data));
+    expect(result).toStrictEqual(ValidateResult.accept(data));
   });
 });
 

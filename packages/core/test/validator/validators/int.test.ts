@@ -1,10 +1,12 @@
 import { expect, test } from 'vitest';
-import { IntValidator, magistrate } from '../../../src';
+import { IntValidator, ValidateResult } from '../../../src';
 
 test('只允许整数', async () => {
   const validator = new IntValidator();
 
-  await expect(validator['validate'](123)).resolves.toStrictEqual(magistrate.ok(123));
+  await expect(validator['validate'](123)).resolves.toStrictEqual(
+    ValidateResult.accept(123),
+  );
   await expect(validator['validate'](123.4)).resolves.toMatchInlineSnapshot(`
     {
       "errors": [

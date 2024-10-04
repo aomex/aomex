@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { UlidValidator, magistrate } from '../../../src';
+import { UlidValidator, ValidateResult } from '../../../src';
 
 test('合法的ulid', async () => {
   const validator = new UlidValidator();
@@ -8,7 +8,9 @@ test('合法的ulid', async () => {
     '7ZZZZZZZZZZZZZZZZZZZZZZZZZ',
     '71EKDKWP8809829882208294M3',
   ]) {
-    await expect(validator['validate'](data)).resolves.toStrictEqual(magistrate.ok(data));
+    await expect(validator['validate'](data)).resolves.toStrictEqual(
+      ValidateResult.accept(data),
+    );
   }
 });
 

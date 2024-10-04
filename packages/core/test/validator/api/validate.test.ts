@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { ValidatorError, rule, validate } from '../../../src';
+import { ValidateDeniedError, rule, validate } from '../../../src';
 import { sleep } from '@aomex/internal-tools';
 
 test('保留验证过的数据', async () => {
@@ -32,8 +32,8 @@ test('验证失败时抛出异常', async () => {
       test1: rule.ulid(),
     },
   );
-  await expect(() => promise).rejects.toThrowError(ValidatorError);
-  await promise.catch((err: ValidatorError) => {
+  await expect(() => promise).rejects.toThrowError(ValidateDeniedError);
+  await promise.catch((err: ValidateDeniedError) => {
     expect(err.message).toMatchInlineSnapshot(`
       "验证失败：
 
@@ -57,8 +57,8 @@ test('支持自定义报错文字格式', async () => {
       },
     },
   );
-  await expect(() => promise).rejects.toThrowError(ValidatorError);
-  await promise.catch((err: ValidatorError) => {
+  await expect(() => promise).rejects.toThrowError(ValidateDeniedError);
+  await promise.catch((err: ValidateDeniedError) => {
     expect(err.message).toMatchInlineSnapshot(
       `"["test：必须是对象类型","test1：必须是ULID格式"]"`,
     );
@@ -77,8 +77,8 @@ test('支持传入单个验证器', async () => {
 
 test('根路径报错', async () => {
   const promise = validate({ test: '1', test1: '2' }, rule.array(rule.string()));
-  await expect(() => promise).rejects.toThrowError(ValidatorError);
-  await promise.catch((err: ValidatorError) => {
+  await expect(() => promise).rejects.toThrowError(ValidateDeniedError);
+  await promise.catch((err: ValidateDeniedError) => {
     expect(err.message).toMatchInlineSnapshot(`
       "验证失败：
 

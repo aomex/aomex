@@ -1,7 +1,7 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
 import {
-  magistrate,
+  ValidateResult,
   BaseStringValidator,
   type TransformedValidator,
   Validator,
@@ -71,15 +71,15 @@ export class HashValidator<T = string> extends BaseStringValidator<T> {
     hash: string,
     _key: string,
     label: string,
-  ): magistrate.Result<string> {
+  ): ValidateResult.Any<string> {
     const { algorithm } = this.config;
 
     const length = HashValidator.algorithmLength[algorithm];
     if (!HashValidator.algorithmPattern[length]!.test(hash)) {
-      return magistrate.fail(i18n.t('validator.string.must_be_hash', { label }));
+      return ValidateResult.deny(i18n.t('validator.string.must_be_hash', { label }));
     }
 
-    return magistrate.ok(hash);
+    return ValidateResult.accept(hash);
   }
 
   protected override toDocument(): OpenAPI.SchemaObject {

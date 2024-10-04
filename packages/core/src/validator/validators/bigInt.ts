@@ -1,6 +1,6 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
-import { magistrate, type TransformedValidator, Validator } from '../base';
+import { ValidateResult, type TransformedValidator, Validator } from '../base';
 
 export declare namespace BigIntValidator {
   export interface Options<T = false> extends Validator.Options<T> {
@@ -48,7 +48,7 @@ export class BigIntValidator<T = bigint> extends Validator<T> {
     value: bigint,
     _key: string,
     label: string,
-  ): magistrate.Result<bigint> {
+  ): ValidateResult.Any<bigint> {
     const {
       strict,
       min = -Infinity,
@@ -67,7 +67,7 @@ export class BigIntValidator<T = bigint> extends Validator<T> {
       }
 
       if (num === undefined) {
-        return magistrate.fail(i18n.t('validator.number.must_be_bigint', { label }));
+        return ValidateResult.deny(i18n.t('validator.number.must_be_bigint', { label }));
       }
     } else {
       num = value;
@@ -77,10 +77,10 @@ export class BigIntValidator<T = bigint> extends Validator<T> {
       (minInclusive ? num < min : num <= min) ||
       (maxInclusive ? num > max : num >= max)
     ) {
-      return magistrate.fail(i18n.t('validator.number.not_in_range', { label }));
+      return ValidateResult.deny(i18n.t('validator.number.not_in_range', { label }));
     }
 
-    return magistrate.ok(num);
+    return ValidateResult.accept(num);
   }
 
   protected declare copy: () => BigIntValidator<T>;

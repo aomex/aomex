@@ -1,6 +1,6 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
-import { magistrate, type TransformedValidator, Validator } from '../base';
+import { ValidateResult, type TransformedValidator, Validator } from '../base';
 
 export declare namespace ObjectValidator {
   export type Property = Record<string, Validator>;
@@ -56,7 +56,7 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
     origin: Record<string, any>,
     key: string,
     label: string,
-  ): Promise<magistrate.Result<object>> {
+  ): Promise<ValidateResult.Any<object>> {
     const { properties, stringToObject, strict } = this.config;
 
     if (!this.isPlainObject(origin)) {
@@ -71,14 +71,14 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
         } catch {}
       }
       if (!valid) {
-        return magistrate.fail(i18n.t('validator.object.must_be_object', { label }));
+        return ValidateResult.deny(i18n.t('validator.object.must_be_object', { label }));
       }
     }
 
     let obj: Record<string, any> = {};
 
     if (properties) {
-      const error: magistrate.Fail = {
+      const error: ValidateResult.Denied = {
         errors: [],
       };
 
@@ -90,8 +90,8 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
             label && key ? `${label}.${propKey}` : propKey,
           );
 
-          if (magistrate.noError(result)) {
-            obj[propKey] = result.ok;
+          if (ValidateResult.noError(result)) {
+            obj[propKey] = result.data;
           } else {
             error.errors = error.errors.concat(result.errors!);
           }
@@ -103,7 +103,7 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
       Object.assign(obj, origin);
     }
 
-    return magistrate.ok(obj);
+    return ValidateResult.accept(obj);
   }
 
   protected declare copy: () => ObjectValidator<T>;

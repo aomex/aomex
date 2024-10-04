@@ -1,10 +1,10 @@
 import { expect, test } from 'vitest';
-import { EmailValidator, magistrate } from '../../../src';
+import { EmailValidator, ValidateResult } from '../../../src';
 
 test('必须是邮箱格式', async () => {
   const validator = new EmailValidator();
   await expect(validator['validate']('test@example.com')).resolves.toStrictEqual(
-    magistrate.ok('test@example.com'),
+    ValidateResult.accept('test@example.com'),
   );
 });
 

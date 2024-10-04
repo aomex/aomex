@@ -1,12 +1,12 @@
 import { expect, test } from 'vitest';
-import { StreamValidator, magistrate } from '../../../src';
+import { StreamValidator, ValidateResult } from '../../../src';
 import { createReadStream } from 'node:fs';
 
 test('检测缓冲类型', async () => {
   const validator = new StreamValidator();
   const stream = createReadStream(import.meta.filename);
   await expect(validator['validate'](stream)).resolves.toStrictEqual(
-    magistrate.ok(stream),
+    ValidateResult.accept(stream),
   );
 });
 

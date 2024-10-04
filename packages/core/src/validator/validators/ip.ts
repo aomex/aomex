@@ -1,7 +1,7 @@
 import { isIP, isIPv4, isIPv6 } from 'node:net';
 import type { OpenAPI } from '../../interface';
 import {
-  magistrate,
+  ValidateResult,
   type TransformedValidator,
   BaseStringValidator,
   Validator,
@@ -43,7 +43,7 @@ export class IpValidator<T = string> extends BaseStringValidator<T> {
     ip: string,
     _key: string,
     label: string,
-  ): magistrate.Result<string> {
+  ): ValidateResult.Any<string> {
     const { ipVersion } = this.config;
 
     let valid = false;
@@ -58,7 +58,7 @@ export class IpValidator<T = string> extends BaseStringValidator<T> {
     }
 
     if (!valid) {
-      return magistrate.fail(
+      return ValidateResult.deny(
         i18n.t('validator.string.must_be_ip', {
           label,
           versions: ipVersion.toString(),
@@ -66,7 +66,7 @@ export class IpValidator<T = string> extends BaseStringValidator<T> {
       );
     }
 
-    return magistrate.ok(ip);
+    return ValidateResult.accept(ip);
   }
 
   protected override toDocument(): OpenAPI.SchemaObject {

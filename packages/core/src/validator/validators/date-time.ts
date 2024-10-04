@@ -1,6 +1,6 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
-import { magistrate, type TransformedValidator, Validator } from '../base';
+import { ValidateResult, type TransformedValidator, Validator } from '../base';
 import { DateTime } from 'luxon';
 
 export declare namespace DateTimeValidator {
@@ -70,17 +70,17 @@ export class DateTimeValidator<T = Date> extends Validator<T> {
     value: any,
     _key: string,
     label: string,
-  ): magistrate.Result<Date> {
+  ): ValidateResult.Any<Date> {
     const date = this.toDate(value);
     if (date === false || date.toString() === 'Invalid Date') {
-      return magistrate.fail(i18n.t('validator.dateTime.must_be_date', { label }));
+      return ValidateResult.deny(i18n.t('validator.dateTime.must_be_date', { label }));
     }
 
     if (!this.compare(date)) {
-      return magistrate.fail(i18n.t('validator.dateTime.not_in_range', { label }));
+      return ValidateResult.deny(i18n.t('validator.dateTime.not_in_range', { label }));
     }
 
-    return magistrate.ok(date);
+    return ValidateResult.accept(date);
   }
 
   protected toDate(value: any): false | Date {

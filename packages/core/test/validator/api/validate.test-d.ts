@@ -1,5 +1,5 @@
 import { expectType } from 'ts-expect';
-import { magistrate, rule, validate } from '../../../src';
+import { ValidateResult, rule, validate } from '../../../src';
 
 // 传参
 {
@@ -16,7 +16,7 @@ import { magistrate, rule, validate } from '../../../src';
     {},
     {
       errorFormatter(errors) {
-        expectType<magistrate.Fail['errors']>(errors);
+        expectType<ValidateResult.Denied['errors']>(errors);
         return '';
       },
     },

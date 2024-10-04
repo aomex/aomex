@@ -1,10 +1,12 @@
 import { expect, test } from 'vitest';
-import { EnumValidator, magistrate } from '../../../src';
+import { EnumValidator, ValidateResult } from '../../../src';
 
 test('枚举限制', async () => {
   const validator = new EnumValidator(['a', 2, 3]);
-  await expect(validator['validate'](2)).resolves.toStrictEqual(magistrate.ok(2));
-  await expect(validator['validate']('a')).resolves.toStrictEqual(magistrate.ok('a'));
+  await expect(validator['validate'](2)).resolves.toStrictEqual(ValidateResult.accept(2));
+  await expect(validator['validate']('a')).resolves.toStrictEqual(
+    ValidateResult.accept('a'),
+  );
   await expect(validator['validate'](4)).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
@@ -16,7 +18,9 @@ test('枚举限制', async () => {
 
 test('宽松模式下，字符串允许与数字对比', async () => {
   const validator = new EnumValidator(['1', 2, 3]);
-  await expect(validator['validate']('2')).resolves.toStrictEqual(magistrate.ok(2));
+  await expect(validator['validate']('2')).resolves.toStrictEqual(
+    ValidateResult.accept(2),
+  );
 });
 
 test('严格模式下，字符串不允许与数字对比', async () => {

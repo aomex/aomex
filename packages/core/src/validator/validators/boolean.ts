@@ -1,6 +1,6 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
-import { magistrate, type TransformedValidator, Validator } from '../base';
+import { ValidateResult, type TransformedValidator, Validator } from '../base';
 
 export declare namespace BooleanValidator {
   export interface Options<T> extends Validator.Options<T> {
@@ -57,21 +57,21 @@ export class BooleanValidator<T = boolean> extends Validator<T> {
     value: any,
     _key: string,
     label: string,
-  ): magistrate.Result<boolean> {
+  ): ValidateResult.Any<boolean> {
     const {
       truthyValues: trueValues = BooleanValidator.defaultTruthyValues,
       falsyValues: falseValues = BooleanValidator.defaultFalsyValues,
     } = this.config;
 
     if (trueValues.includes(value)) {
-      return magistrate.ok(true);
+      return ValidateResult.accept(true);
     }
 
     if (falseValues.includes(value)) {
-      return magistrate.ok(false);
+      return ValidateResult.accept(false);
     }
 
-    return magistrate.fail(i18n.t('validator.boolean.must_be_boolean', { label }));
+    return ValidateResult.deny(i18n.t('validator.boolean.must_be_boolean', { label }));
   }
 
   protected declare copy: () => BooleanValidator<T>;

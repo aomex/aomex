@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { UrlValidator, magistrate } from '../../../src';
+import { UrlValidator, ValidateResult } from '../../../src';
 
 describe('链式调用返回新的实例', () => {
   const validator = new UrlValidator();
@@ -18,7 +18,9 @@ test('合法的URL格式', async () => {
     'http://www.example.com',
     'https://example.com:3000/path/to?a=b#myhash',
   ]) {
-    await expect(validator['validate'](data)).resolves.toStrictEqual(magistrate.ok(data));
+    await expect(validator['validate'](data)).resolves.toStrictEqual(
+      ValidateResult.accept(data),
+    );
   }
 });
 
@@ -42,7 +44,7 @@ test('不合法的URL格式', async () => {
 test('扩展协议', async () => {
   const validator = new UrlValidator().scheme(['http', 'https', 'abc']);
   await expect(validator['validate']('abc://baidu.com')).resolves.toStrictEqual(
-    magistrate.ok('abc://baidu.com'),
+    ValidateResult.accept('abc://baidu.com'),
   );
   await expect(validator['validate']('ftp://baidu.com')).resolves.toMatchInlineSnapshot(`
     {

@@ -1,11 +1,11 @@
 import { expect, test } from 'vitest';
-import { HashValidator, magistrate } from '../../../src';
+import { HashValidator, ValidateResult } from '../../../src';
 
 test('md5', async () => {
   const validator = new HashValidator('md5');
   await expect(
     validator['validate']('b2a902e0e31cee64611271fe622b18c3'),
-  ).resolves.toStrictEqual(magistrate.ok('b2a902e0e31cee64611271fe622b18c3'));
+  ).resolves.toStrictEqual(ValidateResult.accept('b2a902e0e31cee64611271fe622b18c3'));
 });
 
 test('长度不符', async () => {

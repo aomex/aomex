@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { BigIntValidator, magistrate } from '../../../src';
+import { BigIntValidator, ValidateResult } from '../../../src';
 
 describe('链式调用返回新的实例', () => {
   const validator = new BigIntValidator();
@@ -26,8 +26,12 @@ test('最小值（包含自身）', async () => {
       ],
     }
   `);
-  await expect(validator['validate'](10n)).resolves.toStrictEqual(magistrate.ok(10n));
-  await expect(validator['validate'](101n)).resolves.toStrictEqual(magistrate.ok(101n));
+  await expect(validator['validate'](10n)).resolves.toStrictEqual(
+    ValidateResult.accept(10n),
+  );
+  await expect(validator['validate'](101n)).resolves.toStrictEqual(
+    ValidateResult.accept(101n),
+  );
 });
 
 test('最小值（不包含自身）', async () => {
@@ -39,7 +43,9 @@ test('最小值（不包含自身）', async () => {
       ],
     }
   `);
-  await expect(validator['validate'](11n)).resolves.toStrictEqual(magistrate.ok(11n));
+  await expect(validator['validate'](11n)).resolves.toStrictEqual(
+    ValidateResult.accept(11n),
+  );
 });
 
 test('最大值（包含自身）', async () => {
@@ -51,8 +57,12 @@ test('最大值（包含自身）', async () => {
       ],
     }
   `);
-  await expect(validator['validate'](10n)).resolves.toStrictEqual(magistrate.ok(10n));
-  await expect(validator['validate'](1n)).resolves.toStrictEqual(magistrate.ok(1n));
+  await expect(validator['validate'](10n)).resolves.toStrictEqual(
+    ValidateResult.accept(10n),
+  );
+  await expect(validator['validate'](1n)).resolves.toStrictEqual(
+    ValidateResult.accept(1n),
+  );
 });
 
 test('最大值（不包含自身）', async () => {
@@ -64,13 +74,17 @@ test('最大值（不包含自身）', async () => {
       ],
     }
   `);
-  await expect(validator['validate'](9n)).resolves.toStrictEqual(magistrate.ok(9n));
+  await expect(validator['validate'](9n)).resolves.toStrictEqual(
+    ValidateResult.accept(9n),
+  );
 });
 
 test('从字符串或者数字转换', async () => {
   const validator = new BigIntValidator();
   for (const data of [123, '123']) {
-    await expect(validator['validate'](data)).resolves.toStrictEqual(magistrate.ok(123n));
+    await expect(validator['validate'](data)).resolves.toStrictEqual(
+      ValidateResult.accept(123n),
+    );
   }
 });
 

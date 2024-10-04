@@ -1,7 +1,7 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
 import {
-  magistrate,
+  ValidateResult,
   type TransformedValidator,
   BaseStringValidator,
   Validator,
@@ -69,7 +69,7 @@ export class UuidValidator<T = string> extends BaseStringValidator<T> {
     uuid: string,
     _key: string,
     label: string,
-  ): magistrate.Result<string> {
+  ): ValidateResult.Any<string> {
     const { uuidVersion } = this.config;
 
     let valid = false;
@@ -85,7 +85,7 @@ export class UuidValidator<T = string> extends BaseStringValidator<T> {
     }
 
     if (!valid) {
-      return magistrate.fail(
+      return ValidateResult.deny(
         i18n.t('validator.string.must_be_uuid', {
           label,
           versions: uuidVersion.join(','),
@@ -93,7 +93,7 @@ export class UuidValidator<T = string> extends BaseStringValidator<T> {
       );
     }
 
-    return magistrate.ok(uuid);
+    return ValidateResult.accept(uuid);
   }
 
   protected override toDocument(): OpenAPI.SchemaObject {

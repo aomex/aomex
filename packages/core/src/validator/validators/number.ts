@@ -3,7 +3,7 @@ import {
   type TransformedValidator,
   BaseNumberValidator,
   Validator,
-  magistrate,
+  ValidateResult,
 } from '../base';
 
 export declare namespace NumberValidator {
@@ -24,8 +24,8 @@ export class NumberValidator<T = number> extends BaseNumberValidator<T> {
 
   public declare precision: (decimals: number) => this;
 
-  protected override validateNumber(num: number): magistrate.Result<number> {
-    return magistrate.ok(num);
+  protected override validateNumber(num: number): ValidateResult.Any<number> {
+    return ValidateResult.accept(num);
   }
 
   protected declare copy: () => this;

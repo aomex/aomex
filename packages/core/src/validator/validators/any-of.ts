@@ -1,6 +1,6 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
-import { magistrate, type TransformedValidator, Validator } from '../base';
+import { ValidateResult, type TransformedValidator, Validator } from '../base';
 
 export declare namespace AnyOfValidator {
   export interface Options<T> extends Validator.Options<T> {
@@ -32,22 +32,22 @@ export class AnyOfValidator<T = never> extends Validator<T> {
     value: any,
     key: string,
     label: string,
-  ): Promise<magistrate.Result<any>> {
+  ): Promise<ValidateResult.Any<any>> {
     const { validators } = this.config;
     let matched = false;
 
     for (let i = 0; i < validators.length; ++i) {
       const validator = validators[i]! as AnyOfValidator;
       const result = await validator.validate(value, key, label);
-      if (magistrate.noError(result)) {
-        value = result.ok;
+      if (ValidateResult.noError(result)) {
+        value = result.data;
         matched = true;
       }
     }
 
     return matched
-      ? magistrate.ok(value)
-      : magistrate.fail(i18n.t('validator.any_of.not_match_rule', { label }));
+      ? ValidateResult.accept(value)
+      : ValidateResult.deny(i18n.t('validator.any_of.not_match_rule', { label }));
   }
 
   protected override copyConfig(prev: AnyOfValidator): this {

@@ -1,6 +1,6 @@
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
-import { magistrate } from './magistrate';
+import { ValidateResult } from './validate-result';
 import { Validator } from './validator';
 
 export declare namespace BaseStringValidator {
@@ -58,10 +58,10 @@ export abstract class BaseStringValidator<T = string> extends Validator<T> {
     value: any,
     key: string,
     label: string,
-  ): magistrate.Result<any> | Promise<magistrate.Result<any>> {
+  ): ValidateResult.Any<any> | Promise<ValidateResult.Any<any>> {
     const { pattern, lengthRange } = this.config;
     if (typeof value !== 'string') {
-      return magistrate.fail(i18n.t('validator.string.must_be_string', { label }));
+      return ValidateResult.deny(i18n.t('validator.string.must_be_string', { label }));
     }
 
     value = this.getTrimValue(value);
@@ -70,12 +70,14 @@ export abstract class BaseStringValidator<T = string> extends Validator<T> {
       const { min = 0, max = Infinity } = lengthRange;
       const length = value.length;
       if (length < min || length > max) {
-        return magistrate.fail(i18n.t('validator.string.length_not_in_range', { label }));
+        return ValidateResult.deny(
+          i18n.t('validator.string.length_not_in_range', { label }),
+        );
       }
     }
 
     if (pattern && !pattern.test(value)) {
-      return magistrate.fail(i18n.t('validator.string.not_match_pattern', { label }));
+      return ValidateResult.deny(i18n.t('validator.string.not_match_pattern', { label }));
     }
 
     return this.validateString(value, key, label);
@@ -85,7 +87,7 @@ export abstract class BaseStringValidator<T = string> extends Validator<T> {
     value: string,
     key: string,
     label: string,
-  ): magistrate.Result<any> | Promise<magistrate.Result<any>>;
+  ): ValidateResult.Any<any> | Promise<ValidateResult.Any<any>>;
 
   protected declare copy: () => BaseStringValidator<T>;
 
