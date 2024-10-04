@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/aomex/aomex/compare/v3.3.0...v3.4.0) (2024-10-04)
+
+
+### Bug Fixes
+
+* **console:** terminal无法打印字符串以外的值 ([622bd85](https://github.com/aomex/aomex/commit/622bd85bed5878faa274b02ece6607c59aa44e9b))
+
+
+
+
+
 # [3.3.0](https://github.com/aomex/aomex/compare/v3.2.4...v3.3.0) (2024-09-26)
 
 **Note:** Version bump only for package @aomex/console

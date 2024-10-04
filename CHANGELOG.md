@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/aomex/aomex/compare/v3.3.0...v3.4.0) (2024-10-04)
+
+
+### Bug Fixes
+
+* **cache:** key转为hash导致无法快速查找 ([09bf73e](https://github.com/aomex/aomex/commit/09bf73eb34c7fcb7477e01572f19ed2bdf7ef11e))
+* **console:** terminal无法打印字符串以外的值 ([622bd85](https://github.com/aomex/aomex/commit/622bd85bed5878faa274b02ece6607c59aa44e9b))
+
+
+### Features
+
+* **cache:** 支持存储Map和Set类型 ([4cf2943](https://github.com/aomex/aomex/commit/4cf2943e87fd4511472e516a243154e0eb0ec8ae))
+* **core:** date-time规则增加解析格式 ([3b2ab20](https://github.com/aomex/aomex/commit/3b2ab20daccbd0a637f9e3950035d4e3bea018b5))
+* **web:** request暴露headers和rawHeaders属性 ([3f15488](https://github.com/aomex/aomex/commit/3f154882429860c1a6100194c9d42af40f077728))
+
+
+
+
+
 # [3.3.0](https://github.com/aomex/aomex/compare/v3.2.4...v3.3.0) (2024-09-26)
 
 

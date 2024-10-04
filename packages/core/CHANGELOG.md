@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/aomex/aomex/compare/v3.3.0...v3.4.0) (2024-10-04)
+
+
+### Features
+
+* **core:** date-time规则增加解析格式 ([3b2ab20](https://github.com/aomex/aomex/commit/3b2ab20daccbd0a637f9e3950035d4e3bea018b5))
+
+
+
+
+
 # [3.3.0](https://github.com/aomex/aomex/compare/v3.2.4...v3.3.0) (2024-09-26)
 
 **Note:** Version bump only for package @aomex/core

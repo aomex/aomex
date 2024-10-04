@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/aomex/aomex/compare/v3.3.0...v3.4.0) (2024-10-04)
+
+
+### Bug Fixes
+
+* **cache:** key转为hash导致无法快速查找 ([09bf73e](https://github.com/aomex/aomex/commit/09bf73eb34c7fcb7477e01572f19ed2bdf7ef11e))
+
+
+### Features
+
+* **cache:** 支持存储Map和Set类型 ([4cf2943](https://github.com/aomex/aomex/commit/4cf2943e87fd4511472e516a243154e0eb0ec8ae))
+
+
+
+
+
 # [3.3.0](https://github.com/aomex/aomex/compare/v3.2.4...v3.3.0) (2024-09-26)
 
 **Note:** Version bump only for package @aomex/cache

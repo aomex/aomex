@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/aomex/aomex/compare/v3.3.0...v3.4.0) (2024-10-04)
+
+
+### Features
+
+* **web:** request暴露headers和rawHeaders属性 ([3f15488](https://github.com/aomex/aomex/commit/3f154882429860c1a6100194c9d42af40f077728))
+
+
+
+
+
 # [3.3.0](https://github.com/aomex/aomex/compare/v3.2.4...v3.3.0) (2024-09-26)
 
 **Note:** Version bump only for package @aomex/web
