@@ -47,7 +47,7 @@
     "accepts": "^1.3.8",
     "co-body": "^6.2.0",
     "content-disposition": "^0.5.4",
-    "cookie": "^0.6.0",
+    "cookie": "^0.7.1",
     "destroy": "^1.2.0",
     "formidable": "^3.5.1",
     "fresh": "^0.5.2",
