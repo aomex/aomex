@@ -1,6 +1,6 @@
 import { statuses, type OpenApiInjector, type WebContext } from '@aomex/web';
 
-export abstract class AuthenticationAdapter<Payload extends object | string> {
+export abstract class Strategy<Payload extends object | string> {
   protected abstract authenticate(ctx: WebContext): Promise<Payload | false>;
 
   protected openapi(): OpenApiInjector {

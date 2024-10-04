@@ -1,28 +1,56 @@
 import { expectType, type TypeEqual } from 'ts-expect';
-import { authentication, AuthenticationAdapter } from '../src';
+import { Authentication, Strategy } from '../src';
 import { Middleware } from '@aomex/core';
 
-// 字符串
+// 策略
 {
-  let adapter!: AuthenticationAdapter<'foo'>;
-  const auth = authentication(adapter);
-  expectType<TypeEqual<Middleware.Infer<typeof auth>, { readonly auth: 'foo' }>>(true);
+  let strategy1!: Strategy<'foo'>;
+  let strategy2!: Strategy<'bar'>;
+  const auth = new Authentication({
+    strategies: { foo: strategy1, bar: strategy2 },
+  });
+
+  auth.strategy('foo');
+  auth.strategy('bar');
+  // @ts-expect-error
+  auth.strategy('fooo');
+
+  new Authentication({
+    strategies: {
+      foo: strategy1,
+      // @ts-expect-error
+      bar: {},
+    },
+  });
 }
 
-// 对象
+// 中间件：字符串
 {
-  let adapter!: AuthenticationAdapter<{ foo: 'bar' }>;
-  const auth = authentication(adapter);
-  expectType<TypeEqual<Middleware.Infer<typeof auth>, { readonly auth: { foo: 'bar' } }>>(
+  let strategy!: Strategy<'foo'>;
+  const auth = new Authentication({
+    strategies: { foo: strategy },
+  }).authenticate('foo');
+  expectType<TypeEqual<Middleware.Infer<typeof auth>, { readonly foo: 'foo' }>>(true);
+}
+
+// 中间件：对象
+{
+  let strategy!: Strategy<{ foo: 'bar' }>;
+  const auth = new Authentication({
+    strategies: { foo: strategy },
+  }).authenticate('foo');
+  expectType<TypeEqual<Middleware.Infer<typeof auth>, { readonly foo: { foo: 'bar' } }>>(
     true,
   );
 }
 
-// 自定义authKey
+// 中间件：自定义contextKey
 {
-  let adapter!: AuthenticationAdapter<{ foo: 'bar' }>;
-  const auth = authentication(adapter, 'admin');
+  let strategy!: Strategy<{ foo: 'bar' }>;
+  const auth = new Authentication({
+    strategies: { foo: strategy },
+  }).authenticate('foo', { contextKey: 'foo-bar' });
   expectType<
-    TypeEqual<Middleware.Infer<typeof auth>, { readonly admin: { foo: 'bar' } }>
+    TypeEqual<Middleware.Infer<typeof auth>, { readonly 'foo-bar': { foo: 'bar' } }>
   >(true);
 }

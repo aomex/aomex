@@ -1,7 +1,7 @@
 {
-  "name": "@aomex/auth-jwt-adapter",
+  "name": "@aomex/auth-bearer-strategy",
   "version": "3.3.0",
-  "description": "身份认证JWT适配器",
+  "description": "身份认证bearer策略",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
   "license": "MIT",
@@ -37,15 +37,9 @@
     "@aomex/auth": "^3.0.0",
     "@aomex/web": "^3.0.0"
   },
-  "dependencies": {
-    "@aomex/auth-bearer-adapter": "workspace:^",
-    "@types/jsonwebtoken": "^9.0.6",
-    "jsonwebtoken": "^9.0.2"
-  },
   "devDependencies": {
     "@aomex/auth": "workspace:^",
     "@aomex/core": "workspace:^",
-    "@aomex/internal-tools": "workspace:^",
     "@aomex/web": "workspace:^"
   }
 }

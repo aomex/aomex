@@ -61,11 +61,11 @@ npx create-aomex@latest
 
 # 身份认证
 
-| Name                                                         | Version                                                                                                                     | Desc                |
-| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| [@aomex/auth](./packages/auth)                               | [![npm](https://img.shields.io/npm/v/@aomex/auth)](https://www.npmjs.com/package/@aomex/auth)                               | 身份认证统一入口    |
-| [@aomex/auth-bearer-adapter](./packages/auth-bearer-adapter) | [![npm](https://img.shields.io/npm/v/@aomex/auth-bearer-adapter)](https://www.npmjs.com/package/@aomex/auth-bearer-adapter) | Bearer 方案         |
-| [@aomex/auth-jwt-adapter](./packages/auth-jwt-adapter)       | [![npm](https://img.shields.io/npm/v/@aomex/auth-jwt-adapter)](https://www.npmjs.com/package/@aomex/auth-jwt-adapter)       | Json Web Token 方案 |
+| Name                                                           | Version                                                                                                                       | Desc                |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| [@aomex/auth](./packages/auth)                                 | [![npm](https://img.shields.io/npm/v/@aomex/auth)](https://www.npmjs.com/package/@aomex/auth)                                 | 身份认证统一入口    |
+| [@aomex/auth-bearer-strategy](./packages/auth-bearer-strategy) | [![npm](https://img.shields.io/npm/v/@aomex/auth-bearer-strategy)](https://www.npmjs.com/package/@aomex/auth-bearer-strategy) | Bearer Token 方案   |
+| [@aomex/auth-jwt-strategy](./packages/auth-jwt-strategy)       | [![npm](https://img.shields.io/npm/v/@aomex/auth-jwt-strategy)](https://www.npmjs.com/package/@aomex/auth-jwt-strategy)       | Json Web Token 方案 |
 
 # 第三方搭配
 

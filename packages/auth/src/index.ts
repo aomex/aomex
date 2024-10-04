@@ -1,2 +1,2 @@
 export * from './authentication';
-export * from './authentication-adapter';
+export * from './strategy';

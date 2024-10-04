@@ -1,4 +1,4 @@
-import { AuthenticationAdapter } from '@aomex/auth';
+import { Strategy } from '@aomex/auth';
 import { WebContext } from '@aomex/web';
 import { createHash } from 'node:crypto';
 
@@ -32,20 +32,7 @@ export type TokenLoaderItem =
       key: `access_token` | (string & {});
     };
 
-export interface BearerAdapterOptions<T extends object | string> {
-  /**
-   * 找到token后的回调，解析并返回真正的身份数据
-   */
-  onLoaded: (token: string, ctx: WebContext) => Promise<T | false>;
-  /**
-   * 按从左到右的顺序获取token。默认：`[{ type: 'header', key: 'authorization' }]`
-   */
-  tokenLoaders?: TokenLoaderItem[];
-}
-
-export abstract class AuthenticationBaseBearerAdapter<
-  T extends object | string,
-> extends AuthenticationAdapter<T> {
+export abstract class BaseBearerStrategy<T extends object | string> extends Strategy<T> {
   protected readonly loaders: TokenLoaderItem[];
 
   constructor(loaders?: TokenLoaderItem[]) {
@@ -105,15 +92,29 @@ export abstract class AuthenticationBaseBearerAdapter<
   }
 }
 
+export namespace BearerStrategy {
+  export interface Options<T extends object | string> {
+    /**
+     * 找到token后的回调，解析并返回真正的身份数据
+     */
+    onLoaded: (token: string, ctx: WebContext) => Promise<T | false>;
+    /**
+     * 按从左到右的顺序获取token。默认：`[{ type: 'header', key: 'authorization' }]`
+     */
+    tokenLoaders?: TokenLoaderItem[];
+  }
+}
+
 /**
  * 从请求中获取token
  *
  * 解析优先级： 自定义 -> header -> body -> query -> cookie
  */
-export class AuthenticationBearerAdapter<
-  T extends object | string,
-> extends AuthenticationBaseBearerAdapter<T> {
-  constructor(protected readonly opts: BearerAdapterOptions<T>) {
+export class BearerStrategy<T extends object | string> extends BaseBearerStrategy<{
+  readonly token: string;
+  readonly data: T;
+}> {
+  constructor(protected readonly opts: BearerStrategy.Options<T>) {
     super(opts.tokenLoaders);
   }
 
@@ -134,12 +135,12 @@ export class AuthenticationBearerAdapter<
       .digest('hex');
   }
 
-  protected async authenticate(ctx: WebContext): Promise<T | false> {
+  protected async authenticate(
+    ctx: WebContext,
+  ): Promise<{ readonly token: string; readonly data: T } | false> {
     const { onLoaded } = this.opts;
     const token = this.loadToken(ctx);
-    return token ? onLoaded(token, ctx) : false;
+    const data = token ? await onLoaded(token, ctx) : false;
+    return data !== false && token !== false ? { token, data } : false;
   }
 }
-
-export const bearerAdapter = <T extends object | string>(opts: BearerAdapterOptions<T>) =>
-  new AuthenticationBearerAdapter<T>(opts);

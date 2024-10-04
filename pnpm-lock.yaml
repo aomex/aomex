@@ -84,7 +84,7 @@ importers:
         specifier: workspace:^
         version: link:../web
 
-  packages/auth-bearer-adapter:
+  packages/auth-bearer-strategy:
     devDependencies:
       '@aomex/auth':
         specifier: workspace:^
@@ -96,11 +96,11 @@ importers:
         specifier: workspace:^
         version: link:../web
 
-  packages/auth-jwt-adapter:
+  packages/auth-jwt-strategy:
     dependencies:
-      '@aomex/auth-bearer-adapter':
+      '@aomex/auth-bearer-strategy':
         specifier: workspace:^
-        version: link:../auth-bearer-adapter
+        version: link:../auth-bearer-strategy
       '@types/jsonwebtoken':
         specifier: ^9.0.6
         version: 9.0.6

@@ -1,22 +1,31 @@
 import { middleware, OpenAPI } from '@aomex/core';
 import { expect, test, vitest } from 'vitest';
-import { authentication } from '../src';
-import { MockAdapter } from './mocks/mock-adapter';
+import { Authentication } from '../src';
+import { MockStrategy } from './mocks/mock-strategy';
 import { WebApp } from '@aomex/web';
 import supertest from 'supertest';
 
-test('返回对象', async () => {
-  const adapter = new MockAdapter();
+test('返回策略实例', () => {
+  const strategy = new MockStrategy();
+  const auth = new Authentication({ strategies: { mock: strategy } });
+  expect(auth.strategy('mock')).toBe(strategy);
   // @ts-expect-error
-  vitest.spyOn(adapter, 'authenticate').mockImplementation(() => {
+  expect(auth.strategy('xx')).toBeUndefined();
+});
+
+test('返回对象', async () => {
+  const strategy = new MockStrategy();
+  const auth = new Authentication({ strategies: { mock: strategy } });
+  // @ts-expect-error
+  vitest.spyOn(strategy, 'authenticate').mockImplementation(() => {
     return { foo: 'bar' };
   });
   const app = new WebApp({
     mount: [
-      authentication(adapter),
+      auth.authenticate('mock'),
       middleware.web((ctx) => {
         // @ts-expect-error
-        ctx.send(ctx.auth);
+        ctx.send(ctx.mock);
       }),
     ],
   });
@@ -27,17 +36,19 @@ test('返回对象', async () => {
 });
 
 test('返回字符串', async () => {
-  const adapter = new MockAdapter();
+  const strategy = new MockStrategy();
+  const auth = new Authentication({ strategies: { mock: strategy } });
+
   // @ts-expect-error
-  vitest.spyOn(adapter, 'authenticate').mockImplementation(() => {
+  vitest.spyOn(strategy, 'authenticate').mockImplementation(() => {
     return 'foo-bar';
   });
   const app = new WebApp({
     mount: [
-      authentication(adapter),
+      auth.authenticate('mock'),
       middleware.web((ctx) => {
         // @ts-expect-error
-        ctx.send(ctx.auth);
+        ctx.send(ctx.mock);
       }),
     ],
   });
@@ -46,38 +57,41 @@ test('返回字符串', async () => {
 });
 
 test('返回false', async () => {
-  const adapter = new MockAdapter();
+  const strategy = new MockStrategy();
+  const auth = new Authentication({ strategies: { mock: strategy } });
   // @ts-expect-error
-  vitest.spyOn(adapter, 'authenticate').mockImplementation(() => false);
+  vitest.spyOn(strategy, 'authenticate').mockImplementation(() => false);
   const app = new WebApp({
-    mount: [authentication(adapter)],
+    mount: [auth.authenticate('mock')],
   });
 
   await supertest(app.listen()).get('/').expect(401);
 });
 
 test('抛出异常', async () => {
-  const adapter = new MockAdapter();
+  const strategy = new MockStrategy();
+  const auth = new Authentication({ strategies: { mock: strategy } });
   // @ts-expect-error
-  vitest.spyOn(adapter, 'authenticate').mockImplementation(() => {
+  vitest.spyOn(strategy, 'authenticate').mockImplementation(() => {
     throw new Error('abcde');
   });
   const app = new WebApp({
-    mount: [authentication(adapter)],
+    mount: [auth.authenticate('mock')],
   });
 
   await supertest(app.listen()).get('/').expect(401, 'abcde');
 });
 
-test('自定义authKey', async () => {
-  const adapter = new MockAdapter();
+test('自定义contextKey', async () => {
+  const strategy = new MockStrategy();
+  const auth = new Authentication({ strategies: { mock: strategy } });
   // @ts-expect-error
-  vitest.spyOn(adapter, 'authenticate').mockImplementation(() => {
+  vitest.spyOn(strategy, 'authenticate').mockImplementation(() => {
     return { foo: 'bar' };
   });
   const app = new WebApp({
     mount: [
-      authentication(adapter, 'admin'),
+      auth.authenticate('mock', { contextKey: 'admin' }),
       middleware.web((ctx) => {
         // @ts-expect-error
         ctx.send(ctx.admin);
@@ -98,7 +112,9 @@ test('文档', () => {
       '/': { get: { responses: {} } },
     },
   };
-  const md = authentication(new MockAdapter());
+  const md = new Authentication({
+    strategies: { mock: new MockStrategy() },
+  }).authenticate('mock');
   const openapi = md['openapi']();
   openapi.onDocument?.(doc);
   openapi.onMethod?.(doc.paths['/']!.get!, {

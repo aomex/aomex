@@ -4,34 +4,35 @@ import jsonWebToken, {
   type SignOptions,
 } from 'jsonwebtoken'; // CommonJS
 import { WebContext, type OpenApiInjector } from '@aomex/web';
-import {
-  AuthenticationBaseBearerAdapter,
-  type BearerAdapterOptions,
-} from '@aomex/auth-bearer-adapter';
+import { BaseBearerStrategy, type TokenLoaderItem } from '@aomex/auth-bearer-strategy';
 
-type SecretProvider =
-  | {
-      /**
-       * 密码，用于生成令牌和验证令牌
-       */
-      secret: Secret;
-    }
-  | {
-      /**
-       * 公钥，用于验证令牌
-       */
-      publicKey: Secret;
-      /**
-       * 密钥，用于生成令牌
-       */
-      privateKey: Secret;
-    };
+export namespace JwtStrategy {
+  type SecretProvider =
+    | {
+        /**
+         * 密码，用于生成令牌和验证令牌
+         */
+        secret: Secret;
+      }
+    | {
+        /**
+         * 公钥，用于验证令牌
+         */
+        publicKey: Secret;
+        /**
+         * 密钥，用于生成令牌
+         */
+        privateKey: Secret;
+      };
 
-export type JwtAdapterOptions<
-  Payload extends string | object,
-  VerifiedPayload = Payload,
-> = SecretProvider &
-  Pick<BearerAdapterOptions<Payload>, 'tokenLoaders'> & {
+  export type Options<
+    Payload extends string | object,
+    VerifiedPayload = Payload,
+  > = SecretProvider & {
+    /**
+     * 按从左到右的顺序获取token。默认：`[{ type: 'header', key: 'authorization' }]`
+     */
+    tokenLoaders?: TokenLoaderItem[];
     /**
      * 验证令牌时的额外参数。需要和生成令牌时保持一致
      */
@@ -49,12 +50,13 @@ export type JwtAdapterOptions<
      */
     legacySecretOrPublicKey?: Secret[];
   };
+}
 
-export class AuthenticationJwtAdapter<
+export class JwtStrategy<
   Payload extends object | string,
   VerifiedPayload extends object | string = Payload,
-> extends AuthenticationBaseBearerAdapter<VerifiedPayload> {
-  constructor(protected readonly opts: JwtAdapterOptions<Payload, VerifiedPayload>) {
+> extends BaseBearerStrategy<VerifiedPayload> {
+  constructor(protected readonly opts: JwtStrategy.Options<Payload, VerifiedPayload>) {
     super(opts.tokenLoaders);
   }
 
@@ -114,10 +116,3 @@ export class AuthenticationJwtAdapter<
     };
   }
 }
-
-export const jwtAdapter = <
-  Payload extends object | string,
-  VerifiedPayload extends object | string = Payload,
->(
-  opts: JwtAdapterOptions<Payload, VerifiedPayload>,
-) => new AuthenticationJwtAdapter<Payload, VerifiedPayload>(opts);
