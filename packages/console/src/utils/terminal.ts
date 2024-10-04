@@ -21,7 +21,10 @@ class Terminal {
    * 打印蓝色通知信息，开头显示小图标 ℹ
    */
   printInfo(...messages: any[]) {
-    console.info(symbols.info, ...messages.map((message) => this.style('blue', message)));
+    console.info(
+      symbols.info,
+      ...messages.map((message) => this.style('blue', String(message))),
+    );
   }
 
   /**
@@ -30,7 +33,7 @@ class Terminal {
   printWarning(...messages: any[]) {
     console.warn(
       symbols.warning,
-      ...messages.map((message) => this.style('yellow', message)),
+      ...messages.map((message) => this.style('yellow', String(message))),
     );
   }
 
@@ -40,7 +43,7 @@ class Terminal {
   printError(...messages: any[]) {
     console.error(
       symbols.error,
-      ...messages.map((message) => this.style('red', message)),
+      ...messages.map((message) => this.style('red', String(message))),
     );
   }
 
@@ -50,7 +53,7 @@ class Terminal {
   printSuccess(...messages: any[]) {
     console.log(
       symbols.success,
-      ...messages.map((message) => this.style('green', message)),
+      ...messages.map((message) => this.style('green', String(message))),
     );
   }
 

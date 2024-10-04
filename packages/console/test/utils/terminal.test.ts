@@ -3,7 +3,7 @@ import { terminal } from '../../src';
 import { styleText } from 'util';
 import { sleep } from '@aomex/internal-tools';
 
-test('generateTable', () => {
+test('生成表格', () => {
   expect(
     terminal.generateTable([
       ['编号', '姓名', '性别'],
@@ -24,7 +24,7 @@ test('generateTable', () => {
   `);
 });
 
-test('printTable', () => {
+test('打印表格', () => {
   const spy = vitest.spyOn(console, 'log');
   terminal.printTable([
     ['编号', '姓名', '性别'],
@@ -45,46 +45,51 @@ test('printTable', () => {
   );
 });
 
-test('printWarning', () => {
+test('警告', () => {
   const spy = vitest.spyOn(console, 'warn');
   terminal.printWarning('放学别跑');
   expect(spy).toBeCalledTimes(1);
+  terminal.printWarning(1, true, {}, []);
   spy.mockRestore();
 });
 
-test('print', () => {
+test('日志', () => {
   const spy = vitest.spyOn(console, 'log');
   terminal.print('放学别跑');
   expect(spy).toBeCalledTimes(1);
+  terminal.print(1, true, {}, []);
   spy.mockRestore();
 });
 
-test('printInfo', () => {
+test('信息', () => {
   const spy = vitest.spyOn(console, 'info');
   terminal.printInfo('放学别跑');
   expect(spy).toBeCalledTimes(1);
+  terminal.printInfo(1, true, {}, []);
   spy.mockRestore();
 });
 
-test('printError', () => {
+test('错误', () => {
   const spy = vitest.spyOn(console, 'error');
   terminal.printError('放学别跑');
   expect(spy).toBeCalledTimes(1);
+  terminal.printError(1, true, {}, []);
   spy.mockRestore();
 });
 
-test('printSuccess', () => {
+test('成功', () => {
   const spy = vitest.spyOn(console, 'log');
   terminal.printSuccess('放学跑了');
   expect(spy).toBeCalledTimes(1);
+  terminal.printSuccess(1, true, {}, []);
   spy.mockRestore();
 });
 
-test('stripStyle', () => {
+test('删除样式', () => {
   expect(terminal.stripStyle(styleText('red', '放学别跑'))).toBe('放学别跑');
 });
 
-describe('runTasks', () => {
+describe('流程动画', () => {
   test('正常流程', async () => {
     const result = await terminal.runTasks<{ value: string }>([
       {
