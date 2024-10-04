@@ -1,4 +1,4 @@
-import { expect, test, vitest } from 'vitest';
+import { describe, expect, test, vitest } from 'vitest';
 import { MockStore } from './mock/caching.mock';
 import { Caching } from '../src';
 
@@ -163,4 +163,73 @@ test('删除全部', async () => {
   expect(spy).toBeCalledWith();
 
   spy.mockRestore();
+});
+
+describe('复杂对象', () => {
+  test('保存Map', async () => {
+    const spy = vitest
+      .spyOn(MockStore.prototype, 'setValue')
+      // @ts-expect-error
+      .mockImplementation(() => true);
+
+    const map = new Map();
+    map.set('foo', 'bar');
+
+    await caching.set('foo', map);
+    expect(spy).toHaveBeenLastCalledWith(
+      'foo',
+      '{"_$caching_type$_":"Map","_$caching_data$_":[["foo","bar"]]}',
+      undefined,
+    );
+    expect(spy).toHaveReturnedWith(true);
+    spy.mockRestore();
+  });
+
+  test('保存Set', async () => {
+    const spy = vitest
+      .spyOn(MockStore.prototype, 'setValue')
+      // @ts-expect-error
+      .mockImplementation(() => true);
+
+    const set = new Set();
+    set.add('a');
+    set.add('bcc');
+
+    await caching.set('foo', set);
+    expect(spy).toHaveBeenLastCalledWith(
+      'foo',
+      '{"_$caching_type$_":"Set","_$caching_data$_":["a","bcc"]}',
+      undefined,
+    );
+    expect(spy).toHaveReturnedWith(true);
+    spy.mockRestore();
+  });
+
+  test('恢复Map', async () => {
+    const spy = vitest
+      .spyOn(MockStore.prototype, 'getValue')
+      .mockImplementation(
+        async () => '{"_$caching_type$_":"Map","_$caching_data$_":[["foo","bar"]]}',
+      );
+
+    const result = await caching.get<Map<any, any>>('foo');
+    expect(result).toBeInstanceOf(Map);
+    expect(Array.from(result!.entries())).toStrictEqual([['foo', 'bar']]);
+
+    spy.mockRestore();
+  });
+
+  test('恢复Set', async () => {
+    const spy = vitest
+      .spyOn(MockStore.prototype, 'getValue')
+      .mockImplementation(
+        async () => '{"_$caching_type$_":"Set","_$caching_data$_":["a","bcc"]}',
+      );
+
+    const result = await caching.get<Set<any>>('foo');
+    expect(result).toBeInstanceOf(Set);
+    expect(Array.from(result!.values())).toStrictEqual(['a', 'bcc']);
+
+    spy.mockRestore();
+  });
 });

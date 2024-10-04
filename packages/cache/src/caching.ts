@@ -4,6 +4,9 @@ export namespace Caching {
   export type Types = string | number | object | boolean;
 }
 
+const CACHING_TYPE = '_$caching_type$_';
+const CACHING_DATA = '_$caching_data$_';
+
 export class Caching<T extends CacheAdapter = CacheAdapter> {
   constructor(readonly adapter: T) {}
 
@@ -28,7 +31,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   async get(key: string, defaultValue?: Caching.Types): Promise<any> {
     await this.adapter.connect();
     const result = await this.adapter.getValue(key);
-    return this.parseValue(result, defaultValue);
+    return this.decodeValue(result, defaultValue);
   }
 
   /**
@@ -41,7 +44,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    */
   async set(key: string, value: Caching.Types, durationMs?: number): Promise<boolean> {
     await this.adapter.connect();
-    return this.adapter.setValue(key, JSON.stringify(value), durationMs);
+    return this.adapter.setValue(key, this.encodeValue(value), durationMs);
   }
 
   /**
@@ -54,7 +57,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    */
   async setNX(key: string, value: Caching.Types, durationMs?: number): Promise<boolean> {
     await this.adapter.connect();
-    return this.adapter.setNotExistValue(key, JSON.stringify(value), durationMs);
+    return this.adapter.setNotExistValue(key, this.encodeValue(value), durationMs);
   }
 
   /**
@@ -70,7 +73,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
     await this.adapter.connect();
     return this.adapter.leftPushValue(
       key,
-      ...values.map((value) => JSON.stringify(value)),
+      ...values.map((value) => this.encodeValue(value)),
     );
   }
 
@@ -80,7 +83,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   async rightPop<T extends Caching.Types>(key: string): Promise<T | null> {
     await this.adapter.connect();
     const result = await this.adapter.rightPopValue(key);
-    return this.parseValue(result);
+    return this.decodeValue(result);
   }
 
   /**
@@ -148,13 +151,43 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
     return this.adapter.deleteAllValues();
   }
 
-  protected parseValue(value: string | null, defaultValue?: Caching.Types) {
+  protected encodeValue(value: Caching.Types) {
+    if (value instanceof Map) {
+      value = { [CACHING_TYPE]: 'Map', [CACHING_DATA]: Array.from(value.entries()) };
+    } else if (value instanceof Set) {
+      value = { [CACHING_TYPE]: 'Set', [CACHING_DATA]: Array.from(value.values()) };
+    }
+    return JSON.stringify(value);
+  }
+
+  protected decodeValue(value: string | null, defaultValue?: Caching.Types) {
     if (value === null) {
       return defaultValue === void 0 ? null : defaultValue;
     }
 
     try {
-      return JSON.parse(value);
+      const decoded = JSON.parse(value);
+      if (decoded && typeof decoded === 'object') {
+        const keys = Object.keys(decoded);
+        if (
+          keys.length === 2 &&
+          keys.includes(CACHING_TYPE) &&
+          keys.includes(CACHING_DATA)
+        ) {
+          switch (decoded[CACHING_TYPE]) {
+            case 'Map':
+              if (Array.isArray(decoded[CACHING_DATA])) {
+                return new Map(decoded[CACHING_DATA]);
+              }
+              break;
+            case 'Set':
+              if (Array.isArray(decoded[CACHING_DATA])) {
+                return new Set(decoded[CACHING_DATA]);
+              }
+          }
+        }
+      }
+      return decoded;
     } catch {
       return null;
     }
