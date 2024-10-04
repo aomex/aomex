@@ -21,7 +21,7 @@ test('默认设置报文', async () => {
         'cross-origin-resource-policy': 'same-origin',
         'origin-agent-cluster': '?1',
         'referrer-policy': 'no-referrer',
-        'strict-transport-security': 'max-age=15552000; includeSubDomains',
+        'strict-transport-security': 'max-age=31536000; includeSubDomains',
         'x-content-type-options': 'nosniff',
         'x-dns-prefetch-control': 'off',
         'x-download-options': 'noopen',
