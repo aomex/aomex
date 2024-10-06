@@ -33,7 +33,7 @@ middleware.mixin<{ test1: 'a'; test2: boolean }>((ctx) => {
 {
   const md1 = middleware.mixin<{ test: string }>(() => {});
   const md2 = md1.skip(() => true);
-  expectType<TypeEqual<Middleware<{ test: string }>, typeof md2>>(true);
+  expectType<TypeEqual<MixinMiddleware<{ test: string }>, typeof md2>>(true);
   expectType<TypeEqual<Middleware<object>, typeof md2>>(false);
 }
 

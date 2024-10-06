@@ -1,4 +1,5 @@
 import type { Next } from './compose';
+import type { MixinMiddleware } from './mixin-middleware';
 
 export declare namespace Middleware {
   export type Infer<T> =
@@ -32,7 +33,7 @@ export abstract class Middleware<Props extends object = object> {
    */
   public skip(
     when: (ctx: this['_contextType']) => boolean | Promise<boolean>,
-  ): Middleware<Props> {
+  ): MixinMiddleware<Props> {
     return middleware.mixin(async (ctx, next) => {
       const skipped = await when(ctx);
       return skipped ? next() : this.fn(ctx, next);
