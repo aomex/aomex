@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.1](https://github.com/aomex/aomex/compare/v3.4.0...v3.4.1) (2024-10-06)
+
+
+### Bug Fixes
+
+* **core:** 中间件skip返回类型无法使用在app ([801b791](https://github.com/aomex/aomex/commit/801b791247d6f74b61fe4c513866c759dc5c9f84))
+
+
+
+
+
 # [3.4.0](https://github.com/aomex/aomex/compare/v3.3.0...v3.4.0) (2024-10-04)
 
 
