@@ -82,28 +82,6 @@ test('抛出异常', async () => {
   await supertest(app.listen()).get('/').expect(401, 'abcde');
 });
 
-test('自定义contextKey', async () => {
-  const strategy = new MockStrategy();
-  const auth = new Authentication({ strategies: { mock: strategy } });
-  // @ts-expect-error
-  vitest.spyOn(strategy, 'authenticate').mockImplementation(() => {
-    return { foo: 'bar' };
-  });
-  const app = new WebApp({
-    mount: [
-      auth.authenticate('mock', { contextKey: 'admin' }),
-      middleware.web((ctx) => {
-        // @ts-expect-error
-        ctx.send(ctx.admin);
-      }),
-    ],
-  });
-
-  await supertest(app.listen())
-    .get('/')
-    .expect(200, JSON.stringify({ foo: 'bar' }));
-});
-
 test('文档', () => {
   const doc: OpenAPI.Document = {
     openapi: '',

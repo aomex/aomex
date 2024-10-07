@@ -21,27 +21,16 @@ export class Authentication<S extends { [K: string]: Strategy<object | string> }
   /**
    * 身份认证中间件
    */
-  public authenticate<
-    StrategyName extends keyof S,
-    CtxKey extends string = StrategyName extends string ? StrategyName : never,
-    Payload extends object | string = S[StrategyName] extends Strategy<infer P>
-      ? P
-      : never,
-  >(
+  public authenticate<StrategyName extends keyof S>(
     name: StrategyName,
-    opts: {
-      /**
-       * ctx上使用的属性
-       */
-      contextKey?: CtxKey;
-    } = {},
-  ): WebMiddleware<{ readonly [K in CtxKey]: Payload }> {
-    const { contextKey = name } = opts;
+  ): WebMiddleware<{
+    readonly [K in StrategyName]: S[StrategyName] extends Strategy<infer P> ? P : never;
+  }> {
     const strategy = this.strategy(name);
 
     return middleware.web({
       fn: async (ctx, next) => {
-        let payload: Payload | false = false;
+        let payload: object | string | false = false;
         try {
           payload = (await strategy['authenticate'](ctx)) as any;
         } catch (e) {
@@ -50,7 +39,7 @@ export class Authentication<S extends { [K: string]: Strategy<object | string> }
 
         if (payload === false) return ctx.throw(401);
 
-        Object.defineProperty(ctx, contextKey, {
+        Object.defineProperty(ctx, name, {
           get: () => payload,
         });
         return next();
