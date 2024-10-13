@@ -15,6 +15,9 @@ export class Task {
     this.currentKey = `${this.runningKey}|now:${givenTime}`;
     this.filePath = process.argv[1]!;
     this.execArgv = [...process.execArgv];
+    if (!this.execArgv.includes('--enable-source-maps')) {
+      this.execArgv.unshift('--enable-source-maps');
+    }
   }
 
   async consume() {
