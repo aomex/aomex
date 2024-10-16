@@ -39,7 +39,14 @@ export class Task {
         [...this.execArgv, this.filePath, ...argv],
         {
           cwd: process.cwd(),
-          env: process.env,
+          env: {
+            /**
+             * 支持颜色输出。默认值是 `0` 代表不输出颜色。
+             * @link https://nodejs.org/api/tty.html#writestreamgetcolordepthenv
+             */
+            FORCE_COLOR: '3',
+            ...process.env,
+          },
           stdio: 'pipe',
         },
       );
