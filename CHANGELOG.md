@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/aomex/aomex/compare/v3.4.2...v3.5.0) (2024-10-16)
+
+
+### Features
+
+* **cron:** 子任务支持source-maps ([968b44d](https://github.com/aomex/aomex/commit/968b44d08132f0d6d379ff84c5fe56f033965ee0))
+* **cron:** 子任务支持输出颜色 ([58a7530](https://github.com/aomex/aomex/commit/58a75303a037aef2bf5c416fe8c9a7356809de45))
+
+
+
+
+
 ## [3.4.2](https://github.com/aomex/aomex/compare/v3.4.1...v3.4.2) (2024-10-07)
 
 
