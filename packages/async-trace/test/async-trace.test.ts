@@ -11,6 +11,7 @@ test('追踪回调', async () => {
   expect(asyncTrace.getRecord(traceId)).toMatchObject({
     id: traceId,
     label: 'label-foo',
+    error: null,
   });
 });
 
@@ -28,6 +29,7 @@ test('父子链路', async () => {
   expect(asyncTrace.getRecord(traceId1)).toMatchObject({
     label: 'label-foo',
     children: [{ label: 'label-bar' }],
+    error: null,
   });
 });
 
@@ -52,16 +54,18 @@ test('有父链路时，可多次获取', async () => {
   });
 });
 
-test('逻辑异常时也能记录', async () => {
+test('逻辑异常时也记录报错信息', async () => {
   let traceId!: string;
   await expect(
     asyncTrace.run('label-foo', async (id) => {
       traceId = id;
-      throw new Error('x');
+      throw new Error('xx-yy-zz');
     }),
-  ).rejects.toThrowError('x');
-  expect(asyncTrace.getRecord(traceId)).toMatchObject({
+  ).rejects.toThrowError('xx-yy-zz');
+  const record = asyncTrace.getRecord(traceId);
+  expect(record).toMatchObject({
     id: traceId,
     label: 'label-foo',
   });
+  expect(record.error).toMatchInlineSnapshot(`[Error: xx-yy-zz]`);
 });

@@ -1,6 +1,9 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 
 export interface AsyncTraceRecord {
+  /**
+   * 唯一编号，用于识别子链路
+   */
   id: string;
   /**
    * 标签
@@ -26,6 +29,10 @@ export interface AsyncTraceRecord {
    * 子链路
    */
   children: AsyncTraceRecord[];
+  /**
+   * 报错内容
+   */
+  error?: Error | null;
 }
 
 class AsyncTrace {
@@ -46,7 +53,7 @@ class AsyncTrace {
       const id = start + '.' + this.idSequence;
 
       this.storage.run(id, async () => {
-        const done = () => {
+        const done = (err: Error | null) => {
           const end = Date.now();
           this.records.push({
             id,
@@ -56,16 +63,17 @@ class AsyncTrace {
             label,
             parent,
             children: this.records.filter((item) => item.parent === id),
+            error: err,
           });
           this.records = this.records.filter((item) => item.parent !== id);
         };
 
         try {
           const result = await callback(id);
-          done();
+          done(null);
           resolve(result);
         } catch (e) {
-          done();
+          done(e instanceof Error ? e : Error(String(e)));
           reject(e);
         }
       });
