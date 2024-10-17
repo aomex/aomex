@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/aomex/aomex/compare/v3.5.0...v3.6.0) (2024-10-17)
+
+
+### Features
+
+* **async-trace:** 方法追踪时，默认标签优先使用displayName属性 ([4458c39](https://github.com/aomex/aomex/commit/4458c397da7498a51323f45e874e1689fb6ac81b))
+* **async-trace:** 记录报错信息 ([4861ee0](https://github.com/aomex/aomex/commit/4861ee03b09869b395f26b2aa3e3aa70dc27fe1f))
+
+
+
+
+
 # [3.5.0](https://github.com/aomex/aomex/compare/v3.4.2...v3.5.0) (2024-10-16)
 
 **Note:** Version bump only for package @aomex/async-trace

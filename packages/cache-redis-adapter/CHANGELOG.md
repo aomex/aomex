@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/aomex/aomex/compare/v3.5.0...v3.6.0) (2024-10-17)
+
+**Note:** Version bump only for package @aomex/cache-redis-adapter
+
+
+
+
+
 # [3.5.0](https://github.com/aomex/aomex/compare/v3.4.2...v3.5.0) (2024-10-16)
 
 **Note:** Version bump only for package @aomex/cache-redis-adapter

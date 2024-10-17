@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/aomex/aomex/compare/v3.5.0...v3.6.0) (2024-10-17)
+
+
+### Features
+
+* **core:** 服务层displayName自动去掉service后缀 ([581017f](https://github.com/aomex/aomex/commit/581017f98405b23d0d1827a3fd7b8d0fb3898bfd))
+
+
+
+
+
 # [3.5.0](https://github.com/aomex/aomex/compare/v3.4.2...v3.5.0) (2024-10-16)
 
 **Note:** Version bump only for package @aomex/core
