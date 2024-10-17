@@ -326,7 +326,7 @@ test('accept', async () => {
 test('cookies', async () => {
   {
     const { req, res } = await mockServer((agent) => agent.get('/test/api'));
-    expect(req.cookies).toStrictEqual({});
+    expect(req.cookies).toStrictEqual(Object.create(null));
     res.end();
   }
 
@@ -336,11 +336,13 @@ test('cookies', async () => {
         .get('/test/api')
         .set('Cookie', ['test1=foo', 'test2=bar', `test3=${encodeURIComponent('#')}`]),
     );
-    expect(req.cookies).toStrictEqual({
-      test1: 'foo',
-      test2: 'bar',
-      test3: '#',
-    });
+    expect(req.cookies).toMatchInlineSnapshot(`
+      {
+        "test1": "foo",
+        "test2": "bar",
+        "test3": "#",
+      }
+    `);
     res.end();
   }
 });

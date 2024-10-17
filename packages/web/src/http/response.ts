@@ -20,7 +20,7 @@ import { createReadStream } from 'node:fs';
 import vary from 'vary';
 import typeIs from 'type-is';
 import type { OutgoingHttpHeaders } from 'node:http';
-import cookie, { type CookieSerializeOptions } from 'cookie';
+import cookie, { type SerializeOptions as CookieSerializeOptions } from 'cookie';
 import { MIMEType } from 'node:util';
 import { i18n } from '../i18n';
 
