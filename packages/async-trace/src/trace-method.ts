@@ -21,7 +21,11 @@ export const traceMethod = <T, P extends (...args: any[]) => Promise<T>>(
       try {
         return await asyncTrace.run<T>(
           label === undefined
-            ? `${this.constructor.name}.${String(context.name)}()`
+            ? `${
+                'displayName' in this && typeof this.displayName === 'string'
+                  ? this.displayName
+                  : this.constructor.name
+              }.${String(context.name)}()`
             : typeof label === 'string'
               ? label
               : label(...args),

@@ -76,3 +76,24 @@ test('省略标签', async () => {
     label: 'MyService.plus()',
   });
 });
+
+test('类名优先使用displayName', async () => {
+  let snapshot!: AsyncTraceRecord;
+
+  class MyService {
+    get displayName() {
+      return 'foo-bar';
+    }
+
+    @traceMethod(undefined, (record) => {
+      snapshot = record;
+    })
+    async plus(a: number, b: number) {
+      return a + b;
+    }
+  }
+  await new MyService().plus(1, 2);
+  expect(snapshot).toMatchObject({
+    label: 'foo-bar.plus()',
+  });
+});
