@@ -1,6 +1,14 @@
 import type { CombinedServices } from './combine-services';
 
 export abstract class Service {
+  protected get displayName() {
+    const className = this.constructor.name;
+    if (className.endsWith('Service')) {
+      return className.slice(0, -7);
+    }
+    return className;
+  }
+
   constructor(private readonly _services: Record<string, Service>) {}
 
   protected get services(): CombinedServices {
