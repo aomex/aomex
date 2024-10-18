@@ -73,7 +73,7 @@ test('省略标签', async () => {
   }
   await new MyService().plus(1, 2);
   expect(snapshot).toMatchObject({
-    label: 'MyService.plus()',
+    label: 'MyService.plus',
   });
 });
 
@@ -94,6 +94,6 @@ test('类名优先使用displayName', async () => {
   }
   await new MyService().plus(1, 2);
   expect(snapshot).toMatchObject({
-    label: 'foo-bar.plus()',
+    label: 'foo-bar.plus',
   });
 });
