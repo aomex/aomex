@@ -20,7 +20,7 @@ const regUnixTimeWithMS = /^[0-9]{10}\.[0-9]{3}$/;
 export class DateTimeValidator<T = Date> extends Validator<T> {
   protected declare config: DateTimeValidator.Options<T>;
 
-  constructor(formats?: [string, ...string[]]) {
+  constructor(formats?: string[]) {
     super();
     this.config.formats = formats;
   }
