@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.7.0](https://github.com/aomex/aomex/compare/v3.6.0...v3.7.0) (2024-10-19)
+
+
+### Bug Fixes
+
+* **async-trace:** 追踪方法默认label不加括号 ([5d62f7c](https://github.com/aomex/aomex/commit/5d62f7ca08037506d02668edba4a8e3bb612710b))
+
+
+
+
+
 # [3.6.0](https://github.com/aomex/aomex/compare/v3.5.0...v3.6.0) (2024-10-17)
 
 

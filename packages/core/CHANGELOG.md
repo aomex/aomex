@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.7.0](https://github.com/aomex/aomex/compare/v3.6.0...v3.7.0) (2024-10-19)
+
+
+### Bug Fixes
+
+* **core:** rule.dateTime()取消函数重载 ([8da090f](https://github.com/aomex/aomex/commit/8da090fd7cd3d6e47ba85317c7146b6b6efe6859))
+
+
+### Features
+
+* **core:** 对象验证器支持动态字段 ([f189415](https://github.com/aomex/aomex/commit/f189415ca0fa65d0f61a279ed0a06cb47bcd67dd))
+
+
+
+
+
 # [3.6.0](https://github.com/aomex/aomex/compare/v3.5.0...v3.6.0) (2024-10-17)
 
 

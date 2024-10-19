@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.7.0](https://github.com/aomex/aomex/compare/v3.6.0...v3.7.0) (2024-10-19)
+
+
+### Bug Fixes
+
+* **web:** setHeaders是node.js内置方法 ([e53d569](https://github.com/aomex/aomex/commit/e53d5699cd24d5e8dba330eba224ff00853bca1b))
+
+
+### Features
+
+* **core:** 对象验证器支持动态字段 ([f189415](https://github.com/aomex/aomex/commit/f189415ca0fa65d0f61a279ed0a06cb47bcd67dd))
+
+
+
+
+
 # [3.6.0](https://github.com/aomex/aomex/compare/v3.5.0...v3.6.0) (2024-10-17)
 
 **Note:** Version bump only for package @aomex/web
