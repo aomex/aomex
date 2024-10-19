@@ -280,16 +280,20 @@ export class WebResponse extends ServerResponse {
     <T extends WebResponse>(name: string, value: number | string | readonly string[]): T;
   };
 
-  setHeaders(
-    headers: {
-      [K: string]: string | number | readonly string[];
-    } & { [K in UpperStringHeaderKeys]?: string | number } & {
-      [K in UpperArrayHeaderKeys]?: readonly string[];
-    },
-  ): void {
-    for (const [key, value] of Object.entries(headers)) {
-      value !== void 0 && this.setHeader(key, value);
+  override setHeaders(
+    headers:
+      | Headers
+      | Map<string, string | number | readonly string[]>
+      | ({
+          [K: string]: string | number | readonly string[];
+        } & { [K in UpperStringHeaderKeys]?: string | number } & {
+          [K in UpperArrayHeaderKeys]?: readonly string[];
+        }),
+  ): this {
+    if (headers instanceof Headers || headers instanceof Map) {
+      return super.setHeaders(headers);
     }
+    return super.setHeaders(new Map(Object.entries(headers)));
   }
 
   vary(
