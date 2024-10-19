@@ -14,28 +14,23 @@ export declare namespace Validator {
   }
 
   export type ConvertOptional<T> = TDefault extends T
-    ? ConvertOptionalToNever<T>
-    : ConvertOptionalToUndefined<T>;
-  export type ConvertOptionalToUndefined<T> = T extends TOptional
-    ? undefined
+    ? ConvertOptionalTo<T, never>
+    : ConvertOptionalTo<T, undefined>;
+  export type ConvertOptionalTo<T, K extends undefined | never> = T extends TOptional
+    ? K
     : T extends TDefault
       ? never
       : T extends TObject
-        ? object
+        ? { [K: string]: unknown }
         : T;
-  export type ConvertOptionalToNever<T> = T extends TOptional | TDefault
-    ? never
-    : T extends TObject
-      ? object
-      : T;
 
   export interface TransformFn<T, T1> {
     (data: ConvertOptional<T>): Promise<T1> | T1;
   }
 
   export type ParameterOrFn<T> =
-    | ConvertOptionalToNever<T>
-    | (() => ConvertOptionalToNever<T>);
+    | ConvertOptionalTo<T, never>
+    | (() => ConvertOptionalTo<T, never>);
 
   export type Infer<T> =
     T extends Validator<infer Type>

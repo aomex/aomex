@@ -2,7 +2,14 @@ import type { OpenAPI } from '../../interface';
 import { ValidateResult, type TransformedValidator, Validator } from '../base';
 
 export declare namespace AnyValidator {
-  type Type = number | string | boolean | any[] | Validator.TObject | bigint | Buffer;
+  type Type =
+    | number
+    | string
+    | boolean
+    | any[]
+    | { [K: string]: unknown }
+    | bigint
+    | Buffer;
 }
 
 export class AnyValidator<T = AnyValidator.Type> extends Validator<T> {

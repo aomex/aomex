@@ -66,6 +66,7 @@ test('文档', () => {
             "content": {
               "application/json": {
                 "schema": {
+                  "additionalProperties": false,
                   "properties": {
                     "bar": {
                       "type": "number",
@@ -120,6 +121,7 @@ test('携带文件', async () => {
             "content": {
               "multipart/form-data": {
                 "schema": {
+                  "additionalProperties": false,
                   "properties": {
                     "foo": {
                       "items": {

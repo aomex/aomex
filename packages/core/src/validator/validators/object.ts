@@ -1,3 +1,4 @@
+import { toArray } from '@aomex/internal-tools';
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
 import { ValidateResult, type TransformedValidator, Validator } from '../base';
@@ -8,6 +9,7 @@ export declare namespace ObjectValidator {
   export interface Options<T> extends Validator.Options<T> {
     properties?: Property;
     stringToObject?: boolean;
+    keepAdditional?: boolean | { key?: RegExp[]; value?: Validator };
   }
 }
 
@@ -39,12 +41,76 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
   ) => TransformedValidator<T1>;
 
   /**
-   * 尝试使用`JSON.parse`把字符串转换为对象，在非严格模式下自动开启。
-   * @param is 默认值：`true`
+   * 尝试使用`JSON.parse`把字符串转换为对象，在非严格模式下默认开启
    */
   public parseFromString(is: boolean = true): ObjectValidator<T> {
     const validator = this.copy();
     validator.config.stringToObject = is;
+    return validator;
+  }
+
+  /**
+   * 保留未被验证的键值对。对象中包含动态字段时，无法使用具体的结构体描述出对象的组成。
+   *
+   * 有以下几种保留规则：
+   * 1. 不提供参数，则保留所有的属性和值；
+   * 2. 提供`key`，则保留 键 能匹配正则表达式的键值对；
+   * 3. 提供`value`，则保留 值 能匹配验证器的键值对，同时值会根据验证器逻辑做相应的修正；
+   * 4. 提供`key`和`value`，则保留能同时满足规则2和3的键值对。
+   *
+   * ```typescript
+   * const v = rule.object();
+   *
+   * // { a: 'x', b: 1, c: true } -> { a: 'x', b: 1, c: true }
+   * v.additional();
+   *
+   * // { a: 'x', b: 1, c: true } -> { a: 'x' }
+   * v.additional({ value: rule.string() });
+   *
+   * // { a: 'x', b: 1, c: true } -> { a: 'x', c: true }
+   * v.additional({ key: /^(a|c)$/ });
+   *
+   * // { a: 'x', b: 1, c: true } -> { c: true }
+   * v.additional({ key: /^(a|c)$/, value: rule.boolean() });
+   *
+   * // { a: 'x', b: 1, c: true } -> { }
+   * v.additional({ key: /^(a|c)$/, value: rule.number() });
+   * ```
+   */
+  public additional(): ObjectValidator<
+    T extends Validator.TObject
+      ? { [K: string]: unknown }
+      : T extends null
+        ? null
+        : T & { [K: string]: unknown }
+  >;
+  public additional(opts: {
+    key: RegExp | RegExp[];
+    value?: undefined;
+  }): ObjectValidator<
+    (T extends Validator.TObject ? unknown : T) & { [K: string]: unknown }
+  >;
+  public additional<Additional extends Validator>(opts: {
+    key?: RegExp | RegExp[];
+    value: Additional;
+  }): ObjectValidator<
+    T extends Validator.TObject
+      ? { [K: string]: Validator.Infer<Additional> }
+      : T extends null
+        ? null
+        : T & { [K: string]: Validator.Infer<Additional> }
+  >;
+  public additional(
+    opts: {
+      key?: RegExp | RegExp[];
+      value?: Validator;
+    } = {},
+  ): ObjectValidator<any> {
+    const validator = this.copy();
+    const keys = opts.key ? toArray(opts.key) : [];
+    const key = keys.length ? keys : undefined;
+    const value = opts.value;
+    validator.config.keepAdditional = !value && !key ? true : { key, value };
     return validator;
   }
 
@@ -57,7 +123,7 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
     key: string,
     label: string,
   ): Promise<ValidateResult.Any<object>> {
-    const { properties, stringToObject, strict } = this.config;
+    const { properties, stringToObject, strict, keepAdditional = false } = this.config;
 
     if (!this.isPlainObject(origin)) {
       let valid = false;
@@ -99,7 +165,31 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
       );
 
       if (error.errors.length) return error;
-    } else {
+    }
+
+    if (keepAdditional) {
+      const trustedKeys = properties ? Object.keys(properties) : [];
+      for (const propKey of Object.keys(origin)) {
+        if (trustedKeys.includes(propKey)) continue;
+        if (keepAdditional === true) {
+          obj[propKey] = origin[propKey];
+          continue;
+        }
+        if (keepAdditional.key) {
+          if (keepAdditional.key.every((reg) => !reg.test(propKey))) continue;
+        }
+        if (keepAdditional.value) {
+          const result = await keepAdditional.value['validate'](origin[propKey], propKey);
+          if (ValidateResult.noError(result)) {
+            obj[propKey] = result.data;
+          }
+        } else {
+          obj[propKey] = origin[propKey];
+        }
+      }
+    }
+
+    if (!properties && !keepAdditional) {
       Object.assign(obj, origin);
     }
 
@@ -117,20 +207,35 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
   }
 
   protected override toDocument(): OpenAPI.SchemaObject {
-    const { properties = {} } = this.config;
+    const { properties = {}, keepAdditional } = this.config;
 
+    const hasSpecificProperties = !!Object.keys(properties).length;
     const schemas: NonNullable<OpenAPI.SchemaObject['properties']> = {};
     const requiredProperties: string[] = [];
-    Object.entries(properties).forEach(([key, validator]) => {
-      const docs = Validator.toDocument(validator);
-      schemas[key] = docs.schema!;
-      docs.required && requiredProperties.push(key);
-    });
+    if (hasSpecificProperties) {
+      Object.entries(properties).forEach(([key, validator]) => {
+        const docs = Validator.toDocument(validator);
+        schemas[key] = docs.schema!;
+        docs.required && requiredProperties.push(key);
+      });
+    }
+
+    let additionalProperties: OpenAPI.SchemaObject['additionalProperties'];
+    if (keepAdditional === undefined) {
+      additionalProperties = !hasSpecificProperties;
+    } else if (typeof keepAdditional === 'boolean') {
+      additionalProperties = keepAdditional;
+    } else if (!keepAdditional.value) {
+      additionalProperties = true;
+    } else {
+      additionalProperties = Validator.toDocument(keepAdditional.value).schema;
+    }
 
     return {
       type: 'object',
-      properties: Object.keys(schemas).length ? schemas : undefined,
+      properties: hasSpecificProperties ? schemas : undefined,
       required: requiredProperties.length ? requiredProperties : undefined,
+      additionalProperties,
     };
   }
 }

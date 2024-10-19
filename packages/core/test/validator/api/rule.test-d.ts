@@ -22,11 +22,19 @@ import {
   Validator,
   rule,
 } from '../../../src';
-import { expectType } from 'ts-expect';
+import { expectType, type TypeEqual } from 'ts-expect';
 
 // any
 {
-  expectType<AnyValidator<AnyValidator.Type>>(rule.any());
+  const v = rule.any();
+  expectType<AnyValidator<AnyValidator.Type>>(v);
+  type Infer = Validator.Infer<typeof v>;
+  expectType<
+    TypeEqual<
+      Infer,
+      number | string | boolean | any[] | { [K: string]: unknown } | bigint | Buffer
+    >
+  >(true);
 }
 
 // allof

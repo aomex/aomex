@@ -93,6 +93,7 @@ test('解析文件', async () => {
             "content": {
               "application/json": {
                 "schema": {
+                  "additionalProperties": false,
                   "properties": {
                     "test": {
                       "deprecated": true,
@@ -111,12 +112,14 @@ test('解析文件', async () => {
                 "application/json": {
                   "example": undefined,
                   "schema": {
+                    "additionalProperties": false,
                     "properties": {
                       "page": {
                         "type": "integer",
                       },
                       "result": {
                         "items": {
+                          "additionalProperties": false,
                           "properties": {
                             "id": {
                               "type": "integer",

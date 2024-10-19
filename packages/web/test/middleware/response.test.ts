@@ -95,6 +95,7 @@ test('文档', async () => {
                   "application/json": {
                     "example": undefined,
                     "schema": {
+                      "additionalProperties": false,
                       "properties": {
                         "bar": {
                           "type": "number",
@@ -165,6 +166,7 @@ test('允许带报头', () => {
                   "application/json": {
                     "example": undefined,
                     "schema": {
+                      "additionalProperties": false,
                       "properties": {
                         "foo": {
                           "type": "string",

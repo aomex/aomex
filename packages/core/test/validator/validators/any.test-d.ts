@@ -5,7 +5,14 @@ import {
   type TransformedValidator,
 } from '../../../src';
 
-type DefaultType = number | string | boolean | any[] | object | bigint | Buffer;
+type DefaultType =
+  | number
+  | string
+  | boolean
+  | any[]
+  | { [K: string]: unknown }
+  | bigint
+  | Buffer;
 const validator = new TargetValidator();
 
 // 可选
