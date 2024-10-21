@@ -43,6 +43,7 @@ export class UlidValidator<T = string> extends BaseStringValidator<T> {
 
   protected override toDocument(): OpenAPI.SchemaObject {
     return {
+      example: '01BJQE4QTHMFP0S5J153XCFSP9',
       ...super.toDocument(),
       format: 'ulid',
     };
