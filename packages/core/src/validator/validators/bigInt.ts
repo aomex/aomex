@@ -91,6 +91,7 @@ export class BigIntValidator<T = bigint> extends Validator<T> {
     return {
       type: 'integer',
       format: 'int64',
+      example: '922337203685475807',
       // JSON.stringify 无法处理bigint类型
       default: defaultValue === void 0 ? void 0 : Number(defaultValue),
       minimum: min === void 0 ? void 0 : Number(min),
