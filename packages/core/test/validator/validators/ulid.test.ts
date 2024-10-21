@@ -31,6 +31,7 @@ test('不合法的ulid', async () => {
 test('获取文档', () => {
   expect(new UlidValidator()['toDocument']()).toMatchInlineSnapshot(`
     {
+      "example": "01BJQE4QTHMFP0S5J153XCFSP9",
       "format": "ulid",
       "maxLength": undefined,
       "minLength": undefined,

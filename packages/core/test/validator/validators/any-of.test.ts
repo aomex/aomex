@@ -75,12 +75,14 @@ test('获取文档', () => {
       "anyOf": [
         {
           "items": {
+            "example": "922337203685475807",
             "format": "int64",
             "type": "integer",
           },
           "type": "array",
         },
         {
+          "example": "922337203685475807",
           "exclusiveMinimum": false,
           "format": "int64",
           "minimum": 10,

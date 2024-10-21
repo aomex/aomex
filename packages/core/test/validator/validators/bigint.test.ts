@@ -101,6 +101,7 @@ test('获取文档', () => {
   expect(new BigIntValidator()['toDocument']()).toMatchInlineSnapshot(`
     {
       "default": undefined,
+      "example": "922337203685475807",
       "exclusiveMaximum": undefined,
       "exclusiveMinimum": undefined,
       "format": "int64",
@@ -112,14 +113,15 @@ test('获取文档', () => {
 
   expect(new BigIntValidator().min(10n).max(20n, false).default(15n)['toDocument']())
     .toMatchInlineSnapshot(`
-    {
-      "default": 15,
-      "exclusiveMaximum": true,
-      "exclusiveMinimum": false,
-      "format": "int64",
-      "maximum": 20,
-      "minimum": 10,
-      "type": "integer",
-    }
-  `);
+      {
+        "default": 15,
+        "example": "922337203685475807",
+        "exclusiveMaximum": true,
+        "exclusiveMinimum": false,
+        "format": "int64",
+        "maximum": 20,
+        "minimum": 10,
+        "type": "integer",
+      }
+    `);
 });
