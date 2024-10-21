@@ -71,8 +71,9 @@ export class UrlValidator<T = string> extends BaseStringValidator<T> {
 
   protected override toDocument(): OpenAPI.SchemaObject {
     return {
+      example: 'https://example.com/path/to?id=1',
       ...super.toDocument(),
-      format: 'url',
+      format: 'uri',
     };
   }
 }

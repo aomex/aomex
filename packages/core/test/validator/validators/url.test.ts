@@ -58,7 +58,8 @@ test('扩展协议', async () => {
 test('获取文档', () => {
   expect(new UrlValidator()['toDocument']()).toMatchInlineSnapshot(`
     {
-      "format": "url",
+      "example": "https://example.com/path/to?id=1",
+      "format": "uri",
       "maxLength": undefined,
       "minLength": undefined,
       "pattern": undefined,
