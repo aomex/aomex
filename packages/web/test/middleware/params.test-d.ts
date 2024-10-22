@@ -9,12 +9,14 @@ const mdw = params({
 
 expectType<
   TypeEqual<
-    WebMiddleware<{
-      readonly params: {
-        test: string;
-        test1: number | undefined;
-      };
-    }>,
+    WebMiddleware<{ readonly params: { test: string; test1?: number | undefined } }>,
     typeof mdw
   >
 >(true);
+
+expectType<
+  TypeEqual<
+    WebMiddleware<{ readonly params: { test: string; test1: number | undefined } }>,
+    typeof mdw
+  >
+>(false);

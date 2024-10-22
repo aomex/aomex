@@ -31,6 +31,8 @@ import { ValidateResult, rule, validate } from '../../../src';
       test: rule.string().optional(),
     },
   );
+  expectType<{ test?: string | undefined }>(result1);
+  // @ts-expect-error
   expectType<{ test: string | undefined }>(result1);
   // @ts-expect-error
   expectType<{ test: string }>(result1);

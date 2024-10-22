@@ -9,12 +9,14 @@ const mdw = body({
 
 expectType<
   TypeEqual<
-    WebMiddleware<{
-      readonly body: {
-        test: string;
-        test1: number | undefined;
-      };
-    }>,
+    WebMiddleware<{ readonly body: { test: string; test1?: number | undefined } }>,
     typeof mdw
   >
 >(true);
+
+expectType<
+  TypeEqual<
+    WebMiddleware<{ readonly body: { test: string; test1: number | undefined } }>,
+    typeof mdw
+  >
+>(false);

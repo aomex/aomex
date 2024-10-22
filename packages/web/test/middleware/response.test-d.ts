@@ -55,8 +55,12 @@ import { createReadStream } from 'node:fs';
   ctx.send(200, { foo: 1, bar: 'bar' });
   ctx.send(200, { foo: 1, bar: undefined });
   ctx.send(200, { foo: 1, bar: null });
-  // @ts-expect-error
   ctx.send(200, { foo: 1 });
+  // @ts-expect-error
+  ctx.send(200, {});
+  // @ts-expect-error
+  ctx.send(200, { bar: 'bar' });
+
   // @ts-expect-error
   ctx.send(200, 'foo');
   // @ts-expect-error

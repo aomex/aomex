@@ -1,3 +1,4 @@
+import assert from 'assert';
 import {
   AllOfValidator,
   AnyOfValidator,
@@ -96,6 +97,23 @@ import { expectType, type TypeEqual } from 'ts-expect';
     // @ts-expect-error
     rule.array(rule.string().optional()),
   );
+
+  {
+    const v = rule.array({
+      foo: rule.string(),
+      bar: rule.string().optional(),
+    });
+    expectType<ArrayValidator<{ foo: string; bar?: string | undefined }[]>>(v);
+    // @ts-expect-error
+    expectType<ArrayValidator<{ foo: string; bar: string | undefined }[]>>(v);
+    const foo: Validator.Infer<typeof v> = [
+      { foo: '' },
+      { foo: '', bar: '' },
+      // @ts-expect-error
+      { bar: '' },
+    ];
+    assert(foo);
+  }
 }
 
 // bigint
@@ -179,12 +197,12 @@ import { expectType, type TypeEqual } from 'ts-expect';
     expectType<ObjectValidator<{ test?: string }>>(v);
   }
   {
-    const v = rule.object({ test: rule.string().optional() });
-    expectType<ObjectValidator<{ test?: string | undefined }>>(v);
+    const v = rule.object({ test: rule.string().optional(), test1: rule.number() });
+    expectType<ObjectValidator<{ test?: string | undefined; test1: number }>>(v);
     // @ts-expect-error
-    expectType<ObjectValidator<{ test: string }>>(v);
+    expectType<ObjectValidator<{ test: string; test1: number }>>(v);
     // @ts-expect-error
-    expectType<ObjectValidator<{ test: string | undefined }>>(v);
+    expectType<ObjectValidator<{ test: string | undefined; test1: number }>>(v);
   }
 }
 
