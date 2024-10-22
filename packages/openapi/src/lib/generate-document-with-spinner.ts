@@ -133,11 +133,11 @@ export const generateOpenapiWithSpinner = async (
   const logSession = terminal.applySession();
   const { errors, warnings } = context.validateResult;
   for (const error of errors) {
-    logSession.update(`  :error: ${formatValidateMessage(error)}`);
+    logSession.update(`  %error% ${formatValidateMessage(error)}`);
     logSession.commit();
   }
   for (const warning of warnings) {
-    logSession.update(`  :warning: ${formatValidateMessage(warning)}`);
+    logSession.update(`  %warning% ${formatValidateMessage(warning)}`);
     logSession.commit();
   }
 

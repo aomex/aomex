@@ -67,7 +67,7 @@ export const stop = (opts: CronsOptions): ConsoleMiddleware => {
                     ...runners.map(
                       ({ pid, command, schedule, elapsed, cpu, memory, status }) => {
                         return [
-                          `:${status}:`,
+                          `%${status}%`,
                           pid,
                           command.padEnd(24, ' '),
                           schedule,

@@ -107,20 +107,20 @@ class Terminal {
    * 持续刷新终端文字。
    *
    * 文字可包含一些内置的占位符：
-   * - `:loading:` 加载动画
-   * - `:prepare:` 灰色准备小图标 ◼
-   * - `:success:` 绿色成功小图标 ✔
-   * - `:info:`    蓝色信息小图标 ℹ
-   * - `:warning:` 黄色警告小图标 ⚠
-   * - `:error:`   红色错误小图标 ✖️
-   * - `:skip:`    灰色跳过小图标 ↓
+   * - `%loading%` 加载动画
+   * - `%prepare%` 灰色准备小图标 ◼
+   * - `%success%` 绿色成功小图标 ✔
+   * - `%info%`    蓝色信息小图标 ℹ
+   * - `%warning%` 黄色警告小图标 ⚠
+   * - `%error%`   红色错误小图标 ✖️
+   * - `%skip%`    灰色跳过小图标 ↓
    *
    * ```typescript
    * const session = terminal.applySession();
    *
-   * session.update(':loading: 加载中\n  猜猜我是谁');
+   * session.update('%loading% 加载中\n  猜猜我是谁');
    * await sleep(1000);
-   * session.update(':success: 成功\n  猜中了');
+   * session.update('%success% 成功\n  猜中了');
    * session.commit();
    * ```
    */
@@ -137,7 +137,7 @@ class Terminal {
     let timer: NodeJS.Timeout | undefined;
 
     const replaceText = () => {
-      return cacheText.replaceAll(':loading:', loadingFrames[loadingFrameIndex]!);
+      return cacheText.replaceAll('%loading%', loadingFrames[loadingFrameIndex]!);
     };
 
     const reset = () => {
@@ -155,16 +155,16 @@ class Terminal {
         if (prevText === text) return;
         prevText = text;
         cacheText = text
-          .replaceAll(':success:', symbols.success)
-          .replaceAll(':error:', symbols.error)
-          .replaceAll(':warning:', symbols.warning)
-          .replaceAll(':info:', symbols.info)
-          .replaceAll(':skip:', skipSymbol)
-          .replaceAll(':prepare:', prepareSymbol);
+          .replaceAll('%success%', symbols.success)
+          .replaceAll('%error%', symbols.error)
+          .replaceAll('%warning%', symbols.warning)
+          .replaceAll('%info%', symbols.info)
+          .replaceAll('%skip%', skipSymbol)
+          .replaceAll('%prepare%', prepareSymbol);
 
         logSession(replaceText());
 
-        if (text.includes(':loading:')) {
+        if (text.includes('%loading%')) {
           timer ||= setInterval(() => {
             loadingFrameIndex += 1;
             if (loadingFrameIndex === loadingFrames.length) {
@@ -235,7 +235,7 @@ class Terminal {
           .map((task) => {
             const suffix =
               task.status === 'skip' ? this.style('gray', `[skipped]`) : task.suffix;
-            return `:${task.status}: ${task.title}${suffix ? ' ' + suffix : ''}`;
+            return `%${task.status}% ${task.title}${suffix ? ' ' + suffix : ''}`;
           })
           .join('\n'),
       );
