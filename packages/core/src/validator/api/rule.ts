@@ -1,4 +1,4 @@
-import { toArray, type Union2Intersection } from '@aomex/internal-tools';
+import { toArray, type Prettify, type Union2Intersection } from '@aomex/internal-tools';
 import {
   AllOfValidator,
   AnyOfValidator,
@@ -177,7 +177,17 @@ export class Rule {
   ): ObjectValidator<
     keyof T extends undefined
       ? Validator.TObject
-      : { [K in keyof T]: Validator.Infer<T[K]> }
+      : Prettify<
+          {
+            [K in keyof T as undefined extends Validator.Infer<T[K]>
+              ? never
+              : K]: Validator.Infer<T[K]>;
+          } & {
+            [K in keyof T as undefined extends Validator.Infer<T[K]>
+              ? K
+              : never]?: Validator.Infer<T[K]>;
+          }
+        >
   > {
     return new ObjectValidator(properties);
   }

@@ -169,23 +169,23 @@ import { expectType, type TypeEqual } from 'ts-expect';
 
 // object
 {
+  // @ts-expect-error
+  expectType<ObjectValidator<object>>(rule.object());
   expectType<ObjectValidator<Validator.TObject>>(rule.object());
-  expectType<ObjectValidator<{ test: string }>>(
-    rule.object({
-      test: rule.string(),
-    }),
-  );
-  expectType<ObjectValidator<{ test: string }>>(
+  {
+    const v = rule.object({ test: rule.string() });
+    expectType<ObjectValidator<{ test: string }>>(v);
     // @ts-expect-error
-    rule.object({
-      test: rule.string().optional(),
-    }),
-  );
-  expectType<ObjectValidator<{ test: string | undefined }>>(
-    rule.object({
-      test: rule.string().optional(),
-    }),
-  );
+    expectType<ObjectValidator<{ test?: string }>>(v);
+  }
+  {
+    const v = rule.object({ test: rule.string().optional() });
+    expectType<ObjectValidator<{ test?: string | undefined }>>(v);
+    // @ts-expect-error
+    expectType<ObjectValidator<{ test: string }>>(v);
+    // @ts-expect-error
+    expectType<ObjectValidator<{ test: string | undefined }>>(v);
+  }
 }
 
 // oneOf
