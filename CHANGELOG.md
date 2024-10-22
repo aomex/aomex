@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.7.2](https://github.com/aomex/aomex/compare/v3.7.1...v3.7.2) (2024-10-22)
+
+
+### Performance Improvements
+
+* **core:** 字面量对象验证器也共享问号修饰符 ([b21e6f3](https://github.com/aomex/aomex/commit/b21e6f3806f525cf5030cd32aab2cac5cfe87da6))
+
+
+
+
+
 ## [3.7.1](https://github.com/aomex/aomex/compare/v3.7.0...v3.7.1) (2024-10-22)
 
 
