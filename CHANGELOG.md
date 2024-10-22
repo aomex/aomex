@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.7.1](https://github.com/aomex/aomex/compare/v3.7.0...v3.7.1) (2024-10-22)
+
+
+### Bug Fixes
+
+* **core:** url验证器string.format改为uri ([9a2b9c3](https://github.com/aomex/aomex/commit/9a2b9c36e81ee930bf2f7ab782037464325ea866))
+* **core:** 对象验证器作为输出结构时，可选属性无法跳过（需传undefined） ([b2ef2a7](https://github.com/aomex/aomex/commit/b2ef2a7d9843f1b84e1040ed1b827ff0cc74de5e))
+
+
+### Performance Improvements
+
+* **core:** bigint验证器增加示例 ([5042007](https://github.com/aomex/aomex/commit/5042007b9d8c8e3e42e8fa353810c79c28050746))
+* **core:** ulid验证器增加示例 ([d833983](https://github.com/aomex/aomex/commit/d833983164a4c228e5e9883eaa8e386149a4b403))
+
+
+
+
+
 # [3.7.0](https://github.com/aomex/aomex/compare/v3.6.0...v3.7.0) (2024-10-19)
 
 
