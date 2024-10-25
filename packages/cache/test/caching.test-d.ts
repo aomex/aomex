@@ -75,3 +75,64 @@ let caching!: Caching;
   const result = await caching.expire('', 20);
   expectType<TypeEqual<boolean, typeof result>>(true);
 }
+
+// 装饰器
+{
+  class MyClass {
+    @caching.decorate({ key: 'key' })
+    async getData1() {
+      return 'ok';
+    }
+
+    @caching.decorate({
+      key: (id, time) => {
+        expectType<number>(id);
+        expectType<string>(time);
+        return `key_${id}_${time}`;
+      },
+    })
+    async getData2(id: number, time: string) {
+      return 'ok' + id + time;
+    }
+
+    @caching.decorate({ key: 'key', duration: 60_000 })
+    async getData3() {
+      return 'ok';
+    }
+
+    @caching.decorate({ key: 'key' })
+    getData4() {
+      return Promise.resolve('ok');
+    }
+
+    @caching.decorate({ key: 'key' })
+    getData5() {
+      return Promise.resolve('ok');
+    }
+
+    @caching.decorate({ key: 'key' })
+    getData6() {
+      return Promise.resolve('ok');
+    }
+
+    @caching.decorate({ key: 'key' })
+    async getDate7() {
+      return null;
+    }
+
+    @caching.decorate({ key: 'key', defaultValue: 'okay' })
+    async getDate8() {
+      if (Math.random() > 0.5) return 'ok';
+      return null;
+    }
+
+    @caching.decorate({ key: 'key', defaultValue: 123 })
+    async getDate9() {
+      if (Math.random() > 0.5) return 'ok';
+      return null;
+    }
+  }
+
+  const data = await new MyClass().getData2(2, 'x');
+  expectType<string>(data);
+}

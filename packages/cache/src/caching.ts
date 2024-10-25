@@ -1,7 +1,15 @@
 import { CacheAdapter } from './cache-adapter';
 
 export namespace Caching {
-  export type Types = string | number | object | boolean;
+  export type Types =
+    | string
+    | number
+    | unknown[]
+    | readonly unknown[]
+    | { [K: string]: unknown }
+    | boolean
+    | Map<any, any>
+    | Set<any>;
 }
 
 const CACHING_TYPE = '_$caching_type$_';
@@ -149,6 +157,57 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   async deleteAll(): Promise<boolean> {
     await this.adapter.connect();
     return this.adapter.deleteAllValues();
+  }
+
+  /**
+   * 方法装饰器，自动获取数据，如果不存在则请求原始数据并自动保存。在请求原始数据期间，任意相同请求都会被截流，并共享第一个请求
+   * ```typescript
+   * const cache = new Caching(memoryAdapter());
+   *
+   * class MyClass {
+   *  \@cache.decorate({ key: (id) => `key_${id}`, duration: 60_000 })
+   *   async getData(id: number) {
+   *     const result = await queryDB({ id: id });
+   *     return result;
+   *   }
+   * }
+   * ```
+   */
+  decorate<
+    T extends Caching.Types | null,
+    P extends (...args: any[]) => Promise<T>,
+    Q extends NonNullable<T>,
+  >(opts: {
+    key: string | ((...args: Parameters<P>) => string);
+    duration?: number;
+    /**
+     * 当数据源返回null或者undefined时，则返回默认值
+     */
+    defaultValue?: Q;
+  }) {
+    const instance = this;
+    const fetching: Record<string, Promise<T>> = {};
+    const { key: getKey, duration, defaultValue = null } = opts;
+
+    return (originalMethod: P, _context: ClassMethodDecoratorContext) => {
+      return async function (this: object, ...args: Parameters<P>): Promise<any> {
+        const key = typeof getKey === 'string' ? getKey : getKey.apply(this, args);
+        let value = await instance.get<NonNullable<T>>(key);
+        if (value === null) {
+          if (fetching[key]) {
+            value = await fetching[key];
+          } else {
+            fetching[key] = originalMethod.apply(this, args);
+            value = await fetching[key];
+            if (value !== null) {
+              await instance.set(key, value, duration);
+            }
+            Reflect.deleteProperty(fetching, key);
+          }
+        }
+        return value === null ? defaultValue : value;
+      };
+    };
   }
 
   protected encodeValue(value: Caching.Types) {

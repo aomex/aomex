@@ -1,6 +1,7 @@
 import { describe, expect, test, vitest } from 'vitest';
 import { MockStore } from './mock/caching.mock';
 import { Caching } from '../src';
+import { sleep } from '@aomex/internal-tools';
 
 const caching = new Caching(new MockStore());
 
@@ -231,5 +232,123 @@ describe('复杂对象', () => {
     expect(Array.from(result!.values())).toStrictEqual(['a', 'bcc']);
 
     spy.mockRestore();
+  });
+});
+
+describe('装饰器', () => {
+  test('没有缓存时请求原始数据', async () => {
+    const getSpy = vitest.spyOn(caching, 'get').mockImplementation(async () => null);
+    const setSpy = vitest.spyOn(caching, 'set').mockImplementation(async () => true);
+
+    class MyClass {
+      @caching.decorate({ key: 'key' })
+      async getData() {
+        return 'foo-bar';
+      }
+    }
+    const my = new MyClass();
+    const result = await my.getData();
+    expect(result).toBe('foo-bar');
+    expect(getSpy).toBeCalledTimes(1);
+    expect(getSpy).toBeCalledWith('key');
+    expect(setSpy).toBeCalledTimes(1);
+    expect(setSpy).toBeCalledWith('key', 'foo-bar', undefined);
+
+    getSpy.mockRestore();
+    setSpy.mockRestore();
+  });
+
+  test('有缓存时直接用缓存', async () => {
+    const getSpy = vitest.spyOn(caching, 'get').mockImplementation(async () => 'foo');
+    const setSpy = vitest.spyOn(caching, 'set').mockImplementation(async () => true);
+    const spy = vitest.fn();
+
+    class MyClass {
+      @caching.decorate({ key: 'key' })
+      async getData() {
+        spy();
+        return 'foo-bar';
+      }
+    }
+    const my = new MyClass();
+    const result = await my.getData();
+    expect(result).toBe('foo');
+    expect(getSpy).toBeCalledTimes(1);
+    expect(getSpy).toBeCalledWith('key');
+    expect(setSpy).toBeCalledTimes(0);
+    expect(spy).toBeCalledTimes(0);
+
+    getSpy.mockRestore();
+    setSpy.mockRestore();
+  });
+
+  test('多个调用时，只获取一次数据源', async () => {
+    const getSpy = vitest.spyOn(caching, 'get').mockImplementation(async () => null);
+    const setSpy = vitest.spyOn(caching, 'set').mockImplementation(async () => true);
+    const spy = vitest.fn();
+
+    class MyClass {
+      @caching.decorate({ key: 'key' })
+      async getData() {
+        await sleep(1500);
+        spy();
+        return 'foo-bar';
+      }
+    }
+    const my = new MyClass();
+    const result = await Promise.all([my.getData(), my.getData(), my.getData()]);
+
+    expect(spy).toBeCalledTimes(1);
+    expect(setSpy).toBeCalledTimes(1);
+    expect(getSpy).toBeCalledTimes(3);
+    expect(result).toMatchObject(['foo-bar', 'foo-bar', 'foo-bar']);
+
+    getSpy.mockRestore();
+    setSpy.mockRestore();
+  });
+
+  test('动态键', async () => {
+    const getSpy = vitest.spyOn(caching, 'get').mockImplementation(async () => null);
+    const setSpy = vitest.spyOn(caching, 'set').mockImplementation(async () => true);
+    const spy = vitest.fn().mockImplementation(() => 'x');
+
+    class MyClass {
+      @caching.decorate({ key: spy })
+      async getData(id: number | string) {
+        await sleep(1500);
+        return 'foo-bar-' + id;
+      }
+    }
+    const my = new MyClass();
+    await Promise.all([my.getData(1), my.getData(2), my.getData(3), my.getData('abc')]);
+
+    expect(spy).toBeCalledTimes(4);
+    expect(spy).toBeCalledWith(1);
+    expect(spy).toBeCalledWith(2);
+    expect(spy).toBeCalledWith(3);
+    expect(spy).toBeCalledWith('abc');
+
+    getSpy.mockRestore();
+    setSpy.mockRestore();
+  });
+
+  test('默认值', async () => {
+    const getSpy = vitest.spyOn(caching, 'get').mockImplementation(async () => null);
+    const setSpy = vitest.spyOn(caching, 'set').mockImplementation(async () => true);
+
+    class MyClass {
+      @caching.decorate({ key: 'key', defaultValue: 'foo' })
+      async getData() {
+        return null;
+      }
+    }
+    const my = new MyClass();
+    const result = await my.getData();
+    expect(result).toBe('foo');
+    expect(getSpy).toBeCalledTimes(1);
+    expect(setSpy).toBeCalledTimes(0);
+
+    getSpy.mockRestore();
+    setSpy.mockRestore();
   });
 });
