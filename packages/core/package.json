@@ -35,7 +35,7 @@
   },
   "peerDependencies": {
     "@types/node": "^20 || ^22",
-    "typescript": ">=5.4"
+    "typescript": ">=5.5"
   },
   "dependencies": {
     "@aomex/internal-tools": "workspace:^",
