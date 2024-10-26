@@ -1,4 +1,4 @@
-import type { OpenAPI } from '@aomex/core';
+import type { OpenAPI } from '@aomex/common';
 import type spectral from '@stoplight/spectral-core';
 import type ruleset from '@stoplight/spectral-rulesets';
 import { createRequire } from 'node:module';

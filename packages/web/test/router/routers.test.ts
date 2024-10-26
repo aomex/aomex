@@ -1,6 +1,6 @@
 import { expect, test, vitest } from 'vitest';
 import { dirname, join } from 'node:path';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import supertest from 'supertest';
 import { Router, routers, WebApp } from '../../src';
 import { router as routerA } from '../fixture/routers/a.router';

@@ -6,7 +6,7 @@ import {
   ConsoleApp,
   options,
 } from '../../src';
-import { middleware, rule } from '@aomex/core';
+import { middleware, rule } from '@aomex/common';
 
 test('前缀', async () => {
   const commander = new Commander({ prefix: 'schedule:' });

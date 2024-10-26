@@ -1,6 +1,6 @@
 import { describe, expect, test, vitest } from 'vitest';
 import { Cron } from '../../src/lib/cron';
-import { sleep } from '@aomex/internal-tools';
+import sleep from 'sleep-promise';
 
 test('时间', () => {
   expect(

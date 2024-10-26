@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { traceMethod, type AsyncTraceRecord } from '../src';
-import { sleep } from '@aomex/internal-tools';
+import sleep from 'sleep-promise';
 
 test('装饰异步方法', async () => {
   class Service {

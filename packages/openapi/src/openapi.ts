@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import type { ConsoleMiddleware } from '@aomex/console';
 import {
   generateOpenapiWithSpinner,

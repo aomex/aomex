@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { ConsoleMiddleware } from '../../src';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 
 test('文档', () => {
   class My extends ConsoleMiddleware {}

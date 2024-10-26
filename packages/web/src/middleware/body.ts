@@ -5,7 +5,7 @@ import {
   ValidateDeniedError,
   middleware,
   OpenAPI,
-} from '@aomex/core';
+} from '@aomex/common';
 import type { WebMiddleware } from '../override';
 
 /**

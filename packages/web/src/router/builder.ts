@@ -1,4 +1,4 @@
-import { Middleware, middleware, type OpenAPI } from '@aomex/core';
+import { Middleware, middleware, type OpenAPI } from '@aomex/common';
 import type { Union2Intersection } from '@aomex/internal-tools';
 import { match, type MatchFunction, type ParamData } from 'path-to-regexp';
 import type { WebMiddlewareToken } from '../override';

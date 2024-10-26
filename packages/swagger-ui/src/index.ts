@@ -1,4 +1,4 @@
-import { compose, I18n, middleware, OpenAPI } from '@aomex/core';
+import { compose, I18n, middleware, OpenAPI } from '@aomex/common';
 import { serveStatic } from '@aomex/serve-static';
 import type { WebContext, WebMiddleware } from '@aomex/web';
 import { readFile } from 'node:fs/promises';

@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { FileValidator } from '../../src';
 import { mockServer } from '../fixture/mock-server';
 import { dirname, join } from 'node:path';
-import { rule, validate } from '@aomex/core';
+import { rule, validate } from '@aomex/common';
 import { PersistentFile } from 'formidable';
 
 const dir = dirname(import.meta.dirname);

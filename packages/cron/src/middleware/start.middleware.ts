@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { collectCrontab as collectCrontab } from '../lib/collect-crontab';
 import type { CronsOptions, ServerWriteData } from '../lib/type';
 import net, { Socket } from 'node:net';

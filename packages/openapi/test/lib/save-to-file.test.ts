@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from 'vitest';
-import type { OpenAPI } from '@aomex/core';
+import type { OpenAPI } from '@aomex/common';
 import { basename, join } from 'path';
 import { tmpdir } from 'os';
 import { readFileSync, rmSync, statSync } from 'fs';

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { sleep } from '@aomex/internal-tools';
+import sleep from 'sleep-promise';
 import { memoryAdapter } from '../src';
 
 test('设置/获取', async () => {

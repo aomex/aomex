@@ -1,6 +1,6 @@
 import type { WebMiddleware } from '@aomex/web';
 import { Strategy } from './strategy';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 
 export namespace Authentication {
   export interface Options<S extends { [K: string]: Strategy<object | string> }> {

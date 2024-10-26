@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { Router } from '@aomex/web';
 import { appendFileSync } from 'fs';
 import { tmpdir } from 'os';

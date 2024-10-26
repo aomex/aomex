@@ -1,7 +1,7 @@
 import { describe, expect, test, vitest } from 'vitest';
 import { terminal } from '../../src';
 import { styleText } from 'util';
-import { sleep } from '@aomex/internal-tools';
+import sleep from 'sleep-promise';
 
 test('生成表格', () => {
   expect(

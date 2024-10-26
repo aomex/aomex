@@ -1,4 +1,4 @@
-import { Middleware, middleware } from '@aomex/core';
+import { Middleware, middleware } from '@aomex/common';
 import yargs from 'yargs';
 import { scriptName, version } from '../utils';
 import type { ConsoleDocument, ConsoleMiddleware } from '../override';

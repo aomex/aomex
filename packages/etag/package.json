@@ -34,14 +34,14 @@
     "node": "^20.13.0 || ^22"
   },
   "peerDependencies": {
-    "@aomex/core": "^3.0.0",
+    "@aomex/common": "^3.0.0",
     "@aomex/web": "^3.0.0"
   },
   "dependencies": {
     "etag": "^1.8.1"
   },
   "devDependencies": {
-    "@aomex/core": "workspace:^",
+    "@aomex/common": "workspace:^",
     "@aomex/web": "workspace:^",
     "@types/etag": "^1.8.1"
   }

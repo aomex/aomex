@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { Commander, ConsoleApp, ConsoleContext } from '../../src';
 import { expectType, type TypeEqual } from 'ts-expect';
 

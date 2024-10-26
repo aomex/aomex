@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { WebApp, WebContext } from '../../src';
 import { expectType } from 'ts-expect';
 import { HttpError } from 'http-errors';

@@ -3,7 +3,7 @@ import https from 'node:https';
 import stream from 'node:stream';
 import { WebRequest } from './request';
 import { WebResponse } from './response';
-import { I18n, Middleware, compose, middleware } from '@aomex/core';
+import { I18n, Middleware, compose, middleware } from '@aomex/common';
 import { WebContext } from './context';
 import type { HttpError } from 'http-errors';
 import { EOL } from 'node:os';

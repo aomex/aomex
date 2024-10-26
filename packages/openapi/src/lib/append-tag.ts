@@ -1,4 +1,4 @@
-import type { OpenAPI } from '@aomex/core';
+import type { OpenAPI } from '@aomex/common';
 
 export const appendTag = (document: OpenAPI.Document, usedTags: string[]) => {
   const tags = (document.tags ||= []);

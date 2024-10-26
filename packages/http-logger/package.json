@@ -34,7 +34,7 @@
     "node": "^20.13.0 || ^22"
   },
   "peerDependencies": {
-    "@aomex/core": "^3.0.0",
+    "@aomex/common": "^3.0.0",
     "@aomex/web": "^3.0.0"
   },
   "dependencies": {
@@ -42,7 +42,7 @@
     "pretty-time": "^1.1.0"
   },
   "devDependencies": {
-    "@aomex/core": "workspace:^",
+    "@aomex/common": "workspace:^",
     "@aomex/web": "workspace:^",
     "@types/pretty-time": "^1.1.5"
   }

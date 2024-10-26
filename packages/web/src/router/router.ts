@@ -1,4 +1,4 @@
-import { Middleware, OpenAPI, compose, type ComposeFn } from '@aomex/core';
+import { Middleware, OpenAPI, compose, type ComposeFn } from '@aomex/common';
 import type { Union2Intersection } from '@aomex/internal-tools';
 import type { WebMiddlewareToken } from '../override';
 import type { WebApp } from '../http';

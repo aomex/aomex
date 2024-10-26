@@ -6,12 +6,12 @@ import {
   ValidateResult,
   OpenAPI,
   Rule,
-} from '@aomex/core';
+} from '@aomex/common';
 import { bytes } from '@aomex/internal-tools';
 import typeIs from 'type-is';
 import { i18n } from '../i18n';
 
-declare module '@aomex/core' {
+declare module '@aomex/common' {
   export interface Rule {
     file(): FileValidator;
   }

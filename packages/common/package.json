@@ -1,0 +1,46 @@
+{
+  "name": "@aomex/common",
+  "version": "3.8.1",
+  "description": "aomex公共库",
+  "scripts": {
+    "prepublishOnly": "tsup"
+  },
+  "type": "module",
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [],
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "engines": {
+    "node": "^20.13.0 || ^22"
+  },
+  "peerDependencies": {
+    "@types/node": "^20 || ^22",
+    "typescript": ">=5.5"
+  },
+  "dependencies": {
+    "@aomex/common-middleware": "workspace:^",
+    "@aomex/common-service": "workspace:^",
+    "@aomex/internal-tools": "workspace:^",
+    "@aomex/common-validator": "workspace:^"
+  }
+}

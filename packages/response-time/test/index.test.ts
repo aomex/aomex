@@ -2,7 +2,7 @@ import { WebApp } from '@aomex/web';
 import request from 'supertest';
 import { test } from 'vitest';
 import { responseTime } from '../src';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 
 test('增加报头 x-response-time', () => {
   const app = new WebApp({ mount: [responseTime] });

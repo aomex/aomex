@@ -1,4 +1,4 @@
-import { compose, middleware } from '@aomex/core';
+import { compose, middleware } from '@aomex/common';
 import type { ConsoleMiddleware } from '@aomex/console';
 import { start } from './start.middleware';
 import { eject } from './eject.middleware';

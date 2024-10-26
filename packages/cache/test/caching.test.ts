@@ -1,7 +1,7 @@
 import { describe, expect, test, vitest } from 'vitest';
 import { MockStore } from './mock/caching.mock';
 import { Caching } from '../src';
-import { sleep } from '@aomex/internal-tools';
+import sleep from 'sleep-promise';
 
 const caching = new Caching(new MockStore());
 

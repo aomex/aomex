@@ -1,6 +1,6 @@
 import type { ConsoleContext } from '../cli';
 import type { ConsoleMiddlewareToken, ConsoleDocument } from '../override';
-import { Middleware, middleware } from '@aomex/core';
+import { Middleware, middleware } from '@aomex/common';
 import type { Union2Intersection } from '@aomex/internal-tools';
 
 export declare namespace Builder {

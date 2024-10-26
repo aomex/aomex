@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import type { WebMiddleware } from '@aomex/web';
 import { Readable } from 'node:stream';
 import StreamStringify from 'streaming-json-stringify';

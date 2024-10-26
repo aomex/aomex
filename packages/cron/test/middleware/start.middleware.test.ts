@@ -1,9 +1,9 @@
 import { ConsoleApp } from '@aomex/console';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { beforeEach, expect, test, vitest } from 'vitest';
 import { start } from '../../src/middleware/start.middleware';
 import { dirname, join } from 'path';
-import { sleep } from '@aomex/internal-tools';
+import sleep from 'sleep-promise';
 import { Task } from '../../src/lib/task';
 import { createConnection } from 'net';
 import { stop } from '../../src/middleware/stop.middleware';

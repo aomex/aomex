@@ -1,6 +1,6 @@
 import { promisify } from 'node:util';
 import originHelmet, { type HelmetOptions } from 'helmet';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import type { WebMiddleware } from '@aomex/web';
 
 export const helmet = (options?: HelmetOptions): WebMiddleware => {

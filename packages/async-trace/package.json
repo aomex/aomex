@@ -34,12 +34,11 @@
     "node": "^20.13.0 || ^22"
   },
   "peerDependencies": {
-    "@aomex/core": "^3.0.0"
+    "@aomex/common": "^3.0.0"
   },
   "devDependencies": {
     "@aomex/console": "workspace:^",
-    "@aomex/core": "workspace:^",
-    "@aomex/internal-tools": "workspace:^",
+    "@aomex/common": "workspace:^",
     "@aomex/web": "workspace:^"
   }
 }

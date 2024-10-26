@@ -1,7 +1,7 @@
 import { expect, test, vitest } from 'vitest';
 import { eject } from '../../src/middleware/eject.middleware';
 import { dirname, join } from 'path';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { ConsoleApp } from '@aomex/console';
 
 const testDir = dirname(import.meta.dirname);

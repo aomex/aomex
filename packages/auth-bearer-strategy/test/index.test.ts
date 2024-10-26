@@ -3,7 +3,7 @@ import { expect, test } from 'vitest';
 import { Authentication } from '@aomex/auth';
 import { WebApp } from '@aomex/web';
 import { BearerStrategy } from '../src';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 
 test('无令牌', async () => {
   const auth = new Authentication({

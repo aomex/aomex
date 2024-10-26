@@ -1,4 +1,4 @@
-import { validate, Validator, OpenAPI, middleware } from '@aomex/core';
+import { validate, Validator, OpenAPI, middleware } from '@aomex/common';
 import { ConsoleMiddleware, type ConsoleDocument } from '../override';
 import { toArray } from '@aomex/internal-tools';
 

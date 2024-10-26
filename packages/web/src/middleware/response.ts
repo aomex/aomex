@@ -1,4 +1,4 @@
-import { type ValidatorToken, toValidator, type OpenAPI, Validator } from '@aomex/core';
+import { type ValidatorToken, toValidator, type OpenAPI, Validator } from '@aomex/common';
 import { WebMiddleware, type OpenApiInjector } from '../override';
 import { getMimeType } from '../utils';
 import type { Body, HttpErrorProperties } from '../http';

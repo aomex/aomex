@@ -7,7 +7,7 @@ import {
   type ConsoleDocument,
   ConsoleContext,
 } from '../../src';
-import { compose, middleware, rule } from '@aomex/core';
+import { compose, middleware, rule } from '@aomex/common';
 import { collectConsoleDocument } from '../../src/utils';
 
 const app = new ConsoleApp();

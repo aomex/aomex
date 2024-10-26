@@ -1,4 +1,4 @@
-import { I18n } from '@aomex/core';
+import { I18n } from '@aomex/common';
 
 export const zh = I18n.define({
   wrong_type: '错误的值类型',

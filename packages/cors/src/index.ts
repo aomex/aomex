@@ -1,5 +1,5 @@
 import type { HttpError, WebContext, WebMiddleware } from '@aomex/web';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import vary from 'vary';
 
 export interface CorsOptions {

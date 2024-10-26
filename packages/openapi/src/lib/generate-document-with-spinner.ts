@@ -1,6 +1,6 @@
 import type { Mode } from 'node:fs';
-import { OpenAPI } from '@aomex/core';
-import { sleep } from '@aomex/internal-tools';
+import { OpenAPI } from '@aomex/common';
+import sleep from 'sleep-promise';
 import { pathToFiles } from '@aomex/internal-file-import';
 import path from 'node:path';
 import {

@@ -1,4 +1,4 @@
-import { I18n } from '@aomex/core';
+import { I18n } from '@aomex/common';
 
 export const zh = I18n.define({
   command_not_found: '指令 "{{command}}" 不存在',

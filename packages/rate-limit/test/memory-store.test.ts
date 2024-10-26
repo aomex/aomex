@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { RateLimitMemoryStore } from '../src/memory-store';
-import { sleep } from '@aomex/internal-tools';
+import sleep from 'sleep-promise';
 
 test('输出', async () => {
   const store = new RateLimitMemoryStore();

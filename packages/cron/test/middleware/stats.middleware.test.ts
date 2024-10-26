@@ -1,12 +1,12 @@
 import '../../src';
 import { ConsoleApp, terminal } from '@aomex/console';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { beforeEach, expect, test, vitest } from 'vitest';
 import { dirname, join } from 'path';
 import { stats } from '../../src/middleware/stats.middleware';
 import { createServer } from 'net';
 import type { ServerWriteData } from '../../src';
-import { sleep } from '@aomex/internal-tools';
+import sleep from 'sleep-promise';
 import { getPort } from '../mock/get-port';
 
 const testDir = dirname(import.meta.dirname);

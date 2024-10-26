@@ -1,6 +1,6 @@
 import { type TypeEqual, expectType } from 'ts-expect';
 import { WebMiddleware, query } from '../../src';
-import { rule } from '@aomex/core';
+import { rule } from '@aomex/common';
 
 const mdw = query({
   test: rule.string(),

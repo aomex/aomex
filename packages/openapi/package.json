@@ -35,7 +35,7 @@
   },
   "peerDependencies": {
     "@aomex/console": "^3.2.0",
-    "@aomex/core": "^3.0.0",
+    "@aomex/common": "^3.0.0",
     "@aomex/web": "^3.0.0"
   },
   "peerDependenciesMeta": {
@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "@aomex/console": "workspace:^",
-    "@aomex/core": "workspace:^",
+    "@aomex/common": "workspace:^",
     "@aomex/web": "workspace:^",
     "@types/lodash.snakecase": "^4.1.9",
     "stat-mode": "^1.0.0"

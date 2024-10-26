@@ -1,7 +1,7 @@
 import { expectType, type TypeEqual } from 'ts-expect';
 import { helpLogger } from '../../src/middleware/help-logger';
 import type { ConsoleMiddleware } from '../../src';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 
 const logger = helpLogger([]);
 expectType<TypeEqual<ConsoleMiddleware, typeof logger>>(true);

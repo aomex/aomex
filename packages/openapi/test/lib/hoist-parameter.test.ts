@@ -1,4 +1,4 @@
-import type { OpenAPI } from '@aomex/core';
+import type { OpenAPI } from '@aomex/common';
 import { expect, test } from 'vitest';
 import { methodParameterToPathParameter } from '../../src';
 

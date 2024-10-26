@@ -1,4 +1,4 @@
-import { OpenAPI, compose, rule } from '@aomex/core';
+import { OpenAPI, compose, rule } from '@aomex/common';
 import { describe, expect, test, vitest } from 'vitest';
 import { response } from '../../src';
 import { mockServer } from '../fixture/mock-server';

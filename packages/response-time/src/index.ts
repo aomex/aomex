@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import type { HttpError } from '@aomex/web';
 
 const getDelta = (start: [number, number]) => {

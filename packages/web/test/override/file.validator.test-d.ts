@@ -1,5 +1,5 @@
 import { type TypeEqual, expectType } from 'ts-expect';
-import { Validator, type TransformedValidator, rule } from '@aomex/core';
+import { Validator, type TransformedValidator, rule } from '@aomex/common';
 import { FileValidator as TargetValidator } from '../../src';
 
 type DefaultType = TargetValidator.FormidableFile;

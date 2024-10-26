@@ -1,7 +1,7 @@
 import { afterEach, expect, test, vitest } from 'vitest';
 import { openapi } from '../src';
 import { ConsoleApp, ConsoleMiddleware } from '@aomex/console';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import { readFileSync, rmSync } from 'fs';

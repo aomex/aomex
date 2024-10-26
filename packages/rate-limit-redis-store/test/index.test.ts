@@ -1,7 +1,7 @@
 import RedisMemoryServer from 'redis-memory-server';
 import { afterAll, afterEach, beforeAll, expect, test } from 'vitest';
 import { RateLimitRedisStore } from '../src';
-import { sleep } from '@aomex/internal-tools';
+import sleep from 'sleep-promise';
 import { Redis } from 'ioredis';
 
 let redisServer: RedisMemoryServer;

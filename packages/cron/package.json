@@ -35,7 +35,7 @@
   },
   "peerDependencies": {
     "@aomex/console": "^3.2.0",
-    "@aomex/core": "^3.0.0"
+    "@aomex/common": "^3.0.0"
   },
   "dependencies": {
     "@aomex/cache": "workspace:^",
@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@aomex/console": "workspace:^",
-    "@aomex/core": "workspace:^",
+    "@aomex/common": "workspace:^",
     "@types/pidusage": "^2.0.5"
   }
 }

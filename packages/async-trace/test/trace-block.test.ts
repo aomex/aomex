@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { traceBlock, type AsyncTraceRecord } from '../src';
-import { sleep } from '@aomex/internal-tools';
+import sleep from 'sleep-promise';
 
 test('追踪代码段', async () => {
   let snapshot!: AsyncTraceRecord;

@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { statuses, type WebContext, type WebMiddleware } from '@aomex/web';
 import type { RateLimitStore } from './store';
 import { RateLimitMemoryStore } from './memory-store';

@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { type TypeEqual, expectType } from 'ts-expect';
 import { response, Router, WebApp, WebContext } from '../../src';
 

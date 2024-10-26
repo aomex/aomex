@@ -3,7 +3,7 @@ import { swaggerUI } from '../src';
 import path from 'path';
 import { WebApp, WebMiddleware } from '@aomex/web';
 import supertest from 'supertest';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 
 const openapiJson = path.join(import.meta.dirname, 'fixtures', 'openapi.json');
 const openapiYAML = path.join(import.meta.dirname, 'fixtures', 'openapi.yaml');

@@ -34,7 +34,7 @@
     "node": "^20.13.0 || ^22"
   },
   "peerDependencies": {
-    "@aomex/core": "^3.0.0"
+    "@aomex/common": "^3.0.0"
   },
   "dependencies": {
     "@aomex/internal-file-import": "workspace:^",
@@ -59,7 +59,7 @@
     "vary": "^1.1.2"
   },
   "devDependencies": {
-    "@aomex/core": "workspace:^",
+    "@aomex/common": "workspace:^",
     "@types/co-body": "^6.1.3",
     "@types/content-disposition": "^0.5.8",
     "@types/destroy": "^1.0.3",

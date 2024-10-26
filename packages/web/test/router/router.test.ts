@@ -1,6 +1,6 @@
 import { expect, test, vitest } from 'vitest';
 import { Router, routers, WebApp } from '../../src';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import supertest from 'supertest';
 
 test('前缀', async () => {

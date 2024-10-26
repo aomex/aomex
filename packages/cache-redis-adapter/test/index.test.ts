@@ -2,7 +2,7 @@ import type { RedisOptions } from 'ioredis';
 import RedisMemoryServer from 'redis-memory-server';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 import { CacheRedisAdapter, redisAdapter } from '../src';
-import { sleep } from '@aomex/internal-tools';
+import sleep from 'sleep-promise';
 
 let redisServer: RedisMemoryServer;
 let opts: RedisOptions;

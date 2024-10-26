@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import type { WebMiddleware } from '../override';
 import formidable from 'formidable';
 import coBody from 'co-body';

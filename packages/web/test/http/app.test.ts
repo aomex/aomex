@@ -1,6 +1,6 @@
 import { describe, expect, test, vitest } from 'vitest';
 import { WebApp } from '../../src';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import supertest from 'supertest';
 import { Server } from 'http';
 import fs from 'node:fs';

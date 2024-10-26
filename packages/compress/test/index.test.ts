@@ -3,7 +3,7 @@ import crypto from 'node:crypto';
 import request from 'supertest';
 import { describe, test, expect } from 'vitest';
 import { compress, type CompressProps } from '../src';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { WebApp } from '@aomex/web';
 import { dirname, join } from 'node:path';
 

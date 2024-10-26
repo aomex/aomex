@@ -1,7 +1,7 @@
 import { expect, test, vitest } from 'vitest';
 import { mockServer } from '../fixture/mock-server';
 import { query } from '../../src';
-import { OpenAPI, compose, rule } from '@aomex/core';
+import { OpenAPI, compose, rule } from '@aomex/common';
 
 test('包含next', async () => {
   const { ctx, res } = await mockServer((agent) =>

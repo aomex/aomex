@@ -2,7 +2,7 @@ import path from 'node:path';
 import { mkdir, writeFile } from 'node:fs/promises';
 import YAML from 'yaml';
 import { bytes } from '@aomex/internal-tools';
-import type { OpenAPI } from '@aomex/core';
+import type { OpenAPI } from '@aomex/common';
 import type { Mode } from 'node:fs';
 
 export const saveToFile = async (

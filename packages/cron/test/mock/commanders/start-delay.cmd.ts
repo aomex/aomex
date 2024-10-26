@@ -1,6 +1,6 @@
 import { Commander } from '@aomex/console';
 import { cron } from '../../../src';
-import { sleep } from '@aomex/internal-tools';
+import sleep from 'sleep-promise';
 
 export const commander = new Commander();
 

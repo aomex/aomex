@@ -2,7 +2,7 @@ import { createReadStream } from 'node:fs';
 import request from 'supertest';
 import { expect, test } from 'vitest';
 import { WebApp } from '@aomex/web';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { etag } from '../src';
 import { join } from 'node:path';
 

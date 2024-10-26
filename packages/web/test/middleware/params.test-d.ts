@@ -1,6 +1,6 @@
 import { type TypeEqual, expectType } from 'ts-expect';
 import { WebMiddleware, params } from '../../src';
-import { rule } from '@aomex/core';
+import { rule } from '@aomex/common';
 
 const mdw = params({
   test: rule.string(),

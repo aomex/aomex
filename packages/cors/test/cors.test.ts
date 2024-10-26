@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import request from 'supertest';
 import { cors } from '../src';
 import { WebApp } from '@aomex/web';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 
 describe('默认配置', function () {
   const app = new WebApp({

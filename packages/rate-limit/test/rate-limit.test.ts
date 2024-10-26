@@ -1,10 +1,10 @@
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { WebApp } from '@aomex/web';
 import { expect, test, vitest } from 'vitest';
 import { rateLimit } from '../src/rate-limit';
 import supertest from 'supertest';
 import { RateLimitMemoryStore } from '../src/memory-store';
-import { sleep } from '@aomex/internal-tools';
+import sleep from 'sleep-promise';
 
 test('设置黑名单', async () => {
   const app = new WebApp({

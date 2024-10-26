@@ -2,7 +2,7 @@ import EventEmitter from 'node:events';
 import { EOL } from 'node:os';
 import { styleText } from 'node:util';
 import { hideBin } from 'yargs/helpers';
-import { I18n, Middleware, compose, middleware } from '@aomex/core';
+import { I18n, Middleware, compose, middleware } from '@aomex/common';
 import { ConsoleInput } from './input';
 import { ConsoleContext } from './context';
 import { helpLogger } from '../middleware/help-logger';

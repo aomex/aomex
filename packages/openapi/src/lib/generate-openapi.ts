@@ -1,4 +1,4 @@
-import { OpenAPI } from '@aomex/core';
+import { OpenAPI } from '@aomex/common';
 import { pathToFiles, type GlobPathOptions } from '@aomex/internal-file-import';
 import { methodParameterToPathParameter } from './hoist-parameter';
 import { initializeDocument } from './initialize-document';

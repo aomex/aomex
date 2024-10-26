@@ -1,4 +1,4 @@
-import { Middleware, MixinMiddleware, type Next } from '@aomex/core';
+import { Middleware, MixinMiddleware, type Next } from '@aomex/common';
 
 import type { NonReadonly } from '@aomex/internal-tools';
 import type { ConsoleApp, ConsoleContext } from '../cli';
@@ -7,7 +7,7 @@ export type ConsoleMiddlewareToken<P extends object = object> =
   | ConsoleMiddleware<P>
   | MixinMiddleware<P>;
 
-declare module '@aomex/core' {
+declare module '@aomex/common' {
   export interface MiddlewarePlatform {
     readonly console: <Props extends object = object>(
       fn: ConsoleMiddlewareArguments<Props>['fn'] | ConsoleMiddlewareArguments<Props>,

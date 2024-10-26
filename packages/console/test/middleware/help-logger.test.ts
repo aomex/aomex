@@ -1,7 +1,7 @@
 import { afterAll, expect, test, vitest } from 'vitest';
 import { ConsoleApp, ConsoleMiddleware } from '../../src';
 import { afterEach } from 'node:test';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { stripVTControlCharacters } from 'node:util';
 import { helpLogger } from '../../src/middleware/help-logger';
 

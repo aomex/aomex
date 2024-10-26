@@ -1,10 +1,10 @@
-import { OpenAPI } from '@aomex/core';
+import { OpenAPI } from '@aomex/common';
 import { WebApp } from '@aomex/web';
 import { expect, test } from 'vitest';
 import { JwtStrategy } from '../src';
 import supertest from 'supertest';
 import jsonwebtoken from 'jsonwebtoken';
-import { sleep } from '@aomex/internal-tools';
+import sleep from 'sleep-promise';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 import { Authentication } from '@aomex/auth';

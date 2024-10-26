@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { asyncTrace, type AsyncTraceRecord } from './async-trace';
 
 export interface AsyncTraceMiddlewareProps {

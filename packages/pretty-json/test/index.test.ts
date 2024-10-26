@@ -1,5 +1,5 @@
 import { Readable } from 'node:stream';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { WebApp } from '@aomex/web';
 import { expect, test } from 'vitest';
 import supertest from 'supertest';

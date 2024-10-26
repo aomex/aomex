@@ -1,7 +1,7 @@
 import { expect, test, vitest } from 'vitest';
 import { helmet } from '../src';
 import { WebApp, WebMiddleware } from '@aomex/web';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import supertest from 'supertest';
 
 test('中间件', async () => {

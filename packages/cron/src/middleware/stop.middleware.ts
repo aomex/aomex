@@ -1,5 +1,5 @@
 import { terminal, type ConsoleMiddleware } from '@aomex/console';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import type { CronsOptions, ServerWriteData } from '../lib/type';
 import net from 'node:net';
 import { CONNECT_REFUSED, DEFAULT_PORT } from '../lib/constant';

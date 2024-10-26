@@ -1,4 +1,4 @@
-import { rule } from '@aomex/core';
+import { rule } from '@aomex/common';
 import { ConsoleMiddleware, options } from '../../src';
 import { type TypeEqual, expectType } from 'ts-expect';
 

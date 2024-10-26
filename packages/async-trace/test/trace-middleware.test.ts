@@ -1,6 +1,6 @@
 import { expect, test, vitest } from 'vitest';
 import { traceMiddleware, type AsyncTraceRecord } from '../src';
-import { MixinMiddleware, compose, middleware } from '@aomex/core';
+import { MixinMiddleware, compose, middleware } from '@aomex/common';
 
 test('中间件', async () => {
   expect(traceMiddleware('label')).toBeInstanceOf(MixinMiddleware);

@@ -1,4 +1,4 @@
-import { middleware, validate, Validator, ValidateDeniedError } from '@aomex/core';
+import { middleware, validate, Validator, ValidateDeniedError } from '@aomex/common';
 import type { WebMiddleware } from '../override';
 
 /**

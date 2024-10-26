@@ -34,7 +34,7 @@
     "node": "^20.13.0 || ^22"
   },
   "peerDependencies": {
-    "@aomex/core": "^3.0.0",
+    "@aomex/common": "^3.0.0",
     "@aomex/web": "^3.0.0"
   },
   "dependencies": {
@@ -42,7 +42,7 @@
     "compressible": "^2.0.18"
   },
   "devDependencies": {
-    "@aomex/core": "workspace:^",
+    "@aomex/common": "workspace:^",
     "@aomex/web": "workspace:^",
     "@types/compressible": "^2.0.0"
   }

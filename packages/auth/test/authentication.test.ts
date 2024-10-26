@@ -1,4 +1,4 @@
-import { middleware, OpenAPI } from '@aomex/core';
+import { middleware, OpenAPI } from '@aomex/common';
 import { expect, test, vitest } from 'vitest';
 import { Authentication } from '../src';
 import { MockStrategy } from './mocks/mock-strategy';

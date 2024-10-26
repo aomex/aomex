@@ -1,6 +1,6 @@
 import { type TypeEqual, expectType } from 'ts-expect';
 import { WebResponseMiddleware, response, type Body } from '../../src';
-import { Middleware, NumberValidator, StringValidator, rule } from '@aomex/core';
+import { Middleware, NumberValidator, StringValidator, rule } from '@aomex/common';
 import type { Union2Intersection } from '@aomex/internal-tools';
 import { createReadStream } from 'node:fs';
 

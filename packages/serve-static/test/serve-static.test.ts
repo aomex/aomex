@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { WebApp } from '@aomex/web';
 import request from 'supertest';
 import { serveStatic } from '../src';

@@ -7,7 +7,7 @@ import {
   ConsoleMiddleware,
 } from '../../src';
 import { dirname, join } from 'node:path';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 
 const dir = dirname(import.meta.dirname);
 

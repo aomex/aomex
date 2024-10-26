@@ -2,7 +2,7 @@ import { createServer } from 'http';
 import supertest from 'supertest';
 import { WebApp, WebContext, WebRequest, WebResponse } from '../../src';
 import type Test from 'supertest/lib/test';
-import { compose } from '@aomex/core';
+import { compose } from '@aomex/common';
 import { parseBody } from '../../src/middleware/parse-body';
 
 export const mockServer = async (

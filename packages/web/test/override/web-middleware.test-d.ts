@@ -1,4 +1,4 @@
-import { type Next, middleware } from '@aomex/core';
+import { type Next, middleware } from '@aomex/common';
 import { expectType, type TypeEqual } from 'ts-expect';
 import type { OpenApiInjector, WebContext, WebMiddleware } from '../../src';
 

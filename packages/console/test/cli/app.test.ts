@@ -1,6 +1,6 @@
 import { afterAll, expect, test, vitest } from 'vitest';
 import { ConsoleApp } from '../../src';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { i18n } from '../../src/i18n';
 
 let consoleSpy = vitest.spyOn(console, 'error').mockImplementation(() => {});

@@ -1,4 +1,4 @@
-import type { OpenAPI } from '@aomex/core';
+import type { OpenAPI } from '@aomex/common';
 import type { GenerateOpenapiOptions } from './generate-openapi';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';

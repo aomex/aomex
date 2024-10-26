@@ -1,6 +1,6 @@
 import { expectType, type TypeEqual } from 'ts-expect';
 import { Authentication, Strategy } from '../src';
-import { Middleware } from '@aomex/core';
+import { Middleware } from '@aomex/common';
 import { Router } from '@aomex/web';
 
 // 策略

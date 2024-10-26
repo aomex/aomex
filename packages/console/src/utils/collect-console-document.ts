@@ -1,4 +1,4 @@
-import type { Middleware } from '@aomex/core';
+import type { Middleware } from '@aomex/common';
 import { ConsoleMiddleware, type ConsoleDocument } from '../override/console-middleware';
 import type { ConsoleApp } from '../cli';
 

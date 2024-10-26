@@ -1,4 +1,4 @@
-import { Middleware, compose, middleware, type ComposeFn } from '@aomex/core';
+import { Middleware, compose, middleware, type ComposeFn } from '@aomex/common';
 import { toArray, type Union2Intersection } from '@aomex/internal-tools';
 import { Builder, type BuilderOptions } from './builder';
 import type { ConsoleApp } from '../cli';

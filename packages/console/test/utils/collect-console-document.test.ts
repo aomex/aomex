@@ -1,7 +1,7 @@
-import { MixinMiddleware, middleware } from '@aomex/core';
+import { MixinMiddleware, middleware } from '@aomex/common';
 import { expect, test, vitest } from 'vitest';
 import { ConsoleApp, collectConsoleDocument } from '../../src';
-import { sleep } from '@aomex/internal-tools';
+import sleep from 'sleep-promise';
 
 const app = new ConsoleApp();
 

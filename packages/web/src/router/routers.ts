@@ -1,4 +1,4 @@
-import { type ComposeFn, middleware } from '@aomex/core';
+import { type ComposeFn, middleware } from '@aomex/common';
 import {
   pathToFiles,
   type GlobPathOptions,

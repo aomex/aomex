@@ -44,8 +44,7 @@
   },
   "devDependencies": {
     "@aomex/auth": "workspace:^",
-    "@aomex/core": "workspace:^",
-    "@aomex/internal-tools": "workspace:^",
+    "@aomex/common": "workspace:^",
     "@aomex/web": "workspace:^"
   }
 }

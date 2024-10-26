@@ -1,6 +1,6 @@
 import '../../src';
 import { ConsoleApp, terminal } from '@aomex/console';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 import { beforeEach, expect, test, vitest } from 'vitest';
 import { dirname, join } from 'path';
 import { stop } from '../../src/middleware/stop.middleware';

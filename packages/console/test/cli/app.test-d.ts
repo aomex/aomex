@@ -1,6 +1,6 @@
 import { type TypeEqual, expectType } from 'ts-expect';
 import { ConsoleApp, ConsoleContext } from '../../src';
-import { middleware } from '@aomex/core';
+import { middleware } from '@aomex/common';
 
 const app = new ConsoleApp();
 
