@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.8.0](https://github.com/aomex/aomex/compare/v3.7.2...v3.8.0) (2024-10-26)
+
+
+### Performance Improvements
+
+* **openapi:** 使用require的形式引入文档验证包以减少node启动时间 ([d52f430](https://github.com/aomex/aomex/commit/d52f4305d480ad86af58b389685aae13b031ae83))
+
+
+
+
+
 ## [3.7.2](https://github.com/aomex/aomex/compare/v3.7.1...v3.7.2) (2024-10-22)
 
 **Note:** Version bump only for package @aomex/openapi

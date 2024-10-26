@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.8.0](https://github.com/aomex/aomex/compare/v3.7.2...v3.8.0) (2024-10-26)
+
+
+### Features
+
+* **cache:** 增加方法装饰器 ([e1ecc7f](https://github.com/aomex/aomex/commit/e1ecc7f3b995e77f174f6f2d1fe3f35933c662f4))
+* **core:** 取消支持typescript 5.4 ([f6bc6af](https://github.com/aomex/aomex/commit/f6bc6afba28654a246f55e4223fd86fb60816b44))
+
+
+### Performance Improvements
+
+* **console:** 使用require的形式引入table包以减少node启动时间 ([059a05f](https://github.com/aomex/aomex/commit/059a05f8c4b1e90a3cf02175bc9249ae33840e7a))
+* **openapi:** 使用require的形式引入文档验证包以减少node启动时间 ([d52f430](https://github.com/aomex/aomex/commit/d52f4305d480ad86af58b389685aae13b031ae83))
+
+
+
+
+
 ## [3.7.2](https://github.com/aomex/aomex/compare/v3.7.1...v3.7.2) (2024-10-22)
 
 

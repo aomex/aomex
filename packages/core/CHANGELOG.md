@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.8.0](https://github.com/aomex/aomex/compare/v3.7.2...v3.8.0) (2024-10-26)
+
+
+### Features
+
+* **core:** 取消支持typescript 5.4 ([f6bc6af](https://github.com/aomex/aomex/commit/f6bc6afba28654a246f55e4223fd86fb60816b44))
+
+
+
+
+
 ## [3.7.2](https://github.com/aomex/aomex/compare/v3.7.1...v3.7.2) (2024-10-22)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.8.0](https://github.com/aomex/aomex/compare/v3.7.2...v3.8.0) (2024-10-26)
+
+
+### Features
+
+* **cache:** 增加方法装饰器 ([e1ecc7f](https://github.com/aomex/aomex/commit/e1ecc7f3b995e77f174f6f2d1fe3f35933c662f4))
+
+
+
+
+
 ## [3.7.2](https://github.com/aomex/aomex/compare/v3.7.1...v3.7.2) (2024-10-22)
 
 **Note:** Version bump only for package @aomex/cache
