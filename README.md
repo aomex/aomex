@@ -29,43 +29,43 @@ npx create-aomex@latest
 
 # 应用平台
 
-| Name                                 | Version                                                                                             | Desc           |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------- | -------------- |
-| [@aomex/web](./packages/web)         | [![npm](https://img.shields.io/npm/v/@aomex/web)](https://www.npmjs.com/package/@aomex/web)         | web接口服务    |
-| [@aomex/console](./packages/console) | [![npm](https://img.shields.io/npm/v/@aomex/console)](https://www.npmjs.com/package/@aomex/console) | 控制台指令服务 |
+| Name                          | Version                                                                                             | Desc           |
+| ----------------------------- | --------------------------------------------------------------------------------------------------- | -------------- |
+| [web](./packages/web)         | [![npm](https://img.shields.io/npm/v/@aomex/web)](https://www.npmjs.com/package/@aomex/web)         | web接口服务    |
+| [console](./packages/console) | [![npm](https://img.shields.io/npm/v/@aomex/console)](https://www.npmjs.com/package/@aomex/console) | 控制台指令服务 |
 
 # 核心库
 
-| Name                                             | Version                                                                                                         | Platform    | Desc                 |
-| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- | ----------- | -------------------- |
-| [@aomex/compress](./packages/compress)           | [![npm](https://img.shields.io/npm/v/@aomex/compress)](https://www.npmjs.com/package/@aomex/compress)           | web         | 压缩响应内容         |
-| [@aomex/cors](./packages/cors)                   | [![npm](https://img.shields.io/npm/v/@aomex/cors)](https://www.npmjs.com/package/@aomex/cors)                   | web         | 跨域请求共享         |
-| [@aomex/http-logger](./packages/http-logger)     | [![npm](https://img.shields.io/npm/v/@aomex/http-logger)](https://www.npmjs.com/package/@aomex/http-logger)     | web         | http请求日志         |
-| [@aomex/helmet](./packages/helmet)               | [![npm](https://img.shields.io/npm/v/@aomex/helmet)](https://www.npmjs.com/package/@aomex/helmet)               | web         | 设置安全报文         |
-| [@aomex/pretty-json](./packages/pretty-json)     | [![npm](https://img.shields.io/npm/v/@aomex/pretty-json)](https://www.npmjs.com/package/@aomex/pretty-json)     | web         | 美化响应输出         |
-| [@aomex/serve-static](./packages/serve-static)   | [![npm](https://img.shields.io/npm/v/@aomex/serve-static)](https://www.npmjs.com/package/@aomex/serve-static)   | web         | 静态文件服务         |
-| [@aomex/response-time](./packages/response-time) | [![npm](https://img.shields.io/npm/v/@aomex/response-time)](https://www.npmjs.com/package/@aomex/response-time) | web         | 设置服务响应时长报文 |
-| [@aomex/rate-limit](./packages/rate-limit)       | [![npm](https://img.shields.io/npm/v/@aomex/rate-limit)](https://www.npmjs.com/package/@aomex/rate-limit)       | web         | 请求限速             |
-| [@aomex/etag](./packages/etag)                   | [![npm](https://img.shields.io/npm/v/@aomex/etag)](https://www.npmjs.com/package/@aomex/etag)                   | web         | 设置etag报文         |
-| [@aomex/openapi](./packages/openapi)             | [![npm](https://img.shields.io/npm/v/@aomex/openapi)](https://www.npmjs.com/package/@aomex/openapi)             | web/console | 生成接口文档         |
-| [@aomex/swagger-ui](./packages/swagger-ui)       | [![npm](https://img.shields.io/npm/v/@aomex/swagger-ui)](https://www.npmjs.com/package/@aomex/swagger-ui)       | web         | swagger文档服务      |
-| [@aomex/cron](./packages/cron)                   | [![npm](https://img.shields.io/npm/v/@aomex/cron)](https://www.npmjs.com/package/@aomex/cron)                   | console     | 定时任务             |
-| [@aomex/async-trace](./packages/async-trace)     | [![npm](https://img.shields.io/npm/v/@aomex/async-trace)](https://www.npmjs.com/package/@aomex/async-trace)     | web/console | 异步逻辑链路追踪     |
+| Name                                      | Version                                                                                                         | Platform    | Desc                 |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ----------- | -------------------- |
+| [compress](./packages/compress)           | [![npm](https://img.shields.io/npm/v/@aomex/compress)](https://www.npmjs.com/package/@aomex/compress)           | web         | 压缩响应内容         |
+| [cors](./packages/cors)                   | [![npm](https://img.shields.io/npm/v/@aomex/cors)](https://www.npmjs.com/package/@aomex/cors)                   | web         | 跨域请求共享         |
+| [http-logger](./packages/http-logger)     | [![npm](https://img.shields.io/npm/v/@aomex/http-logger)](https://www.npmjs.com/package/@aomex/http-logger)     | web         | http请求日志         |
+| [helmet](./packages/helmet)               | [![npm](https://img.shields.io/npm/v/@aomex/helmet)](https://www.npmjs.com/package/@aomex/helmet)               | web         | 设置安全报文         |
+| [pretty-json](./packages/pretty-json)     | [![npm](https://img.shields.io/npm/v/@aomex/pretty-json)](https://www.npmjs.com/package/@aomex/pretty-json)     | web         | 美化响应输出         |
+| [serve-static](./packages/serve-static)   | [![npm](https://img.shields.io/npm/v/@aomex/serve-static)](https://www.npmjs.com/package/@aomex/serve-static)   | web         | 静态文件服务         |
+| [response-time](./packages/response-time) | [![npm](https://img.shields.io/npm/v/@aomex/response-time)](https://www.npmjs.com/package/@aomex/response-time) | web         | 设置服务响应时长报文 |
+| [rate-limit](./packages/rate-limit)       | [![npm](https://img.shields.io/npm/v/@aomex/rate-limit)](https://www.npmjs.com/package/@aomex/rate-limit)       | web         | 请求限速             |
+| [etag](./packages/etag)                   | [![npm](https://img.shields.io/npm/v/@aomex/etag)](https://www.npmjs.com/package/@aomex/etag)                   | web         | 设置etag报文         |
+| [openapi](./packages/openapi)             | [![npm](https://img.shields.io/npm/v/@aomex/openapi)](https://www.npmjs.com/package/@aomex/openapi)             | web/console | 生成接口文档         |
+| [swagger-ui](./packages/swagger-ui)       | [![npm](https://img.shields.io/npm/v/@aomex/swagger-ui)](https://www.npmjs.com/package/@aomex/swagger-ui)       | web         | swagger文档服务      |
+| [cron](./packages/cron)                   | [![npm](https://img.shields.io/npm/v/@aomex/cron)](https://www.npmjs.com/package/@aomex/cron)                   | console     | 定时任务             |
+| [async-trace](./packages/async-trace)     | [![npm](https://img.shields.io/npm/v/@aomex/async-trace)](https://www.npmjs.com/package/@aomex/async-trace)     | web/console | 异步逻辑链路追踪     |
 
 # 缓存
 
-| Name                                                         | Version                                                                                                                     | Desc        |
-| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| [@aomex/cache](./packages/cache)                             | [![npm](https://img.shields.io/npm/v/@aomex/cache)](https://www.npmjs.com/package/@aomex/cache)                             | 缓存库入口  |
-| [@aomex/cache-redis-adapter](./packages/cache-redis-adapter) | [![npm](https://img.shields.io/npm/v/@aomex/cache-redis-adapter)](https://www.npmjs.com/package/@aomex/cache-redis-adapter) | redis适配器 |
+| Name                                                  | Version                                                                                                                     | Desc        |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| [cache](./packages/cache)                             | [![npm](https://img.shields.io/npm/v/@aomex/cache)](https://www.npmjs.com/package/@aomex/cache)                             | 缓存库入口  |
+| [cache-redis-adapter](./packages/cache-redis-adapter) | [![npm](https://img.shields.io/npm/v/@aomex/cache-redis-adapter)](https://www.npmjs.com/package/@aomex/cache-redis-adapter) | redis适配器 |
 
 # 身份认证
 
-| Name                                                           | Version                                                                                                                       | Desc                |
-| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| [@aomex/auth](./packages/auth)                                 | [![npm](https://img.shields.io/npm/v/@aomex/auth)](https://www.npmjs.com/package/@aomex/auth)                                 | 身份认证统一入口    |
-| [@aomex/auth-bearer-strategy](./packages/auth-bearer-strategy) | [![npm](https://img.shields.io/npm/v/@aomex/auth-bearer-strategy)](https://www.npmjs.com/package/@aomex/auth-bearer-strategy) | Bearer Token 方案   |
-| [@aomex/auth-jwt-strategy](./packages/auth-jwt-strategy)       | [![npm](https://img.shields.io/npm/v/@aomex/auth-jwt-strategy)](https://www.npmjs.com/package/@aomex/auth-jwt-strategy)       | Json Web Token 方案 |
+| Name                                                    | Version                                                                                                                       | Desc                |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| [auth](./packages/auth)                                 | [![npm](https://img.shields.io/npm/v/@aomex/auth)](https://www.npmjs.com/package/@aomex/auth)                                 | 身份认证统一入口    |
+| [auth-bearer-strategy](./packages/auth-bearer-strategy) | [![npm](https://img.shields.io/npm/v/@aomex/auth-bearer-strategy)](https://www.npmjs.com/package/@aomex/auth-bearer-strategy) | Bearer Token 方案   |
+| [auth-jwt-strategy](./packages/auth-jwt-strategy)       | [![npm](https://img.shields.io/npm/v/@aomex/auth-jwt-strategy)](https://www.npmjs.com/package/@aomex/auth-jwt-strategy)       | Json Web Token 方案 |
 
 # 第三方搭配
 
