@@ -1,4 +1,3 @@
-import type { Prettify } from '@aomex/internal-tools';
 import { i18n } from '../../i18n';
 import type { OpenAPI } from '../../interface';
 import { ValidateResult } from './validate-result';
@@ -37,14 +36,25 @@ export declare namespace Validator {
     T extends Validator<infer Type>
       ? Validator.ConvertOptional<Type>
       : T extends { [K: string]: Validator }
-        ? Prettify<
-            {
-              [K in keyof T as undefined extends Infer<T[K]> ? never : K]: Infer<T[K]>;
-            } & {
-              [K in keyof T as undefined extends Infer<T[K]> ? K : never]?: Infer<T[K]>;
-            }
-          >
+        ? keyof T extends never
+          ? {}
+          : EmptyObjectToUnknown<{
+              [K in keyof T as true extends HasUndefined<T[K]> ? never : K]: Infer<T[K]>;
+            }> &
+              EmptyObjectToUnknown<{
+                [K in keyof T as true extends HasUndefined<T[K]> ? K : never]?: Infer<
+                  T[K]
+                >;
+              }>
         : never;
+
+  type EmptyObjectToUnknown<T extends object> = keyof T extends never ? unknown : T;
+  type HasUndefined<T> =
+    T extends Validator<infer Type>
+      ? undefined extends Validator.ConvertOptional<Type>
+        ? true
+        : false
+      : false;
 
   export type PartialOpenAPISchema = Pick<
     OpenAPI.SchemaObject,

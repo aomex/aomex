@@ -9,7 +9,7 @@ const mdw = query({
 
 expectType<
   TypeEqual<
-    WebMiddleware<{ readonly query: { test: string; test1?: number | undefined } }>,
+    WebMiddleware<{ readonly query: { test: string } & { test1?: number | undefined } }>,
     typeof mdw
   >
 >(true);
