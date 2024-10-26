@@ -1,10 +1,13 @@
 import { styleText } from 'node:util';
 import symbols from 'log-symbols';
 import ansi from 'ansi-escapes';
-import { table, type TableUserConfig } from 'table';
+import type tableCJS from 'table';
 import { createLogUpdate } from 'log-update';
 import isUnicodeSupported from 'is-unicode-supported';
 import stripAnsi from 'strip-ansi';
+import { createRequire } from 'node:module';
+
+const requireCJS = createRequire(import.meta.url);
 
 /**
  * 终端输出实用函数
@@ -69,7 +72,7 @@ class Terminal {
    * ```
    * @link https://www.npmjs.com/package/table
    */
-  printTable(data: unknown[][], config?: TableUserConfig) {
+  printTable(data: unknown[][], config?: tableCJS.TableUserConfig) {
     this.print(this.generateTable(data, config));
   }
 
@@ -85,7 +88,9 @@ class Terminal {
    * ```
    * @link https://www.npmjs.com/package/table
    */
-  generateTable(data: unknown[][], config?: TableUserConfig): string {
+  generateTable(data: unknown[][], config?: tableCJS.TableUserConfig): string {
+    // CJS包，内容也多，直接import影响了node首次启动时间
+    const { table } = requireCJS('table') as typeof tableCJS;
     return table(data, config).replace(/\n$/, '');
   }
 
