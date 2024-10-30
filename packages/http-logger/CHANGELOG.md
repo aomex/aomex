@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.9.0](https://github.com/aomex/aomex/compare/v3.8.1...v3.9.0) (2024-10-30)
+
+
+### Features
+
+* **http-logger:** 请求日志简化为一条 ([71a9c91](https://github.com/aomex/aomex/commit/71a9c91df80adbfb87ca07b25b52c3b430ad1b12))
+
+
+
+
+
 ## [3.8.1](https://github.com/aomex/aomex/compare/v3.8.0...v3.8.1) (2024-10-26)
 
 **Note:** Version bump only for package @aomex/http-logger

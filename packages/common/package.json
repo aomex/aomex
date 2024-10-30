@@ -1,6 +1,6 @@
 {
   "name": "@aomex/common",
-  "version": "3.8.1",
+  "version": "3.9.0",
   "description": "aomex公共库",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -41,7 +41,7 @@
     "@aomex/common-logger": "workspace:^",
     "@aomex/common-middleware": "workspace:^",
     "@aomex/common-service": "workspace:^",
-    "@aomex/internal-tools": "workspace:^",
-    "@aomex/common-validator": "workspace:^"
+    "@aomex/common-validator": "workspace:^",
+    "@aomex/internal-tools": "workspace:^"
   }
 }

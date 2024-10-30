@@ -1,6 +1,6 @@
 {
   "name": "@aomex/cron",
-  "version": "3.8.1",
+  "version": "3.9.0",
   "description": "定时任务",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -34,8 +34,8 @@
     "node": "^20.13.0 || ^22"
   },
   "peerDependencies": {
-    "@aomex/console": "^3.2.0",
-    "@aomex/common": "^3.0.0"
+    "@aomex/common": "^3.0.0",
+    "@aomex/console": "^3.2.0"
   },
   "dependencies": {
     "@aomex/cache": "workspace:^",
@@ -46,8 +46,8 @@
     "pidusage": "^3.0.2"
   },
   "devDependencies": {
-    "@aomex/console": "workspace:^",
     "@aomex/common": "workspace:^",
+    "@aomex/console": "workspace:^",
     "@types/pidusage": "^2.0.5"
   }
 }

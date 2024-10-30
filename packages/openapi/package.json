@@ -1,6 +1,6 @@
 {
   "name": "@aomex/openapi",
-  "version": "3.8.1",
+  "version": "3.9.0",
   "description": "Openapi文档生成工具",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -34,8 +34,8 @@
     "node": "^20.13.0 || ^22"
   },
   "peerDependencies": {
-    "@aomex/console": "^3.2.0",
     "@aomex/common": "^3.0.0",
+    "@aomex/console": "^3.2.0",
     "@aomex/web": "^3.0.0"
   },
   "peerDependenciesMeta": {
@@ -52,8 +52,8 @@
     "yaml": "^2.6.0"
   },
   "devDependencies": {
-    "@aomex/console": "workspace:^",
     "@aomex/common": "workspace:^",
+    "@aomex/console": "workspace:^",
     "@aomex/web": "workspace:^",
     "@types/lodash.snakecase": "^4.1.9",
     "stat-mode": "^1.0.0"
