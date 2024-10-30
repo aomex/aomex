@@ -135,6 +135,9 @@ importers:
 
   packages/common:
     dependencies:
+      '@aomex/common-logger':
+        specifier: workspace:^
+        version: link:../common-logger
       '@aomex/common-middleware':
         specifier: workspace:^
         version: link:../common-middleware
@@ -153,6 +156,8 @@ importers:
       typescript:
         specifier: '>=5.5'
         version: 5.5.3
+
+  packages/common-logger: {}
 
   packages/common-middleware:
     dependencies:
