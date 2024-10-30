@@ -16,15 +16,10 @@ export const colorCodes = <const>{
 
 const pattern = /\[[^\[\]]+\]/g;
 
-const fillZero = (data: number) => {
-  return String(data).padStart(2, '0');
-};
-
 export const replaceToken = async (opts: {
   message: string;
   startTime: [number, number];
   tokens?: { [key: string]: () => string | Promise<string> };
-  finished?: boolean;
   request: {
     method: string;
     url: string;
@@ -36,7 +31,7 @@ export const replaceToken = async (opts: {
     contentLength?: number;
   };
 }): Promise<string> => {
-  const { message, startTime, request, response = {}, tokens = {}, finished } = opts;
+  const { message, startTime, request, response = {}, tokens = {} } = opts;
   const { method, url } = request;
   const { contentLength, contentType = '-', statusCode = 404 } = response;
   let formatted = message;
@@ -54,18 +49,6 @@ export const replaceToken = async (opts: {
     }
 
     switch (`[${token}]`) {
-      case HttpLoggerToken.request:
-        replace(styleText('gray', '<--'));
-        break;
-      case HttpLoggerToken.response:
-        if (statusCode >= 400) {
-          replace(styleText('red', 'xxx'));
-        } else if (finished === false) {
-          replace(styleText('yellow', '-x-'));
-        } else {
-          replace('-->');
-        }
-        break;
       case HttpLoggerToken.method:
         replace(styleText('bold', method));
         break;
@@ -95,13 +78,6 @@ export const replaceToken = async (opts: {
         break;
       case HttpLoggerToken.duration:
         replace(styleText('gray', prettyTime(process.hrtime(startTime))));
-        break;
-      case HttpLoggerToken.time:
-        const now = new Date(Date.now());
-
-        replace(
-          `${now.getFullYear()}-${fillZero(now.getMonth() + 1)}-${fillZero(now.getDate())} ${fillZero(now.getHours())}:${fillZero(now.getMinutes())}:${fillZero(now.getSeconds())}`,
-        );
         break;
       case HttpLoggerToken.ip:
         replace(styleText('gray', request.ip));

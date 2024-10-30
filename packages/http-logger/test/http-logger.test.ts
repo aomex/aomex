@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/common';
+import { Logger, LoggerTransport, middleware } from '@aomex/common';
 import { WebApp } from '@aomex/web';
 import { stripVTControlCharacters } from 'node:util';
 import {
@@ -14,149 +14,103 @@ import { httpLogger } from '../src';
 import supertest from 'supertest';
 import { createReadStream } from 'node:fs';
 import { join } from 'node:path';
+import sleep from 'sleep-promise';
 
 let msgs: string[] = [];
-const printer = (message: string) => {
-  msgs.push(stripVTControlCharacters(message));
-};
+
+class MockTransport extends LoggerTransport {
+  override async consume(message: Logger.Message): Promise<any> {
+    msgs.push(
+      `[${message.level}] ${this.dateToString(new Date(message.timestamp))} ${stripVTControlCharacters(message.text)}`,
+    );
+  }
+}
+const transports = [new MockTransport()];
 
 let spy: MockInstance;
+let spy1: MockInstance;
 
 beforeAll(() => {
   spy = vitest.spyOn(Date, 'now').mockImplementation(() => 1717471392001);
-});
-
-afterAll(() => {
-  spy.mockRestore();
+  spy1 = vitest.spyOn(process, 'hrtime').mockImplementation(() => [1, 2]);
 });
 
 beforeEach(() => {
   msgs = [];
 });
 
-test('只打印请求日志', async () => {
-  const app = new WebApp({
-    mount: [
-      httpLogger({ responseFormat: false, printer }),
-      middleware.web((ctx) => {
-        ctx.send(200, 'foo bar');
-      }),
-    ],
-  });
-  await supertest(app.listen()).get('/api');
-  expect(msgs).toMatchInlineSnapshot(`
-    [
-      "[2024-06-04 11:23:12] <-- ::ffff:127.0.0.1 GET /api",
-    ]
-  `);
+afterAll(() => {
+  spy.mockRestore();
+  spy1.mockRestore();
 });
 
-test('只打印响应日志', async () => {
+test('打印日志', async () => {
   const app = new WebApp({
     mount: [
-      httpLogger({ requestFormat: false, printer }),
+      httpLogger({ transports }),
       middleware.web((ctx) => {
         ctx.send(200, 'foo bar');
       }),
     ],
   });
-  const spy = vitest
-    .spyOn(process, 'hrtime')
-    .mockImplementationOnce(() => [1, 2])
-    .mockImplementationOnce(() => [0, 20000]);
 
   await supertest(app.listen()).get('/api');
+  await sleep(100);
   expect(msgs).toMatchInlineSnapshot(`
   [
-    "[2024-06-04 11:23:12] --> ::ffff:127.0.0.1 GET /api 200 20μs 7b",
+    "[http] 2024-06-04 11:23:12 ::ffff:127.0.0.1 GET /api 200 1s 7b",
   ]
   `);
-  spy.mockRestore();
-});
-
-test('打印请求和响应日志', async () => {
-  const app = new WebApp({
-    mount: [
-      httpLogger({ printer }),
-      middleware.web((ctx) => {
-        ctx.send(200, 'foo bar');
-      }),
-    ],
-  });
-  const spy = vitest
-    .spyOn(process, 'hrtime')
-    .mockImplementationOnce(() => [1, 2])
-    .mockImplementationOnce(() => [0, 20000]);
-
-  await supertest(app.listen()).get('/api');
-  expect(msgs).toMatchInlineSnapshot(`
-    [
-      "[2024-06-04 11:23:12] <-- ::ffff:127.0.0.1 GET /api",
-      "[2024-06-04 11:23:12] --> ::ffff:127.0.0.1 GET /api 200 20μs 7b",
-    ]
-  `);
-  spy.mockRestore();
 });
 
 test('打印错误日志', async () => {
   const app = new WebApp({
     mount: [
-      httpLogger({ printer }),
+      httpLogger({ transports }),
       middleware.web((ctx) => {
         ctx.throw(400, 'bad request');
       }),
     ],
   });
-  const spy = vitest
-    .spyOn(process, 'hrtime')
-    .mockImplementationOnce(() => [1, 2])
-    .mockImplementationOnce(() => [0, 20000]);
 
   await supertest(app.listen()).get('/api');
+  await sleep(100);
   expect(msgs).toMatchInlineSnapshot(`
     [
-      "[2024-06-04 11:23:12] <-- ::ffff:127.0.0.1 GET /api",
-      "[2024-06-04 11:23:12] xxx ::ffff:127.0.0.1 GET /api 400 20μs 11b",
+      "[http] 2024-06-04 11:23:12 ::ffff:127.0.0.1 GET /api 400 1s 11b",
     ]
   `);
-  spy.mockRestore();
 });
 
 test('数据流也能获取长度', async () => {
   const app = new WebApp({
     mount: [
-      httpLogger({ printer }),
+      httpLogger({ transports }),
       middleware.web((ctx) => {
         ctx.send(createReadStream(join(import.meta.dirname, 'fixture', 'file.txt')));
       }),
     ],
   });
-  const spy = vitest
-    .spyOn(process, 'hrtime')
-    .mockImplementationOnce(() => [1, 2])
-    .mockImplementationOnce(() => [0, 20000]);
 
   await supertest(app.listen()).get('/api');
+  await sleep(100);
   expect(msgs).toMatchInlineSnapshot(`
     [
-      "[2024-06-04 11:23:12] <-- ::ffff:127.0.0.1 GET /api",
-      "[2024-06-04 11:23:12] --> ::ffff:127.0.0.1 GET /api 200 20μs 108b",
+      "[http] 2024-06-04 11:23:12 ::ffff:127.0.0.1 GET /api 200 1s 108b",
     ]
   `);
-  spy.mockRestore();
 });
 
 test('自定义令牌', async () => {
   const app = new WebApp({
     mount: [
       httpLogger({
-        requestFormat: '[method] [foo] [bar] [baz]',
-        responseFormat: '[foo]   [method]',
+        format: '[method] [foo] [bar] [baz]',
         customTokens: {
           foo: () => 'ifooo',
           baz: async () => 'bazzz',
         },
-        printer,
+        transports,
       }),
       middleware.web((ctx) => {
         ctx.send(200, 'foo bar');
@@ -165,10 +119,10 @@ test('自定义令牌', async () => {
   });
 
   await supertest(app.listen()).get('/api');
+  await sleep(100);
   expect(msgs).toMatchInlineSnapshot(`
     [
-      "GET ifooo [bar] bazzz",
-      "ifooo   GET",
+      "[http] 2024-06-04 11:23:12 GET ifooo [bar] bazzz",
     ]
   `);
 });

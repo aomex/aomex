@@ -3,46 +3,6 @@ import { replaceToken } from '../src/replace-token';
 import { HttpLoggerToken } from '../src';
 import { stripVTControlCharacters, styleText } from 'node:util';
 
-test('request', async () => {
-  const msg = await replaceToken({
-    message: HttpLoggerToken.request,
-    request: { method: 'GET', ip: '::', url: '/' },
-    startTime: process.hrtime(),
-  });
-  expect(stripVTControlCharacters(msg)).toMatchInlineSnapshot(`"<--"`);
-});
-
-test('response + 200', async () => {
-  const msg = await replaceToken({
-    message: HttpLoggerToken.response,
-    response: { statusCode: 200 },
-    request: { method: 'GET', ip: '::', url: '/' },
-    startTime: process.hrtime(),
-  });
-  expect(stripVTControlCharacters(msg)).toMatchInlineSnapshot(`"-->"`);
-});
-
-test('response + 403', async () => {
-  const msg = await replaceToken({
-    message: HttpLoggerToken.response,
-    response: { statusCode: 403 },
-    request: { method: 'GET', ip: '::', url: '/' },
-    startTime: process.hrtime(),
-  });
-  expect(stripVTControlCharacters(msg)).toMatchInlineSnapshot(`"xxx"`);
-});
-
-test('response + 请求未完成', async () => {
-  const msg = await replaceToken({
-    message: HttpLoggerToken.response,
-    request: { method: 'GET', ip: '::', url: '/' },
-    response: { statusCode: 200 },
-    startTime: process.hrtime(),
-    finished: false,
-  });
-  expect(stripVTControlCharacters(msg)).toMatchInlineSnapshot(`"-x-"`);
-});
-
 test('method', async () => {
   const msg = await replaceToken({
     message: HttpLoggerToken.method,
@@ -156,17 +116,6 @@ test('响应类型', async () => {
     startTime: process.hrtime(),
   });
   expect(stripVTControlCharacters(msg)).toMatchInlineSnapshot(`"application/json"`);
-});
-
-test('时间', async () => {
-  const spy = vitest.spyOn(Date, 'now').mockImplementationOnce(() => 1717471392000);
-  const msg = await replaceToken({
-    message: HttpLoggerToken.time,
-    request: { method: 'GET', ip: '::', url: '/' },
-    startTime: process.hrtime(),
-  });
-  expect(stripVTControlCharacters(msg)).toMatchInlineSnapshot(`"2024-06-04 11:23:12"`);
-  spy.mockRestore();
 });
 
 test('响应时间差', async () => {
