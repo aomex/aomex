@@ -1,6 +1,7 @@
 import type { LoggerTransport } from './logger-transport';
 import { transports } from './transports';
 import util from 'node:util';
+import timers from 'node:timers/promises';
 
 export namespace Logger {
   export type Level<T extends string> =
@@ -85,6 +86,17 @@ export abstract class Logger<T extends string> {
         );
       },
     };
+  }
+
+  /**
+   * 保证日志输送完毕
+   */
+  async promise() {
+    while (true) {
+      if (!this.timer) return;
+      if (!this.messages.length) return;
+      await timers.setTimeout(30);
+    }
   }
 
   protected log(level: T, text: string, ...args: any[]) {

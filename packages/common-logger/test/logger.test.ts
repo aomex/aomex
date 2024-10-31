@@ -2,7 +2,6 @@ import { expect, test, vitest } from 'vitest';
 import { Logger } from '../src';
 import { describe } from 'node:test';
 import { MockTransport } from './mocks/mock-transport';
-import sleep from 'sleep-promise';
 
 test('自定义接口', () => {
   const logger = Logger.create({ levels: ['foo', 'bar'] });
@@ -114,7 +113,7 @@ test('异步消费', async () => {
   expect(logger['messages']).toHaveLength(1);
   expect(t.messages).toHaveLength(0);
 
-  await sleep(200);
+  await logger.promise();
   expect(spy).toBeCalledTimes(1);
   expect(logger['messages']).toHaveLength(0);
   expect(t.messages).toHaveLength(1);
