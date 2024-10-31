@@ -88,6 +88,24 @@ class AsyncTrace {
     }
     return record!;
   }
+
+  /**
+   * 转成调用栈字符串
+   * ```
+   * foo: 123ms
+   * bar: 2000ms
+   *     baz: 300ms
+   * test: 501ms
+   * ```
+   */
+  toStack(records: AsyncTraceRecord[], indent: number = 4, level: number = 0): string {
+    return records
+      .map((record) => {
+        return `${' '.repeat(level * indent)}${record.label}: ${record.delta}ms
+${this.toStack(record.children, indent, level + 1)}`;
+      })
+      .join('');
+  }
 }
 
 export const asyncTrace = new AsyncTrace();

@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest';
 import { asyncTrace } from '../src';
+import sleep from 'sleep-promise';
 
 test('追踪回调', async () => {
   let traceId!: string;
@@ -68,4 +69,38 @@ test('逻辑异常时也记录报错信息', async () => {
     label: 'label-foo',
   });
   expect(record.error).toMatchInlineSnapshot(`[Error: xx-yy-zz]`);
+});
+
+test('转换成调用栈', async () => {
+  let traceId!: string;
+  await asyncTrace.run('foo', async (id) => {
+    traceId = id;
+    await sleep(100);
+    await asyncTrace.run('bar', async () => {
+      await sleep(300);
+      await asyncTrace.run('bar-child', async () => {
+        await sleep(200);
+      });
+    });
+    await asyncTrace.run('baz', async () => {
+      await sleep(200);
+    });
+  });
+  const topRecords = [asyncTrace.getRecord(traceId)];
+  expect(asyncTrace.toStack(topRecords).replaceAll(/\d+/g, '_')).toMatchInlineSnapshot(`
+    "foo: _ms
+        bar: _ms
+            bar-child: _ms
+        baz: _ms
+    "
+  `);
+
+  expect(asyncTrace.toStack(topRecords, 2).replaceAll(/\d+/g, '_'))
+    .toMatchInlineSnapshot(`
+    "foo: _ms
+      bar: _ms
+        bar-child: _ms
+      baz: _ms
+    "
+  `);
 });
