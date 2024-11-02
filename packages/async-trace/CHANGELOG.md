@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.10.0](https://github.com/aomex/aomex/compare/v3.9.0...v3.10.0) (2024-11-02)
+
+
+### Features
+
+* **async-trace:** 增加toStack方法生成调用栈 ([af40ece](https://github.com/aomex/aomex/commit/af40ece4234c2f0add7342828b45647863afd534))
+
+
+
+
+
 # [3.9.0](https://github.com/aomex/aomex/compare/v3.8.1...v3.9.0) (2024-10-30)
 
 **Note:** Version bump only for package @aomex/async-trace

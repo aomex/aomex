@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.10.0](https://github.com/aomex/aomex/compare/v3.9.0...v3.10.0) (2024-11-02)
+
+
+### Features
+
+* **logger:** timestamp使用日期类型 ([26a5931](https://github.com/aomex/aomex/commit/26a5931ca0a9dfdb5a7abcdfd967092e5334aa04))
+
+
+
+
+
 # [3.9.0](https://github.com/aomex/aomex/compare/v3.8.1...v3.9.0) (2024-10-30)
 
 

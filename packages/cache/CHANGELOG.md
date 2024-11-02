@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.10.0](https://github.com/aomex/aomex/compare/v3.9.0...v3.10.0) (2024-11-02)
+
+
+### Bug Fixes
+
+* **cache:** 手动指定类型产生冲突 ([7b88433](https://github.com/aomex/aomex/commit/7b88433726a8de4b0de3c40ac62fcf0ed02eb536))
+
+
+
+
+
 # [3.9.0](https://github.com/aomex/aomex/compare/v3.8.1...v3.9.0) (2024-10-30)
 
 **Note:** Version bump only for package @aomex/cache

@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.10.0](https://github.com/aomex/aomex/compare/v3.9.0...v3.10.0) (2024-11-02)
+
+
+### Bug Fixes
+
+* **cache:** 手动指定类型产生冲突 ([7b88433](https://github.com/aomex/aomex/commit/7b88433726a8de4b0de3c40ac62fcf0ed02eb536))
+
+
+### Features
+
+* **async-trace:** 增加toStack方法生成调用栈 ([af40ece](https://github.com/aomex/aomex/commit/af40ece4234c2f0add7342828b45647863afd534))
+* **logger:** timestamp使用日期类型 ([26a5931](https://github.com/aomex/aomex/commit/26a5931ca0a9dfdb5a7abcdfd967092e5334aa04))
+* **logger:** 增加promise方法以保证日志输送完毕 ([1945be3](https://github.com/aomex/aomex/commit/1945be387d142c71bdc79faabe1216f4c072642e))
+
+
+
+
+
 # [3.9.0](https://github.com/aomex/aomex/compare/v3.8.1...v3.9.0) (2024-10-30)
 
 
