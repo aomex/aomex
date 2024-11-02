@@ -30,8 +30,8 @@ export namespace Logger {
     }[];
   }
 
-  export interface Message<T extends string = string> {
-    timestamp: number;
+  export interface Log<T extends string = string> {
+    timestamp: Date;
     level: T;
     text: string;
   }
@@ -48,7 +48,7 @@ export abstract class Logger<T extends string> {
   };
 
   protected readonly levels: T[];
-  protected readonly messages: Logger.Message<T>[] = [];
+  protected readonly logs: Logger.Log<T>[] = [];
   protected transportAndLevels: { transport: LoggerTransport; levels: T[] }[];
   protected timer?: NodeJS.Timeout;
 
@@ -94,14 +94,14 @@ export abstract class Logger<T extends string> {
   async promise() {
     while (true) {
       if (!this.timer) return;
-      if (!this.messages.length) return;
+      if (!this.logs.length) return;
       await timers.setTimeout(30);
     }
   }
 
   protected log(level: T, text: string, ...args: any[]) {
-    this.messages.push({
-      timestamp: Date.now(),
+    this.logs.push({
+      timestamp: new Date(),
       text: util.format(text, ...args),
       level,
     });
@@ -112,17 +112,17 @@ export abstract class Logger<T extends string> {
   }
 
   protected async consume() {
-    let message = this.messages.shift();
-    while (message) {
-      const targetLevel = message.level;
+    let log = this.logs.shift();
+    while (log) {
+      const targetLevel = log.level;
       await Promise.all(
         this.transportAndLevels.map(async ({ transport, levels }) => {
           if (levels.includes(targetLevel)) {
-            await transport.consume(message!);
+            await transport.consume(log!);
           }
         }),
       );
-      message = this.messages.shift();
+      log = this.logs.shift();
     }
   }
 

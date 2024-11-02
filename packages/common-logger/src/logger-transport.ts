@@ -2,7 +2,7 @@ import path from 'node:path';
 import type { Logger } from './logger';
 
 export abstract class LoggerTransport {
-  abstract consume(message: Logger.Message): Promise<any>;
+  abstract consume(log: Logger.Log): Promise<any>;
 
   /**
    * 解析日期。返回 年、月、日、时、分、秒

@@ -11,12 +11,16 @@ test('输出到文件', async () => {
     rmSync(file);
   } catch {}
   const t = new FileTransport({ file });
-  await t.consume({ text: 'hello world', timestamp: 1730296983321, level: 'foo' });
+  await t.consume({
+    text: 'hello world',
+    timestamp: new Date(1730296983321),
+    level: 'foo',
+  });
   expect(readFileSync(file, 'utf8')).toMatchInlineSnapshot(`
     "[foo] 2024-10-30 22:03:03 hello world
     "
   `);
-  await t.consume({ text: 'hi earth', timestamp: 1730296983321, level: 'bar' });
+  await t.consume({ text: 'hi earth', timestamp: new Date(1730296983321), level: 'bar' });
   expect(readFileSync(file, 'utf8')).toMatchInlineSnapshot(`
     "[foo] 2024-10-30 22:03:03 hello world
     [bar] 2024-10-30 22:03:03 hi earth
@@ -35,18 +39,30 @@ test('时间文件名', async () => {
     rmSync(file2);
   } catch {}
   const t = new FileTransport({ file });
-  await t.consume({ text: 'hello world', timestamp: 1730296983321, level: 'foo' });
+  await t.consume({
+    text: 'hello world',
+    timestamp: new Date(1730296983321),
+    level: 'foo',
+  });
   expect(readFileSync(file1, 'utf8')).toMatchInlineSnapshot(`
     "[foo] 2024-10-30 22:03:03 hello world
     "
   `);
-  await t.consume({ text: 'hello world', timestamp: 1730296983321, level: 'bar' });
+  await t.consume({
+    text: 'hello world',
+    timestamp: new Date(1730296983321),
+    level: 'bar',
+  });
   expect(readFileSync(file1, 'utf8')).toMatchInlineSnapshot(`
     "[foo] 2024-10-30 22:03:03 hello world
     [bar] 2024-10-30 22:03:03 hello world
     "
   `);
-  await t.consume({ text: 'hello world', timestamp: 1740296983321, level: 'bar' });
+  await t.consume({
+    text: 'hello world',
+    timestamp: new Date(1740296983321),
+    level: 'bar',
+  });
   expect(readFileSync(file1, 'utf8')).toMatchInlineSnapshot(`
     "[foo] 2024-10-30 22:03:03 hello world
     [bar] 2024-10-30 22:03:03 hello world
@@ -64,7 +80,11 @@ test('动态文件名', async () => {
     rmSync(file);
   } catch {}
   const t = new FileTransport({ file: () => file });
-  await t.consume({ text: 'hello world', timestamp: 1730296983321, level: 'foo' });
+  await t.consume({
+    text: 'hello world',
+    timestamp: new Date(1730296983321),
+    level: 'foo',
+  });
   expect(readFileSync(file, 'utf8')).toMatchInlineSnapshot(`
     "[foo] 2024-10-30 22:03:03 hello world
     "
@@ -79,7 +99,7 @@ test('过滤掉样式字符', async () => {
   const t = new FileTransport({ file });
   await t.consume({
     text: 'hello ' + styleText('green', 'world'),
-    timestamp: 1730296983321,
+    timestamp: new Date(1730296983321),
     level: 'foo',
   });
   expect(readFileSync(file, 'utf8')).toMatchInlineSnapshot(`

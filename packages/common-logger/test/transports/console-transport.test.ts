@@ -7,7 +7,7 @@ test('标准输出', async () => {
   const spy = vitest.spyOn(process.stdout, 'write').mockImplementation(() => true);
   await t.consume({
     text: 'hello world',
-    timestamp: 1730296983321,
+    timestamp: new Date(1730296983321),
     level: 'foo',
   });
   expect(spy).toBeCalledTimes(1);
@@ -20,7 +20,7 @@ test('标准错误', async () => {
   const spy = vitest.spyOn(process.stderr, 'write').mockImplementation(() => true);
   await t.consume({
     text: 'hello world',
-    timestamp: 1730296983321,
+    timestamp: new Date(1730296983321),
     level: 'foo',
   });
   expect(spy).toBeCalledTimes(1);
@@ -35,7 +35,7 @@ test('颜色', async () => {
   const spy = vitest.spyOn(process.stdout, 'write').mockImplementation(() => true);
   await t.consume({
     text: 'hello world',
-    timestamp: 1730296983321,
+    timestamp: new Date(1730296983321),
     level: 'foo',
   });
   expect(spy).toHaveBeenLastCalledWith(
@@ -44,7 +44,7 @@ test('颜色', async () => {
 
   await t.consume({
     text: 'hello world',
-    timestamp: 1730296983321,
+    timestamp: new Date(1730296983321),
     level: 'bar',
   });
   expect(spy).toHaveBeenLastCalledWith(

@@ -16,11 +16,7 @@ test('按顺序记录日志', () => {
   logger.foo('aa');
   logger.bar('bb');
   logger.foo('hello %s', 'world');
-  expect(logger['messages'].map((m) => m.text)).toStrictEqual([
-    'aa',
-    'bb',
-    'hello world',
-  ]);
+  expect(logger['logs'].map((m) => m.text)).toStrictEqual(['aa', 'bb', 'hello world']);
 });
 
 describe('输出日志等级', () => {
@@ -110,12 +106,12 @@ test('异步消费', async () => {
   logger.foo('hello foo!');
 
   expect(spy).toBeCalledTimes(0);
-  expect(logger['messages']).toHaveLength(1);
+  expect(logger['logs']).toHaveLength(1);
   expect(t.messages).toHaveLength(0);
 
   await logger.promise();
   expect(spy).toBeCalledTimes(1);
-  expect(logger['messages']).toHaveLength(0);
+  expect(logger['logs']).toHaveLength(0);
   expect(t.messages).toHaveLength(1);
 });
 
@@ -132,26 +128,26 @@ test('消费者同时消费', async () => {
     ],
   });
 
-  logger['messages'].push(
-    { text: 'hello foo!', level: 'foo', timestamp: 12345 },
-    { text: 'hello bar!', level: 'bar', timestamp: 12346 },
-    { text: 'hello baz!', level: 'baz', timestamp: 12347 },
+  logger['logs'].push(
+    { text: 'hello foo!', level: 'foo', timestamp: new Date(1730355001000) },
+    { text: 'hello bar!', level: 'bar', timestamp: new Date(1730355002000) },
+    { text: 'hello baz!', level: 'baz', timestamp: new Date(1730355003000) },
   );
 
   await logger['consume']();
-  expect(logger['messages']).toHaveLength(0);
+  expect(logger['logs']).toHaveLength(0);
 
   expect(t1.messages).toMatchInlineSnapshot(`
     [
       {
         "level": "foo",
         "text": "hello foo!",
-        "timestamp": 12345,
+        "timestamp": 2024-10-31T06:10:01.000Z,
       },
       {
         "level": "bar",
         "text": "hello bar!",
-        "timestamp": 12346,
+        "timestamp": 2024-10-31T06:10:02.000Z,
       },
     ]
   `);
@@ -160,12 +156,12 @@ test('消费者同时消费', async () => {
       {
         "level": "bar",
         "text": "hello bar!",
-        "timestamp": 12346,
+        "timestamp": 2024-10-31T06:10:02.000Z,
       },
       {
         "level": "baz",
         "text": "hello baz!",
-        "timestamp": 12347,
+        "timestamp": 2024-10-31T06:10:03.000Z,
       },
     ]
   `);

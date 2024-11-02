@@ -19,20 +19,27 @@ import sleep from 'sleep-promise';
 let msgs: string[] = [];
 
 class MockTransport extends LoggerTransport {
-  override async consume(message: Logger.Message): Promise<any> {
+  override async consume(message: Logger.Log): Promise<any> {
     msgs.push(
       `[${message.level}] ${this.dateToString(new Date(message.timestamp))} ${stripVTControlCharacters(message.text)}`,
     );
   }
 }
-const transports = [new MockTransport()];
+
+const t = new MockTransport();
+const transports = [t];
+{
+  const originConsume = t.consume.bind(t);
+  vitest.spyOn(t, 'consume').mockImplementation(async (message) => {
+    message.timestamp = new Date('2024-06-04 11:23:12');
+    return originConsume(message);
+  });
+}
 
 let spy: MockInstance;
-let spy1: MockInstance;
 
 beforeAll(() => {
-  spy = vitest.spyOn(Date, 'now').mockImplementation(() => 1717471392001);
-  spy1 = vitest.spyOn(process, 'hrtime').mockImplementation(() => [1, 2]);
+  spy = vitest.spyOn(process, 'hrtime').mockImplementation(() => [1, 2]);
 });
 
 beforeEach(() => {
@@ -41,7 +48,6 @@ beforeEach(() => {
 
 afterAll(() => {
   spy.mockRestore();
-  spy1.mockRestore();
 });
 
 test('打印日志', async () => {

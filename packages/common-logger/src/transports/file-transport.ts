@@ -6,7 +6,7 @@ import { LoggerTransport } from '../logger-transport';
 import type { Logger } from '../logger';
 
 export class FileTransport extends LoggerTransport {
-  protected readonly file: string | ((message: Logger.Message) => string);
+  protected readonly file: string | ((log: Logger.Log) => string);
   protected readonly fileMode?: Mode;
   protected readonly dirMode?: Mode;
 
@@ -26,7 +26,7 @@ export class FileTransport extends LoggerTransport {
      * })
      * ```
      */
-    file: string | ((message: Logger.Message) => string);
+    file: string | ((log: Logger.Log) => string);
     /**
      * 文件权限，默认使用系统权限
      */
@@ -42,23 +42,22 @@ export class FileTransport extends LoggerTransport {
     this.dirMode = opts.dirMode;
   }
 
-  override async consume(message: Logger.Message): Promise<any> {
-    const date = new Date(message.timestamp);
+  override async consume(log: Logger.Log): Promise<any> {
     let file: string;
     if (typeof this.file === 'function') {
-      file = this.file(message);
+      file = this.file(log);
     } else {
       file = this.file;
-      for (const [key, value] of Object.entries(this.dateToJSON(date))) {
+      for (const [key, value] of Object.entries(this.dateToJSON(log.timestamp))) {
         file = file.replaceAll(`%${key}%`, value);
       }
     }
 
     await mkdir(dirname(file), { recursive: true, mode: this.dirMode });
-    await appendFile(file, this.getContent(message), { mode: this.fileMode });
+    await appendFile(file, this.getContent(log), { mode: this.fileMode });
   }
 
-  protected getContent(message: Logger.Message) {
-    return `[${message.level}] ${this.dateToString(new Date(message.timestamp))} ${stripVTControlCharacters(message.text)}\n`;
+  protected getContent(message: Logger.Log) {
+    return `[${message.level}] ${this.dateToString(message.timestamp)} ${stripVTControlCharacters(message.text)}\n`;
   }
 }

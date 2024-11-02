@@ -1,9 +1,9 @@
 import { Logger, LoggerTransport } from '../../src';
 
 export class MockTransport extends LoggerTransport {
-  messages: Logger.Message[] = [];
+  messages: Logger.Log[] = [];
 
-  override async consume(message: Logger.Message): Promise<any> {
+  override async consume(message: Logger.Log): Promise<any> {
     this.messages.push(message);
   }
 }
