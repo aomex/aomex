@@ -6,7 +6,7 @@ export namespace Caching {
     | number
     | unknown[]
     | readonly unknown[]
-    | { [K: string]: unknown }
+    | { [K: string]: any }
     | boolean
     | Map<any, any>
     | Set<any>;

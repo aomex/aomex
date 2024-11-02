@@ -136,3 +136,13 @@ let caching!: Caching;
   const data = await new MyClass().getData2(2, 'x');
   expectType<string>(data);
 }
+
+// 手动指定类型
+{
+  await caching.get<object | string>('foo');
+  await caching.get<any[] | string>('foo');
+  await caching.get<string[] | string>('foo');
+  await caching.get<File[] | string>('foo');
+  await caching.get<unknown[] | string>('foo');
+  await caching.get<object>('foo');
+}
