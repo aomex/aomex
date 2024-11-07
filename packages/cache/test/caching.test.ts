@@ -241,7 +241,7 @@ describe('装饰器', () => {
     const setSpy = vitest.spyOn(caching, 'set').mockImplementation(async () => true);
 
     class MyClass {
-      @caching.decorate({ key: 'key' })
+      @caching.decorate({ key: 'key', duration: 1000 })
       async getData() {
         return 'foo-bar';
       }
@@ -252,7 +252,7 @@ describe('装饰器', () => {
     expect(getSpy).toBeCalledTimes(1);
     expect(getSpy).toBeCalledWith('key');
     expect(setSpy).toBeCalledTimes(1);
-    expect(setSpy).toBeCalledWith('key', 'foo-bar', undefined);
+    expect(setSpy).toBeCalledWith('key', 'foo-bar', 1000);
 
     getSpy.mockRestore();
     setSpy.mockRestore();
@@ -264,7 +264,7 @@ describe('装饰器', () => {
     const spy = vitest.fn();
 
     class MyClass {
-      @caching.decorate({ key: 'key' })
+      @caching.decorate({ key: 'key', duration: 1000 })
       async getData() {
         spy();
         return 'foo-bar';
@@ -288,7 +288,7 @@ describe('装饰器', () => {
     const spy = vitest.fn();
 
     class MyClass {
-      @caching.decorate({ key: 'key' })
+      @caching.decorate({ key: 'key', duration: 1000 })
       async getData() {
         await sleep(1500);
         spy();
@@ -313,7 +313,7 @@ describe('装饰器', () => {
     const spy = vitest.fn().mockImplementation(() => 'x');
 
     class MyClass {
-      @caching.decorate({ key: spy })
+      @caching.decorate({ key: spy, duration: 1000 })
       async getData(id: number | string) {
         await sleep(1500);
         return 'foo-bar-' + id;
@@ -337,7 +337,7 @@ describe('装饰器', () => {
     const setSpy = vitest.spyOn(caching, 'set').mockImplementation(async () => true);
 
     class MyClass {
-      @caching.decorate({ key: 'key', defaultValue: 'foo' })
+      @caching.decorate({ key: 'key', defaultValue: 'foo', duration: 1000 })
       async getData() {
         return null;
       }
@@ -350,5 +350,30 @@ describe('装饰器', () => {
 
     getSpy.mockRestore();
     setSpy.mockRestore();
+  });
+
+  test('默认的键', async () => {
+    const getSpy = vitest.spyOn(caching, 'get').mockImplementation(async () => null);
+    class MyClass {
+      @caching.decorate({ duration: 1000 })
+      async getData() {
+        return null;
+      }
+
+      @caching.decorate({ duration: 1000 })
+      async getData2(_a: string, _b: number, _c: object) {
+        return null;
+      }
+    }
+    const my = new MyClass();
+    await my.getData();
+    expect(getSpy).toHaveBeenLastCalledWith('MyClass-getData-[]');
+
+    await my.getData2('abcd', 123, { hello: 'world', foo: 'bar' });
+    expect(getSpy).toHaveBeenLastCalledWith(
+      'MyClass-getData2-["abcd",123,{"hello":"world","foo":"bar"}]',
+    );
+
+    getSpy.mockRestore();
   });
 });

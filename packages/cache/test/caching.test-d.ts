@@ -79,8 +79,19 @@ let caching!: Caching;
 // 装饰器
 {
   class MyClass {
-    @caching.decorate({ key: 'key' })
+    @caching.decorate({ duration: 1 })
+    async getData0() {
+      return 'ok';
+    }
+
+    @caching.decorate({ key: 'key', duration: 1 })
     async getData1() {
+      return 'ok';
+    }
+
+    // @ts-expect-error
+    @caching.decorate({ key: 'key' })
+    async getData1_1() {
       return 'ok';
     }
 
@@ -90,6 +101,7 @@ let caching!: Caching;
         expectType<string>(time);
         return `key_${id}_${time}`;
       },
+      duration: 1,
     })
     async getData2(id: number, time: string) {
       return 'ok' + id + time;
@@ -100,33 +112,33 @@ let caching!: Caching;
       return 'ok';
     }
 
-    @caching.decorate({ key: 'key' })
+    @caching.decorate({ key: 'key', duration: 1 })
     getData4() {
       return Promise.resolve('ok');
     }
 
-    @caching.decorate({ key: 'key' })
+    @caching.decorate({ key: 'key', duration: 1 })
     getData5() {
       return Promise.resolve('ok');
     }
 
-    @caching.decorate({ key: 'key' })
+    @caching.decorate({ key: 'key', duration: 1 })
     getData6() {
       return Promise.resolve('ok');
     }
 
-    @caching.decorate({ key: 'key' })
+    @caching.decorate({ key: 'key', duration: 1 })
     async getDate7() {
       return null;
     }
 
-    @caching.decorate({ key: 'key', defaultValue: 'okay' })
+    @caching.decorate({ key: 'key', defaultValue: 'okay', duration: 1 })
     async getDate8() {
       if (Math.random() > 0.5) return 'ok';
       return null;
     }
 
-    @caching.decorate({ key: 'key', defaultValue: 123 })
+    @caching.decorate({ key: 'key', defaultValue: 123, duration: 1 })
     async getDate9() {
       if (Math.random() > 0.5) return 'ok';
       return null;

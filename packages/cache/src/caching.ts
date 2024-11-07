@@ -178,8 +178,8 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
     P extends (...args: any[]) => Promise<T>,
     Q extends NonNullable<T>,
   >(opts: {
-    key: string | ((...args: Parameters<P>) => string);
-    duration?: number;
+    key?: string | ((...args: Parameters<P>) => string);
+    duration: number;
     /**
      * 当数据源返回null或者undefined时，则返回默认值
      */
@@ -189,9 +189,18 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
     const fetching: Record<string, Promise<T>> = {};
     const { key: getKey, duration, defaultValue = null } = opts;
 
-    return (originalMethod: P, _context: ClassMethodDecoratorContext) => {
+    return (originalMethod: P, context: ClassMethodDecoratorContext) => {
       return async function (this: object, ...args: Parameters<P>): Promise<any> {
-        const key = typeof getKey === 'string' ? getKey : getKey.apply(this, args);
+        const key =
+          getKey === undefined
+            ? `${
+                'displayName' in this && typeof this.displayName === 'string'
+                  ? this.displayName
+                  : this.constructor.name
+              }-${String(context.name)}-${JSON.stringify(args)}`
+            : typeof getKey === 'string'
+              ? getKey
+              : getKey.apply(this, args);
         let value = await instance.get<NonNullable<T>>(key);
         if (value === null) {
           if (fetching[key]) {
