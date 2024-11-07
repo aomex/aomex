@@ -1,6 +1,6 @@
 {
   "name": "@aomex/common-service",
-  "version": "3.11.0",
+  "version": "3.12.0",
   "description": "aomex服务层",
   "scripts": {
     "prepublishOnly": "tsup"
