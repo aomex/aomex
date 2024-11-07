@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.11.0](https://github.com/aomex/aomex/compare/v3.10.0...v3.11.0) (2024-11-07)
+
+
+### Features
+
+* **cache:** 支持自动生成key ([5316cc4](https://github.com/aomex/aomex/commit/5316cc4a514e89307c302dac4689b81cf8b1fa71))
+
+
+
+
+
 # [3.10.0](https://github.com/aomex/aomex/compare/v3.9.0...v3.10.0) (2024-11-02)
 
 
