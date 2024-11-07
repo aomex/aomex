@@ -9,7 +9,8 @@ export namespace Caching {
     | { [K: string]: any }
     | boolean
     | Map<any, any>
-    | Set<any>;
+    | Set<any>
+    | Date;
 }
 
 const CACHING_TYPE = '_$caching_type$_';
@@ -224,6 +225,8 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
       value = { [CACHING_TYPE]: 'Map', [CACHING_DATA]: Array.from(value.entries()) };
     } else if (value instanceof Set) {
       value = { [CACHING_TYPE]: 'Set', [CACHING_DATA]: Array.from(value.values()) };
+    } else if (value instanceof Date) {
+      value = { [CACHING_TYPE]: 'Date', [CACHING_DATA]: value.toISOString() };
     }
     return JSON.stringify(value);
   }
@@ -252,6 +255,12 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
               if (Array.isArray(decoded[CACHING_DATA])) {
                 return new Set(decoded[CACHING_DATA]);
               }
+              break;
+            case 'Date':
+              if (typeof decoded[CACHING_DATA] === 'string') {
+                return new Date(decoded[CACHING_DATA]);
+              }
+              break;
           }
         }
       }

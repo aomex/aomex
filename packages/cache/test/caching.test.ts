@@ -206,6 +206,24 @@ describe('复杂对象', () => {
     spy.mockRestore();
   });
 
+  test('保存Date', async () => {
+    const spy = vitest
+      .spyOn(MockStore.prototype, 'setValue')
+      // @ts-expect-error
+      .mockImplementation(() => true);
+
+    const date = new Date('2024-10-24T00:10:24.123Z');
+
+    await caching.set('foo', date);
+    expect(spy).toHaveBeenLastCalledWith(
+      'foo',
+      '{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"}',
+      undefined,
+    );
+    expect(spy).toHaveReturnedWith(true);
+    spy.mockRestore();
+  });
+
   test('恢复Map', async () => {
     const spy = vitest
       .spyOn(MockStore.prototype, 'getValue')
@@ -230,6 +248,21 @@ describe('复杂对象', () => {
     const result = await caching.get<Set<any>>('foo');
     expect(result).toBeInstanceOf(Set);
     expect(Array.from(result!.values())).toStrictEqual(['a', 'bcc']);
+
+    spy.mockRestore();
+  });
+
+  test('恢复Date', async () => {
+    const spy = vitest
+      .spyOn(MockStore.prototype, 'getValue')
+      .mockImplementation(
+        async () =>
+          '{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"}',
+      );
+
+    const result = await caching.get<Date>('foo');
+    expect(result).toBeInstanceOf(Date);
+    expect(result!.toISOString()).toStrictEqual('2024-10-24T00:10:24.123Z');
 
     spy.mockRestore();
   });
