@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.12.1](https://github.com/aomex/aomex/compare/v3.12.0...v3.12.1) (2024-12-19)
+
+
+### Bug Fixes
+
+* **cache:** 未解析深层结构的复杂类型 ([5a83b3f](https://github.com/aomex/aomex/commit/5a83b3fa2be216e128c307f75c988f3375421339))
+
+
+
+
+
 # [3.12.0](https://github.com/aomex/aomex/compare/v3.11.0...v3.12.0) (2024-11-07)
 
 

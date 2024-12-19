@@ -1,6 +1,6 @@
 {
   "name": "@aomex/response-time",
-  "version": "3.12.0",
+  "version": "3.12.1",
   "description": "计算请求接口所用时间",
   "keywords": [],
   "repository": "git@github.com:aomex/aomex.git",
