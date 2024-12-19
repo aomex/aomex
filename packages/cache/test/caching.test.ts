@@ -167,104 +167,91 @@ test('删除全部', async () => {
 });
 
 describe('复杂对象', () => {
-  test('保存Map', async () => {
-    const spy = vitest
-      .spyOn(MockStore.prototype, 'setValue')
-      // @ts-expect-error
-      .mockImplementation(() => true);
-
-    const map = new Map();
-    map.set('foo', 'bar');
-
-    await caching.set('foo', map);
-    expect(spy).toHaveBeenLastCalledWith(
-      'foo',
-      '{"_$caching_type$_":"Map","_$caching_data$_":[["foo","bar"]]}',
-      undefined,
+  test('Map', async () => {
+    const result = caching['encodeValue'](new Map([['foo', 'bar']]));
+    expect(result).toMatchInlineSnapshot(
+      `"{"_$caching_type$_":"Map","_$caching_data$_":[["foo","bar"]]}"`,
     );
-    expect(spy).toHaveReturnedWith(true);
-    spy.mockRestore();
+    expect(caching['decodeValue'](result)).toMatchInlineSnapshot(`
+      Map {
+        "foo" => "bar",
+      }
+    `);
   });
 
-  test('保存Set', async () => {
-    const spy = vitest
-      .spyOn(MockStore.prototype, 'setValue')
-      // @ts-expect-error
-      .mockImplementation(() => true);
-
-    const set = new Set();
-    set.add('a');
-    set.add('bcc');
-
-    await caching.set('foo', set);
-    expect(spy).toHaveBeenLastCalledWith(
-      'foo',
-      '{"_$caching_type$_":"Set","_$caching_data$_":["a","bcc"]}',
-      undefined,
+  test('Set', async () => {
+    const result = caching['encodeValue'](new Set(['a', 'bcc']));
+    expect(result).toMatchInlineSnapshot(
+      `"{"_$caching_type$_":"Set","_$caching_data$_":["a","bcc"]}"`,
     );
-    expect(spy).toHaveReturnedWith(true);
-    spy.mockRestore();
+    expect(caching['decodeValue'](result)).toMatchInlineSnapshot(`
+      Set {
+        "a",
+        "bcc",
+      }
+    `);
   });
 
-  test('保存Date', async () => {
-    const spy = vitest
-      .spyOn(MockStore.prototype, 'setValue')
-      // @ts-expect-error
-      .mockImplementation(() => true);
-
-    const date = new Date('2024-10-24T00:10:24.123Z');
-
-    await caching.set('foo', date);
-    expect(spy).toHaveBeenLastCalledWith(
-      'foo',
-      '{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"}',
-      undefined,
+  test('Date', async () => {
+    const result = caching['encodeValue'](new Date('2024-10-24T00:10:24.123Z'));
+    expect(result).toMatchInlineSnapshot(
+      `"{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"}"`,
     );
-    expect(spy).toHaveReturnedWith(true);
-    spy.mockRestore();
+    const resume = caching['decodeValue'](result);
+    expect(resume).toMatchInlineSnapshot(`2024-10-24T00:10:24.123Z`);
+    expect(resume).toBeInstanceOf(Date);
   });
 
-  test('恢复Map', async () => {
-    const spy = vitest
-      .spyOn(MockStore.prototype, 'getValue')
-      .mockImplementation(
-        async () => '{"_$caching_type$_":"Map","_$caching_data$_":[["foo","bar"]]}',
-      );
-
-    const result = await caching.get<Map<any, any>>('foo');
-    expect(result).toBeInstanceOf(Map);
-    expect(Array.from(result!.entries())).toStrictEqual([['foo', 'bar']]);
-
-    spy.mockRestore();
-  });
-
-  test('恢复Set', async () => {
-    const spy = vitest
-      .spyOn(MockStore.prototype, 'getValue')
-      .mockImplementation(
-        async () => '{"_$caching_type$_":"Set","_$caching_data$_":["a","bcc"]}',
-      );
-
-    const result = await caching.get<Set<any>>('foo');
-    expect(result).toBeInstanceOf(Set);
-    expect(Array.from(result!.values())).toStrictEqual(['a', 'bcc']);
-
-    spy.mockRestore();
-  });
-
-  test('恢复Date', async () => {
-    const spy = vitest
-      .spyOn(MockStore.prototype, 'getValue')
-      .mockImplementation(
-        async () =>
-          '{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"}',
-      );
-
-    const result = await caching.get<Date>('foo');
-    expect(result).toBeInstanceOf(Date);
-    expect(result!.toISOString()).toStrictEqual('2024-10-24T00:10:24.123Z');
-
-    spy.mockRestore();
+  test('深层复杂对象', async () => {
+    const result = caching['encodeValue']({
+      foo: 'x',
+      bar: {
+        baz: new Date('2024-10-24T00:10:24.123Z'),
+        test2: new Map([['foo', new Set(['a', 'bcc'])]]),
+        test3: {
+          ok: new Set(['a', new Date('2024-10-24T00:10:24.123Z')]),
+        },
+        test4: [
+          new Date('2024-10-24T00:10:24.123Z'),
+          2,
+          new Date('2024-10-24T00:10:24.123Z'),
+          {
+            test5: new Date('2024-10-24T00:10:24.123Z'),
+          },
+        ],
+      },
+    });
+    expect(result).toMatchInlineSnapshot(
+      `"{"foo":"x","bar":{"baz":{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"},"test2":{"_$caching_type$_":"Map","_$caching_data$_":[["foo",{"_$caching_type$_":"Set","_$caching_data$_":["a","bcc"]}]]},"test3":{"ok":{"_$caching_type$_":"Set","_$caching_data$_":["a",{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"}]}},"test4":[{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"},2,{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"},{"test5":{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"}}]}}"`,
+    );
+    expect(caching['decodeValue'](result)).toMatchInlineSnapshot(`
+      {
+        "bar": {
+          "baz": 2024-10-24T00:10:24.123Z,
+          "test2": Map {
+            "foo" => Set {
+              "a",
+              "bcc",
+            },
+          },
+          "test3": {
+            "ok": Set {
+              "a",
+              2024-10-24T00:10:24.123Z,
+            },
+          },
+          "test4": [
+            2024-10-24T00:10:24.123Z,
+            2,
+            2024-10-24T00:10:24.123Z,
+            {
+              "test5": 2024-10-24T00:10:24.123Z,
+            },
+          ],
+        },
+        "foo": "x",
+      }
+    `);
   });
 });
 

@@ -221,14 +221,37 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   }
 
   protected encodeValue(value: Caching.Types) {
+    if (value instanceof Date) {
+      value = this.convertDate(value);
+    }
+    return JSON.stringify(value, (_, v) => this.stringifyReplacer(v));
+  }
+
+  protected stringifyReplacer(value: Caching.Types) {
     if (value instanceof Map) {
       value = { [CACHING_TYPE]: 'Map', [CACHING_DATA]: Array.from(value.entries()) };
     } else if (value instanceof Set) {
       value = { [CACHING_TYPE]: 'Set', [CACHING_DATA]: Array.from(value.values()) };
-    } else if (value instanceof Date) {
-      value = { [CACHING_TYPE]: 'Date', [CACHING_DATA]: value.toISOString() };
+    } else if (value && typeof value === 'object') {
+      if (Array.isArray(value)) {
+        value = value.map((v) => this.convertDate(v));
+      } else {
+        value = Object.fromEntries(
+          Object.entries(value).map(([k, v]) => {
+            return [k, this.convertDate(v)];
+          }),
+        );
+      }
     }
-    return JSON.stringify(value);
+
+    return value;
+  }
+
+  protected convertDate(value: any) {
+    if (value instanceof Date) {
+      return { [CACHING_TYPE]: 'Date', [CACHING_DATA]: value.toISOString() };
+    }
+    return value;
   }
 
   protected decodeValue(value: string | null, defaultValue?: Caching.Types) {
@@ -237,36 +260,39 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
     }
 
     try {
-      const decoded = JSON.parse(value);
-      if (decoded && typeof decoded === 'object') {
-        const keys = Object.keys(decoded);
-        if (
-          keys.length === 2 &&
-          keys.includes(CACHING_TYPE) &&
-          keys.includes(CACHING_DATA)
-        ) {
-          switch (decoded[CACHING_TYPE]) {
-            case 'Map':
-              if (Array.isArray(decoded[CACHING_DATA])) {
-                return new Map(decoded[CACHING_DATA]);
-              }
-              break;
-            case 'Set':
-              if (Array.isArray(decoded[CACHING_DATA])) {
-                return new Set(decoded[CACHING_DATA]);
-              }
-              break;
-            case 'Date':
-              if (typeof decoded[CACHING_DATA] === 'string') {
-                return new Date(decoded[CACHING_DATA]);
-              }
-              break;
-          }
-        }
-      }
-      return decoded;
+      return JSON.parse(value, (_, v) => this.jsonParseReviver(v));
     } catch {
       return null;
     }
+  }
+
+  protected jsonParseReviver(value: any) {
+    if (value && typeof value === 'object') {
+      const keys = Object.keys(value);
+      if (
+        keys.length === 2 &&
+        keys.includes(CACHING_TYPE) &&
+        keys.includes(CACHING_DATA)
+      ) {
+        switch (value[CACHING_TYPE]) {
+          case 'Map':
+            if (Array.isArray(value[CACHING_DATA])) {
+              return new Map(value[CACHING_DATA]);
+            }
+            break;
+          case 'Set':
+            if (Array.isArray(value[CACHING_DATA])) {
+              return new Set(value[CACHING_DATA]);
+            }
+            break;
+          case 'Date':
+            if (typeof value[CACHING_DATA] === 'string') {
+              return new Date(value[CACHING_DATA]);
+            }
+            break;
+        }
+      }
+    }
+    return value;
   }
 }
