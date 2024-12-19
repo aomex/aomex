@@ -33,7 +33,7 @@ export class Task {
   async runChildProcess() {
     const { argv } = this.cron;
 
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const childProcess = spawn(
         process.argv0,
         [...this.execArgv, this.filePath, ...argv],
@@ -47,19 +47,21 @@ export class Task {
             FORCE_COLOR: '3',
             ...process.env,
           },
-          stdio: 'pipe',
+          stdio: 'inherit',
         },
       );
 
-      const pid = childProcess.pid?.toString();
+      const pid = childProcess.pid!.toString();
       this.cron.insertPID(pid);
 
-      childProcess.stdout.pipe(process.stdout);
-      childProcess.stderr.pipe(process.stderr);
-      childProcess.on('close', () => {
+      const onDone = () => {
         this.cron.removePID(pid);
-        resolve(undefined);
-      });
+        resolve();
+      };
+
+      childProcess.on('close', onDone);
+      childProcess.on('exit', onDone);
+      childProcess.on('error', onDone);
     });
   }
 
