@@ -202,6 +202,14 @@ describe('复杂对象', () => {
     expect(resume).toBeInstanceOf(Date);
   });
 
+  test('BigInt', async () => {
+    const result = caching['encodeValue'](1234n);
+    expect(result).toMatchInlineSnapshot(
+      `"{"_$caching_type$_":"BigInt","_$caching_data$_":"1234"}"`,
+    );
+    expect(caching['decodeValue'](result)).toMatchInlineSnapshot(`1234n`);
+  });
+
   test('深层复杂对象', async () => {
     const result = caching['encodeValue']({
       foo: 'x',
@@ -220,9 +228,10 @@ describe('复杂对象', () => {
           },
         ],
       },
+      baz: 1234n,
     });
     expect(result).toMatchInlineSnapshot(
-      `"{"foo":"x","bar":{"baz":{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"},"test2":{"_$caching_type$_":"Map","_$caching_data$_":[["foo",{"_$caching_type$_":"Set","_$caching_data$_":["a","bcc"]}]]},"test3":{"ok":{"_$caching_type$_":"Set","_$caching_data$_":["a",{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"}]}},"test4":[{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"},2,{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"},{"test5":{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"}}]}}"`,
+      `"{"foo":"x","bar":{"baz":{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"},"test2":{"_$caching_type$_":"Map","_$caching_data$_":[["foo",{"_$caching_type$_":"Set","_$caching_data$_":["a","bcc"]}]]},"test3":{"ok":{"_$caching_type$_":"Set","_$caching_data$_":["a",{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"}]}},"test4":[{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"},2,{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"},{"test5":{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"}}]},"baz":{"_$caching_type$_":"BigInt","_$caching_data$_":"1234"}}"`,
     );
     expect(caching['decodeValue'](result)).toMatchInlineSnapshot(`
       {
@@ -249,6 +258,7 @@ describe('复杂对象', () => {
             },
           ],
         },
+        "baz": 1234n,
         "foo": "x",
       }
     `);

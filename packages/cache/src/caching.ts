@@ -10,6 +10,7 @@ export namespace Caching {
     | boolean
     | Map<any, any>
     | Set<any>
+    | bigint
     | Date;
 }
 
@@ -232,6 +233,8 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
       value = { [CACHING_TYPE]: 'Map', [CACHING_DATA]: Array.from(value.entries()) };
     } else if (value instanceof Set) {
       value = { [CACHING_TYPE]: 'Set', [CACHING_DATA]: Array.from(value.values()) };
+    } else if (typeof value === 'bigint') {
+      value = { [CACHING_TYPE]: 'BigInt', [CACHING_DATA]: value.toString() };
     } else if (value && typeof value === 'object') {
       if (Array.isArray(value)) {
         value = value.map((v) => this.convertDate(v));
@@ -288,6 +291,11 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
           case 'Date':
             if (typeof value[CACHING_DATA] === 'string') {
               return new Date(value[CACHING_DATA]);
+            }
+            break;
+          case 'BigInt':
+            if (typeof value[CACHING_DATA] === 'string') {
+              return BigInt(value[CACHING_DATA]);
             }
             break;
         }
