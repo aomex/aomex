@@ -56,9 +56,6 @@ type HttpStatus =
   | ClientErrorStatus
   | ServerErrorStatus;
 
-type BodySubType<T extends ValidatorToken> =
-  unknown extends Validator.Infer<T> ? Body : Extract<Validator.Infer<T>, Body>;
-
 export interface WebResponseOptions<
   Code extends HttpStatus,
   Content extends ValidatorToken,
@@ -93,20 +90,35 @@ export class WebResponseMiddleware<
   Content extends ValidatorToken,
 > extends WebMiddleware<
   Code extends 200
-    ? {
-        /**
-         * 来自response中间件定制的send()方法。200状态码可以忽略不写
-         */
-        send(statusCode: Code, body: BodySubType<Content>): void;
-        send(body: BodySubType<Content>): void;
-      }
-    : Code extends OKStatus
+    ? unknown extends Validator.Infer<Content>
       ? {
           /**
-           * 来自response中间件定制的send()方法
+           * 来自response中间件定制的send()方法。200状态码可以忽略不写
            */
-          send(statusCode: Code, body: BodySubType<Content>): void;
+          send(statusCode: Code): void;
+          send(): void;
         }
+      : {
+          /**
+           * 来自response中间件定制的send()方法。200状态码可以忽略不写
+           */
+          send(statusCode: Code, body: Extract<Validator.Infer<Content>, Body>): void;
+          send(body: Extract<Validator.Infer<Content>, Body>): void;
+        }
+    : Code extends OKStatus
+      ? unknown extends Validator.Infer<Content>
+        ? {
+            /**
+             * 来自response中间件定制的send()方法
+             */
+            send(statusCode: Code): void;
+          }
+        : {
+            /**
+             * 来自response中间件定制的send()方法
+             */
+            send(statusCode: Code, body: Extract<Validator.Infer<Content>, Body>): void;
+          }
       : Code extends EmptyStatus
         ? {
             /**

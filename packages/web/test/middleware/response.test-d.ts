@@ -1,5 +1,5 @@
 import { type TypeEqual, expectType } from 'ts-expect';
-import { WebResponseMiddleware, response, type Body } from '../../src';
+import { WebResponseMiddleware, response } from '../../src';
 import { Middleware, NumberValidator, StringValidator, rule } from '@aomex/common';
 import type { Union2Intersection } from '@aomex/internal-tools';
 import { createReadStream } from 'node:fs';
@@ -73,8 +73,8 @@ import { createReadStream } from 'node:fs';
 
 // 200状态码可以省略
 {
-  const s200 = response({ statusCode: 200 });
-  const s201 = response({ statusCode: 201 });
+  const s200 = response({ statusCode: 200, content: rule.string() });
+  const s201 = response({ statusCode: 201, content: rule.string() });
   let ctx1!: Union2Intersection<Middleware.Infer<typeof s200>>;
   ctx1.send('ok');
   ctx1.send(200, '');
@@ -83,6 +83,18 @@ import { createReadStream } from 'node:fs';
   // @ts-expect-error
   ctx2.send('ok');
   ctx2.send(201, '');
+}
+
+// 没设置content时不能写body
+{
+  const s200 = response({ statusCode: 200 });
+  let ctx!: Union2Intersection<Middleware.Infer<typeof s200>>;
+  ctx.send(200);
+  ctx.send();
+  // @ts-expect-error
+  ctx.send(200, 'ok');
+  // @ts-expect-error
+  ctx.send('ok');
 }
 
 // 成功状态码
@@ -164,14 +176,20 @@ import { createReadStream } from 'node:fs';
   ctx.send(200, true);
 }
 
-// 未制定响应内容时，body可以随意传
+// 未制定响应内容时，不能传递body
 {
   const s201 = response({ statusCode: 201 });
   let ctx!: Union2Intersection<Middleware.Infer<typeof s201>>;
 
-  expectType<TypeEqual<(statusCode: 201, body: Body) => void, (typeof ctx)['send']>>(
-    true,
-  );
+  ctx.send(201);
+  // @ts-expect-error
+  ctx.send();
+  // @ts-expect-error
+  ctx.send(201, 'ok');
+  // @ts-expect-error
+  ctx.send(201, true);
+  // @ts-expect-error
+  ctx.send(201, {});
 }
 
 // 空状态码，body可以不传，也可以是null

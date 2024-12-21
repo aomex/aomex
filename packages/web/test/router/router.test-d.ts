@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/common';
+import { middleware, rule } from '@aomex/common';
 import { type TypeEqual, expectType } from 'ts-expect';
 import { response, Router, WebApp, WebContext } from '../../src';
 
@@ -134,11 +134,13 @@ const app = new WebApp({
       middleware.web<{ a: string }>(() => {}),
       response({
         statusCode: 200,
+        content: rule.anyOf([rule.string(), rule.object({ foo: rule.string() })]),
       }),
     ],
     action: (ctx) => {
       ctx.send('foo');
       ctx.send(200, 'foo');
+      ctx.send(200, { foo: 'bar' });
       ctx.send({ foo: 'bar' });
       // @ts-expect-error
       ctx.send();
@@ -172,9 +174,11 @@ const app = new WebApp({
     mount: [
       response({
         statusCode: 200,
+        content: rule.string(),
       }),
       response({
         statusCode: 201,
+        content: rule.string(),
       }),
       response({
         statusCode: 401,
