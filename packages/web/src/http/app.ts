@@ -141,7 +141,7 @@ export class WebApp<
 
   log(err: HttpError, ctx: WebContext) {
     if (ctx.response.statusCode === 404 || err.expose) return;
-    const msgs = (err.stack || err.toString()).split(EOL, 2);
+    const msgs = (err.stack || err.toString()).split(EOL);
     console.error(['', styleText('bgRed', msgs.shift()!), msgs.join(EOL), ''].join(EOL));
   }
 }
