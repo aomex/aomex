@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.13.0](https://github.com/aomex/aomex/compare/v3.12.1...v3.13.0) (2024-12-27)
+
+
+### Bug Fixes
+
+* **web:** response未设置content时需省略运行时body参数 ([402c7e2](https://github.com/aomex/aomex/commit/402c7e2ca2a479ccee2f0baf0953a9b325ea3247))
+* **web:** 打印错误日志时误删错误栈信息 ([58328ed](https://github.com/aomex/aomex/commit/58328ed806ff5df0b35832751ca6d4f1f84595e2))
+
+
+### Features
+
+* **cache:** 支持存储大数字 ([44835de](https://github.com/aomex/aomex/commit/44835defcd0fabbde0d41701011c71e73dbf73ad))
+* **prisma:** 基于prisma生成输入输出规则 ([8041a24](https://github.com/aomex/aomex/commit/8041a240183e87541f3b81a3046126f55f037232))
+* **validator:** any-of,all-of,one-of 增加optional和nullable方法 ([a5c52fc](https://github.com/aomex/aomex/commit/a5c52fc3768afea20eaf30213f1d847a0122b449))
+
+
+
+
+
 ## [3.12.1](https://github.com/aomex/aomex/compare/v3.12.0...v3.12.1) (2024-12-19)
 
 

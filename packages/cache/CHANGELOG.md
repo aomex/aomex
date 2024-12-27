@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.13.0](https://github.com/aomex/aomex/compare/v3.12.1...v3.13.0) (2024-12-27)
+
+
+### Features
+
+* **cache:** 支持存储大数字 ([44835de](https://github.com/aomex/aomex/commit/44835defcd0fabbde0d41701011c71e73dbf73ad))
+
+
+
+
+
 ## [3.12.1](https://github.com/aomex/aomex/compare/v3.12.0...v3.12.1) (2024-12-19)
 
 

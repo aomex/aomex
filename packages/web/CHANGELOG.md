@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.13.0](https://github.com/aomex/aomex/compare/v3.12.1...v3.13.0) (2024-12-27)
+
+
+### Bug Fixes
+
+* **web:** response未设置content时需省略运行时body参数 ([402c7e2](https://github.com/aomex/aomex/commit/402c7e2ca2a479ccee2f0baf0953a9b325ea3247))
+* **web:** 打印错误日志时误删错误栈信息 ([58328ed](https://github.com/aomex/aomex/commit/58328ed806ff5df0b35832751ca6d4f1f84595e2))
+
+
+
+
+
 ## [3.12.1](https://github.com/aomex/aomex/compare/v3.12.0...v3.12.1) (2024-12-19)
 
 **Note:** Version bump only for package @aomex/web
