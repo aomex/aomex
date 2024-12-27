@@ -23,6 +23,8 @@ export class AnyOfValidator<T = never> extends Validator<T> {
   public declare transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
+  public declare optional: () => AnyOfValidator<T | Validator.TOptional>;
+  public declare nullable: () => AnyOfValidator<T | null>;
 
   protected override isEmpty(_: any): boolean {
     return false;
