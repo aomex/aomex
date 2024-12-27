@@ -52,7 +52,6 @@
     "@prisma/internals": "^6.0.0",
     "@types/lodash.camelcase": "^4.3.7",
     "@types/lodash.upperfirst": "^4.3.7",
-    "prettier": "^3.4.2",
-    "prisma": "^5.0.0"
+    "prisma": "^6.0.0"
   }
 }

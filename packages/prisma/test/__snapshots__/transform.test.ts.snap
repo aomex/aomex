@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`transform > mongodb.d.ts 1`] = `
+exports[`transform mongodb > .d.ts 1`] = `
 "import {
   AnyOfValidator,
   ArrayValidator,
@@ -2042,7 +2042,7 @@ export {};
 "
 `;
 
-exports[`transform > mongodb.js 1`] = `
+exports[`transform mongodb > .js 1`] = `
 "import { rule } from "@aomex/common";
 function pick(obj, ...keys) {
   const subObj = {};
@@ -2989,7 +2989,7 @@ export const prismaOutput = {
 "
 `;
 
-exports[`transform > mysql.d.ts 1`] = `
+exports[`transform mysql > .d.ts 1`] = `
 "import {
   AnyOfValidator,
   BigIntValidator,
@@ -5141,7 +5141,7 @@ export {};
 "
 `;
 
-exports[`transform > mysql.js 1`] = `
+exports[`transform mysql > .js 1`] = `
 "import { rule } from "@aomex/common";
 function pick(obj, ...keys) {
   const subObj = {};
@@ -6120,7 +6120,7 @@ export const prismaOutput = {
 "
 `;
 
-exports[`transform > postgresql.d.ts 1`] = `
+exports[`transform postgresql > .d.ts 1`] = `
 "import {
   AnyOfValidator,
   BigIntValidator,
@@ -8272,7 +8272,7 @@ export {};
 "
 `;
 
-exports[`transform > postgresql.js 1`] = `
+exports[`transform postgresql > .js 1`] = `
 "import { rule } from "@aomex/common";
 function pick(obj, ...keys) {
   const subObj = {};
@@ -9251,7 +9251,7 @@ export const prismaOutput = {
 "
 `;
 
-exports[`transform > sqlite.d.ts 1`] = `
+exports[`transform sqlite > .d.ts 1`] = `
 "import {
   BigIntValidator,
   BooleanValidator,
@@ -11073,7 +11073,7 @@ export {};
 "
 `;
 
-exports[`transform > sqlite.js 1`] = `
+exports[`transform sqlite > .js 1`] = `
 "import { rule } from "@aomex/common";
 function pick(obj, ...keys) {
   const subObj = {};
@@ -11948,7 +11948,7 @@ export const prismaOutput = {
 "
 `;
 
-exports[`transform > table-name.d.ts 1`] = `
+exports[`transform table-name > .d.ts 1`] = `
 "import { IntValidator, Validator } from "@aomex/common";
 declare const lowercaseInputColumns: {
   /**
@@ -12450,7 +12450,7 @@ export {};
 "
 `;
 
-exports[`transform > table-name.js 1`] = `
+exports[`transform table-name > .js 1`] = `
 "import { rule } from "@aomex/common";
 function pick(obj, ...keys) {
   const subObj = {};

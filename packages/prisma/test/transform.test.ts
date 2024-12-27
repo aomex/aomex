@@ -7,7 +7,7 @@ import path from 'path';
 const fixtures = path.join(import.meta.dirname, 'fixtures');
 
 test.each(['mysql', 'postgresql', 'mongodb', 'sqlite', 'table-name'])(
-  'transform',
+  'transform %s',
   async (provider) => {
     {
       const generators = await getGenerators({
@@ -21,11 +21,11 @@ test.each(['mysql', 'postgresql', 'mongodb', 'sqlite', 'table-name'])(
       });
       const [js, dts] = transform(dmmf);
       await expect(prettier.format(js, { parser: 'babel' })).resolves.toMatchSnapshot(
-        `${provider}.js`,
+        `.js`,
       );
       await expect(
         prettier.format(dts, { parser: 'typescript' }),
-      ).resolves.toMatchSnapshot(`${provider}.d.ts`);
+      ).resolves.toMatchSnapshot(`.d.ts`);
     }
   },
   100000,
