@@ -1,0 +1,58 @@
+{
+  "name": "@aomex/prisma",
+  "version": "0.0.17",
+  "description": "从prisma表结构生成对应的验证器",
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "prepublishOnly": "tsup && node ./scripts/remove-sourcemap.mjs"
+  },
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "bin": {
+    "aomex-prisma": "./src/bin.ts"
+  },
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public",
+    "bin": {
+      "aomex-prisma": "./dist/bin.js"
+    }
+  },
+  "peerDependencies": {
+    "@aomex/common": "^3.0.0",
+    "@prisma/client": ">=5",
+    "prisma": ">=6"
+  },
+  "dependencies": {
+    "@prisma/generator-helper": "^6.0.0",
+    "lodash.camelcase": "^4.3.0",
+    "lodash.upperfirst": "^4.3.1"
+  },
+  "devDependencies": {
+    "@aomex/common": "workspace:^",
+    "@prisma/client": "^6.0.0",
+    "@prisma/internals": "^6.0.0",
+    "@types/lodash.camelcase": "^4.3.7",
+    "@types/lodash.upperfirst": "^4.3.7",
+    "prettier": "^3.4.2",
+    "prisma": "^5.0.0"
+  }
+}

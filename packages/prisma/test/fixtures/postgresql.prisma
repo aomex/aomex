@@ -1,0 +1,96 @@
+// cd packages/prisma && npx prisma format --schema ./test/fixtures/postgresql.prisma
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator aomex {
+  provider = "tsx ./packages/prisma/src/bin.ts"
+  output   = "./temp.postgresql"
+}
+
+model user {
+  id         Int       @id @default(autoincrement())
+  name       String
+  name_nu    String?   @unique
+  name_de    String    @default("abc")
+  age        Int
+  age_nu     Int?
+  age_de     Int       @default(100)
+  obj        Json
+  obj_de_obj Json      @default("{}")
+  obj_de_arr Json      @default("[]")
+  deci       Decimal
+  deci_nu    Decimal?
+  deci_de    Decimal   @default(100)
+  flo        Float
+  flo_nu     Float?
+  flo_de     Float     @default(100.1)
+  uu         String    @default(uuid())
+  uu_1       String    @default(dbgenerated("uuid_generate_v1()"))
+  uu_1_nu    String?   @default(dbgenerated("uuid_generate_v1()"))
+  uu_2       String    @default(dbgenerated("uuid_generate_v2()"))
+  uu_2_nu    String?   @default(dbgenerated("uuid_generate_v2()"))
+  uu_3       String    @default(dbgenerated("uuid_generate_v3()"))
+  uu_3_nu    String?   @default(dbgenerated("uuid_generate_v3()"))
+  uu_4       String    @default(dbgenerated("uuid_generate_v4()"))
+  uu_4_nu    String?   @default(dbgenerated("uuid_generate_v4()"))
+  uu_5       String    @default(dbgenerated("uuid_generate_v5()"))
+  uu_5_nu    String?   @default(dbgenerated("uuid_generate_v5()"))
+  uu_6       String    @default(dbgenerated("uuid_generate_v6()"))
+  uu_6_nu    String?   @default(dbgenerated("uuid_generate_v6()"))
+  /// I am the comments
+  comme_ok   String
+  // I am the comments
+  comme_fail String
+  posts      post[]
+  profile    profile?
+  lang       Language
+  lang_nu    Language?
+  lang_de    Language  @default(Typescript)
+  time       DateTime
+  time_nu    DateTime?
+  time_de    DateTime  @default(now())
+  boo        Boolean
+  boo_nu     Boolean?
+  boo_de     Boolean   @default(true)
+  big        BigInt
+  big_nu     BigInt?
+  big_de     BigInt    @default(30)
+  byt        Bytes
+  byt_nu     Bytes?
+  byt_de     Bytes     @default("")
+}
+
+model profile {
+  id      Int  @id @default(autoincrement())
+  user_id Int  @unique
+  user    user @relation(fields: [user_id], references: [id])
+}
+
+model post {
+  id      Int    @id @default(autoincrement())
+  user_id Int
+  name    String
+  user    user   @relation(fields: [user_id], references: [id])
+}
+
+model AliasTableName {
+  id Int @id @default(autoincrement()) @map("alias_id")
+
+  @@map("alias_table")
+}
+
+enum Language {
+  Typescript
+  Javascript
+  Rust
+  Go
+  Python
+  Cpp
+}

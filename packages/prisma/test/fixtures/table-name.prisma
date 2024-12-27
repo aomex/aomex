@@ -1,0 +1,43 @@
+// cd packages/prisma && npx prisma format --schema ./test/fixtures/table-name.prisma
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator aomex {
+  provider = "tsx ./packages/prisma/src/bin.ts"
+  output   = "./table-name.mysql"
+}
+
+model lowercase {
+  id Int @id @default(autoincrement())
+}
+
+model UPPERCASE {
+  id Int @id @default(autoincrement())
+}
+
+model camelCase {
+  id Int @id @default(autoincrement())
+}
+
+model PascalCase {
+  id Int @id @default(autoincrement())
+}
+
+model Titlecase {
+  id Int @id @default(autoincrement())
+}
+
+model snake_case {
+  id Int @id @default(autoincrement())
+}
+
+model Complete_Case {
+  id Int @id @default(autoincrement())
+}

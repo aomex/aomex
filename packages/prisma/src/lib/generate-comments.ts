@@ -1,0 +1,40 @@
+import type { DMMF } from '@prisma/generator-helper';
+
+export const generateComments = (field: DMMF.Field, runtimeValidator: string) => {
+  const { type, documentation, isList, isRequired } = field;
+  const arrayModifier = isList ? '[]' : '';
+  const requireModifier = isRequired ? '' : '?';
+  const defaultValue = field.hasDefaultValue
+    ? `\`${getDefaultValue(field.default)}\``
+    : '';
+  const support = runtimeValidator.includes(`any()`) ? '[暂未支持]' : '';
+
+  return `
+/**
+ * Prisma类型：\`${type}${arrayModifier}${requireModifier}\` ${support}
+ * 
+ * 数据库默认值：${defaultValue}
+ * 
+ * 运行时规则：\`${runtimeValidator}\` ${
+   documentation
+     ? `
+ *
+ * ${documentation}`
+     : ''
+ }
+ */`;
+};
+
+const getDefaultValue = (value: DMMF.Field['default']) => {
+  if (typeof value !== 'object') {
+    return JSON.stringify(value);
+  }
+
+  if (isArray(value)) {
+    return JSON.stringify(value);
+  }
+
+  return value.name + '(' + value.args.join(', ') + ')';
+};
+
+const isArray = (value: any): value is any[] | readonly any[] => Array.isArray(value);
