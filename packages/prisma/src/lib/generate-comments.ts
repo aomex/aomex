@@ -34,7 +34,10 @@ const getDefaultValue = (value: DMMF.Field['default']) => {
     return JSON.stringify(value);
   }
 
-  return value.name + '(' + value.args.join(', ') + ')';
+  // prisma@5 中存在uuid(4)这种名称
+  if (value.name.includes('(')) return value.name;
+
+  return `${value.name}(${value.args.join(', ')})`;
 };
 
 const isArray = (value: any): value is any[] | readonly any[] => Array.isArray(value);

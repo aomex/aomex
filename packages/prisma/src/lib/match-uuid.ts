@@ -17,5 +17,12 @@ export const matchUUID = (field: DMMF.Field): boolean | string => {
       if (matched) return matched[1]!;
     }
   }
+
+  // prisma@5
+  {
+    const matched = defaultValue.name.match(/^uuid\((\d)\)$/);
+    if (matched) return 'v' + matched[1]!;
+  }
+
   return false;
 };

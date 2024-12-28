@@ -39,7 +39,7 @@
   "peerDependencies": {
     "@aomex/common": "^3.0.0",
     "@prisma/client": ">=5",
-    "prisma": ">=6"
+    "prisma": ">=5"
   },
   "dependencies": {
     "@prisma/generator-helper": "^6.0.0",
