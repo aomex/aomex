@@ -23,10 +23,9 @@ export const generateDTS = (source: string) => {
   }
 
   {
-    const tsFile = path.join(
-      import.meta.dirname,
-      `.${Date.now() + Math.random()}.temp.ts`,
-    );
+    const tsFile = path
+      .join(import.meta.dirname, `.${Date.now() + Math.random()}.temp.ts`)
+      .replaceAll(path.sep, path.posix.sep);
     const options: ts.CompilerOptions = {
       strict: true,
       declaration: true,
