@@ -1,6 +1,6 @@
 {
   "name": "@aomex/cache-redis-adapter",
-  "version": "3.13.0",
+  "version": "3.13.1",
   "description": "aomex缓存库redis适配器",
   "scripts": {
     "prepublishOnly": "tsup"
