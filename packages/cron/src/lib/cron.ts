@@ -10,6 +10,7 @@ export class Cron {
   public handle: { timer: NodeJS.Timeout; resolve: (data: void) => void } | null = null;
   public runningLevel: number = 0;
 
+  protected readonly timeDelta: number;
   protected readonly _pidList = new Set<string>();
   protected _time?: string;
   protected _seconds?: number[];
@@ -19,7 +20,9 @@ export class Cron {
   constructor(
     protected readonly options: CronOptions & CronsOptions & { command: string },
   ) {
-    this.cronExpression = cronParser.parseExpression(this.time);
+    const parser = (this.cronExpression = cronParser.parseExpression(this.time));
+    this.timeDelta = Math.abs(parser.next().getTime() - parser.next().getTime());
+    parser.reset();
   }
 
   public get command(): string {
@@ -32,6 +35,13 @@ export class Cron {
 
   public get overlap(): boolean {
     return this.options.overlap ?? false;
+  }
+
+  public get waitingTimeout(): number {
+    return Math.max(
+      0,
+      Math.min(this.options.waitingTimeout || 5000, this.timeDelta - 2000),
+    );
   }
 
   public get cache(): Caching {
@@ -91,7 +101,7 @@ export class Cron {
        * setTimeout的最大延时值是 `2^31-1`(约为24.85天) ，超过这个值会被立即执行。
        * 拆分延时值可让执行时机更精确。
        */
-      const delta = Math.min(3600_000, nextTime - Date.now());
+      const delta = Math.min(900_000, nextTime - Date.now());
       await this.delay(delta);
       if (this.stopping) return;
       if (nextTime - Date.now() <= 0) {
@@ -140,6 +150,7 @@ export class Cron {
       argv: this.argv,
       concurrent: this.concurrent,
       overlap: this.overlap,
+      waitingTimeout: this.waitingTimeout,
     };
   }
 }

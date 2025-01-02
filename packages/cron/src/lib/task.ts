@@ -1,3 +1,4 @@
+import { sleep } from '@aomex/internal-tools';
 import type { Cron } from './cron';
 import { spawn } from 'node:child_process';
 
@@ -9,10 +10,10 @@ export class Task {
 
   constructor(
     readonly cron: Cron,
-    givenTime: number,
+    currentTimestamp: number,
   ) {
     this.runningKey = `cron-task|arg:${cron.argv}|exp:${cron.time}|con:${cron.concurrent}`;
-    this.currentKey = `${this.runningKey}|now:${givenTime}`;
+    this.currentKey = `${this.runningKey}|now:${currentTimestamp}`;
     this.filePath = process.argv[1]!;
     this.execArgv = [...process.execArgv];
     if (!this.execArgv.includes('--enable-source-maps')) {
@@ -66,7 +67,7 @@ export class Task {
   }
 
   async win(): Promise<boolean> {
-    const { cache, concurrent, overlap } = this.cron;
+    const { cache, concurrent, overlap, waitingTimeout } = this.cron;
 
     {
       const count = await cache.increment(this.currentKey);
@@ -78,15 +79,27 @@ export class Task {
     }
 
     if (overlap === false) {
-      const prevKey = await cache.get<string>(this.runningKey);
-      if (prevKey === null) {
-        await cache.setNX(this.runningKey, this.currentKey, 60_000);
-      } else if (prevKey !== this.currentKey) {
-        await cache.decrement(this.currentKey);
-        return false;
+      const startTime = Date.now();
+      while (true) {
+        const prevKey = await cache.get<string>(this.runningKey);
+        if (prevKey === null) {
+          await cache.setNX(this.runningKey, this.currentKey, 60_000);
+          return true;
+        } else if (prevKey !== this.currentKey) {
+          if (waitingTimeout > 0 && Date.now() - startTime < waitingTimeout) {
+            await sleep(1_000);
+            continue;
+          } else {
+            await cache.decrement(this.currentKey);
+            return false;
+          }
+        } else {
+          return true;
+        }
       }
     }
 
+    // overlap === true
     return true;
   }
 

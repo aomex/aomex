@@ -114,6 +114,7 @@ test('转换为对象', async () => {
       "concurrent": 5,
       "overlap": false,
       "time": "* * */2 * *",
+      "waitingTimeout": 5000,
     }
   `);
 });
@@ -134,4 +135,28 @@ describe('执行', () => {
     vitest.spyOn(cron.cronExpression, 'hasNext').mockImplementation(() => false);
     await cron.start();
   });
+});
+
+test('检测重叠等待时间不能超过任务时间间隔', () => {
+  expect(
+    new Cron({ time: '* * * * *', command: '', commanders: '' }).waitingTimeout,
+  ).toBe(5_000);
+
+  expect(
+    new Cron({ time: '* * * * * *', command: '', commanders: '' }).waitingTimeout,
+  ).toBe(0);
+
+  expect(
+    new Cron({ time: '*/5 * * * * *', command: '', commanders: '' }).waitingTimeout,
+  ).toBe(3_000);
+
+  expect(
+    new Cron({ time: '* * * * *', command: '', commanders: '', waitingTimeout: 40_000 })
+      .waitingTimeout,
+  ).toBe(40_000);
+
+  expect(
+    new Cron({ time: '* * * * *', command: '', commanders: '', waitingTimeout: 80_000 })
+      .waitingTimeout,
+  ).toBe(58_000);
 });
