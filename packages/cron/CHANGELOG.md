@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.14.0](https://github.com/aomex/aomex/compare/v3.13.1...v3.14.0) (2025-01-02)
+
+
+### Features
+
+* **cron:** 非重叠任务允许等待旧任务完成直到等待超时 ([8b75762](https://github.com/aomex/aomex/commit/8b75762bcb249e783a15cb7da0228dd3bd6d50f4))
+
+
+
+
+
 ## [3.13.1](https://github.com/aomex/aomex/compare/v3.13.0...v3.13.1) (2024-12-29)
 
 **Note:** Version bump only for package @aomex/cron

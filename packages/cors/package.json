@@ -1,6 +1,6 @@
 {
   "name": "@aomex/cors",
-  "version": "3.13.1",
+  "version": "3.14.0",
   "description": "跨站资源共享",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
