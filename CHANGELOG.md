@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.14.1](https://github.com/aomex/aomex/compare/v3.14.0...v3.14.1) (2025-01-09)
+
+
+### Bug Fixes
+
+* **web:** 内置的querystring字符串无法解析数组 ([27fed26](https://github.com/aomex/aomex/commit/27fed26f4e81d7182bcc0aee8142923cb0380732))
+
+
+
+
+
 # [3.14.0](https://github.com/aomex/aomex/compare/v3.13.1...v3.14.0) (2025-01-02)
 
 
