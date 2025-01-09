@@ -1,7 +1,7 @@
 import { IncomingMessage } from 'node:http';
 import type { TLSSocket } from 'node:tls';
 import type { LowerExternalStringHeaderKeys } from './header';
-import qs from 'node:querystring';
+import qs from 'qs';
 import type { WebApp } from './app';
 import typeIs from 'type-is';
 import requestIP from 'request-ip';

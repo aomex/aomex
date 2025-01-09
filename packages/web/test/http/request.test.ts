@@ -78,18 +78,61 @@ test('查询字符串不会自动转义字符串', async () => {
   res.end();
 });
 
-test('query', async () => {
-  const { req, res } = await mockServer((agent) =>
-    agent.get(`/test/api?a=b&c=${encodeURIComponent('=')}`),
-  );
-  expect(req.query).toMatchInlineSnapshot(`
-    {
-      "a": "b",
-      "c": "=",
-    }
-  `);
-  expect(req.query).toBe(req.query);
-  res.end();
+describe('query', async () => {
+  test('缓存', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent.get(`/test/api?a=b&c=${encodeURIComponent('=')}`),
+    );
+    expect(req.query).toBe(req.query);
+    res.end();
+  });
+
+  test('普通字符串', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent.get(`/test/api?a=b&c=${encodeURIComponent('=')}`),
+    );
+    expect(req.query).toMatchInlineSnapshot(`
+      {
+        "a": "b",
+        "c": "=",
+      }
+    `);
+    expect(req.query).toBe(req.query);
+    res.end();
+  });
+
+  test('逗号字符串', async () => {
+    const { req, res } = await mockServer((agent) => agent.get(`/test/api?a=i,j,k`));
+    expect(req.query).toMatchInlineSnapshot(`
+      {
+        "a": "i,j,k",
+      }
+    `);
+    expect(req.query).toBe(req.query);
+    res.end();
+  });
+
+  test('数组', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent.get(`/test/api?token[]=foo&token[]=bar&meme[0]=x&meme[1]=y&pepe[]=z`),
+    );
+    expect(req.query).toMatchInlineSnapshot(`
+      {
+        "meme": [
+          "x",
+          "y",
+        ],
+        "pepe": [
+          "z",
+        ],
+        "token": [
+          "foo",
+          "bar",
+        ],
+      }
+    `);
+    res.end();
+  });
 });
 
 test('search', async () => {

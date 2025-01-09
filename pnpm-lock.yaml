@@ -556,6 +556,9 @@ importers:
       path-to-regexp:
         specifier: ^8.1.0
         version: 8.1.0
+      qs:
+        specifier: ^6.13.1
+        version: 6.13.1
       request-ip:
         specifier: ^3.3.0
         version: 3.3.0
@@ -587,6 +590,9 @@ importers:
       '@types/mime-types':
         specifier: ^2.1.4
         version: 2.1.4
+      '@types/qs':
+        specifier: ^6.9.17
+        version: 6.9.17
       '@types/request-ip':
         specifier: ^0.0.41
         version: 0.0.41
@@ -1656,8 +1662,8 @@ packages:
   '@types/pretty-time@1.1.5':
     resolution: {integrity: sha512-5yl+BYwmnRWZb783W8YYoHXvPY8q/rp7ctHBVaGBB9RxlzGpHNJ72tGQMK7TrUSnxzl1dbDcBDuBCSbtfnSQGg==}
 
-  '@types/qs@6.9.14':
-    resolution: {integrity: sha512-5khscbd3SwWMhFqylJBLQ0zIu7c1K6Vz0uBIt915BI3zV0q1nfjRQD3RqSBcPaO6PHEF4ov/t9y89fSiyThlPA==}
+  '@types/qs@6.9.17':
+    resolution: {integrity: sha512-rX4/bPcfmvxHDv0XjfJELTTr+iB+tn032nPILqHm5wbthUUUuVtNGGqzhya9XUxjTP8Fpr0qYgSZZKxGY++svQ==}
 
   '@types/ramda@0.30.1':
     resolution: {integrity: sha512-aoyF/ADPL6N+/NXXfhPWF+Qj6w1Cql59m9wX0Gi15uyF+bpzXeLd63HPdiTDE2bmLXfNcVufsDPKmbfOrOzTBA==}
@@ -4218,6 +4224,10 @@ packages:
     resolution: {integrity: sha512-trVZiI6RMOkO476zLGaBIzszOdFPnCCXHPG9kn0yuS1uz6xdVxPfZdB3vUig9pxPFDM9BRAgz/YUIVQ1/vuiUg==}
     engines: {node: '>=0.6'}
 
+  qs@6.13.1:
+    resolution: {integrity: sha512-EJPeIn0CYrGu+hli1xilKAPXODtJ12T0sP63Ijx2/khC2JtuaN3JyNIpvmnkmaEtha9ocbG4A4cMcr+TvqvwQg==}
+    engines: {node: '>=0.6'}
+
   querystringify@2.2.0:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
 
@@ -6660,7 +6670,7 @@ snapshots:
   '@types/co-body@6.1.3':
     dependencies:
       '@types/node': 20.16.13
-      '@types/qs': 6.9.14
+      '@types/qs': 6.9.17
 
   '@types/compressible@2.0.2': {}
 
@@ -6738,7 +6748,7 @@ snapshots:
 
   '@types/pretty-time@1.1.5': {}
 
-  '@types/qs@6.9.14': {}
+  '@types/qs@6.9.17': {}
 
   '@types/ramda@0.30.1':
     dependencies:
@@ -7200,7 +7210,7 @@ snapshots:
     dependencies:
       '@hapi/bourne': 3.0.0
       inflation: 2.1.0
-      qs: 6.12.0
+      qs: 6.13.1
       raw-body: 2.5.2
       type-is: 1.6.18
 
@@ -9521,6 +9531,10 @@ snapshots:
   punycode@2.3.1: {}
 
   qs@6.12.0:
+    dependencies:
+      side-channel: 1.0.6
+
+  qs@6.13.1:
     dependencies:
       side-channel: 1.0.6
 
