@@ -22,19 +22,18 @@ export const combineServices = async <
   classes: T,
 ): Promise<{ readonly [K in keyof T]: InstanceType<T[K]> }> => {
   const services: Record<string, Service> = {};
-  const caches: Record<string, Service> = {};
 
   await Promise.all(
-    Object.entries(classes).map(async ([key, Class]) => {
-      const instance = new Class(services);
-      await instance['init']();
-      caches[key] = instance;
-    }),
+    Object.entries(classes)
+      .map(([key, Class]) => {
+        const service = new Class(services);
+        services[key] = service;
+        return service;
+      })
+      .map(async (instance) => {
+        await instance['init']();
+      }),
   );
-
-  Object.entries(caches).forEach(([key, service]) => {
-    services[key] = service;
-  });
 
   Object.freeze(services);
 

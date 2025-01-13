@@ -48,6 +48,24 @@ test('自动执行init方法', async () => {
   expect(services.s1.data).toBe('123');
 });
 
+test('执行init方法期间可以访问其它service', async () => {
+  class MyService3 extends Service {
+    froms2data!: string;
+
+    protected override init(): void | Promise<void> {
+      // @ts-expect-error
+      this.froms2data = this.services['s2'].action2();
+    }
+  }
+
+  const services = await combineServices({
+    s1: MyService1,
+    s2: MyService2,
+    s3: MyService3,
+  });
+  expect(services.s3.froms2data).toBe('action2');
+});
+
 test('组合不能再次修改', async () => {
   const services = await combineServices({
     s1: MyService1,
