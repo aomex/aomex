@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.14.2](https://github.com/aomex/aomex/compare/v3.14.1...v3.14.2) (2025-01-14)
+
+
+### Bug Fixes
+
+* **service:** 执行初始化方法init时无法访问其它服务 ([45973c1](https://github.com/aomex/aomex/commit/45973c145f0954f6a8959ffdadcc207a34960722))
+
+
+
+
+
 ## [3.14.1](https://github.com/aomex/aomex/compare/v3.14.0...v3.14.1) (2025-01-09)
 
 **Note:** Version bump only for package @aomex/common-service
