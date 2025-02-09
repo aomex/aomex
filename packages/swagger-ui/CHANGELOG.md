@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.15.1](https://github.com/aomex/aomex/compare/v3.15.0...v3.15.1) (2025-02-09)
+
+
+### Bug Fixes
+
+* **swagger-ui:** 地址带公共路径时无法访问静态资源 ([4fff73d](https://github.com/aomex/aomex/commit/4fff73d633cdde54441ad0a02411a26853f9d828))
+
+
+
+
+
 # [3.15.0](https://github.com/aomex/aomex/compare/v3.14.2...v3.15.0) (2025-02-09)
 
 **Note:** Version bump only for package @aomex/swagger-ui

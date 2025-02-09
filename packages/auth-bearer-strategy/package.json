@@ -1,6 +1,6 @@
 {
   "name": "@aomex/auth-bearer-strategy",
-  "version": "3.15.0",
+  "version": "3.15.1",
   "description": "身份认证bearer策略",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
