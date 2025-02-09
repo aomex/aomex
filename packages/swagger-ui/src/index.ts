@@ -100,7 +100,7 @@ export const swaggerUI = (opts: SwaggerUIOptions): WebMiddleware => {
       html = await readFile(htmlFile, 'utf8');
       html = html
         .replaceAll('#title#', docs.info.title)
-        .replaceAll('#prefix#', uriPrefix)
+        .replaceAll('#prefix#', '.' + uriPrefix)
         .replaceAll('#lang#', i18n.language);
       resolve(undefined);
     });
