@@ -285,8 +285,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       pidusage:
-        specifier: ^3.0.2
-        version: 3.0.2
+        specifier: ^4.0.0
+        version: 4.0.0
     devDependencies:
       '@aomex/common':
         specifier: workspace:^
@@ -4072,9 +4072,9 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
-  pidusage@3.0.2:
-    resolution: {integrity: sha512-g0VU+y08pKw5M8EZ2rIGiEBaB8wrQMjYGFfW2QVIfyT8V+fq8YFLkvlz4bz5ljvFDJYNFCWT3PWqcRr2FKO81w==}
-    engines: {node: '>=10'}
+  pidusage@4.0.0:
+    resolution: {integrity: sha512-89hVJc5gq157puLYZaO3CH0qfGyDfbDG1KFCE4lCSwK0l1EuEbNa4pIJJXL93ltU5SsYia/DHJUgMY2qE4XRQg==}
+    engines: {node: '>=18'}
 
   pify@2.3.0:
     resolution: {integrity: sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog==}
@@ -9380,7 +9380,7 @@ snapshots:
 
   picomatch@2.3.1: {}
 
-  pidusage@3.0.2:
+  pidusage@4.0.0:
     dependencies:
       safe-buffer: 5.2.1
 
