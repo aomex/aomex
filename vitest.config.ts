@@ -1,7 +1,8 @@
-import { defineProject } from 'vitest/config';
+import { defineConfig } from 'vitest/config';
 
-export default defineProject({
+export default defineConfig({
   test: {
+    workspace: ['packages/*'],
     coverage: {
       provider: 'v8',
       enabled: true,

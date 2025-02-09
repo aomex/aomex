@@ -120,6 +120,7 @@ describe('日志', () => {
     await supertest(app.listen()).get('/');
     expect(spy).toHaveBeenCalledOnce();
     expect(errStr).toContain('foo bar');
+    spy.mockRestore();
   });
 
   test('404状态下不打印日志', async () => {
@@ -134,6 +135,7 @@ describe('日志', () => {
 
     await supertest(app.listen()).get('/');
     expect(spy).toHaveBeenCalledTimes(0);
+    spy.mockRestore();
   });
 
   test('expose时不打印日志', async () => {
@@ -149,6 +151,7 @@ describe('日志', () => {
     });
     await supertest(app.listen()).get('/');
     expect(spy).toHaveBeenCalledTimes(0);
+    spy.mockRestore();
   });
 });
 
