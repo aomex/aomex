@@ -1,6 +1,12 @@
 import { sleep } from '@aomex/internal-tools';
 import type { Cron } from './cron';
 import { spawn } from 'node:child_process';
+import {
+  ENV_CRON,
+  ENV_CRON_EXECUTION_TIME,
+  ENV_CRON_NEXT_SCHEDULE_TIME,
+  ENV_CRON_SCHEDULE_TIME,
+} from './constant';
 
 export class Task {
   readonly concurrentKey: string;
@@ -10,7 +16,8 @@ export class Task {
 
   constructor(
     readonly cron: Cron,
-    currentTimestamp: number,
+    readonly currentTimestamp: number,
+    readonly nextTimestamp: number,
   ) {
     this.concurrentKey = `aomex-cron|v:${cron.argv}|t:${cron.time}|s:${cron.servesCount}|c:${cron.concurrent}`;
     this.servesKey = `${this.concurrentKey}|n:${currentTimestamp}`;
@@ -47,6 +54,10 @@ export class Task {
              */
             FORCE_COLOR: '3',
             ...process.env,
+            [ENV_CRON]: '1',
+            [ENV_CRON_SCHEDULE_TIME]: new Date(this.currentTimestamp).toISOString(),
+            [ENV_CRON_EXECUTION_TIME]: new Date().toISOString(),
+            [ENV_CRON_NEXT_SCHEDULE_TIME]: new Date(this.nextTimestamp).toISOString(),
           },
           stdio: 'inherit',
         },

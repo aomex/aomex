@@ -95,20 +95,22 @@ export class Cron {
 
   async start(): Promise<void> {
     if (!this.cronExpression.hasNext()) return;
+    const currentTime = this.cronExpression.next().getTime();
     const nextTime = this.cronExpression.next().getTime();
+    this.cronExpression.prev();
 
     while (true) {
       /**
        * setTimeout的最大延时值是 `2^31-1`(约为24.85天) ，超过这个值会被立即执行。
        * 拆分延时值可让执行时机更精确。
        */
-      const delta = Math.min(900_000, nextTime - Date.now());
+      const delta = Math.min(900_000, currentTime - Date.now());
       await this.delay(delta);
       if (this.stopping) return;
-      if (nextTime - Date.now() <= 0) {
+      if (currentTime - Date.now() <= 0) {
         // 不要使用`await`语法，因为需要立即进入下一个循环
         ++this.runningLevel;
-        new Task(this, nextTime).consume().finally(() => {
+        new Task(this, currentTime, nextTime).consume().finally(() => {
           --this.runningLevel;
         });
         break;

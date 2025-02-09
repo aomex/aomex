@@ -14,8 +14,8 @@ test('并发达上限后，多余的provider不能触发任务', { timeout: 10_0
     serves: Infinity,
     waitingTimeout: 2_000,
   });
-  const task1 = new Task(cron, 1);
-  const task2 = new Task(cron, 2);
+  const task1 = new Task(cron, 1, 2);
+  const task2 = new Task(cron, 2, 3);
   await expect(task1.win()).resolves.toBeTruthy();
   await expect(task1.win()).resolves.toBeTruthy();
   await expect(task1.win()).resolves.toBeTruthy();
@@ -32,7 +32,7 @@ test('provider多于并发数部分无法触发任务', async () => {
     serves: 3,
     waitingTimeout: 3_000,
   });
-  const task = new Task(cron, 1);
+  const task = new Task(cron, 1, 2);
   await expect(task.win()).resolves.toBeTruthy();
   await expect(task.win()).resolves.toBeTruthy();
   await expect(task.win()).resolves.toBeTruthy();
@@ -49,10 +49,10 @@ test('任务结束后可补充排队中的任务', { timeout: 20_000 }, async ()
     waitingTimeout: 5_000,
   });
 
-  const task1 = new Task(cron, 1);
-  const task2 = new Task(cron, 2);
-  const task3 = new Task(cron, 3);
-  const task4 = new Task(cron, 4);
+  const task1 = new Task(cron, 1, 2);
+  const task2 = new Task(cron, 2, 3);
+  const task3 = new Task(cron, 3, 4);
+  const task4 = new Task(cron, 4, 5);
   await expect(task1.win()).resolves.toBeTruthy();
   await expect(task2.win()).resolves.toBeTruthy();
   const result = task3.win();
@@ -71,8 +71,8 @@ test('排队中的任务超时后被放弃', { timeout: 10_000 }, async () => {
     waitingTimeout: 4_000,
   });
 
-  const task1 = new Task(cron, 1);
-  const task2 = new Task(cron, 2);
+  const task1 = new Task(cron, 1, 2);
+  const task2 = new Task(cron, 2, 3);
 
   await expect(task1.win()).resolves.toBeTruthy();
   const result = task2.win();
@@ -89,7 +89,7 @@ test('无限并发', { timeout: 12_000 }, async () => {
     serves: Infinity,
     concurrent: Infinity,
   });
-  const task = new Task(cron, 1);
+  const task = new Task(cron, 1, 2);
   const result = await Promise.all(new Array(1000).fill('').map(() => task.win()));
   expect([...new Set(result)]).toStrictEqual([true]);
 });
@@ -106,7 +106,7 @@ test('执行时记录pid', { timeout: 12_000 }, async () => {
   );
 
   const cron = new Cron({ commanders: '', command: 'foo:bar' });
-  const task = new Task(cron, 1);
+  const task = new Task(cron, 1, 2);
   // @ts-expect-error
   task.filePath = file;
   // @ts-expect-error
