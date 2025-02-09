@@ -6,4 +6,5 @@ export const zh = I18n.define({
   stop: '退出定时任务',
   stats: '查看定时任务执行状态',
   not_started: '定时任务未启动，端口：{{port}}',
+  invalid_cron_time: '时间表达式不合法：{{time}}',
 });

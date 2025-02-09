@@ -7,4 +7,5 @@ export const en = I18n.satisfies(zh).define({
   stop: 'Stop cron tasks',
   stats: 'Show cron tasks stats',
   not_started: 'cron not started with port: {{port}}',
+  invalid_cron_time: 'Invalid cron time expression: {{time}}',
 });

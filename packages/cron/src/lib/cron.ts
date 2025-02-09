@@ -3,6 +3,7 @@ import { CacheMemoryAdapter, Caching } from '@aomex/cache';
 import type { CronsOptions, CronOptions } from './type';
 import cronParser from 'cron-parser';
 import { Task } from './task';
+import { i18n } from '../i18n';
 
 export class Cron {
   public readonly cronExpression: cronParser.CronExpression;
@@ -29,18 +30,22 @@ export class Cron {
     return this.options.command;
   }
 
-  public get concurrent(): number {
-    return Math.max(1, this.options.concurrent || 1);
+  public get servesCount(): number {
+    let { serves = 1 } = this.options;
+    if (serves === 'infinity') serves = Infinity;
+    return Math.max(1, serves);
   }
 
-  public get overlap(): boolean {
-    return this.options.overlap ?? false;
+  public get concurrent(): number {
+    let { concurrent = this.servesCount } = this.options;
+    if (concurrent === 'infinity') concurrent = Infinity;
+    return Math.max(1, concurrent);
   }
 
   public get waitingTimeout(): number {
     return Math.max(
       0,
-      Math.min(this.options.waitingTimeout || 5000, this.timeDelta - 2000),
+      Math.min(this.options.waitingTimeout || 10_000, this.timeDelta - 2_000),
     );
   }
 
@@ -51,26 +56,22 @@ export class Cron {
   public get time(): string {
     return (this._time ??= (() => {
       const { options } = this;
-      if ('time' in options) {
-        const expression = options.time;
-        try {
-          const handle = cronParser.parseExpression(expression);
-          const arr = expression.split(/\s+/);
-          return arr.length < 5 ? handle.stringify(false) : arr.join(' ');
-        } catch {
-          throw new Error(`时间表达式不合法：${expression}`);
-        }
+      const expression =
+        'time' in options
+          ? options.time
+          : [
+              options.second ?? '0',
+              options.minute ?? '*',
+              options.hour ?? '*',
+              options.dayOfMonth ?? '*',
+              options.month ?? '*',
+              options.dayOfWeek ?? '*',
+            ].join(' ');
+      try {
+        return cronParser.parseExpression(expression).stringify(true);
+      } catch {
+        throw new Error(i18n.t('invalid_cron_time', { time: expression }));
       }
-
-      const arr = [
-        options.minute ?? '*',
-        options.hour ?? '*',
-        options.dayOfMonth ?? '*',
-        options.month ?? '*',
-        options.dayOfWeek ?? '*',
-      ];
-      options.second && arr.unshift(options.second);
-      return arr.join(' ');
     })());
   }
 
@@ -149,7 +150,7 @@ export class Cron {
       time: this.time,
       argv: this.argv,
       concurrent: this.concurrent,
-      overlap: this.overlap,
+      serves: this.servesCount,
       waitingTimeout: this.waitingTimeout,
     };
   }

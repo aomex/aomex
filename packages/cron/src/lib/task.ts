@@ -3,8 +3,8 @@ import type { Cron } from './cron';
 import { spawn } from 'node:child_process';
 
 export class Task {
-  readonly runningKey: string;
-  readonly currentKey: string;
+  readonly concurrentKey: string;
+  readonly servesKey: string;
   protected readonly filePath: string;
   protected readonly execArgv: string[];
 
@@ -12,8 +12,8 @@ export class Task {
     readonly cron: Cron,
     currentTimestamp: number,
   ) {
-    this.runningKey = `cron-task|arg:${cron.argv}|exp:${cron.time}|con:${cron.concurrent}`;
-    this.currentKey = `${this.runningKey}|now:${currentTimestamp}`;
+    this.concurrentKey = `aomex-cron|v:${cron.argv}|t:${cron.time}|s:${cron.servesCount}|c:${cron.concurrent}`;
+    this.servesKey = `${this.concurrentKey}|n:${currentTimestamp}`;
     this.filePath = process.argv[1]!;
     this.execArgv = [...process.execArgv];
     if (!this.execArgv.includes('--enable-source-maps')) {
@@ -67,40 +67,35 @@ export class Task {
   }
 
   async win(): Promise<boolean> {
-    const { cache, concurrent, overlap, waitingTimeout } = this.cron;
+    const {
+      cache,
+      servesCount: maxServes,
+      concurrent: maxConcurrent,
+      waitingTimeout,
+    } = this.cron;
 
     {
-      const count = await cache.increment(this.currentKey);
-      await cache.expire(this.currentKey, 60_000);
-      if (count > concurrent) {
-        await cache.decrement(this.currentKey);
+      const serves = await cache.increment(this.servesKey);
+      await cache.expire(this.servesKey, 60_000);
+      if (serves > maxServes) {
+        await cache.decrement(this.servesKey);
         return false;
       }
     }
 
-    if (overlap === false) {
-      const startTime = Date.now();
-      while (true) {
-        const prevKey = await cache.get<string>(this.runningKey);
-        if (prevKey === null) {
-          await cache.setNX(this.runningKey, this.currentKey, 60_000);
-          return true;
-        } else if (prevKey !== this.currentKey) {
-          if (waitingTimeout > 0 && Date.now() - startTime < waitingTimeout) {
-            await sleep(1_000);
-            continue;
-          } else {
-            await cache.decrement(this.currentKey);
-            return false;
-          }
-        } else {
-          return true;
-        }
-      }
+    const startTime = Date.now();
+    while (true) {
+      // 防止临近过期时写入导致数据丢失
+      await cache.expire(this.concurrentKey, 60_000);
+      const concurrent = await cache.increment(this.concurrentKey);
+      await cache.expire(this.concurrentKey, 60_000);
+      if (concurrent <= maxConcurrent) return true;
+      await cache.decrement(this.concurrentKey);
+      if (waitingTimeout <= 0) return false;
+      if (startTime + waitingTimeout < Date.now()) return false;
+      await sleep(1_000);
+      continue;
     }
-
-    // overlap === true
-    return true;
   }
 
   /**
@@ -109,16 +104,14 @@ export class Task {
   ping() {
     const cache = this.cron.cache;
     const timer = setInterval(() => {
-      cache.expire(this.runningKey, 10_000);
-      cache.expire(this.currentKey, 10_000);
-    }, 3_000);
+      cache.expire(this.concurrentKey, 60_000);
+      cache.expire(this.servesKey, 60_000);
+    }, 10_000);
 
     return async () => {
       clearInterval(timer);
-      const count = await cache.decrement(this.currentKey);
-      if (count === 0) {
-        await cache.delete(this.runningKey);
-      }
+      await cache.decrement(this.concurrentKey);
+      await cache.decrement(this.servesKey);
     };
   }
 }

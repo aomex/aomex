@@ -20,7 +20,7 @@ test('导出任务列表', async () => {
   expect(spy).toHaveBeenCalledTimes(1);
   expect(spy).toHaveBeenLastCalledWith(
     `*/10 * * * * * aomex schedule:a
-* * * * * aomex schedule:c`,
+0 * * * * * aomex schedule:c`,
   );
   spy.mockRestore();
 });

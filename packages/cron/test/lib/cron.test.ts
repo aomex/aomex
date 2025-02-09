@@ -9,7 +9,7 @@ test('时间', () => {
       command: '',
       commanders: '',
     }).time,
-  ).toMatchInlineSnapshot(`"0 * 1-4 * 2"`);
+  ).toMatchInlineSnapshot(`"0 0 * 1-4 * 2"`);
 
   expect(
     new Cron({
@@ -30,7 +30,7 @@ test('时间', () => {
       command: '',
       commanders: '',
     }).time,
-  ).toMatchInlineSnapshot(`"*/10 5 3 */2 10 2-5"`);
+  ).toMatchInlineSnapshot(`"*/10 5 3 1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31 10 2-5"`);
 
   expect(
     new Cron({
@@ -38,7 +38,7 @@ test('时间', () => {
       command: '',
       commanders: '',
     }).time,
-  ).toMatchInlineSnapshot(`"5 * * * *"`);
+  ).toMatchInlineSnapshot(`"0 5 * * * *"`);
 
   expect(
     new Cron({
@@ -46,7 +46,7 @@ test('时间', () => {
       command: '',
       commanders: '',
     }).time,
-  ).toMatchInlineSnapshot(`"* * * * 0-6/2"`);
+  ).toMatchInlineSnapshot(`"0 * * * * 0-6/2"`);
 
   expect(
     () =>
@@ -58,16 +58,35 @@ test('时间', () => {
   ).toThrowErrorMatchingInlineSnapshot(`[Error: 时间表达式不合法：* * * * * * *]`);
 });
 
-test('concurrent默认是1', async () => {
+test('serves默认是1', async () => {
+  expect(new Cron({ time: '', command: '', commanders: '' }).servesCount).toBe(1);
+  expect(
+    new Cron({ time: '', command: '', commanders: '', serves: -2 }).servesCount,
+  ).toBe(1);
+  expect(new Cron({ time: '', command: '', commanders: '', serves: 0 }).servesCount).toBe(
+    1,
+  );
+  expect(new Cron({ time: '', command: '', commanders: '', serves: 2 }).servesCount).toBe(
+    2,
+  );
+});
+
+test('concurrent默认是serves的值', async () => {
   expect(new Cron({ time: '', command: '', commanders: '' }).concurrent).toBe(1);
+  expect(new Cron({ time: '', command: '', commanders: '', serves: 3 }).concurrent).toBe(
+    3,
+  );
   expect(
-    new Cron({ time: '', command: '', commanders: '', concurrent: -2 }).concurrent,
+    new Cron({ time: '', command: '', commanders: '', serves: 3, concurrent: -2 })
+      .concurrent,
   ).toBe(1);
   expect(
-    new Cron({ time: '', command: '', commanders: '', concurrent: 0 }).concurrent,
+    new Cron({ time: '', command: '', commanders: '', serves: 3, concurrent: 0 })
+      .concurrent,
   ).toBe(1);
   expect(
-    new Cron({ time: '', command: '', commanders: '', concurrent: 2 }).concurrent,
+    new Cron({ time: '', command: '', commanders: '', serves: 3, concurrent: 2 })
+      .concurrent,
   ).toBe(2);
 });
 
@@ -89,7 +108,7 @@ test('转换为字符串', async () => {
       concurrent: 5,
     }).toString(),
   ).toMatchInlineSnapshot(
-    `"* * */2 * * aomex schedule:command --hello world -x "foo bar""`,
+    `"0 * * 1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31 * * aomex schedule:command --hello world -x "foo bar""`,
   );
 });
 
@@ -112,9 +131,9 @@ test('转换为对象', async () => {
       ],
       "command": "schedule:command",
       "concurrent": 5,
-      "overlap": false,
-      "time": "* * */2 * *",
-      "waitingTimeout": 5000,
+      "serves": 1,
+      "time": "0 * * 1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31 * *",
+      "waitingTimeout": 10000,
     }
   `);
 });
@@ -137,10 +156,10 @@ describe('执行', () => {
   });
 });
 
-test('检测重叠等待时间不能超过任务时间间隔', () => {
+test('队列等待时间不能超过任务时间间隔', () => {
   expect(
     new Cron({ time: '* * * * *', command: '', commanders: '' }).waitingTimeout,
-  ).toBe(5_000);
+  ).toBe(10_000);
 
   expect(
     new Cron({ time: '* * * * * *', command: '', commanders: '' }).waitingTimeout,
