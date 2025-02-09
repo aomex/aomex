@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.15.0](https://github.com/aomex/aomex/compare/v3.14.2...v3.15.0) (2025-02-09)
+
+
+### Features
+
+* **cron:** 增加serves参数控制服务数量 ([fb275f7](https://github.com/aomex/aomex/commit/fb275f704376e78a8a4eed224160c0962188abb3))
+* **cron:** 指令增加cron属性 ([5978936](https://github.com/aomex/aomex/commit/5978936ce238d0b5c84aaaf03eb60af0c3fb7830))
+
+
+
+
+
 ## [3.14.2](https://github.com/aomex/aomex/compare/v3.14.1...v3.14.2) (2025-01-14)
 
 
