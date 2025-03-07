@@ -333,7 +333,7 @@ declare const userInputColumns: {
    *
    * 运行时规则：\`rule.buffer()\`
    */
-  byt: BufferValidator<Buffer>;
+  byt: BufferValidator<Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：\`Bytes?\`
    *
@@ -341,7 +341,7 @@ declare const userInputColumns: {
    *
    * 运行时规则：\`rule.buffer().optional()\`
    */
-  byt_nu: BufferValidator<Validator.TOptional | Buffer>;
+  byt_nu: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：\`Bytes\`
    *
@@ -349,7 +349,7 @@ declare const userInputColumns: {
    *
    * 运行时规则：\`rule.buffer().optional()\`
    */
-  byt_de: BufferValidator<Validator.TOptional | Buffer>;
+  byt_de: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：\`MyType\`
    *
@@ -707,7 +707,7 @@ declare const userOutputColumns: {
    *
    * 运行时规则：\`rule.buffer()\`
    */
-  byt: BufferValidator<Buffer>;
+  byt: BufferValidator<Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：\`Bytes?\`
    *
@@ -715,7 +715,7 @@ declare const userOutputColumns: {
    *
    * 运行时规则：\`rule.buffer().nullable()\`
    */
-  byt_nu: BufferValidator<Buffer | null>;
+  byt_nu: BufferValidator<Buffer<ArrayBufferLike> | null>;
   /**
    * Prisma类型：\`Bytes\`
    *
@@ -723,7 +723,7 @@ declare const userOutputColumns: {
    *
    * 运行时规则：\`rule.buffer()\`
    */
-  byt_de: BufferValidator<Buffer>;
+  byt_de: BufferValidator<Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：\`MyType\`
    *
@@ -1204,7 +1204,7 @@ export declare const prismaInput: {
        *
        * 运行时规则：\`rule.buffer()\`
        */
-      byt: BufferValidator<Buffer>;
+      byt: BufferValidator<Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：\`Bytes?\`
        *
@@ -1212,7 +1212,7 @@ export declare const prismaInput: {
        *
        * 运行时规则：\`rule.buffer().optional()\`
        */
-      byt_nu: BufferValidator<Validator.TOptional | Buffer>;
+      byt_nu: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：\`Bytes\`
        *
@@ -1220,7 +1220,7 @@ export declare const prismaInput: {
        *
        * 运行时规则：\`rule.buffer().optional()\`
        */
-      byt_de: BufferValidator<Validator.TOptional | Buffer>;
+      byt_de: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：\`MyType\`
        *
@@ -1779,7 +1779,7 @@ export declare const prismaOutput: {
        *
        * 运行时规则：\`rule.buffer()\`
        */
-      byt: BufferValidator<Buffer>;
+      byt: BufferValidator<Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：\`Bytes?\`
        *
@@ -1787,7 +1787,7 @@ export declare const prismaOutput: {
        *
        * 运行时规则：\`rule.buffer().nullable()\`
        */
-      byt_nu: BufferValidator<Buffer | null>;
+      byt_nu: BufferValidator<Buffer<ArrayBufferLike> | null>;
       /**
        * Prisma类型：\`Bytes\`
        *
@@ -1795,7 +1795,7 @@ export declare const prismaOutput: {
        *
        * 运行时规则：\`rule.buffer()\`
        */
-      byt_de: BufferValidator<Buffer>;
+      byt_de: BufferValidator<Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：\`MyType\`
        *
@@ -3392,7 +3392,7 @@ declare const userInputColumns: {
    *
    * 运行时规则：\`rule.buffer()\`
    */
-  byt: BufferValidator<Buffer>;
+  byt: BufferValidator<Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：\`Bytes?\`
    *
@@ -3400,7 +3400,7 @@ declare const userInputColumns: {
    *
    * 运行时规则：\`rule.buffer().optional()\`
    */
-  byt_nu: BufferValidator<Validator.TOptional | Buffer>;
+  byt_nu: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：\`Bytes\`
    *
@@ -3408,7 +3408,7 @@ declare const userInputColumns: {
    *
    * 运行时规则：\`rule.buffer().optional()\`
    */
-  byt_de: BufferValidator<Validator.TOptional | Buffer>;
+  byt_de: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
 };
 declare const userOutputColumns: {
   /**
@@ -3785,7 +3785,7 @@ declare const userOutputColumns: {
    *
    * 运行时规则：\`rule.buffer()\`
    */
-  byt: BufferValidator<Buffer>;
+  byt: BufferValidator<Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：\`Bytes?\`
    *
@@ -3793,7 +3793,7 @@ declare const userOutputColumns: {
    *
    * 运行时规则：\`rule.buffer().nullable()\`
    */
-  byt_nu: BufferValidator<Buffer | null>;
+  byt_nu: BufferValidator<Buffer<ArrayBufferLike> | null>;
   /**
    * Prisma类型：\`Bytes\`
    *
@@ -3801,7 +3801,7 @@ declare const userOutputColumns: {
    *
    * 运行时规则：\`rule.buffer()\`
    */
-  byt_de: BufferValidator<Buffer>;
+  byt_de: BufferValidator<Buffer<ArrayBufferLike>>;
 };
 declare const profileInputColumns: {
   /**
@@ -4304,7 +4304,7 @@ export declare const prismaInput: {
        *
        * 运行时规则：\`rule.buffer()\`
        */
-      byt: BufferValidator<Buffer>;
+      byt: BufferValidator<Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：\`Bytes?\`
        *
@@ -4312,7 +4312,7 @@ export declare const prismaInput: {
        *
        * 运行时规则：\`rule.buffer().optional()\`
        */
-      byt_nu: BufferValidator<Validator.TOptional | Buffer>;
+      byt_nu: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：\`Bytes\`
        *
@@ -4320,7 +4320,7 @@ export declare const prismaInput: {
        *
        * 运行时规则：\`rule.buffer().optional()\`
        */
-      byt_de: BufferValidator<Validator.TOptional | Buffer>;
+      byt_de: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
     };
     /** 选择部分字段 */
     readonly pick: <
@@ -4910,7 +4910,7 @@ export declare const prismaOutput: {
        *
        * 运行时规则：\`rule.buffer()\`
        */
-      byt: BufferValidator<Buffer>;
+      byt: BufferValidator<Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：\`Bytes?\`
        *
@@ -4918,7 +4918,7 @@ export declare const prismaOutput: {
        *
        * 运行时规则：\`rule.buffer().nullable()\`
        */
-      byt_nu: BufferValidator<Buffer | null>;
+      byt_nu: BufferValidator<Buffer<ArrayBufferLike> | null>;
       /**
        * Prisma类型：\`Bytes\`
        *
@@ -4926,7 +4926,7 @@ export declare const prismaOutput: {
        *
        * 运行时规则：\`rule.buffer()\`
        */
-      byt_de: BufferValidator<Buffer>;
+      byt_de: BufferValidator<Buffer<ArrayBufferLike>>;
     };
     /** 选择部分字段 */
     readonly pick: <
@@ -6523,7 +6523,7 @@ declare const userInputColumns: {
    *
    * 运行时规则：\`rule.buffer()\`
    */
-  byt: BufferValidator<Buffer>;
+  byt: BufferValidator<Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：\`Bytes?\`
    *
@@ -6531,7 +6531,7 @@ declare const userInputColumns: {
    *
    * 运行时规则：\`rule.buffer().optional()\`
    */
-  byt_nu: BufferValidator<Validator.TOptional | Buffer>;
+  byt_nu: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：\`Bytes\`
    *
@@ -6539,7 +6539,7 @@ declare const userInputColumns: {
    *
    * 运行时规则：\`rule.buffer().optional()\`
    */
-  byt_de: BufferValidator<Validator.TOptional | Buffer>;
+  byt_de: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
 };
 declare const userOutputColumns: {
   /**
@@ -6916,7 +6916,7 @@ declare const userOutputColumns: {
    *
    * 运行时规则：\`rule.buffer()\`
    */
-  byt: BufferValidator<Buffer>;
+  byt: BufferValidator<Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：\`Bytes?\`
    *
@@ -6924,7 +6924,7 @@ declare const userOutputColumns: {
    *
    * 运行时规则：\`rule.buffer().nullable()\`
    */
-  byt_nu: BufferValidator<Buffer | null>;
+  byt_nu: BufferValidator<Buffer<ArrayBufferLike> | null>;
   /**
    * Prisma类型：\`Bytes\`
    *
@@ -6932,7 +6932,7 @@ declare const userOutputColumns: {
    *
    * 运行时规则：\`rule.buffer()\`
    */
-  byt_de: BufferValidator<Buffer>;
+  byt_de: BufferValidator<Buffer<ArrayBufferLike>>;
 };
 declare const profileInputColumns: {
   /**
@@ -7435,7 +7435,7 @@ export declare const prismaInput: {
        *
        * 运行时规则：\`rule.buffer()\`
        */
-      byt: BufferValidator<Buffer>;
+      byt: BufferValidator<Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：\`Bytes?\`
        *
@@ -7443,7 +7443,7 @@ export declare const prismaInput: {
        *
        * 运行时规则：\`rule.buffer().optional()\`
        */
-      byt_nu: BufferValidator<Validator.TOptional | Buffer>;
+      byt_nu: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：\`Bytes\`
        *
@@ -7451,7 +7451,7 @@ export declare const prismaInput: {
        *
        * 运行时规则：\`rule.buffer().optional()\`
        */
-      byt_de: BufferValidator<Validator.TOptional | Buffer>;
+      byt_de: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
     };
     /** 选择部分字段 */
     readonly pick: <
@@ -8041,7 +8041,7 @@ export declare const prismaOutput: {
        *
        * 运行时规则：\`rule.buffer()\`
        */
-      byt: BufferValidator<Buffer>;
+      byt: BufferValidator<Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：\`Bytes?\`
        *
@@ -8049,7 +8049,7 @@ export declare const prismaOutput: {
        *
        * 运行时规则：\`rule.buffer().nullable()\`
        */
-      byt_nu: BufferValidator<Buffer | null>;
+      byt_nu: BufferValidator<Buffer<ArrayBufferLike> | null>;
       /**
        * Prisma类型：\`Bytes\`
        *
@@ -8057,7 +8057,7 @@ export declare const prismaOutput: {
        *
        * 运行时规则：\`rule.buffer()\`
        */
-      byt_de: BufferValidator<Buffer>;
+      byt_de: BufferValidator<Buffer<ArrayBufferLike>>;
     };
     /** 选择部分字段 */
     readonly pick: <
@@ -9569,7 +9569,7 @@ declare const userInputColumns: {
    *
    * 运行时规则：\`rule.buffer()\`
    */
-  byt: BufferValidator<Buffer>;
+  byt: BufferValidator<Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：\`Bytes?\`
    *
@@ -9577,7 +9577,7 @@ declare const userInputColumns: {
    *
    * 运行时规则：\`rule.buffer().optional()\`
    */
-  byt_nu: BufferValidator<Validator.TOptional | Buffer>;
+  byt_nu: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：\`Bytes\`
    *
@@ -9585,7 +9585,7 @@ declare const userInputColumns: {
    *
    * 运行时规则：\`rule.buffer().optional()\`
    */
-  byt_de: BufferValidator<Validator.TOptional | Buffer>;
+  byt_de: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
 };
 declare const userOutputColumns: {
   /**
@@ -9893,7 +9893,7 @@ declare const userOutputColumns: {
    *
    * 运行时规则：\`rule.buffer()\`
    */
-  byt: BufferValidator<Buffer>;
+  byt: BufferValidator<Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：\`Bytes?\`
    *
@@ -9901,7 +9901,7 @@ declare const userOutputColumns: {
    *
    * 运行时规则：\`rule.buffer().nullable()\`
    */
-  byt_nu: BufferValidator<Buffer | null>;
+  byt_nu: BufferValidator<Buffer<ArrayBufferLike> | null>;
   /**
    * Prisma类型：\`Bytes\`
    *
@@ -9909,7 +9909,7 @@ declare const userOutputColumns: {
    *
    * 运行时规则：\`rule.buffer()\`
    */
-  byt_de: BufferValidator<Buffer>;
+  byt_de: BufferValidator<Buffer<ArrayBufferLike>>;
 };
 declare const profileInputColumns: {
   /**
@@ -10329,7 +10329,7 @@ export declare const prismaInput: {
        *
        * 运行时规则：\`rule.buffer()\`
        */
-      byt: BufferValidator<Buffer>;
+      byt: BufferValidator<Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：\`Bytes?\`
        *
@@ -10337,7 +10337,7 @@ export declare const prismaInput: {
        *
        * 运行时规则：\`rule.buffer().optional()\`
        */
-      byt_nu: BufferValidator<Validator.TOptional | Buffer>;
+      byt_nu: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：\`Bytes\`
        *
@@ -10345,7 +10345,7 @@ export declare const prismaInput: {
        *
        * 运行时规则：\`rule.buffer().optional()\`
        */
-      byt_de: BufferValidator<Validator.TOptional | Buffer>;
+      byt_de: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
     };
     /** 选择部分字段 */
     readonly pick: <
@@ -10854,7 +10854,7 @@ export declare const prismaOutput: {
        *
        * 运行时规则：\`rule.buffer()\`
        */
-      byt: BufferValidator<Buffer>;
+      byt: BufferValidator<Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：\`Bytes?\`
        *
@@ -10862,7 +10862,7 @@ export declare const prismaOutput: {
        *
        * 运行时规则：\`rule.buffer().nullable()\`
        */
-      byt_nu: BufferValidator<Buffer | null>;
+      byt_nu: BufferValidator<Buffer<ArrayBufferLike> | null>;
       /**
        * Prisma类型：\`Bytes\`
        *
@@ -10870,7 +10870,7 @@ export declare const prismaOutput: {
        *
        * 运行时规则：\`rule.buffer()\`
        */
-      byt_de: BufferValidator<Buffer>;
+      byt_de: BufferValidator<Buffer<ArrayBufferLike>>;
     };
     /** 选择部分字段 */
     readonly pick: <
