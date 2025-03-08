@@ -279,8 +279,8 @@ importers:
         specifier: workspace:^
         version: link:../internal-tools
       cron-parser:
-        specifier: ^4.9.0
-        version: 4.9.0
+        specifier: ^5.0.4
+        version: 5.0.4
       format-duration:
         specifier: ^3.0.2
         version: 3.0.2
@@ -2292,9 +2292,9 @@ packages:
       typescript:
         optional: true
 
-  cron-parser@4.9.0:
-    resolution: {integrity: sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==}
-    engines: {node: '>=12.0.0'}
+  cron-parser@5.0.4:
+    resolution: {integrity: sha512-ud6L7uGE4a7QxKndq106+99iKMlhG1/gSVlA4SH7qy3xO/R/EUoXFTJFMBOogdk00mZiXPONRI4wFKAcymKp6w==}
+    engines: {node: '>=18'}
 
   cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
@@ -7393,7 +7393,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.8.2
 
-  cron-parser@4.9.0:
+  cron-parser@5.0.4:
     dependencies:
       luxon: 3.5.0
 

@@ -30,7 +30,7 @@ test('时间', () => {
       command: '',
       commanders: '',
     }).time,
-  ).toMatchInlineSnapshot(`"*/10 5 3 1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31 10 2-5"`);
+  ).toMatchInlineSnapshot(`"*/10 5 3 */2 10 2-5"`);
 
   expect(
     new Cron({
@@ -41,12 +41,13 @@ test('时间', () => {
   ).toMatchInlineSnapshot(`"0 5 * * * *"`);
 
   expect(
-    new Cron({
-      time: '*/2',
-      command: '',
-      commanders: '',
-    }).time,
-  ).toMatchInlineSnapshot(`"0 * * * * 0-6/2"`);
+    () =>
+      new Cron({
+        time: '*/2',
+        command: '',
+        commanders: '',
+      }).time,
+  ).toThrowErrorMatchingInlineSnapshot(`[Error: 时间表达式不合法：*/2]`);
 
   expect(
     () =>
@@ -108,7 +109,7 @@ test('转换为字符串', async () => {
       concurrent: 5,
     }).toString(),
   ).toMatchInlineSnapshot(
-    `"0 * * 1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31 * * aomex schedule:command --hello world -x "foo bar""`,
+    `"0 * * */2 * * aomex schedule:command --hello world -x "foo bar""`,
   );
 });
 
@@ -132,7 +133,7 @@ test('转换为对象', async () => {
       "command": "schedule:command",
       "concurrent": 5,
       "serves": 1,
-      "time": "0 * * 1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31 * *",
+      "time": "0 * * */2 * *",
       "waitingTimeout": 10000,
     }
   `);
@@ -157,25 +158,17 @@ describe('执行', () => {
 });
 
 test('队列等待时间不能超过任务时间间隔', () => {
-  expect(
-    new Cron({ time: '* * * * *', command: '', commanders: '' }).waitingTimeout,
-  ).toBe(10_000);
+  const cron = new Cron({ time: '* * * * *', command: '', commanders: '' });
+
+  expect(cron.getWaitingTimeout(20_000)).toBe(10_000);
+  expect(cron.getWaitingTimeout(10_000)).toBe(8_000);
+  expect(cron.getWaitingTimeout(-30_000)).toBe(10_000);
 
   expect(
-    new Cron({ time: '* * * * * *', command: '', commanders: '' }).waitingTimeout,
-  ).toBe(0);
-
-  expect(
-    new Cron({ time: '*/5 * * * * *', command: '', commanders: '' }).waitingTimeout,
-  ).toBe(3_000);
-
-  expect(
-    new Cron({ time: '* * * * *', command: '', commanders: '', waitingTimeout: 40_000 })
-      .waitingTimeout,
+    new Cron({
+      command: '',
+      commanders: '',
+      waitingTimeout: 40_000,
+    }).getWaitingTimeout(60_000),
   ).toBe(40_000);
-
-  expect(
-    new Cron({ time: '* * * * *', command: '', commanders: '', waitingTimeout: 80_000 })
-      .waitingTimeout,
-  ).toBe(58_000);
 });

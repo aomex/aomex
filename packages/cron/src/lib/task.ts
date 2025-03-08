@@ -78,22 +78,21 @@ export class Task {
   }
 
   async win(): Promise<boolean> {
-    const {
-      cache,
-      servesCount: maxServes,
-      concurrent: maxConcurrent,
-      waitingTimeout,
-    } = this.cron;
+    const { cache, servesCount: maxServes } = this.cron;
 
     {
-      const serves = await cache.increment(this.servesKey);
+      const existServes = await cache.increment(this.servesKey);
       await cache.expire(this.servesKey, 60_000);
-      if (serves > maxServes) {
+      if (existServes > maxServes) {
         await cache.decrement(this.servesKey);
         return false;
       }
     }
 
+    const { concurrent: maxConcurrent } = this.cron;
+    const waitingTimeout = this.cron.getWaitingTimeout(
+      this.nextTimestamp - this.currentTimestamp,
+    );
     const startTime = Date.now();
     while (true) {
       // 防止临近过期时写入导致数据丢失
