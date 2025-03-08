@@ -109,7 +109,7 @@ test('异步消费', async () => {
   expect(logger['logs']).toHaveLength(1);
   expect(t.messages).toHaveLength(0);
 
-  await logger.promise();
+  await logger.complete();
   expect(spy).toBeCalledTimes(1);
   expect(logger['logs']).toHaveLength(0);
   expect(t.messages).toHaveLength(1);

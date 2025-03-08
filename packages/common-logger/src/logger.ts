@@ -89,13 +89,13 @@ export abstract class Logger<T extends string> {
   }
 
   /**
-   * 保证日志输送完毕
+   * 保证日志（异步）输送完毕
    */
-  async promise() {
+  async complete() {
     while (true) {
       if (!this.timer) return;
       if (!this.logs.length) return;
-      await timers.setTimeout(30);
+      await timers.setTimeout(50);
     }
   }
 
