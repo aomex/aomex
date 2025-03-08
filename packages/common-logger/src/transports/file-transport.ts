@@ -13,16 +13,16 @@ export class FileTransport extends LoggerTransport {
   constructor(opts: {
     /**
      * 日志文件路径，支持引入时间占位符。
-     * - `%year%` 年
-     * - `%month%` 月
-     * - `%day%` 日
-     * - `%hour%` 时
-     * - `%minute%` 分
-     * - `%second%` 秒
+     * - `{year}` 年
+     * - `{month}` 月
+     * - `{day}` 日
+     * - `{hour}` 时
+     * - `{minute}` 分
+     * - `{second}` 秒
      *
      * ```typescript
      * new FileTransport({
-     *   file: `./logs/%year%-%month%-%day%/%hour%.log`,
+     *   file: `./logs/{year}-{month}-{day}/{hour}.log`,
      * })
      * ```
      */
@@ -49,7 +49,7 @@ export class FileTransport extends LoggerTransport {
     } else {
       file = this.file;
       for (const [key, value] of Object.entries(this.dateToJSON(log.timestamp))) {
-        file = file.replaceAll(`%${key}%`, value);
+        file = file.replaceAll(`{${key}}`, value);
       }
     }
 
@@ -58,6 +58,6 @@ export class FileTransport extends LoggerTransport {
   }
 
   protected getContent(message: Logger.Log) {
-    return `[${message.level}] ${this.dateToString(message.timestamp)} ${stripVTControlCharacters(message.text)}\n`;
+    return `\n[${message.level}] ${this.dateToString(message.timestamp)} ${stripVTControlCharacters(message.text)}\n`;
   }
 }
