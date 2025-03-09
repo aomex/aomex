@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.17.0](https://github.com/aomex/aomex/compare/v3.16.0...v3.17.0) (2025-03-09)
+
+
+### Features
+
+* **http-logger:** 增加disable属性禁用日志 ([8d43283](https://github.com/aomex/aomex/commit/8d43283b00e5df9e398655b5e5b78049cd20083a))
+* **logger:** 增加方法countTransports ([3bb0a90](https://github.com/aomex/aomex/commit/3bb0a904a79d2699d6b4b8970f9e99a65c571426))
+* **logger:** 独立安装 ([9a3f444](https://github.com/aomex/aomex/commit/9a3f4446ba7dd2da9a7f52eec8891624e9208435))
+
+
+
+
+
 # [3.16.0](https://github.com/aomex/aomex/compare/v3.15.1...v3.16.0) (2025-03-09)
 
 

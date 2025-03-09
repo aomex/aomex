@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.17.0](https://github.com/aomex/aomex/compare/v3.16.0...v3.17.0) (2025-03-09)
+
+
+### Features
+
+* **logger:** 独立安装 ([9a3f444](https://github.com/aomex/aomex/commit/9a3f4446ba7dd2da9a7f52eec8891624e9208435))
+
+
+
+
+
 # [3.16.0](https://github.com/aomex/aomex/compare/v3.15.1...v3.16.0) (2025-03-09)
 
 **Note:** Version bump only for package @aomex/common
