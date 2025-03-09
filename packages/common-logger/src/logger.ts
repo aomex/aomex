@@ -38,7 +38,7 @@ export namespace Logger {
 }
 
 export abstract class Logger<T extends string> {
-  static transport = transports;
+  static transports = transports;
 
   static create = <T extends string>(
     opts: Logger.Options<T>,

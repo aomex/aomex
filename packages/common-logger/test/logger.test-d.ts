@@ -19,24 +19,24 @@ import { Logger } from '../src';
     levels: ['foo', 'bar', 'baz'],
     transports: [
       {
-        transport: new Logger.transport.Console(),
+        transport: new Logger.transports.Console(),
         level: 'all',
       },
       {
-        transport: new Logger.transport.Console(),
+        transport: new Logger.transports.Console(),
         level: 'none',
       },
       {
-        transport: new Logger.transport.Console(),
+        transport: new Logger.transports.Console(),
         // @ts-expect-error
         level: 'foo',
       },
       {
-        transport: new Logger.transport.Console(),
+        transport: new Logger.transports.Console(),
         level: ['foo', 'bar'],
       },
       {
-        transport: new Logger.transport.Console(),
+        transport: new Logger.transports.Console(),
         level: [
           // @ts-expect-error
           'fooo',
@@ -44,16 +44,16 @@ import { Logger } from '../src';
         ],
       },
       {
-        transport: new Logger.transport.Console(),
+        transport: new Logger.transports.Console(),
         level: { from: 'foo', to: 'bar' },
       },
       {
-        transport: new Logger.transport.Console(),
+        transport: new Logger.transports.Console(),
         // @ts-expect-error
         level: { from: 'fooo', to: 'barb' },
       },
       {
-        transport: new Logger.transport.Console(),
+        transport: new Logger.transports.Console(),
         level: {
           // @ts-expect-error
           from: 'fooo',
@@ -61,7 +61,7 @@ import { Logger } from '../src';
         },
       },
       {
-        transport: new Logger.transport.Console(),
+        transport: new Logger.transports.Console(),
         level: {
           from: 'foo',
           // @ts-expect-error
@@ -72,7 +72,7 @@ import { Logger } from '../src';
   });
 
   logger.transports.add({
-    transport: new Logger.transport.Console(),
+    transport: new Logger.transports.Console(),
     level: {
       from: 'foo',
       // @ts-expect-error

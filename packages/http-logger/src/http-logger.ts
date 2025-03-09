@@ -36,7 +36,7 @@ export const httpLogger = (options: HttpLoggerOptions = {}): WebMiddleware => {
 
   let transports = options.transports;
   if (!transports || transports.length === 0) {
-    transports = [new Logger.transport.Console()];
+    transports = [new Logger.transports.Console()];
   }
 
   const logger = Logger.create({
