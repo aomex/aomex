@@ -40,9 +40,9 @@ export namespace Logger {
 export abstract class Logger<T extends string> {
   static transports = transports;
 
-  static create = <T extends string>(
-    opts: Logger.Options<T>,
-  ): Logger<T> & { [K in T]: (text: string, ...args: any[]) => void } => {
+  static create = <Levels extends string>(
+    opts: Logger.Options<Levels>,
+  ): Logger<Levels> & { [K in Levels]: (text: string, ...args: any[]) => void } => {
     // @ts-expect-error
     return new Logger(opts);
   };
