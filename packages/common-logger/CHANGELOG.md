@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.16.0](https://github.com/aomex/aomex/compare/v3.15.1...v3.16.0) (2025-03-09)
+
+
+### Features
+
+* **logger:** 使用新的文件名日期占位符 ([3bde946](https://github.com/aomex/aomex/commit/3bde9464bf9485238024462842108bd6af267af2))
+* **logger:** 增加通用类CustomTransport ([d8254c3](https://github.com/aomex/aomex/commit/d8254c382b3daf924e98856cccc416ce9c0ce316))
+
+
+
+
+
 ## [3.15.1](https://github.com/aomex/aomex/compare/v3.15.0...v3.15.1) (2025-02-09)
 
 **Note:** Version bump only for package @aomex/common-logger
