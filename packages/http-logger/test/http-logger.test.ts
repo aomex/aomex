@@ -133,3 +133,39 @@ test('自定义令牌', async () => {
     ]
   `);
 });
+
+test('禁用日志', async () => {
+  const app = new WebApp({
+    mount: [
+      httpLogger({
+        disable: true,
+        transports,
+      }),
+      middleware.web((ctx) => {
+        ctx.send(200, 'foo bar');
+      }),
+    ],
+  });
+
+  await supertest(app.listen()).get('/api');
+  await sleep(100);
+  expect(msgs).toMatchInlineSnapshot(`[]`);
+});
+
+test('不存在消费实例也相当于禁用日志', async () => {
+  const app = new WebApp({
+    mount: [
+      httpLogger({
+        disable: true,
+        transports: [],
+      }),
+      middleware.web((ctx) => {
+        ctx.send(200, 'foo bar');
+      }),
+    ],
+  });
+
+  await supertest(app.listen()).get('/api');
+  await sleep(100);
+  expect(msgs).toMatchInlineSnapshot(`[]`);
+});
