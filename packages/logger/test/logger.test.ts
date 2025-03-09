@@ -19,6 +19,41 @@ test('按顺序记录日志', () => {
   expect(logger['logs'].map((m) => m.text)).toStrictEqual(['aa', 'bb', 'hello world']);
 });
 
+test('统计消费实例数量', () => {
+  {
+    const logger = Logger.create({ levels: ['foo', 'bar'] });
+    expect(logger.countTransports('foo')).toBe(0);
+  }
+
+  {
+    const logger = Logger.create({
+      levels: ['foo', 'bar'],
+      transports: [
+        {
+          transport: new Logger.transports.Console(),
+          level: ['foo'],
+        },
+      ],
+    });
+    expect(logger.countTransports('foo')).toBe(1);
+    expect(logger.countTransports('bar')).toBe(0);
+  }
+
+  {
+    const logger = Logger.create({
+      levels: ['foo', 'bar'],
+      transports: [
+        {
+          transport: new Logger.transports.Console(),
+          level: 'all',
+        },
+      ],
+    });
+    expect(logger.countTransports('foo')).toBe(1);
+    expect(logger.countTransports('bar')).toBe(1);
+  }
+});
+
 describe('输出日志等级', () => {
   const logger = Logger.create({ levels: ['foo', 'bar', 'baz'] });
 

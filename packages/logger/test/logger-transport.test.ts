@@ -38,8 +38,8 @@ describe('错误日志', () => {
     expect(stack.split('\n').map((item) => item.replaceAll('\\', '/')))
       .toMatchInlineSnapshot(`
     [
-      "    at Module.mockError (packages/common-logger/test/mocks/mock-error.ts:2:10)",
-      "    at packages/common-logger/test/logger-transport.test.ts:1:13",
+      "    at Module.mockError (packages/logger/test/mocks/mock-error.ts:2:10)",
+      "    at packages/logger/test/logger-transport.test.ts:1:13",
     ]
   `);
   });

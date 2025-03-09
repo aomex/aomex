@@ -16,7 +16,7 @@ export namespace Logger {
     levels: T[];
     transports?: {
       /**
-       * 接收日志。内置方案汇聚在 `Logger.transport` 属性中。用户也可以自己实现
+       * 接收日志。内置方案汇聚在 `Logger.transports` 属性中。用户也可以自己实现
        */
       transport: LoggerTransport;
       /**
@@ -97,6 +97,17 @@ export abstract class Logger<T extends string> {
       if (!this.logs.length) return;
       await timers.setTimeout(50);
     }
+  }
+
+  /**
+   * 统计某个级别有几个消费实例
+   */
+  countTransports(level: T): number {
+    let counter = 0;
+    for (const { levels } of this.transportAndLevels) {
+      if (levels.includes(level)) ++counter;
+    }
+    return counter;
   }
 
   protected log(level: T, text: string, ...args: any[]) {
