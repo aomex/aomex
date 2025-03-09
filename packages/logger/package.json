@@ -1,7 +1,7 @@
 {
-  "name": "@aomex/common-logger",
+  "name": "@aomex/logger",
   "version": "3.16.0",
-  "description": "aomex日志",
+  "description": "aomex日志收集",
   "scripts": {
     "prepublishOnly": "tsup"
   },

@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@aomex/internal-tools": "workspace:^",
+    "@aomex/logger": "workspace:^",
     "pretty-time": "^1.1.0"
   },
   "devDependencies": {

@@ -1,4 +1,5 @@
-import { Logger, LoggerTransport, middleware } from '@aomex/common';
+import { middleware } from '@aomex/common';
+import { Logger, LoggerTransport } from '@aomex/logger';
 import { WebApp } from '@aomex/web';
 import { stripVTControlCharacters } from 'node:util';
 import {

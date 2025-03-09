@@ -1,4 +1,5 @@
-import { Logger, LoggerTransport, middleware } from '@aomex/common';
+import { middleware } from '@aomex/common';
+import { Logger, LoggerTransport } from '@aomex/logger';
 import type { WebContext, WebMiddleware } from '@aomex/web';
 import { HttpLoggerToken } from './http-logger-token';
 import { Counter } from './counter';

@@ -38,7 +38,6 @@
     "typescript": ">=5.5"
   },
   "dependencies": {
-    "@aomex/common-logger": "workspace:^",
     "@aomex/common-middleware": "workspace:^",
     "@aomex/common-service": "workspace:^",
     "@aomex/common-validator": "workspace:^",
