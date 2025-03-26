@@ -33,6 +33,6 @@
     "node": "^20.13.0 || ^22"
   },
   "dependencies": {
-    "@aomex/internal-tools": "workspace:^"
+    "@aomex/internal-tools": "workspace:"
   }
 }

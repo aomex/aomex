@@ -45,8 +45,8 @@
     "streaming-json-stringify": "^3.1.0"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:^",
-    "@aomex/web": "workspace:^",
+    "@aomex/common": "workspace:",
+    "@aomex/web": "workspace:",
     "@types/streaming-json-stringify": "^3.1.1"
   }
 }

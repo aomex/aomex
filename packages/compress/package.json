@@ -38,12 +38,12 @@
     "@aomex/web": "^3.0.0"
   },
   "dependencies": {
-    "@aomex/internal-tools": "workspace:^",
+    "@aomex/internal-tools": "workspace:",
     "compressible": "^2.0.18"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:^",
-    "@aomex/web": "workspace:^",
+    "@aomex/common": "workspace:",
+    "@aomex/web": "workspace:",
     "@types/compressible": "^2.0.0"
   }
 }
