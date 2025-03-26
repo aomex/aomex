@@ -1,6 +1,6 @@
 {
   "name": "@aomex/swagger-ui",
-  "version": "3.17.2",
+  "version": "3.17.3",
   "description": "文档展示UI",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
@@ -36,12 +36,12 @@
     "@aomex/web": "^3.0.0"
   },
   "dependencies": {
-    "@aomex/serve-static": "workspace:",
+    "@aomex/serve-static": "workspace:3.17.3",
     "swagger-ui": "^5.18.3",
     "yaml": "^2.6.0"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:",
-    "@aomex/web": "workspace:"
+    "@aomex/common": "workspace:3.17.3",
+    "@aomex/web": "workspace:3.17.3"
   }
 }

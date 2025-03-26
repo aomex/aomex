@@ -1,6 +1,6 @@
 {
   "name": "@aomex/common-middleware",
-  "version": "3.17.2",
+  "version": "3.17.3",
   "description": "aomex中间件",
   "scripts": {
     "prepublishOnly": "tsup && node scripts/post-build.mjs"
@@ -33,6 +33,6 @@
     "node": "^20.13.0 || ^22"
   },
   "dependencies": {
-    "@aomex/internal-tools": "workspace:"
+    "@aomex/internal-tools": "workspace:3.17.3"
   }
 }

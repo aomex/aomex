@@ -1,6 +1,6 @@
 {
   "name": "@aomex/etag",
-  "version": "3.17.2",
+  "version": "3.17.3",
   "description": "响应实体标签",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
@@ -41,8 +41,8 @@
     "etag": "^1.8.1"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:",
-    "@aomex/web": "workspace:",
+    "@aomex/common": "workspace:3.17.3",
+    "@aomex/web": "workspace:3.17.3",
     "@types/etag": "^1.8.1"
   }
 }

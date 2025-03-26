@@ -1,6 +1,6 @@
 {
   "name": "@aomex/serve-static",
-  "version": "3.17.2",
+  "version": "3.17.3",
   "description": "静态文件服务",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
@@ -35,7 +35,7 @@
     "@aomex/web": "^3.0.0"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:",
-    "@aomex/web": "workspace:"
+    "@aomex/common": "workspace:3.17.3",
+    "@aomex/web": "workspace:3.17.3"
   }
 }

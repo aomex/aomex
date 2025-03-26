@@ -1,6 +1,6 @@
 {
   "name": "@aomex/cors",
-  "version": "3.17.2",
+  "version": "3.17.3",
   "description": "跨站资源共享",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
@@ -38,8 +38,8 @@
     "@aomex/web": "^3.0.0"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:",
-    "@aomex/web": "workspace:",
+    "@aomex/common": "workspace:3.17.3",
+    "@aomex/web": "workspace:3.17.3",
     "@types/vary": "^1.1.3"
   },
   "dependencies": {

@@ -1,6 +1,6 @@
 {
   "name": "@aomex/http-logger",
-  "version": "3.17.2",
+  "version": "3.17.3",
   "description": "http请求日志",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
@@ -38,13 +38,13 @@
     "@aomex/web": "^3.0.0"
   },
   "dependencies": {
-    "@aomex/internal-tools": "workspace:",
-    "@aomex/logger": "workspace:",
+    "@aomex/internal-tools": "workspace:3.17.3",
+    "@aomex/logger": "workspace:3.17.3",
     "pretty-time": "^1.1.0"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:",
-    "@aomex/web": "workspace:",
+    "@aomex/common": "workspace:3.17.3",
+    "@aomex/web": "workspace:3.17.3",
     "@types/pretty-time": "^1.1.5"
   }
 }

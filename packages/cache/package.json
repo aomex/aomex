@@ -1,6 +1,6 @@
 {
   "name": "@aomex/cache",
-  "version": "3.17.2",
+  "version": "3.17.3",
   "description": "缓存基础类",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -36,6 +36,6 @@
     "@aomex/common": "^3.0.0"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:"
+    "@aomex/common": "workspace:3.17.3"
   }
 }
