@@ -1,6 +1,6 @@
 {
   "name": "@aomex/common-validator",
-  "version": "3.17.1",
+  "version": "3.17.2",
   "description": "aomex验证器",
   "scripts": {
     "prepublishOnly": "tsup"

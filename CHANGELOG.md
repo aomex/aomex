@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.17.2](https://github.com/aomex/aomex/compare/v3.17.1...v3.17.2) (2025-03-26)
+
+
+### Bug Fixes
+
+* 内部依赖使用固定版本号 ([3458aa1](https://github.com/aomex/aomex/commit/3458aa1e2bf58360ad77654623404d41938f91fb))
+
+
+
+
+
 ## [3.17.1](https://github.com/aomex/aomex/compare/v3.17.0...v3.17.1) (2025-03-09)
 
 
