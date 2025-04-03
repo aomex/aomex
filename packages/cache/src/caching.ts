@@ -1,3 +1,4 @@
+import { traceBlock } from '@aomex/async-trace';
 import { CacheAdapter } from './cache-adapter';
 
 export namespace Caching {
@@ -203,7 +204,9 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
             : typeof getKey === 'string'
               ? getKey
               : getKey.apply(this, args);
-        let value = await instance.get<NonNullable<T>>(key);
+        let value = await traceBlock('Cache.get', () =>
+          instance.get<NonNullable<T>>(key),
+        );
         if (value === null) {
           if (fetching[key]) {
             value = await fetching[key];
@@ -211,7 +214,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
             fetching[key] = originalMethod.apply(this, args);
             value = await fetching[key];
             if (value !== null) {
-              await instance.set(key, value, duration);
+              await traceBlock('Cache.set', () => instance.set(key, value!, duration));
             }
             Reflect.deleteProperty(fetching, key);
           }

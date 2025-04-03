@@ -119,6 +119,10 @@ importers:
         version: link:../web
 
   packages/cache:
+    dependencies:
+      '@aomex/async-trace':
+        specifier: workspace:*
+        version: link:../async-trace
     devDependencies:
       '@aomex/common':
         specifier: workspace:3.17.3
