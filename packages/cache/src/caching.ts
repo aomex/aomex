@@ -209,10 +209,11 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
         );
         if (value === null) {
           if (fetching[key]) {
-            value = await fetching[key];
+            const promise = fetching[key];
+            value = await traceBlock('Cache.share', () => promise);
           } else {
-            fetching[key] = originalMethod.apply(this, args);
-            value = await fetching[key];
+            const promise = (fetching[key] = originalMethod.apply(this, args));
+            value = await traceBlock('Cache.wait', () => promise);
             if (value !== null) {
               await traceBlock('Cache.set', () => instance.set(key, value!, duration));
             }
