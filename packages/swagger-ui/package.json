@@ -36,12 +36,12 @@
     "@aomex/web": "^3.0.0"
   },
   "dependencies": {
-    "@aomex/serve-static": "workspace:3.17.3",
+    "@aomex/serve-static": "workspace:",
     "swagger-ui": "^5.18.3",
     "yaml": "^2.6.0"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:3.17.3",
-    "@aomex/web": "workspace:3.17.3"
+    "@aomex/common": "workspace:",
+    "@aomex/web": "workspace:"
   }
 }

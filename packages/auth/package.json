@@ -37,7 +37,7 @@
     "@aomex/web": "^3.0.0"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:3.17.3",
-    "@aomex/web": "workspace:3.17.3"
+    "@aomex/common": "workspace:",
+    "@aomex/web": "workspace:"
   }
 }

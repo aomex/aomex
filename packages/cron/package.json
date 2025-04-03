@@ -38,16 +38,16 @@
     "@aomex/console": "^3.2.0"
   },
   "dependencies": {
-    "@aomex/cache": "workspace:3.17.3",
-    "@aomex/internal-file-import": "workspace:3.17.3",
-    "@aomex/internal-tools": "workspace:3.17.3",
+    "@aomex/cache": "workspace:",
+    "@aomex/internal-file-import": "workspace:",
+    "@aomex/internal-tools": "workspace:",
     "cron-parser": "^5.0.4",
     "format-duration": "^3.0.2",
     "pidusage": "^4.0.0"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:3.17.3",
-    "@aomex/console": "workspace:3.17.3",
+    "@aomex/common": "workspace:",
+    "@aomex/console": "workspace:",
     "@types/pidusage": "^2.0.5"
   }
 }

@@ -38,13 +38,13 @@
     "@aomex/web": "^3.0.0"
   },
   "dependencies": {
-    "@aomex/internal-tools": "workspace:3.17.3",
-    "@aomex/logger": "workspace:3.17.3",
+    "@aomex/internal-tools": "workspace:",
+    "@aomex/logger": "workspace:",
     "pretty-time": "^1.1.0"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:3.17.3",
-    "@aomex/web": "workspace:3.17.3",
+    "@aomex/common": "workspace:",
+    "@aomex/web": "workspace:",
     "@types/pretty-time": "^1.1.5"
   }
 }

@@ -38,9 +38,9 @@
     "typescript": ">=5.5"
   },
   "dependencies": {
-    "@aomex/common-middleware": "workspace:3.17.3",
-    "@aomex/common-service": "workspace:3.17.3",
-    "@aomex/common-validator": "workspace:3.17.3",
-    "@aomex/internal-tools": "workspace:3.17.3"
+    "@aomex/common-middleware": "workspace:",
+    "@aomex/common-service": "workspace:",
+    "@aomex/common-validator": "workspace:",
+    "@aomex/internal-tools": "workspace:"
   }
 }

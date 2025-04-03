@@ -36,9 +36,9 @@
     "@aomex/common": "^3.0.0"
   },
   "dependencies": {
-    "@aomex/async-trace": "workspace:*"
+    "@aomex/async-trace": "workspace:"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:3.17.3"
+    "@aomex/common": "workspace:"
   }
 }

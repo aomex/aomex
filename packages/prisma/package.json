@@ -47,7 +47,7 @@
     "lodash.upperfirst": "^4.3.1"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:3.17.3",
+    "@aomex/common": "workspace:",
     "@prisma/client": "^6.0.0",
     "@prisma/internals": "^6.0.0",
     "@types/lodash.camelcase": "^4.3.7",

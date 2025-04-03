@@ -38,8 +38,8 @@
     "@aomex/web": "^3.0.0"
   },
   "devDependencies": {
-    "@aomex/auth": "workspace:3.17.3",
-    "@aomex/common": "workspace:3.17.3",
-    "@aomex/web": "workspace:3.17.3"
+    "@aomex/auth": "workspace:",
+    "@aomex/common": "workspace:",
+    "@aomex/web": "workspace:"
   }
 }
