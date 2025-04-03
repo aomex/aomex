@@ -95,6 +95,7 @@ export class Task {
     );
     const startTime = Date.now();
     while (true) {
+      if (this.cron.stopping) return false;
       // 防止临近过期时写入导致数据丢失
       await cache.expire(this.concurrentKey, 60_000);
       const concurrent = await cache.increment(this.concurrentKey);

@@ -6,7 +6,7 @@ import { tmpdir } from 'os';
 import { writeFileSync } from 'fs';
 import { sleep } from '@aomex/internal-tools';
 
-test('并发达上限后，多余的provider不能触发任务', { timeout: 10_000 }, async () => {
+test('并发达上限后，多余的servers不能触发任务', { timeout: 10_000 }, async () => {
   const cron = new Cron({
     commanders: '',
     command: '',
@@ -24,7 +24,7 @@ test('并发达上限后，多余的provider不能触发任务', { timeout: 10_0
   await expect(task1.win()).resolves.toBeFalsy();
 });
 
-test('provider多于并发数部分无法触发任务', async () => {
+test('servers多于并发数部分无法触发任务', async () => {
   const cron = new Cron({
     commanders: '',
     command: '',
@@ -79,6 +79,25 @@ test('排队中的任务超时后被放弃', { timeout: 10_000 }, async () => {
   const pong = task1.ping();
   await sleep(4_500);
   await pong();
+  await expect(result).resolves.toBeFalsy();
+});
+
+test('排队中的任务在遇到cron:stop后需放弃排队', { timeout: 10_000 }, async () => {
+  const cron = new Cron({
+    commanders: '',
+    command: '',
+    concurrent: 1,
+    serves: Infinity,
+    waitingTimeout: 40_000,
+  });
+
+  const task1 = new Task(cron, 1, 2);
+  const task2 = new Task(cron, 2, 3);
+
+  await expect(task1.win()).resolves.toBeTruthy();
+  const result = task2.win();
+  await sleep(2000);
+  cron.stop();
   await expect(result).resolves.toBeFalsy();
 });
 
