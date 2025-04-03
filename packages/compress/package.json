@@ -1,6 +1,6 @@
 {
   "name": "@aomex/compress",
-  "version": "3.17.3",
+  "version": "3.18.0",
   "description": "压缩响应内容",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
@@ -38,12 +38,12 @@
     "@aomex/web": "^3.0.0"
   },
   "dependencies": {
-    "@aomex/internal-tools": "workspace:",
+    "@aomex/internal-tools": "workspace:3.18.0",
     "compressible": "^2.0.18"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:",
-    "@aomex/web": "workspace:",
+    "@aomex/common": "workspace:3.18.0",
+    "@aomex/web": "workspace:3.18.0",
     "@types/compressible": "^2.0.0"
   }
 }

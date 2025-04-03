@@ -1,6 +1,6 @@
 {
   "name": "@aomex/common",
-  "version": "3.17.3",
+  "version": "3.18.0",
   "description": "aomex公共库",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -38,9 +38,9 @@
     "typescript": ">=5.5"
   },
   "dependencies": {
-    "@aomex/common-middleware": "workspace:",
-    "@aomex/common-service": "workspace:",
-    "@aomex/common-validator": "workspace:",
-    "@aomex/internal-tools": "workspace:"
+    "@aomex/common-middleware": "workspace:3.18.0",
+    "@aomex/common-service": "workspace:3.18.0",
+    "@aomex/common-validator": "workspace:3.18.0",
+    "@aomex/internal-tools": "workspace:3.18.0"
   }
 }

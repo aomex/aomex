@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.18.0](https://github.com/aomex/aomex/compare/v3.17.3...v3.18.0) (2025-04-03)
+
+
+### Features
+
+* **cache:** 引入async-trace追踪装饰器链路调用 ([022be02](https://github.com/aomex/aomex/commit/022be0201639594d1ff050f2dda32ed9a9e19425))
+
+
+
+
+
 ## [3.17.3](https://github.com/aomex/aomex/compare/v3.17.2...v3.17.3) (2025-03-26)
 
 

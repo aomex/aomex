@@ -1,6 +1,6 @@
 {
   "name": "@aomex/cache-redis-adapter",
-  "version": "3.17.3",
+  "version": "3.18.0",
   "description": "aomex缓存库redis适配器",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -38,7 +38,7 @@
     "ioredis": ">=5"
   },
   "devDependencies": {
-    "@aomex/cache": "workspace:",
+    "@aomex/cache": "workspace:3.18.0",
     "ioredis": "^5.4.1"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@aomex/auth-jwt-strategy",
-  "version": "3.17.3",
+  "version": "3.18.0",
   "description": "身份认证JSON Web Token策略",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
@@ -38,13 +38,13 @@
     "@aomex/web": "^3.0.0"
   },
   "dependencies": {
-    "@aomex/auth-bearer-strategy": "workspace:",
+    "@aomex/auth-bearer-strategy": "workspace:3.18.0",
     "@types/jsonwebtoken": "^9.0.6",
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
-    "@aomex/auth": "workspace:",
-    "@aomex/common": "workspace:",
-    "@aomex/web": "workspace:"
+    "@aomex/auth": "workspace:3.18.0",
+    "@aomex/common": "workspace:3.18.0",
+    "@aomex/web": "workspace:3.18.0"
   }
 }

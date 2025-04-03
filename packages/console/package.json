@@ -1,6 +1,6 @@
 {
   "name": "@aomex/console",
-  "version": "3.17.3",
+  "version": "3.18.0",
   "description": "控制台应用",
   "scripts": {
     "prepublishOnly": "tsup && node ./scripts/version-shim.mjs"
@@ -41,8 +41,8 @@
     "@aomex/common": "^3.0.0"
   },
   "dependencies": {
-    "@aomex/internal-file-import": "workspace:",
-    "@aomex/internal-tools": "workspace:",
+    "@aomex/internal-file-import": "workspace:3.18.0",
+    "@aomex/internal-tools": "workspace:3.18.0",
     "ansi-escapes": "^7.0.0",
     "glob": "^10.3.10",
     "is-unicode-supported": "^2.1.0",
@@ -55,7 +55,7 @@
     "yargs-parser": "^21.1.1"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:",
+    "@aomex/common": "workspace:3.18.0",
     "@types/yargs": "^17.0.23",
     "@types/yargs-parser": "^21.0.0"
   }

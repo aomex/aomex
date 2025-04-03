@@ -1,6 +1,6 @@
 {
   "name": "@aomex/pretty-json",
-  "version": "3.17.3",
+  "version": "3.18.0",
   "description": "格式化JSON数据",
   "keywords": [
     "pretty",
@@ -45,8 +45,8 @@
     "streaming-json-stringify": "^3.1.0"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:",
-    "@aomex/web": "workspace:",
+    "@aomex/common": "workspace:3.18.0",
+    "@aomex/web": "workspace:3.18.0",
     "@types/streaming-json-stringify": "^3.1.1"
   }
 }

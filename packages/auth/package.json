@@ -1,6 +1,6 @@
 {
   "name": "@aomex/auth",
-  "version": "3.17.3",
+  "version": "3.18.0",
   "description": "身份认证统一入口",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -37,7 +37,7 @@
     "@aomex/web": "^3.0.0"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:",
-    "@aomex/web": "workspace:"
+    "@aomex/common": "workspace:3.18.0",
+    "@aomex/web": "workspace:3.18.0"
   }
 }
