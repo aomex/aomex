@@ -7,7 +7,7 @@ import {
   BigIntValidator,
   BooleanValidator,
   BufferValidator,
-  DateTimeValidator,
+  DateValidator,
   EmailValidator,
   EnumValidator,
   HashValidator,
@@ -131,13 +131,13 @@ import { expectType, type TypeEqual } from 'ts-expect';
   expectType<BufferValidator<Buffer>>(rule.buffer());
 }
 
-// dateTime
+// date
 {
-  rule.dateTime('yy-mm-dd');
-  rule.dateTime('abc', 'yyy-mm-dd');
-  expectType<DateTimeValidator<Date>>(rule.dateTime());
+  rule.date('yy-mm-dd');
+  rule.date('abc', 'yyy-mm-dd');
+  expectType<DateValidator<Date>>(rule.date());
   // @ts-expect-error
-  expectType<DateTimeValidator<object>>(rule.dateTime());
+  expectType<DateValidator<object>>(rule.date());
 }
 
 // email

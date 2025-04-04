@@ -19,7 +19,7 @@ export const en = I18n.satisfies(zh).define({
     stream: {
       must_be_stream: '{{label}}: must be stream',
     },
-    dateTime: {
+    date: {
       must_be_date: '{{label}}: must be date-time',
       not_in_range: '{{label}}: time not in range',
     },

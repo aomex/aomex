@@ -12,7 +12,7 @@ import { toArray } from '@aomex/internal-tools';
  *   mount: [
  *     options({
  *       id: rule.int(),
- *       date: rule.datetime('YYYY-MM-DD'),
+ *       date: rule.date('YYYY-MM-DD'),
  *     }, {
  *       date: ['d'], // alias --date or -d
  *     });

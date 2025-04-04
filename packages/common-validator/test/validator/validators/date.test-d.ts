@@ -1,6 +1,6 @@
 import { type TypeEqual, expectType } from 'ts-expect';
 import {
-  DateTimeValidator as TargetValidator,
+  DateValidator as TargetValidator,
   Validator,
   type TransformedValidator,
 } from '../../../src';

@@ -3,7 +3,7 @@ import type { OpenAPI } from '@aomex/internal-tools';
 import { ValidateResult, type TransformedValidator, Validator } from '../base';
 import { DateTime } from 'luxon';
 
-export declare namespace DateTimeValidator {
+export declare namespace DateValidator {
   export interface Options<T = Date> extends Validator.Options<T> {
     min?: () => Date;
     minInclusive?: boolean;
@@ -17,8 +17,8 @@ export declare namespace DateTimeValidator {
 const regTimestamp = /^[0-9.]+$/;
 const regUnixTimeWithMS = /^[0-9]{10}\.[0-9]{3}$/;
 
-export class DateTimeValidator<T = Date> extends Validator<T> {
-  protected declare config: DateTimeValidator.Options<T>;
+export class DateValidator<T = Date> extends Validator<T> {
+  protected declare config: DateValidator.Options<T>;
 
   constructor(formats?: string[]) {
     super();
@@ -29,23 +29,23 @@ export class DateTimeValidator<T = Date> extends Validator<T> {
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => DateTimeValidator<T | Validator.TOptional>;
-  public declare nullable: () => DateTimeValidator<T | null>;
+  public declare optional: () => DateValidator<T | Validator.TOptional>;
+  public declare nullable: () => DateValidator<T | null>;
   public declare default: (
     date: Validator.ParameterOrFn<Date>,
-  ) => DateTimeValidator<T | Validator.TDefault>;
+  ) => DateValidator<T | Validator.TDefault>;
   public declare transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
-  public min(freshDate: () => Date, inclusive: boolean = true): DateTimeValidator<T> {
+  public min(freshDate: () => Date, inclusive: boolean = true): DateValidator<T> {
     const validator = this.copy();
     validator.config.min = freshDate;
     validator.config.minInclusive = inclusive;
     return validator;
   }
 
-  public max(freshDate: () => Date, inclusive: boolean = true): DateTimeValidator<T> {
+  public max(freshDate: () => Date, inclusive: boolean = true): DateValidator<T> {
     const validator = this.copy();
     validator.config.max = freshDate;
     validator.config.maxInclusive = inclusive;
@@ -73,11 +73,11 @@ export class DateTimeValidator<T = Date> extends Validator<T> {
   ): ValidateResult.Any<Date> {
     const date = this.toDate(value);
     if (date === false || date.toString() === 'Invalid Date') {
-      return ValidateResult.deny(i18n.t('validator.dateTime.must_be_date', { label }));
+      return ValidateResult.deny(i18n.t('validator.date.must_be_date', { label }));
     }
 
     if (!this.compare(date)) {
-      return ValidateResult.deny(i18n.t('validator.dateTime.not_in_range', { label }));
+      return ValidateResult.deny(i18n.t('validator.date.not_in_range', { label }));
     }
 
     return ValidateResult.accept(date);

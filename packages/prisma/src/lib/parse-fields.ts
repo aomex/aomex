@@ -48,7 +48,7 @@ export const parseFields = (fields: readonly DMMF.Field[], isInput: boolean) => 
           validator = 'rule.buffer()';
           break;
         case 'DateTime':
-          validator = 'rule.dateTime()';
+          validator = 'rule.date()';
           break;
         default:
           validator = 'rule.any()';

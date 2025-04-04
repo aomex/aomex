@@ -7,7 +7,7 @@ exports[`transform mongodb > .d.ts 1`] = `
   BigIntValidator,
   BooleanValidator,
   BufferValidator,
-  DateTimeValidator,
+  DateValidator,
   EnumValidator,
   IntValidator,
   NumberValidator,
@@ -259,25 +259,25 @@ declare const userInputColumns: {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: DateTimeValidator<Date>;
+  time: DateValidator<Date>;
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_nu: DateTimeValidator<Validator.TOptional | Date>;
+  time_nu: DateValidator<Validator.TOptional | Date>;
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_de: DateTimeValidator<Validator.TOptional | Date>;
+  time_de: DateValidator<Validator.TOptional | Date>;
   /**
    * Prisma类型：\`Boolean\`
    *
@@ -633,25 +633,25 @@ declare const userOutputColumns: {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: DateTimeValidator<Date>;
+  time: DateValidator<Date>;
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().nullable()\`
+   * 运行时规则：\`rule.date().nullable()\`
    */
-  time_nu: DateTimeValidator<Date | null>;
+  time_nu: DateValidator<Date | null>;
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time_de: DateTimeValidator<Date>;
+  time_de: DateValidator<Date>;
   /**
    * Prisma类型：\`Boolean\`
    *
@@ -1130,25 +1130,25 @@ export declare const prismaInput: {
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime()\`
+       * 运行时规则：\`rule.date()\`
        */
-      time: DateTimeValidator<Date>;
+      time: DateValidator<Date>;
       /**
        * Prisma类型：\`DateTime?\`
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime().optional()\`
+       * 运行时规则：\`rule.date().optional()\`
        */
-      time_nu: DateTimeValidator<Validator.TOptional | Date>;
+      time_nu: DateValidator<Validator.TOptional | Date>;
       /**
        * Prisma类型：\`DateTime\`
        *
        * 数据库默认值：\`now()\`
        *
-       * 运行时规则：\`rule.dateTime().optional()\`
+       * 运行时规则：\`rule.date().optional()\`
        */
-      time_de: DateTimeValidator<Validator.TOptional | Date>;
+      time_de: DateValidator<Validator.TOptional | Date>;
       /**
        * Prisma类型：\`Boolean\`
        *
@@ -1705,25 +1705,25 @@ export declare const prismaOutput: {
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime()\`
+       * 运行时规则：\`rule.date()\`
        */
-      time: DateTimeValidator<Date>;
+      time: DateValidator<Date>;
       /**
        * Prisma类型：\`DateTime?\`
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime().nullable()\`
+       * 运行时规则：\`rule.date().nullable()\`
        */
-      time_nu: DateTimeValidator<Date | null>;
+      time_nu: DateValidator<Date | null>;
       /**
        * Prisma类型：\`DateTime\`
        *
        * 数据库默认值：\`now()\`
        *
-       * 运行时规则：\`rule.dateTime()\`
+       * 运行时规则：\`rule.date()\`
        */
-      time_de: DateTimeValidator<Date>;
+      time_de: DateValidator<Date>;
       /**
        * Prisma类型：\`Boolean\`
        *
@@ -2336,25 +2336,25 @@ const userInputColumns = {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: rule.dateTime(),
+  time: rule.date(),
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_nu: rule.dateTime().optional(),
+  time_nu: rule.date().optional(),
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_de: rule.dateTime().optional(),
+  time_de: rule.date().optional(),
   /**
    * Prisma类型：\`Boolean\`
    *
@@ -2660,25 +2660,25 @@ const userOutputColumns = {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: rule.dateTime(),
+  time: rule.date(),
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().nullable()\`
+   * 运行时规则：\`rule.date().nullable()\`
    */
-  time_nu: rule.dateTime().nullable(),
+  time_nu: rule.date().nullable(),
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time_de: rule.dateTime(),
+  time_de: rule.date(),
   /**
    * Prisma类型：\`Boolean\`
    *
@@ -2995,7 +2995,7 @@ exports[`transform mysql > .d.ts 1`] = `
   BigIntValidator,
   BooleanValidator,
   BufferValidator,
-  DateTimeValidator,
+  DateValidator,
   EnumValidator,
   IntValidator,
   NumberValidator,
@@ -3318,25 +3318,25 @@ declare const userInputColumns: {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: DateTimeValidator<Date>;
+  time: DateValidator<Date>;
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_nu: DateTimeValidator<Validator.TOptional | Date>;
+  time_nu: DateValidator<Validator.TOptional | Date>;
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_de: DateTimeValidator<Validator.TOptional | Date>;
+  time_de: DateValidator<Validator.TOptional | Date>;
   /**
    * Prisma类型：\`Boolean\`
    *
@@ -3711,25 +3711,25 @@ declare const userOutputColumns: {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: DateTimeValidator<Date>;
+  time: DateValidator<Date>;
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().nullable()\`
+   * 运行时规则：\`rule.date().nullable()\`
    */
-  time_nu: DateTimeValidator<Date | null>;
+  time_nu: DateValidator<Date | null>;
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time_de: DateTimeValidator<Date>;
+  time_de: DateValidator<Date>;
   /**
    * Prisma类型：\`Boolean\`
    *
@@ -4230,25 +4230,25 @@ export declare const prismaInput: {
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime()\`
+       * 运行时规则：\`rule.date()\`
        */
-      time: DateTimeValidator<Date>;
+      time: DateValidator<Date>;
       /**
        * Prisma类型：\`DateTime?\`
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime().optional()\`
+       * 运行时规则：\`rule.date().optional()\`
        */
-      time_nu: DateTimeValidator<Validator.TOptional | Date>;
+      time_nu: DateValidator<Validator.TOptional | Date>;
       /**
        * Prisma类型：\`DateTime\`
        *
        * 数据库默认值：\`now()\`
        *
-       * 运行时规则：\`rule.dateTime().optional()\`
+       * 运行时规则：\`rule.date().optional()\`
        */
-      time_de: DateTimeValidator<Validator.TOptional | Date>;
+      time_de: DateValidator<Validator.TOptional | Date>;
       /**
        * Prisma类型：\`Boolean\`
        *
@@ -4836,25 +4836,25 @@ export declare const prismaOutput: {
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime()\`
+       * 运行时规则：\`rule.date()\`
        */
-      time: DateTimeValidator<Date>;
+      time: DateValidator<Date>;
       /**
        * Prisma类型：\`DateTime?\`
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime().nullable()\`
+       * 运行时规则：\`rule.date().nullable()\`
        */
-      time_nu: DateTimeValidator<Date | null>;
+      time_nu: DateValidator<Date | null>;
       /**
        * Prisma类型：\`DateTime\`
        *
        * 数据库默认值：\`now()\`
        *
-       * 运行时规则：\`rule.dateTime()\`
+       * 运行时规则：\`rule.date()\`
        */
-      time_de: DateTimeValidator<Date>;
+      time_de: DateValidator<Date>;
       /**
        * Prisma类型：\`Boolean\`
        *
@@ -5443,25 +5443,25 @@ const userInputColumns = {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: rule.dateTime(),
+  time: rule.date(),
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_nu: rule.dateTime().optional(),
+  time_nu: rule.date().optional(),
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_de: rule.dateTime().optional(),
+  time_de: rule.date().optional(),
   /**
    * Prisma类型：\`Boolean\`
    *
@@ -5815,25 +5815,25 @@ const userOutputColumns = {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: rule.dateTime(),
+  time: rule.date(),
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().nullable()\`
+   * 运行时规则：\`rule.date().nullable()\`
    */
-  time_nu: rule.dateTime().nullable(),
+  time_nu: rule.date().nullable(),
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time_de: rule.dateTime(),
+  time_de: rule.date(),
   /**
    * Prisma类型：\`Boolean\`
    *
@@ -6126,7 +6126,7 @@ exports[`transform postgresql > .d.ts 1`] = `
   BigIntValidator,
   BooleanValidator,
   BufferValidator,
-  DateTimeValidator,
+  DateValidator,
   EnumValidator,
   IntValidator,
   NumberValidator,
@@ -6449,25 +6449,25 @@ declare const userInputColumns: {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: DateTimeValidator<Date>;
+  time: DateValidator<Date>;
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_nu: DateTimeValidator<Validator.TOptional | Date>;
+  time_nu: DateValidator<Validator.TOptional | Date>;
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_de: DateTimeValidator<Validator.TOptional | Date>;
+  time_de: DateValidator<Validator.TOptional | Date>;
   /**
    * Prisma类型：\`Boolean\`
    *
@@ -6842,25 +6842,25 @@ declare const userOutputColumns: {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: DateTimeValidator<Date>;
+  time: DateValidator<Date>;
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().nullable()\`
+   * 运行时规则：\`rule.date().nullable()\`
    */
-  time_nu: DateTimeValidator<Date | null>;
+  time_nu: DateValidator<Date | null>;
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time_de: DateTimeValidator<Date>;
+  time_de: DateValidator<Date>;
   /**
    * Prisma类型：\`Boolean\`
    *
@@ -7361,25 +7361,25 @@ export declare const prismaInput: {
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime()\`
+       * 运行时规则：\`rule.date()\`
        */
-      time: DateTimeValidator<Date>;
+      time: DateValidator<Date>;
       /**
        * Prisma类型：\`DateTime?\`
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime().optional()\`
+       * 运行时规则：\`rule.date().optional()\`
        */
-      time_nu: DateTimeValidator<Validator.TOptional | Date>;
+      time_nu: DateValidator<Validator.TOptional | Date>;
       /**
        * Prisma类型：\`DateTime\`
        *
        * 数据库默认值：\`now()\`
        *
-       * 运行时规则：\`rule.dateTime().optional()\`
+       * 运行时规则：\`rule.date().optional()\`
        */
-      time_de: DateTimeValidator<Validator.TOptional | Date>;
+      time_de: DateValidator<Validator.TOptional | Date>;
       /**
        * Prisma类型：\`Boolean\`
        *
@@ -7967,25 +7967,25 @@ export declare const prismaOutput: {
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime()\`
+       * 运行时规则：\`rule.date()\`
        */
-      time: DateTimeValidator<Date>;
+      time: DateValidator<Date>;
       /**
        * Prisma类型：\`DateTime?\`
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime().nullable()\`
+       * 运行时规则：\`rule.date().nullable()\`
        */
-      time_nu: DateTimeValidator<Date | null>;
+      time_nu: DateValidator<Date | null>;
       /**
        * Prisma类型：\`DateTime\`
        *
        * 数据库默认值：\`now()\`
        *
-       * 运行时规则：\`rule.dateTime()\`
+       * 运行时规则：\`rule.date()\`
        */
-      time_de: DateTimeValidator<Date>;
+      time_de: DateValidator<Date>;
       /**
        * Prisma类型：\`Boolean\`
        *
@@ -8574,25 +8574,25 @@ const userInputColumns = {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: rule.dateTime(),
+  time: rule.date(),
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_nu: rule.dateTime().optional(),
+  time_nu: rule.date().optional(),
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_de: rule.dateTime().optional(),
+  time_de: rule.date().optional(),
   /**
    * Prisma类型：\`Boolean\`
    *
@@ -8946,25 +8946,25 @@ const userOutputColumns = {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: rule.dateTime(),
+  time: rule.date(),
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().nullable()\`
+   * 运行时规则：\`rule.date().nullable()\`
    */
-  time_nu: rule.dateTime().nullable(),
+  time_nu: rule.date().nullable(),
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time_de: rule.dateTime(),
+  time_de: rule.date(),
   /**
    * Prisma类型：\`Boolean\`
    *
@@ -9256,7 +9256,7 @@ exports[`transform sqlite > .d.ts 1`] = `
   BigIntValidator,
   BooleanValidator,
   BufferValidator,
-  DateTimeValidator,
+  DateValidator,
   IntValidator,
   NumberValidator,
   StringValidator,
@@ -9495,25 +9495,25 @@ declare const userInputColumns: {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: DateTimeValidator<Date>;
+  time: DateValidator<Date>;
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_nu: DateTimeValidator<Validator.TOptional | Date>;
+  time_nu: DateValidator<Validator.TOptional | Date>;
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_de: DateTimeValidator<Validator.TOptional | Date>;
+  time_de: DateValidator<Validator.TOptional | Date>;
   /**
    * Prisma类型：\`Boolean\`
    *
@@ -9819,25 +9819,25 @@ declare const userOutputColumns: {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: DateTimeValidator<Date>;
+  time: DateValidator<Date>;
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().nullable()\`
+   * 运行时规则：\`rule.date().nullable()\`
    */
-  time_nu: DateTimeValidator<Date | null>;
+  time_nu: DateValidator<Date | null>;
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time_de: DateTimeValidator<Date>;
+  time_de: DateValidator<Date>;
   /**
    * Prisma类型：\`Boolean\`
    *
@@ -10255,25 +10255,25 @@ export declare const prismaInput: {
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime()\`
+       * 运行时规则：\`rule.date()\`
        */
-      time: DateTimeValidator<Date>;
+      time: DateValidator<Date>;
       /**
        * Prisma类型：\`DateTime?\`
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime().optional()\`
+       * 运行时规则：\`rule.date().optional()\`
        */
-      time_nu: DateTimeValidator<Validator.TOptional | Date>;
+      time_nu: DateValidator<Validator.TOptional | Date>;
       /**
        * Prisma类型：\`DateTime\`
        *
        * 数据库默认值：\`now()\`
        *
-       * 运行时规则：\`rule.dateTime().optional()\`
+       * 运行时规则：\`rule.date().optional()\`
        */
-      time_de: DateTimeValidator<Validator.TOptional | Date>;
+      time_de: DateValidator<Validator.TOptional | Date>;
       /**
        * Prisma类型：\`Boolean\`
        *
@@ -10780,25 +10780,25 @@ export declare const prismaOutput: {
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime()\`
+       * 运行时规则：\`rule.date()\`
        */
-      time: DateTimeValidator<Date>;
+      time: DateValidator<Date>;
       /**
        * Prisma类型：\`DateTime?\`
        *
        * 数据库默认值：
        *
-       * 运行时规则：\`rule.dateTime().nullable()\`
+       * 运行时规则：\`rule.date().nullable()\`
        */
-      time_nu: DateTimeValidator<Date | null>;
+      time_nu: DateValidator<Date | null>;
       /**
        * Prisma类型：\`DateTime\`
        *
        * 数据库默认值：\`now()\`
        *
-       * 运行时规则：\`rule.dateTime()\`
+       * 运行时规则：\`rule.date()\`
        */
-      time_de: DateTimeValidator<Date>;
+      time_de: DateValidator<Date>;
       /**
        * Prisma类型：\`Boolean\`
        *
@@ -11319,25 +11319,25 @@ const userInputColumns = {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: rule.dateTime(),
+  time: rule.date(),
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_nu: rule.dateTime().optional(),
+  time_nu: rule.date().optional(),
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime().optional()\`
+   * 运行时规则：\`rule.date().optional()\`
    */
-  time_de: rule.dateTime().optional(),
+  time_de: rule.date().optional(),
   /**
    * Prisma类型：\`Boolean\`
    *
@@ -11643,25 +11643,25 @@ const userOutputColumns = {
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time: rule.dateTime(),
+  time: rule.date(),
   /**
    * Prisma类型：\`DateTime?\`
    *
    * 数据库默认值：
    *
-   * 运行时规则：\`rule.dateTime().nullable()\`
+   * 运行时规则：\`rule.date().nullable()\`
    */
-  time_nu: rule.dateTime().nullable(),
+  time_nu: rule.date().nullable(),
   /**
    * Prisma类型：\`DateTime\`
    *
    * 数据库默认值：\`now()\`
    *
-   * 运行时规则：\`rule.dateTime()\`
+   * 运行时规则：\`rule.date()\`
    */
-  time_de: rule.dateTime(),
+  time_de: rule.date(),
   /**
    * Prisma类型：\`Boolean\`
    *

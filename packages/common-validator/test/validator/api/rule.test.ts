@@ -7,7 +7,7 @@ import {
   BigIntValidator,
   BooleanValidator,
   BufferValidator,
-  DateTimeValidator,
+  DateValidator,
   EmailValidator,
   EnumValidator,
   HashValidator,
@@ -51,8 +51,8 @@ test('buffer', () => {
   expect(rule.buffer()).toBeInstanceOf(BufferValidator);
 });
 
-test('dateTime', () => {
-  expect(rule.dateTime()).toBeInstanceOf(DateTimeValidator);
+test('date', () => {
+  expect(rule.date()).toBeInstanceOf(DateValidator);
 });
 
 test('email', () => {

@@ -18,7 +18,7 @@ export const zh = I18n.define({
     stream: {
       must_be_stream: '{{label}}：必须是stream类型',
     },
-    dateTime: {
+    date: {
       must_be_date: '{{label}}：必须是时间类型',
       not_in_range: '{{label}}：不在指定时间内',
     },

@@ -7,7 +7,7 @@ import {
   BigIntValidator,
   BooleanValidator,
   BufferValidator,
-  DateTimeValidator,
+  DateValidator,
   EmailValidator,
   EnumValidator,
   HashValidator,
@@ -112,12 +112,19 @@ export class Rule {
   }
 
   /**
+   * @deprecated 请使用 rule.date()
+   */
+  dateTime(...formats: string[]): DateValidator<Date> {
+    return new DateValidator(formats);
+  }
+
+  /**
    * @param formats 设置解析字符串的格式，支持同时指定不同的格式并从左到右依次尝试。如果是标准的ISO时间格式或者时间戳则无需指定。
    *
    * @link https://moment.github.io/luxon/#/formatting?id=table-of-tokens
    */
-  dateTime(...formats: string[]): DateTimeValidator<Date> {
-    return new DateTimeValidator(formats);
+  date(...formats: string[]): DateValidator<Date> {
+    return new DateValidator(formats);
   }
 
   email() {

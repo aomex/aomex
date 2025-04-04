@@ -5,7 +5,7 @@ export * from './array';
 export * from './bigInt';
 export * from './boolean';
 export * from './buffer';
-export * from './date-time';
+export * from './date';
 export * from './email';
 export * from './enum';
 export * from './hash';
