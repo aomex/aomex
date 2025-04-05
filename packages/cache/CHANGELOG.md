@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.19.0](https://github.com/aomex/aomex/compare/v3.18.0...v3.19.0) (2025-04-05)
+
+
+### Bug Fixes
+
+* **cache:** 缓存装饰器缺失过程链路追踪 ([e2fb368](https://github.com/aomex/aomex/commit/e2fb368ffe20fb2da7fff1dd89d0e1e1412de2a5))
+
+
+
+
+
 # [3.18.0](https://github.com/aomex/aomex/compare/v3.17.3...v3.18.0) (2025-04-03)
 
 

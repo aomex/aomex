@@ -1,6 +1,6 @@
 {
   "name": "@aomex/mongoose",
-  "version": "3.18.0",
+  "version": "3.19.0",
   "description": "aomex与mongoose深度集成",
   "scripts": {
     "prepublishOnly": "tsup"
@@ -39,7 +39,7 @@
   "devDependencies": {
     "@aomex/common": "workspace:^",
     "@aomex/internal-tools": "workspace:^",
-    "mongoose": "^8.13.2",
-    "mongodb-memory-server": "^10.1.4"
+    "mongodb-memory-server": "^10.1.4",
+    "mongoose": "^8.13.2"
   }
 }

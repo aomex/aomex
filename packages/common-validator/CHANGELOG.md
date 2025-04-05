@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.19.0](https://github.com/aomex/aomex/compare/v3.18.0...v3.19.0) (2025-04-05)
+
+
+### Features
+
+* **validator:** 使用date验证器 ([c088886](https://github.com/aomex/aomex/commit/c088886edbf13437ca444336818579f03f382e8b))
+
+
+
+
+
 # [3.18.0](https://github.com/aomex/aomex/compare/v3.17.3...v3.18.0) (2025-04-03)
 
 **Note:** Version bump only for package @aomex/common-validator

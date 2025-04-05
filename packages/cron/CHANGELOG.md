@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.19.0](https://github.com/aomex/aomex/compare/v3.18.0...v3.19.0) (2025-04-05)
+
+
+### Bug Fixes
+
+* **task:** 排队的任务在下达停止服务后未被清理 ([3773a16](https://github.com/aomex/aomex/commit/3773a164af24ce2d8bc077a0209a35f0a5dfca82))
+
+
+
+
+
 # [3.18.0](https://github.com/aomex/aomex/compare/v3.17.3...v3.18.0) (2025-04-03)
 
 **Note:** Version bump only for package @aomex/cron
