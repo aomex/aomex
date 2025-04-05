@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@aomex/common": "workspace:^",
-    "@aomex/internal-tools": "3.18.0",
+    "@aomex/internal-tools": "workspace:^",
     "mongoose": "^8.13.2",
     "mongodb-memory-server": "^10.1.4"
   }
