@@ -37,17 +37,30 @@ test('数组', () => {
   `);
 });
 
-test('去掉时间戳', () => {
-  const result = formatMongoResult({
-    createdAt: new Date(),
-    updatedAt: new Date(),
+test('去掉时间戳和_id', () => {
+  const schema = {
+    _id: mongo.ObjectId.createFromHexString('67e4c72dd163c5dbf922b752'),
+    createdAt: new Date('2025-04-05T14:48:37.381Z'),
+    updatedAt: new Date('2025-04-05T14:48:37.381Z'),
     foo: 'abc',
-    created_at: new Date(),
-    updated_at: new Date(),
-  });
-  expect(result).toMatchInlineSnapshot(`
+    created_at: new Date('2025-04-05T14:48:37.381Z'),
+    updated_at: new Date('2025-04-05T14:48:37.381Z'),
+  };
+
+  expect(formatMongoResult(schema, true)).toMatchInlineSnapshot(`
     {
       "foo": "abc",
+    }
+  `);
+
+  expect(formatMongoResult(schema)).toMatchInlineSnapshot(`
+    {
+      "createdAt": 2025-04-05T14:48:37.381Z,
+      "created_at": 2025-04-05T14:48:37.381Z,
+      "foo": "abc",
+      "id": "67e4c72dd163c5dbf922b752",
+      "updatedAt": 2025-04-05T14:48:37.381Z,
+      "updated_at": 2025-04-05T14:48:37.381Z,
     }
   `);
 });
@@ -56,13 +69,15 @@ test('_id转id', () => {
   const result = formatMongoResult({
     _id: mongo.ObjectId.createFromHexString('67e4c72dd163c5dbf922b752'),
     foo: 'abc',
-    created_at: new Date(),
-    updated_at: new Date(),
+    created_at: new Date('2025-04-05T14:48:37.381Z'),
+    updated_at: new Date('2025-04-05T14:48:37.381Z'),
   });
   expect(result).toMatchInlineSnapshot(`
     {
+      "created_at": 2025-04-05T14:48:37.381Z,
       "foo": "abc",
       "id": "67e4c72dd163c5dbf922b752",
+      "updated_at": 2025-04-05T14:48:37.381Z,
     }
   `);
 });

@@ -55,12 +55,7 @@ import { rule } from '@aomex/common';
     timestamps: true,
   });
   const result = formatMongoResult((await model.findOne())!);
-  type ID = (typeof result)['id'];
-  expectType<TypeEqual<string, ID>>(true);
-  // @ts-expect-error
-  result.createdAt;
-  // @ts-expect-error
-  result.updatedAt;
+  result.hello;
 }
 
 // 数组文档
@@ -74,10 +69,7 @@ import { rule } from '@aomex/common';
   const result = formatMongoResult(await model.find());
   type ID = (typeof result)[number]['id'];
   expectType<TypeEqual<string, ID>>(true);
-  // @ts-expect-error
-  result[0]!.createdAt;
-  // @ts-expect-error
-  result[0]!.updatedAt;
+  result[0]!.hello;
 }
 
 // 查询对象lean()
@@ -91,8 +83,53 @@ import { rule } from '@aomex/common';
   const result = formatMongoResult((await model.findOne().lean())!);
   type ID = (typeof result)['id'];
   expectType<TypeEqual<string, ID>>(true);
-  // @ts-expect-error
-  result.createdAt;
-  // @ts-expect-error
-  result.updatedAt;
+  result.hello;
+}
+
+// 默认不删除多余属性
+{
+  const result = formatMongoResult({
+    _id: '1',
+    name: 'foo',
+    bar: mongo.Decimal128.fromString('123'),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    created_at: new Date(),
+    updated_at: new Date(),
+    __v: 1,
+  });
+
+  expectType<
+    TypeEqual<
+      typeof result,
+      {
+        name: string;
+        bar: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        created_at: Date;
+        updated_at: Date;
+      }
+    >
+  >(true);
+}
+
+// 删除多余属性
+{
+  const result = formatMongoResult(
+    {
+      _id: '1',
+      name: 'foo',
+      bar: mongo.Decimal128.fromString('123'),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      created_at: new Date(),
+      updated_at: new Date(),
+      __v: 1,
+    },
+    true,
+  );
+
+  expectType<TypeEqual<typeof result, { name: string; bar: string }>>(true);
 }
