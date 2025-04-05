@@ -37,8 +37,8 @@
     "@aomex/common": "^3.0.0"
   },
   "dependencies": {
-    "@aomex/internal-file-import": "workspace:3.18.0",
-    "@aomex/internal-tools": "workspace:3.18.0",
+    "@aomex/internal-file-import": "workspace:^",
+    "@aomex/internal-tools": "workspace:^",
     "@types/accepts": "^1.3.7",
     "@types/formidable": "^3.4.5",
     "@types/http-errors": "^2.0.4",
@@ -60,7 +60,7 @@
     "vary": "^1.1.2"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:3.18.0",
+    "@aomex/common": "workspace:^",
     "@types/co-body": "^6.1.3",
     "@types/content-disposition": "^0.5.8",
     "@types/destroy": "^1.0.3",

@@ -33,7 +33,7 @@
     "node": "^20.13.0 || ^22"
   },
   "dependencies": {
-    "@aomex/internal-tools": "workspace:3.18.0",
+    "@aomex/internal-tools": "workspace:^",
     "email-validator": "^2.0.4",
     "luxon": "^3.5.0"
   },

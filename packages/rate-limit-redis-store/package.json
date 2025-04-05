@@ -38,7 +38,7 @@
     "ioredis": ">=5"
   },
   "devDependencies": {
-    "@aomex/rate-limit": "workspace:3.18.0",
+    "@aomex/rate-limit": "workspace:^",
     "ioredis": "^5.4.1"
   }
 }
