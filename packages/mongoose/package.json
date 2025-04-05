@@ -1,0 +1,45 @@
+{
+  "name": "@aomex/mongoose",
+  "version": "3.18.0",
+  "description": "aomex与mongoose深度集成",
+  "scripts": {
+    "prepublishOnly": "tsup"
+  },
+  "type": "module",
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "engines": {
+    "node": "^20.13.0 || ^22"
+  },
+  "peerDependencies": {
+    "@aomex/common": "^3",
+    "mongoose": ">=8"
+  },
+  "devDependencies": {
+    "@aomex/common": "workspace:3.18.0",
+    "@aomex/internal-tools": "3.18.0",
+    "mongoose": "^8.13.2",
+    "mongodb-memory-server": "^10.1.4"
+  }
+}
