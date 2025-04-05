@@ -74,6 +74,7 @@ npx create-aomex@latest
 | ---------------------------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------- |
 | [tsx](https://github.com/privatenumber/tsx)          | [![npm](https://img.shields.io/npm/v/tsx)](https://www.npmjs.com/package/tsx)             | 执行 TS 文件                        |
 | [prisma](https://github.com/prisma/prisma)           | [![npm](https://img.shields.io/npm/v/prisma)](https://www.npmjs.com/package/prisma)       | 数据库 ORM                          |
+| [mongoose](https://github.com/Automattic/mongoose)   | [![npm](https://img.shields.io/npm/v/mongoose)](https://www.npmjs.com/package/mongoose)   | 数据库 ORM                          |
 | [vitest](https://github.com/vitest-dev/vitest)       | [![npm](https://img.shields.io/npm/v/vitest)](https://www.npmjs.com/package/vitest)       | 测试框架                            |
 | [tsc-alias](https://github.com/justkey007/tsc-alias) | [![npm](https://img.shields.io/npm/v/tsc-alias)](https://www.npmjs.com/package/tsc-alias) | 补全`.js`后缀                       |
 | [volta](https://volta.sh/)                           |                                                                                           | 不同项目自动切换node和pnpm/yarn版本 |
