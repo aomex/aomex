@@ -32,4 +32,4 @@ jobs:
       - run: |
           npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
           node scripts/remove-deps-character.mjs
-          pnpm --recursive publish
+          pnpm --recursive publish --no-git-checks
