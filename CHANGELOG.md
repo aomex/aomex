@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.21.1](https://github.com/aomex/aomex/compare/v3.21.0...v3.21.1) (2025-04-06)
+
+
+### Bug Fixes
+
+* **mongoose:** 忘记导出ModelInput类型 ([b3dce65](https://github.com/aomex/aomex/commit/b3dce656571bb7d1c448dc77d091e198716b7e81))
+
+
+
+
+
 # [3.21.0](https://github.com/aomex/aomex/compare/v3.20.0...v3.21.0) (2025-04-06)
 
 

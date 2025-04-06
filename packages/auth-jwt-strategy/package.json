@@ -1,6 +1,6 @@
 {
   "name": "@aomex/auth-jwt-strategy",
-  "version": "3.21.0",
+  "version": "3.21.1",
   "description": "身份认证JSON Web Token策略",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
