@@ -14,9 +14,12 @@ import { i18n } from '../i18n';
 import { MongoObjectIdValidator } from '../overrides/mongo-object-id.validator';
 
 export const validatorToSchema = (validator: Validator) => {
+  const defaultValue = validator['config']['nullable']
+    ? null
+    : validator['config']['defaultValue'];
   const schema: SchemaDefinition[string] = {
-    required: validator['config']['required'],
-    default: validator['config']['defaultValue'],
+    required: defaultValue === undefined && validator['config']['required'],
+    default: defaultValue,
   };
 
   if (validator instanceof StringValidator) {

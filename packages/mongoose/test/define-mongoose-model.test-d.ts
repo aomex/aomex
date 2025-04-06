@@ -10,6 +10,7 @@ import { mongo } from 'mongoose';
       str1: rule.string(),
       str2: rule.string().optional(),
       str3: rule.string().default('1'),
+      str4: rule.string().nullable(),
       num1: rule.number(),
       num2: rule.number().optional(),
       num3: rule.number().default(123),
@@ -39,6 +40,7 @@ import { mongo } from 'mongoose';
         str1: string;
         str2?: string | undefined;
         str3: string;
+        str4: string | null;
         num1: number;
         num2?: number | undefined;
         num3: number;
@@ -62,18 +64,20 @@ import { mongo } from 'mongoose';
   >(true);
 }
 
-// 可选date
+// 特殊用例
 {
   const model = defineMongooseModel('foo', {
     schemas: {
       date: rule.date().optional(),
       objectId: rule.mongoObjectId().optional(),
+      str: rule.string().nullable().optional(),
     },
   });
   expectType<TypeEqual<ModelInfer<typeof model>['date'], Date | undefined>>(true);
   expectType<TypeEqual<ModelInfer<typeof model>['objectId'], mongo.ObjectId | undefined>>(
     true,
   );
+  expectType<TypeEqual<ModelInfer<typeof model>['str'], string | null | undefined>>(true);
 }
 
 // 时间戳

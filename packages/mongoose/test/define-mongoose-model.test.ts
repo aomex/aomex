@@ -112,6 +112,40 @@ test('选填字段', async () => {
   }
 });
 
+test('空值字段', async () => {
+  const model = defineMongooseModel('foo', {
+    schemas: {
+      str1: rule.string(),
+      str2: rule.string().nullable(),
+    },
+    versionKey: false,
+  });
+
+  {
+    const result = await model.create({ str1: 'bar' });
+    const json = result.toJSON();
+    Reflect.deleteProperty(json, '_id');
+    expect(json).toMatchInlineSnapshot(`
+      {
+        "str1": "bar",
+        "str2": null,
+      }
+    `);
+  }
+
+  {
+    const result = await model.create({ str1: 'bar', str2: 'xyz' });
+    const json = result.toJSON();
+    Reflect.deleteProperty(json, '_id');
+    expect(json).toMatchInlineSnapshot(`
+      {
+        "str1": "bar",
+        "str2": "xyz",
+      }
+    `);
+  }
+});
+
 test('自动填充字段', async () => {
   const model = defineMongooseModel('foo', {
     schemas: {
