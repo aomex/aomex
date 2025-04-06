@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.21.0](https://github.com/aomex/aomex/compare/v3.20.0...v3.21.0) (2025-04-06)
+
+
+### Features
+
+* **mongoose:** 增加模型输入和输出两种类型提示 ([0cf2e7b](https://github.com/aomex/aomex/commit/0cf2e7bd6efe614011b38a1534d251e13074fd46))
+* **mongoose:** 模型使用nullable时代表设置 default: null ([31d15fa](https://github.com/aomex/aomex/commit/31d15fac9c44e957ad6046832a5d1402d5d22a65))
+
+
+
+
+
 # [3.20.0](https://github.com/aomex/aomex/compare/v3.19.2...v3.20.0) (2025-04-05)
 
 
