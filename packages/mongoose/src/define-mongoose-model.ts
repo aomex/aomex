@@ -17,15 +17,16 @@ import {
   type SchemaDefinition,
   Schema,
   model,
+  type HydratedDocument,
 } from 'mongoose';
-import type { TimestampSetting } from './type-d';
+import type { TimestampSetting, VersionKeySetting } from './type-d';
 import { validatorToSchema } from './libs/validator-to-schema';
 import type { MongoDecimal128Validator } from './overrides/mongo-decimal128.validator';
 import type { MongoObjectIdValidator } from './overrides/mongo-object-id.validator';
 
 export const defineMongooseModel = <
-  const S extends {
-    [K: string]:
+  const Schema extends {
+    [field: string]:
       | StringValidator<any>
       | NumberValidator<any>
       | BooleanValidator<any>
@@ -36,18 +37,22 @@ export const defineMongooseModel = <
       | MongoDecimal128Validator<any>
       | MongoObjectIdValidator<any>;
   },
-  const TS extends SchemaOptions['timestamps'],
-  Types = NonReadonly<Validator.Infer<S>> & TimestampSetting<TS>,
+  Ver extends SchemaOptions['versionKey'],
+  const Time extends SchemaOptions['timestamps'],
+  Output = NonReadonly<Validator.Infer<Schema>> &
+    TimestampSetting<Time> &
+    VersionKeySetting<Ver>,
 >(
   collectionName: string,
   opts: {
-    readonly schemas: S;
+    readonly schemas: Schema;
     readonly indexes?: ({
-      fields: { [K in keyof S]?: IndexDirection };
+      fields: { [K in keyof Schema]?: IndexDirection };
     } & IndexOptions)[];
-    readonly timestamps?: TS;
-  } & Omit<SchemaOptions, 'timestamps'>,
-): Model<Types> => {
+    readonly timestamps?: Time;
+    readonly versionKey?: Ver;
+  } & Omit<SchemaOptions, 'timestamps' | 'versionKey'>,
+): Model<Output, {}, {}, {}, HydratedDocument<Output>, Schema> => {
   const { schemas, indexes, timestamps, ...schemaOptions } = opts;
 
   const definition: SchemaDefinition = {};

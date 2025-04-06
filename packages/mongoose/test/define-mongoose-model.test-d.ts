@@ -1,7 +1,8 @@
 import { expectType, type TypeEqual } from 'ts-expect';
-import { defineMongooseModel, type ModelInfer } from '../src';
+import { defineMongooseModel, type ModelOutput } from '../src';
 import { rule } from '@aomex/common';
 import { mongo } from 'mongoose';
+import type { ModelInput } from '../src/type-d';
 
 // 基础字段
 {
@@ -30,13 +31,14 @@ import { mongo } from 'mongoose';
       decimal3: rule.mongoDecimal128().default(new mongo.Decimal128('123')),
       objId1: rule.mongoObjectId(),
     },
+    versionKey: false,
   });
 
-  type ModelType = ModelInfer<typeof model>;
+  type ModelType = ModelOutput<typeof model>;
   expectType<
     TypeEqual<
       ModelType,
-      {
+      { _id: mongo.ObjectId } & {
         str1: string;
         str2?: string | undefined;
         str3: string;
@@ -73,11 +75,45 @@ import { mongo } from 'mongoose';
       str: rule.string().nullable().optional(),
     },
   });
-  expectType<TypeEqual<ModelInfer<typeof model>['date'], Date | undefined>>(true);
-  expectType<TypeEqual<ModelInfer<typeof model>['objectId'], mongo.ObjectId | undefined>>(
+  expectType<TypeEqual<ModelOutput<typeof model>['date'], Date | undefined>>(true);
+  expectType<
+    TypeEqual<ModelOutput<typeof model>['objectId'], mongo.ObjectId | undefined>
+  >(true);
+  expectType<TypeEqual<ModelOutput<typeof model>['str'], string | null | undefined>>(
     true,
   );
-  expectType<TypeEqual<ModelInfer<typeof model>['str'], string | null | undefined>>(true);
+}
+
+// 版本key
+{
+  {
+    const model = defineMongooseModel('foo', {
+      schemas: { foo: rule.string() },
+    });
+    type ModelType = ModelOutput<typeof model>;
+    expectType<TypeEqual<ModelType['__v'], number>>(true);
+  }
+
+  {
+    const model = defineMongooseModel('foo', {
+      schemas: { foo: rule.string() },
+      versionKey: false,
+    });
+    type ModelType = ModelOutput<typeof model>;
+    // @ts-expect-error
+    expectType<TypeEqual<ModelType['__v'], number>>(true);
+  }
+
+  {
+    const model = defineMongooseModel('foo', {
+      schemas: { foo: rule.string() },
+      versionKey: 'VVV',
+    });
+    type ModelType = ModelOutput<typeof model>;
+    expectType<TypeEqual<ModelType['VVV'], number>>(true);
+    // @ts-expect-error
+    expectType<TypeEqual<ModelType['__v'], number>>(true);
+  }
 }
 
 // 时间戳
@@ -86,7 +122,7 @@ import { mongo } from 'mongoose';
     const model = defineMongooseModel('foo', {
       schemas: { foo: rule.string() },
     });
-    type ModelType = ModelInfer<typeof model>;
+    type ModelType = ModelOutput<typeof model>;
     // @ts-expect-error
     expectType<TypeEqual<ModelType['createdAt'], Date>>(true);
     // @ts-expect-error
@@ -98,7 +134,7 @@ import { mongo } from 'mongoose';
       schemas: { foo: rule.string() },
       timestamps: {},
     });
-    type ModelType = ModelInfer<typeof model>;
+    type ModelType = ModelOutput<typeof model>;
     expectType<TypeEqual<ModelType['createdAt'], Date>>(true);
     expectType<TypeEqual<ModelType['updatedAt'], Date>>(true);
   }
@@ -108,7 +144,7 @@ import { mongo } from 'mongoose';
       schemas: { foo: rule.string() },
       timestamps: { currentTime: () => Date.now() },
     });
-    type ModelType = ModelInfer<typeof model>;
+    type ModelType = ModelOutput<typeof model>;
     expectType<TypeEqual<ModelType['createdAt'], Date>>(true);
     expectType<TypeEqual<ModelType['updatedAt'], Date>>(true);
   }
@@ -118,7 +154,7 @@ import { mongo } from 'mongoose';
       schemas: { foo: rule.string() },
       timestamps: true,
     });
-    type ModelType = ModelInfer<typeof model>;
+    type ModelType = ModelOutput<typeof model>;
     expectType<TypeEqual<ModelType['createdAt'], Date>>(true);
     expectType<TypeEqual<ModelType['updatedAt'], Date>>(true);
   }
@@ -128,7 +164,7 @@ import { mongo } from 'mongoose';
       schemas: { foo: rule.string() },
       timestamps: false,
     });
-    type ModelType = ModelInfer<typeof model>;
+    type ModelType = ModelOutput<typeof model>;
     // @ts-expect-error
     expectType<TypeEqual<ModelType['createdAt'], Date>>(true);
     // @ts-expect-error
@@ -140,7 +176,7 @@ import { mongo } from 'mongoose';
       schemas: { foo: rule.string() },
       timestamps: { createdAt: true, updatedAt: false },
     });
-    type ModelType = ModelInfer<typeof model>;
+    type ModelType = ModelOutput<typeof model>;
     expectType<TypeEqual<ModelType['createdAt'], Date>>(true);
     // @ts-expect-error
     expectType<TypeEqual<ModelType['updatedAt'], Date>>(true);
@@ -151,7 +187,7 @@ import { mongo } from 'mongoose';
       schemas: { foo: rule.string() },
       timestamps: { createdAt: false, updatedAt: true },
     });
-    type ModelType = ModelInfer<typeof model>;
+    type ModelType = ModelOutput<typeof model>;
     // @ts-expect-error
     expectType<TypeEqual<ModelType['createdAt'], Date>>(true);
     expectType<TypeEqual<ModelType['updatedAt'], Date>>(true);
@@ -162,7 +198,7 @@ import { mongo } from 'mongoose';
       schemas: { foo: rule.string() },
       timestamps: { createdAt: false, updatedAt: false },
     });
-    type ModelType = ModelInfer<typeof model>;
+    type ModelType = ModelOutput<typeof model>;
     // @ts-expect-error
     expectType<TypeEqual<ModelType['createdAt'], Date>>(true);
     // @ts-expect-error
@@ -174,7 +210,7 @@ import { mongo } from 'mongoose';
       schemas: { foo: rule.string() },
       timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
     });
-    type ModelType = ModelInfer<typeof model>;
+    type ModelType = ModelOutput<typeof model>;
     // @ts-expect-error
     expectType<TypeEqual<ModelType['createdAt'], Date>>(true);
     // @ts-expect-error
@@ -200,4 +236,32 @@ import { mongo } from 'mongoose';
       },
     ],
   });
+}
+
+// 输入
+{
+  const model = defineMongooseModel('foo', {
+    schemas: {
+      required: rule.string(),
+      optional: rule.string().optional(),
+      nullable: rule.string().nullable(),
+      nullableWithDefault: rule.string().nullable().default('abc'),
+      withDefault: rule.string().default('abc'),
+    },
+    timestamps: true,
+    versionKey: true,
+  });
+  type ModelType = ModelInput<typeof model>;
+  expectType<
+    TypeEqual<
+      ModelType,
+      {
+        required: string;
+        optional: string | undefined;
+        nullable: string | null | undefined;
+        nullableWithDefault: string | null | undefined;
+        withDefault: string | undefined;
+      }
+    >
+  >(true);
 }

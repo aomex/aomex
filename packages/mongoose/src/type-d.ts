@@ -1,29 +1,56 @@
-import type { Model, SchemaOptions } from 'mongoose';
+import type { Validator } from '@aomex/common';
+import type { Model, mongo, SchemaOptions } from 'mongoose';
 
-export type ModelInfer<M extends Model<any>> = M extends Model<infer R> ? R : never;
+export type ModelInput<M extends Model<any, any, any, any, any, any>> =
+  M extends Model<any, any, any, any, any, infer R extends Record<string, Validator>>
+    ? {
+        -readonly [K in keyof R]: R[K] extends Validator<infer U>
+          ? U extends null
+            ? null | undefined
+            : U extends Validator.TDefault | Validator.TOptional
+              ? undefined
+              : U
+          : never;
+      }
+    : never;
 
-export type TimestampSetting<TS extends SchemaOptions['timestamps']> =
-  undefined extends TS
+export type ModelOutput<M extends Model<any, any, any, any, any, any>> = {
+  _id: mongo.ObjectId;
+} & (M extends Model<infer R, any, any, any, any, any> ? R : never);
+
+export type VersionKeySetting<Ver extends SchemaOptions['versionKey']> =
+  undefined extends Ver
+    ? { __v: number }
+    : Ver extends true
+      ? { __v: number }
+      : Ver extends false
+        ? {}
+        : Ver extends infer R extends string
+          ? { [K in R]: number }
+          : {};
+
+export type TimestampSetting<Time extends SchemaOptions['timestamps']> =
+  undefined extends Time
     ? {}
-    : TS extends false
+    : Time extends false
       ? {}
-      : TS extends true
+      : Time extends true
         ? DefaultTimestamp
-        : TimestampCreatedAt<TS> & TimestampUpdatedAt<TS>;
+        : TimestampCreatedAt<Time> & TimestampUpdatedAt<Time>;
 
-type TimestampCreatedAt<T> = T extends { createdAt: true }
+type TimestampCreatedAt<Time> = Time extends { createdAt: true }
   ? { createdAt: Date }
-  : T extends { createdAt: false }
+  : Time extends { createdAt: false }
     ? {}
-    : T extends { createdAt: infer Name extends string }
+    : Time extends { createdAt: infer Name extends string }
       ? { [K in Name]: Date }
       : { createdAt: Date };
 
-type TimestampUpdatedAt<T> = T extends { updatedAt: true }
+type TimestampUpdatedAt<Time> = Time extends { updatedAt: true }
   ? { updatedAt: Date }
-  : T extends { updatedAt: false }
+  : Time extends { updatedAt: false }
     ? {}
-    : T extends { updatedAt: infer Name extends string }
+    : Time extends { updatedAt: infer Name extends string }
       ? { [K in Name]: Date }
       : { updatedAt: Date };
 
