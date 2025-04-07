@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.22.0](https://github.com/aomex/aomex/compare/v3.21.1...v3.22.0) (2025-04-07)
+
+
+### Bug Fixes
+
+* **mongoose:** 泛型 ModelInput 推导的可选属性无法跳过 ([29f60b7](https://github.com/aomex/aomex/commit/29f60b7d3d4a100faa934681be183e2cecebd135))
+
+
+
+
+
 ## [3.21.1](https://github.com/aomex/aomex/compare/v3.21.0...v3.21.1) (2025-04-06)
 
 **Note:** Version bump only for package @aomex/common-validator

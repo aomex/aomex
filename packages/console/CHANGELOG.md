@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.22.0](https://github.com/aomex/aomex/compare/v3.21.1...v3.22.0) (2025-04-07)
+
+
+### Features
+
+* **console:** 增加 AOMEX_CLI_MODE 环境变量 ([f8c9372](https://github.com/aomex/aomex/commit/f8c937278cb652629f293a14925dd9815e0c769c))
+
+
+
+
+
 ## [3.21.1](https://github.com/aomex/aomex/compare/v3.21.0...v3.21.1) (2025-04-06)
 
 **Note:** Version bump only for package @aomex/console
