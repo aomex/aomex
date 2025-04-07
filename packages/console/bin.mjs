@@ -19,6 +19,8 @@ if (!cliEntry) {
   throw err;
 }
 
+process.env['AOMEX_CLI_MODE'] = '1';
+
 if (cliEntry.endsWith('ts')) {
   await tsImport(pathToFileURL(cliEntry).toString(), import.meta.url);
 } else {
