@@ -255,13 +255,31 @@ import type { ModelInput } from '../src/type-d';
   expectType<
     TypeEqual<
       ModelType,
-      {
-        required: string;
-        optional: string | undefined;
-        nullable: string | null | undefined;
-        nullableWithDefault: string | null | undefined;
-        withDefault: string | undefined;
+      { required: string } & {
+        optional?: string | undefined;
+        nullable?: string | null | undefined;
+        nullableWithDefault?: string | null | undefined;
+        withDefault?: string | undefined;
       }
     >
   >(true);
+}
+
+// 传参数
+{
+  const model = defineMongooseModel('foo', {
+    schemas: {
+      foo: rule.string(),
+      bar: rule.string().optional(),
+      baz: rule.string().nullable(),
+    },
+    timestamps: true,
+    versionKey: true,
+  });
+  function test(data: ModelInput<typeof model>) {
+    console.log(data);
+  }
+  test({ foo: 'abc' });
+  test({ foo: 'abc', bar: 'abc' });
+  test({ foo: 'abc', bar: 'abc', baz: 'abc' });
 }

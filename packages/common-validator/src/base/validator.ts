@@ -56,6 +56,16 @@ export declare namespace Validator {
         : false
       : false;
 
+  type HasNull<T> =
+    T extends Validator<infer Type> ? (null extends Type ? true : false) : false;
+
+  type HasDefault<T> =
+    T extends Validator<infer Type>
+      ? Validator.TDefault extends Type
+        ? true
+        : false
+      : false;
+
   export type PartialOpenAPISchema = Pick<
     OpenAPI.SchemaObject,
     'title' | 'description' | 'deprecated' | 'example' | 'externalDocs'

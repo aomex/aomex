@@ -2,9 +2,19 @@ import type { Validator } from '@aomex/common';
 import type { Model, mongo, SchemaOptions } from 'mongoose';
 
 export type ModelInput<M extends Model<any, any, any, any, any, any>> =
-  M extends Model<any, any, any, any, any, infer R extends Record<string, Validator>>
+  M extends Model<any, any, any, any, any, infer T extends Record<string, Validator>>
     ? {
-        -readonly [K in keyof R]: R[K] extends Validator<infer U>
+        -readonly [K in keyof T as true extends IsInputRequired<T[K]>
+          ? K
+          : never]: T[K] extends Validator<infer U>
+          ? U extends null | Validator.TDefault | Validator.TOptional
+            ? never
+            : U
+          : never;
+      } & {
+        -readonly [K in keyof T as true extends IsInputRequired<T[K]>
+          ? never
+          : K]?: T[K] extends Validator<infer U>
           ? U extends null
             ? null | undefined
             : U extends Validator.TDefault | Validator.TOptional
@@ -13,6 +23,15 @@ export type ModelInput<M extends Model<any, any, any, any, any, any>> =
           : never;
       }
     : never;
+
+type IsInputRequired<T> =
+  true extends Validator.HasUndefined<T>
+    ? false
+    : true extends Validator.HasNull<T>
+      ? false
+      : true extends Validator.HasDefault<T>
+        ? false
+        : true;
 
 export type ModelOutput<M extends Model<any, any, any, any, any, any>> = {
   _id: mongo.ObjectId;
