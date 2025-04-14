@@ -19,6 +19,19 @@ afterEach(async () => {
   await mongod.stop({ doCleanup: true });
 });
 
+test('模型名称和集合名称一致', async () => {
+  const model = defineMongooseModel('user', {
+    schemas: {},
+  });
+  await model.syncIndexes();
+  const collections = await mongoose.connection.listCollections();
+  expect(collections.map((item) => item.name)).toMatchInlineSnapshot(`
+    [
+      "user",
+    ]
+  `);
+});
+
 test('索引', async () => {
   const model = defineMongooseModel('foo', {
     schemas: { foo: rule.string(), bar: rule.number() },

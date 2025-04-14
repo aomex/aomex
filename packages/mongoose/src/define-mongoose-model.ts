@@ -53,13 +53,16 @@ export const defineMongooseModel = <
     readonly versionKey?: Ver;
   } & Omit<SchemaOptions, 'timestamps' | 'versionKey'>,
 ): Model<Output, {}, {}, {}, HydratedDocument<Output>, Schema> => {
-  const { schemas, indexes, timestamps, ...schemaOptions } = opts;
+  const { schemas, indexes, ...schemaOptions } = opts;
 
   const definition: SchemaDefinition = {};
-  Object.entries(opts.schemas).forEach(([key, schema]) => {
+  Object.entries(schemas).forEach(([key, schema]) => {
     definition[key] = validatorToSchema(schema);
   });
-  const schema = new Schema(definition, { ...schemaOptions, timestamps });
+  const schema = new Schema(definition, {
+    collection: collectionName,
+    ...schemaOptions,
+  });
 
   indexes?.forEach(({ fields, ...indexRest }) => {
     schema.index(
