@@ -73,7 +73,7 @@ type TimestampUpdatedAt<Time> = Time extends { updatedAt: true }
       ? { [K in Name]: Date }
       : { updatedAt: Date };
 
-interface DefaultTimestamp {
+export interface DefaultTimestamp {
   createdAt: Date;
   updatedAt: Date;
 }

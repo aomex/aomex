@@ -372,13 +372,26 @@ importers:
   packages/logger: {}
 
   packages/mongoose:
+    dependencies:
+      '@aomex/internal-file-import':
+        specifier: workspace:^
+        version: link:../internal-file-import
+      lodash.snakecase:
+        specifier: ^4.1.1
+        version: 4.1.1
     devDependencies:
       '@aomex/common':
         specifier: workspace:^
         version: link:../common
+      '@aomex/console':
+        specifier: workspace:^
+        version: link:../console
       '@aomex/internal-tools':
         specifier: workspace:^
         version: link:../internal-tools
+      '@types/lodash.snakecase':
+        specifier: ^4.1.9
+        version: 4.1.9
       mongodb-memory-server:
         specifier: ^10.1.4
         version: 10.1.4(socks@2.8.3)

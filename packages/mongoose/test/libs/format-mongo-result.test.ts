@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { defineMongooseModel, formatMongoResult } from '../src';
+import { defineMongooseModel, formatMongoResult } from '../../src';
 import { mongo } from 'mongoose';
 import { rule } from '@aomex/common';
 

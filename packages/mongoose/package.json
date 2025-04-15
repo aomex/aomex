@@ -34,11 +34,18 @@
   },
   "peerDependencies": {
     "@aomex/common": "^3",
+    "@aomex/console": "^3",
     "mongoose": ">=8"
+  },
+  "dependencies": {
+    "@aomex/internal-file-import": "workspace:^",
+    "lodash.snakecase": "^4.1.1"
   },
   "devDependencies": {
     "@aomex/common": "workspace:^",
+    "@aomex/console": "workspace:^",
     "@aomex/internal-tools": "workspace:^",
+    "@types/lodash.snakecase": "^4.1.9",
     "mongodb-memory-server": "^10.1.4",
     "mongoose": "^8.13.2"
   }

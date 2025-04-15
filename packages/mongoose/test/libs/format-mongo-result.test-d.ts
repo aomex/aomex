@@ -1,6 +1,6 @@
 import { mongo } from 'mongoose';
 import { expectType, type TypeEqual } from 'ts-expect';
-import { defineMongooseModel, formatMongoResult } from '../src';
+import { defineMongooseModel, formatMongoResult } from '../../src';
 import { rule } from '@aomex/common';
 
 // 数组对象

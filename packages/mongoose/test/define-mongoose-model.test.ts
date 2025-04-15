@@ -3,13 +3,14 @@ import mongoose, { mongo } from 'mongoose';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 import { defineMongooseModel } from '../src';
 import { rule } from '@aomex/common';
+import { getMongoBinary } from './helper/get-mongo-binary';
 
 let mongod!: MongoMemoryServer;
 
 beforeEach(async () => {
-  mongod = await MongoMemoryServer.create();
+  mongod = await MongoMemoryServer.create({ binary: getMongoBinary() });
   await mongoose.connect(mongod.getUri());
-});
+}, 60_000 /* download */);
 
 afterEach(async () => {
   Object.keys(mongoose.models).forEach((modelName) => {
@@ -25,8 +26,9 @@ test('模型名称和集合名称一致', async () => {
   });
   await model.syncIndexes();
   const collections = await mongoose.connection.listCollections();
-  expect(collections.map((item) => item.name)).toMatchInlineSnapshot(`
+  expect(collections.map((item) => item.name).sort()).toMatchInlineSnapshot(`
     [
+      "__aomex_migration__",
       "user",
     ]
   `);

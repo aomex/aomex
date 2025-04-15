@@ -12,4 +12,9 @@ export const zh = I18n.define({
   mongoose: {
     unsupported_validator: '暂不支持 {{validator}} 验证器',
   },
+  migration: {
+    create: '创建迁移文件',
+    up: '执行迁移逻辑',
+    down: '回滚迁移逻辑',
+  },
 });

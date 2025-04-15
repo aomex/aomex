@@ -13,4 +13,9 @@ export const en = I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: '{{validator} is not supported yet',
   },
+  migration: {
+    create: 'Generate migration file',
+    up: 'Execute migration logic',
+    down: 'Rollback migration logic',
+  },
 });
