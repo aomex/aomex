@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.23.0](https://github.com/aomex/aomex/compare/v3.22.0...v3.23.0) (2025-04-16)
+
+
+### Features
+
+* **mongoose:** 支持数据迁移 ([5e24813](https://github.com/aomex/aomex/commit/5e24813b5a7d0b87688e3cf4f666f7a9dcb2748e))
+* **mongoose:** 模型名称和集合名称保持一致 ([6cbb02f](https://github.com/aomex/aomex/commit/6cbb02fcdb59a64207e5029585d517453043a465))
+
+
+
+
+
 # [3.22.0](https://github.com/aomex/aomex/compare/v3.21.1...v3.22.0) (2025-04-07)
 
 
