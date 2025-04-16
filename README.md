@@ -2,8 +2,8 @@
 
 流畅的 node.js 框架
 
-[![node version](https://img.shields.io/node/v/@aomex/common?logo=node.js)](https://nodejs.org)
-[![npm peer typescript version](https://img.shields.io/npm/dependency-version/@aomex/common/peer/typescript?logo=typescript)](https://github.com/microsoft/TypeScript)
+[![node version](https://img.shields.io/node/v/%40aomex%2Fcommon?logo=node.js)](https://nodejs.org)
+[![npm peer typescript version](https://img.shields.io/npm/dependency-version/%40aomex%2Fcommon/peer/typescript?logo=typescript)](https://github.com/microsoft/TypeScript)
 [![GitHub Workflow Status (lint)](https://img.shields.io/github/actions/workflow/status/aomex/aomex/lint.yml?branch=main&label=lint&logo=eslint)](https://github.com/aomex/aomex/actions/workflows/lint.yml)
 [![GitHub Workflow Status (test)](https://img.shields.io/github/actions/workflow/status/aomex/aomex/test.yml?branch=main&label=test&logo=vitest)](https://github.com/aomex/aomex/actions/workflows/test.yml)
 [![Codecov](https://img.shields.io/codecov/c/github/aomex/aomex?logo=codecov)](https://codecov.io/gh/aomex/aomex)

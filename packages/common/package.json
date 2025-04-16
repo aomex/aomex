@@ -31,10 +31,10 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "engines": {
-    "node": "^20.13.0 || ^22"
+    "node": ">=20.13.0"
   },
   "peerDependencies": {
-    "@types/node": "^20 || ^22",
+    "@types/node": ">=20",
     "typescript": ">=5.5"
   },
   "dependencies": {

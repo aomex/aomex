@@ -152,7 +152,7 @@ importers:
         specifier: workspace:^
         version: link:../internal-tools
       '@types/node':
-        specifier: ^20 || ^22
+        specifier: '>=20'
         version: 20.16.13
       typescript:
         specifier: '>=5.5'
