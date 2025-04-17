@@ -114,13 +114,13 @@ export class Cron {
   }
 
   delay(delta: number) {
-    return new Promise((resolve) => {
-      const timer = setTimeout(() => {
-        this.handle = null;
-        resolve(undefined);
-      }, delta);
-      this.handle = { timer, resolve };
-    });
+    const { promise, resolve } = Promise.withResolvers();
+    const timer = setTimeout(() => {
+      this.handle = null;
+      resolve(undefined);
+    }, delta);
+    this.handle = { timer, resolve };
+    return promise;
   }
 
   stop() {

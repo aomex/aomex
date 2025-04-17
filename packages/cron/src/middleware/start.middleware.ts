@@ -22,15 +22,15 @@ export const start = (opts: CronsOptions) => {
         let remain = crontab.length;
         await Promise.all(
           crontab.map((cron) => {
-            return new Promise((resolve) => {
-              const timer = setInterval(() => {
-                if (!cron.runningLevel) {
-                  clearInterval(timer);
-                  resolve(void 0);
-                  callback(--remain);
-                }
-              }, 300);
-            });
+            const { promise, resolve } = Promise.withResolvers();
+            const timer = setInterval(() => {
+              if (!cron.runningLevel) {
+                clearInterval(timer);
+                resolve(void 0);
+                callback(--remain);
+              }
+            }, 300);
+            return promise;
           }),
         );
       };

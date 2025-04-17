@@ -32,69 +32,69 @@ export const stats = (opts: CronsOptions): ConsoleMiddleware => {
 
       const logSession = terminal.applySession();
 
-      await new Promise((resolve, reject): void => {
-        // 多次resolve不会报错
-        client.on('close', resolve);
-        client.on('error', (err) => {
-          // @ts-expect-error
-          if (err.code === CONNECT_REFUSED) {
-            terminal.printWarning(i18n.t('not_started', { port: PORT }));
-            resolve(undefined);
-          } else {
-            reject(err);
-          }
-        });
-        client.on('data', async (data) => {
-          // 数据可能会堆积下发，直接用JSON.parse容易出错
-          for (const stringifyData of data.toString().split('\n').filter(Boolean)) {
-            const jsonData = JSON.parse(stringifyData) as ServerWriteData;
-            if (!('runners' in jsonData)) return;
-
-            let stats: Awaited<ReturnType<typeof pidusage>>;
-            try {
-              stats = await pidusage(jsonData.runners.map((item) => item.pid));
-            } catch {
-              stats = {};
-            }
-
-            logSession.update(
-              terminal.generateTable(
-                [
-                  ['PID', 'COMMAND', 'SCHEDULE', 'CPU', 'MEMORY', 'TIME'],
-                  ...jsonData.runners
-                    .map((runner) => {
-                      const stat = stats[runner.pid] || { cpu: 0, memory: 0, elapsed: 0 };
-                      return { ...runner, ...stat };
-                    })
-                    .sort((a, b) => b.elapsed - a.elapsed)
-                    .map(({ pid, command, schedule, elapsed, cpu, memory }) => {
-                      return [
-                        pid,
-                        command.padEnd(24, ' '),
-                        schedule,
-                        `${cpu.toFixed(2)}%`,
-                        bytes(memory),
-                        formatDuration(elapsed, { leading: true }),
-                      ];
-                    }),
-                ],
-                {
-                  columnDefault: { paddingRight: 4 },
-                  columns: {
-                    1: {
-                      paddingRight: 1,
-                      width: 24,
-                      wrapWord: true,
-                    },
-                  },
-                  drawVerticalLine: () => false,
-                  drawHorizontalLine: () => false,
-                },
-              ),
-            );
-          }
-        });
+      const { resolve, reject, promise } = Promise.withResolvers();
+      // 多次resolve不会报错
+      client.on('close', resolve);
+      client.on('error', (err) => {
+        // @ts-expect-error
+        if (err.code === CONNECT_REFUSED) {
+          terminal.printWarning(i18n.t('not_started', { port: PORT }));
+          resolve(undefined);
+        } else {
+          reject(err);
+        }
       });
+      client.on('data', async (data) => {
+        // 数据可能会堆积下发，直接用JSON.parse容易出错
+        for (const stringifyData of data.toString().split('\n').filter(Boolean)) {
+          const jsonData = JSON.parse(stringifyData) as ServerWriteData;
+          if (!('runners' in jsonData)) return;
+
+          let stats: Awaited<ReturnType<typeof pidusage>>;
+          try {
+            stats = await pidusage(jsonData.runners.map((item) => item.pid));
+          } catch {
+            stats = {};
+          }
+
+          logSession.update(
+            terminal.generateTable(
+              [
+                ['PID', 'COMMAND', 'SCHEDULE', 'CPU', 'MEMORY', 'TIME'],
+                ...jsonData.runners
+                  .map((runner) => {
+                    const stat = stats[runner.pid] || { cpu: 0, memory: 0, elapsed: 0 };
+                    return { ...runner, ...stat };
+                  })
+                  .sort((a, b) => b.elapsed - a.elapsed)
+                  .map(({ pid, command, schedule, elapsed, cpu, memory }) => {
+                    return [
+                      pid,
+                      command.padEnd(24, ' '),
+                      schedule,
+                      `${cpu.toFixed(2)}%`,
+                      bytes(memory),
+                      formatDuration(elapsed, { leading: true }),
+                    ];
+                  }),
+              ],
+              {
+                columnDefault: { paddingRight: 4 },
+                columns: {
+                  1: {
+                    paddingRight: 1,
+                    width: 24,
+                    wrapWord: true,
+                  },
+                },
+                drawVerticalLine: () => false,
+                drawHorizontalLine: () => false,
+              },
+            ),
+          );
+        }
+      });
+      await promise;
     },
     help: {
       onDocument(doc) {

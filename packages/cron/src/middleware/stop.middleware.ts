@@ -106,42 +106,42 @@ export const stop = (opts: CronsOptions): ConsoleMiddleware => {
         client.destroy();
       });
 
-      await new Promise((resolve, reject): void => {
-        // 多次resolve不会报错
-        client.on('close', resolve);
-        client.on('error', (err) => {
-          // @ts-expect-error
-          if (err.code === CONNECT_REFUSED) {
-            terminal.printWarning(i18n.t('not_started', { port: PORT }));
-            resolve(undefined);
-          } else {
-            reject(err);
-          }
-        });
-        client.on('data', async (data) => {
-          // 数据可能会堆积下发，直接用JSON.parse容易出错
-          for (const stringifyData of data.toString().split('\n').filter(Boolean)) {
-            const jsonData = JSON.parse(stringifyData) as ServerWriteData;
-            if ('runners' in jsonData) {
-              runners = jsonData.runners.map((runner) => {
-                return {
-                  ...runner,
-                  cpu: 0,
-                  memory: 0,
-                  elapsed: 0,
-                  status: 'loading' as const,
-                };
-              });
-            } else if ('runningPIDs' in jsonData) {
-              runners.forEach((item) => {
-                if (!jsonData.runningPIDs.includes(item.pid)) {
-                  item.status = 'success';
-                }
-              });
-            }
-          }
-        });
+      const { resolve, reject, promise } = Promise.withResolvers();
+      // 多次resolve不会报错
+      client.on('close', resolve);
+      client.on('error', (err) => {
+        // @ts-expect-error
+        if (err.code === CONNECT_REFUSED) {
+          terminal.printWarning(i18n.t('not_started', { port: PORT }));
+          resolve(undefined);
+        } else {
+          reject(err);
+        }
       });
+      client.on('data', async (data) => {
+        // 数据可能会堆积下发，直接用JSON.parse容易出错
+        for (const stringifyData of data.toString().split('\n').filter(Boolean)) {
+          const jsonData = JSON.parse(stringifyData) as ServerWriteData;
+          if ('runners' in jsonData) {
+            runners = jsonData.runners.map((runner) => {
+              return {
+                ...runner,
+                cpu: 0,
+                memory: 0,
+                elapsed: 0,
+                status: 'loading' as const,
+              };
+            });
+          } else if ('runningPIDs' in jsonData) {
+            runners.forEach((item) => {
+              if (!jsonData.runningPIDs.includes(item.pid)) {
+                item.status = 'success';
+              }
+            });
+          }
+        }
+      });
+      await promise;
 
       // 让终端日志渲染完
       await sleep(300);
