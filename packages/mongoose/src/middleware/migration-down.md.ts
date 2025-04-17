@@ -4,7 +4,7 @@ import { i18n } from '../i18n';
 import { syncCollectionIndex } from '../libs/sync-collection-index';
 import { MigrationModel } from '../models/migration.model';
 import { Migrate } from '../libs/migrate';
-import { Connection, createConnection } from 'mongoose';
+import mongoose, { createConnection } from 'mongoose';
 import { terminal } from '@aomex/console';
 import { pathToFiles } from '@aomex/internal-file-import';
 
@@ -17,7 +17,7 @@ export const migrationDown = (opts: Required<MigrationOptions>) => {
       ctx.commandMatched = true;
 
       const connection =
-        opts.connection instanceof Connection
+        opts.connection instanceof mongoose.Connection
           ? opts.connection
           : await createConnection(
               opts.connection.uri,
@@ -50,7 +50,7 @@ export const migrationDown = (opts: Required<MigrationOptions>) => {
         }
       }
 
-      if (!(opts.connection instanceof Connection)) {
+      if (!(opts.connection instanceof mongoose.Connection)) {
         await connection.close();
       }
     },
