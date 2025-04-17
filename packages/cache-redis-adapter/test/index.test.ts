@@ -23,7 +23,7 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
-  store.redis.disconnect();
+  await store.redis.quit();
   await redisServer.stop();
 });
 
