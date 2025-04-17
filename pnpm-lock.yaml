@@ -357,8 +357,8 @@ importers:
   packages/internal-tools:
     dependencies:
       '@i18nx/node':
-        specifier: ^0.2.1
-        version: 0.2.1
+        specifier: ^0.3.0
+        version: 0.3.0
       '@types/bytes':
         specifier: ^3.1.4
         version: 3.1.4
@@ -1046,13 +1046,13 @@ packages:
     resolution: {integrity: sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==}
     engines: {node: '>=6.9.0'}
 
-  '@i18nx/core@0.2.1':
-    resolution: {integrity: sha512-wgLp89gwPA1eZwTOtTtqqTTsph8vLGS8HxlkT+tfYxZUcchGE+dTc0PJWvIEiOW0yXXcLb3ShdgyvfzQGFfS3g==}
-    engines: {node: ^18 || ^20 || ^22}
+  '@i18nx/core@0.3.0':
+    resolution: {integrity: sha512-V1s05c8gpgXXU8g+VttETufmYoZu0yHxt2i/MZrk/TuGQXdiSZ9z5GokJ2F8uQCga4QrJ+Zc8/0X4EpT2x49yw==}
+    engines: {node: '>=18'}
 
-  '@i18nx/node@0.2.1':
-    resolution: {integrity: sha512-wHL5TDZ/gOcjzs++ljT2HXaaTu6qQ8vNXBmOZx9QcgyoPYN3DFMqu7hYgyIoR92I2NBQD6N2FsGsJ+PBSnPcSQ==}
-    engines: {node: ^18 || ^20 || ^22}
+  '@i18nx/node@0.3.0':
+    resolution: {integrity: sha512-ZvkRVWERMqJT5dfaYWiL4+NIeeHy+0Ai3h13v/ihRdL4BO8MZhdMuxam7w1KZlvrPVV2NmPbvWu1GdEGMMuZfw==}
+    engines: {node: '>=18'}
 
   '@ioredis/commands@1.2.0':
     resolution: {integrity: sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==}
@@ -5780,13 +5780,13 @@ snapshots:
 
   '@hutson/parse-repository-url@3.0.2': {}
 
-  '@i18nx/core@0.2.1':
+  '@i18nx/core@0.3.0':
     dependencies:
       topic: 3.0.2
 
-  '@i18nx/node@0.2.1':
+  '@i18nx/node@0.3.0':
     dependencies:
-      '@i18nx/core': 0.2.1
+      '@i18nx/core': 0.3.0
 
   '@ioredis/commands@1.2.0': {}
 

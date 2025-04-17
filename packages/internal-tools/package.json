@@ -33,7 +33,7 @@
     "node": "^20.13.0 || ^22"
   },
   "dependencies": {
-    "@i18nx/node": "^0.2.1",
+    "@i18nx/node": "^0.3.0",
     "@types/bytes": "^3.1.4",
     "bytes": "^3.1.2",
     "openapi-types": "^12.1.3"
