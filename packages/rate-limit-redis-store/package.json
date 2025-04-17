@@ -30,9 +30,6 @@
     },
     "access": "public"
   },
-  "engines": {
-    "node": "^20.13.0 || ^22"
-  },
   "peerDependencies": {
     "@aomex/rate-limit": "^3.0.0",
     "ioredis": ">=5"

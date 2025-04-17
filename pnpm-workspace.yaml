@@ -1,2 +1,18 @@
 packages:
   - packages/*
+
+ignoredBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - '@scarf/scarf'
+  - '@tree-sitter-grammars/tree-sitter-yaml'
+  - core-js-pure
+  - nx
+  - prisma
+  - tree-sitter
+  - tree-sitter-json
+
+onlyBuiltDependencies:
+  - esbuild
+  - mongodb-memory-server
+  - redis-memory-server

@@ -30,9 +30,6 @@
     },
     "access": "public"
   },
-  "engines": {
-    "node": "^20.13.0 || ^22"
-  },
   "peerDependencies": {
     "@aomex/common": "^3.0.0",
     "@aomex/web": "^3.0.0"
