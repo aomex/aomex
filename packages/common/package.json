@@ -34,7 +34,6 @@
     "node": ">=20.13.0"
   },
   "peerDependencies": {
-    "@types/node": ">=20",
     "typescript": ">=5.5"
   },
   "dependencies": {
