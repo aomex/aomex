@@ -8,13 +8,17 @@ let redisServer: RedisMemoryServer;
 let store: RateLimitRedisStore;
 
 beforeAll(async () => {
-  redisServer = await RedisMemoryServer.create();
+  redisServer = await RedisMemoryServer.create({
+    binary: {
+      version: '7.4.2',
+    },
+  });
   await redisServer.ensureInstance();
   store = new RateLimitRedisStore({
     host: await redisServer.getHost(),
     port: await redisServer.getPort(),
   });
-}, 80_000 /* download */);
+}, 180_000 /* download */);
 
 afterEach(async () => {
   await store['redis'].flushall();

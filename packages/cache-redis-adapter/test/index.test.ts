@@ -9,14 +9,18 @@ let opts: RedisOptions;
 let store: CacheRedisAdapter;
 
 beforeAll(async () => {
-  redisServer = await RedisMemoryServer.create();
+  redisServer = await RedisMemoryServer.create({
+    binary: {
+      version: '7.4.2',
+    },
+  });
   await redisServer.ensureInstance();
   opts = {
     host: await redisServer.getHost(),
     port: await redisServer.getPort(),
   };
   store = redisAdapter({ ...opts });
-}, 80_000 /* download */);
+}, 180_000 /* download */);
 
 afterEach(async () => {
   await store.redis.flushall();

@@ -14,5 +14,3 @@ ignoredBuiltDependencies:
 
 onlyBuiltDependencies:
   - esbuild
-  - mongodb-memory-server
-  - redis-memory-server
