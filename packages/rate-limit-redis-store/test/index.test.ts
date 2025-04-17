@@ -14,7 +14,7 @@ beforeAll(async () => {
     host: await redisServer.getHost(),
     port: await redisServer.getPort(),
   });
-}, 50_000 /* 首次下载redis */);
+}, 80_000 /* download */);
 
 afterEach(async () => {
   await store['redis'].flushall();
