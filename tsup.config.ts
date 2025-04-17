@@ -8,7 +8,7 @@ export default defineConfig({
   format: ['esm'],
   platform: 'node',
   tsconfig: './tsconfig.json',
-  target: 'node20',
+  target: 'node22',
   shims: false,
   dts: true,
 });
