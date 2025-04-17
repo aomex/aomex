@@ -8,6 +8,7 @@ import path from 'node:path';
 import { Migrate } from '../libs/migrate';
 import mongoose, { createConnection } from 'mongoose';
 import { terminal } from '@aomex/console';
+import { mkdir } from 'node:fs/promises';
 
 const commandName = 'mongoose:migration:up';
 
@@ -30,6 +31,7 @@ export const migrationUp = (opts: Required<MigrationOptions>) => {
 
       const migratedRows = await MigrationModel.find().sort({ filename: 'asc' }).lean();
       const migratedFiles = migratedRows.map((item) => item.filename);
+      await mkdir(opts.migrationsPath, { recursive: true });
       const allFiles = await pathToFiles(opts.migrationsPath);
       const waitingMigrateFiles = allFiles
         .filter((item) => !migratedFiles.includes(path.basename(item)))

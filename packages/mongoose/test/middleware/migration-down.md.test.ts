@@ -53,6 +53,26 @@ afterEach(async () => {
   await rm(migrationsPath, { recursive: true, force: true });
 });
 
+test('没有迁移记录则不回滚', async () => {
+  const code = await app.run('mongoose:migration:down');
+  expect(code).toBe(0);
+});
+
+test('回滚文件不存在则直接报错', async () => {
+  await MigrationModel.insertMany([{ filename: '12345_test.ts' }]);
+  const app = new ConsoleApp({
+    mount: [
+      migrationDown({
+        migrationsPath: migrationsPath,
+        modelsPath: modelsPath,
+        connection: mongoose.connection,
+      }),
+    ],
+  });
+  const code = await app.run('mongoose:migration:down');
+  expect(code).toBe(1);
+});
+
 test('原始数据', async () => {
   await expect(FooModel.find({}, { _id: 0 }).lean()).resolves.toMatchInlineSnapshot(`
     [

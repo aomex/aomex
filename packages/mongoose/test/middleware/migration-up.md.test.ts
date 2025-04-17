@@ -4,10 +4,11 @@ import { beforeEach, afterEach, test, expect } from 'vitest';
 import { FooModel } from '../fixtures/models/foo.model';
 import { ConsoleApp } from '@aomex/console';
 import { migrationUp } from '../../src/middleware/migration-up.md';
-import path from 'node:path';
+import path, { join } from 'node:path';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { MigrationModel } from '../../src/models/migration.model';
 import { getMongoBinary } from '../helper/get-mongo-binary';
+import { tmpdir } from 'node:os';
 
 const modelsPath = path.join(
   path.relative(path.resolve(), path.dirname(import.meta.dirname)),
@@ -51,6 +52,20 @@ afterEach(async () => {
   await mongoose.disconnect();
   await mongod.stop({ doCleanup: true });
   await rm(migrationsPath, { recursive: true, force: true });
+});
+
+test('目录不存在则自动创建', async () => {
+  const app = new ConsoleApp({
+    mount: [
+      migrationUp({
+        migrationsPath: join(tmpdir(), 'not-found-' + Date.now() + Math.random()),
+        modelsPath: modelsPath,
+        connection: mongoose.connection,
+      }),
+    ],
+  });
+  const code = await app.run('mongoose:migration:up');
+  expect(code).toBe(0);
 });
 
 test('原始数据', async () => {

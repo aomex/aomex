@@ -16,5 +16,6 @@ export const zh = I18n.define({
     create: '创建迁移文件',
     up: '执行迁移逻辑',
     down: '回滚迁移逻辑',
+    file_not_found: "迁移文件 '{{file}}' 不存在",
   },
 });
