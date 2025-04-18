@@ -59,7 +59,7 @@ test('没有迁移记录则不回滚', async () => {
 });
 
 test('回滚文件不存在则直接报错', async () => {
-  await MigrationModel.insertMany([{ filename: '12345_test.ts' }]);
+  await MigrationModel.insertMany([{ filename: '12345_test' }]);
   const app = new ConsoleApp({
     mount: [
       migrationDown({
@@ -92,8 +92,8 @@ test('原始数据', async () => {
 
 test('每次只滚一个', async () => {
   await MigrationModel.insertMany([
-    { filename: '12345_test.ts' },
-    { filename: '12346_test.ts' },
+    { filename: '12345_test' },
+    { filename: '12346_test' },
   ]);
   await writeFile(
     path.join(migrationsPath, '12345_test.ts'),
@@ -136,7 +136,7 @@ test('每次只滚一个', async () => {
     .toMatchInlineSnapshot(`
     [
       {
-        "filename": "12345_test.ts",
+        "filename": "12345_test",
       },
     ]
   `);
@@ -162,7 +162,7 @@ test('每次只滚一个', async () => {
 });
 
 test('出错回滚', async () => {
-  await MigrationModel.insertMany([{ filename: '12345_test.ts' }]);
+  await MigrationModel.insertMany([{ filename: '12345_test' }]);
   await writeFile(
     path.join(migrationsPath, '12345_test.ts'),
     `

@@ -8,6 +8,7 @@ import mongoose, { createConnection } from 'mongoose';
 import { terminal } from '@aomex/console';
 import { pathToFiles } from '@aomex/internal-file-import';
 import { mkdir } from 'node:fs/promises';
+import path from 'node:path';
 
 const commandName = 'mongoose:migration:down';
 
@@ -35,7 +36,9 @@ export const migrationDown = (opts: Required<MigrationOptions>) => {
       if (!filename) return;
       await mkdir(opts.migrationsPath, { recursive: true });
       const allFiles = await pathToFiles(opts.migrationsPath);
-      const fullPath = allFiles.find((item) => item.endsWith(filename));
+      const fullPath = allFiles.find((item) =>
+        item.endsWith(filename + path.extname(item)),
+      );
 
       if (!fullPath) {
         throw new Error(i18n.t('migration.file_not_found', { file: filename }));

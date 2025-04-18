@@ -34,14 +34,16 @@ export const migrationUp = (opts: Required<MigrationOptions>) => {
       await mkdir(opts.migrationsPath, { recursive: true });
       const allFiles = await pathToFiles(opts.migrationsPath);
       const waitingMigrateFiles = allFiles
-        .filter((item) => !migratedFiles.includes(path.basename(item)))
+        .filter(
+          (item) => !migratedFiles.includes(path.basename(item, path.extname(item))),
+        )
         .sort();
 
       for (const filePath of waitingMigrateFiles) {
         const instance = await import(filePath);
         const migrate = instance.default;
         if (migrate instanceof Migrate) {
-          const filename = path.basename(filePath);
+          const filename = path.basename(filePath, path.extname(filePath));
           try {
             await connection.transaction(async (session) => {
               await MigrationModel.create([{ filename }], { session });

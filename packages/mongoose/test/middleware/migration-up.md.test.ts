@@ -127,10 +127,10 @@ test('完整迁移', async () => {
     .toMatchInlineSnapshot(`
     [
       {
-        "filename": "12345_test.ts",
+        "filename": "12345_test",
       },
       {
-        "filename": "12346_test.ts",
+        "filename": "12346_test",
       },
     ]
   `);
@@ -167,7 +167,7 @@ test('部分迁移', async () => {
     .toMatchInlineSnapshot(`
     [
       {
-        "filename": "12345_test.ts",
+        "filename": "12345_test",
       },
     ]
   `);
@@ -213,10 +213,10 @@ test('部分迁移', async () => {
     .toMatchInlineSnapshot(`
     [
       {
-        "filename": "12345_test.ts",
+        "filename": "12345_test",
       },
       {
-        "filename": "12346_test.ts",
+        "filename": "12346_test",
       },
     ]
   `);
