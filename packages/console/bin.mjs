@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 
 import { pathToFileURL } from 'node:url';
-import { globSync } from 'node:fs';
+import { glob } from 'glob';
 import { tsImport } from 'tsx/esm/api';
-import { join } from 'node:path';
 
 const fileName = 'cli.{ts,js,mts,mjs}';
-const files = globSync([fileName, join('src', fileName)]);
+const files = await glob([fileName, `src/${fileName}`], { magicalBraces: true });
 const cliEntry = files[0];
 
 if (!cliEntry) {
