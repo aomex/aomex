@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.23.3](https://github.com/aomex/aomex/compare/v3.23.2...v3.23.3) (2025-04-18)
+
+
+### Reverts
+
+* **console:** 使用glob包代替fs.glob ([f6dde24](https://github.com/aomex/aomex/commit/f6dde24ed1b2a4e320d219bb6a1613491b98bdbb))
+
+
+
+
+
 ## [3.23.2](https://github.com/aomex/aomex/compare/v3.23.1...v3.23.2) (2025-04-18)
 
 
