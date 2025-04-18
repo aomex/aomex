@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.23.1](https://github.com/aomex/aomex/compare/v3.23.0...v3.23.1) (2025-04-18)
+
+
+### Bug Fixes
+
+* **mongoose:** 无效的导出模块 Connection ([af06e45](https://github.com/aomex/aomex/commit/af06e450318d07ae0489779443fe610b18aea709))
+* **mongoose:** 迁移目录可能目录不存在 ([bcdb986](https://github.com/aomex/aomex/commit/bcdb9869318062097b5a31d501cdfb8a51b53910))
+
+
+
+
+
 # [3.23.0](https://github.com/aomex/aomex/compare/v3.22.0...v3.23.0) (2025-04-16)
 
 
