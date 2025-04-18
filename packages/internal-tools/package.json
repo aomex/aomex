@@ -1,6 +1,6 @@
 {
   "name": "@aomex/internal-tools",
-  "version": "3.23.1",
+  "version": "3.23.2",
   "description": "aomex内部实用工具",
   "scripts": {
     "prepublishOnly": "tsup"
