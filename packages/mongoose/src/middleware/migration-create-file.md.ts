@@ -1,5 +1,5 @@
 import { middleware, rule, validate } from '@aomex/common';
-import type { ConsoleMiddleware } from '@aomex/console';
+import { terminal, type ConsoleMiddleware } from '@aomex/console';
 import snakeCase from 'lodash.snakecase';
 import { i18n } from '../i18n';
 import path from 'node:path';
@@ -46,6 +46,11 @@ export default migrate({
   },
 });
 `,
+      );
+      terminal.printSuccess(
+        i18n.t('migration.file_created', {
+          file: path.relative(process.cwd(), fullPath),
+        }),
       );
     },
     help: {

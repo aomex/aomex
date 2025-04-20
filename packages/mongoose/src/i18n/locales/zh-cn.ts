@@ -17,6 +17,7 @@ export const zh = I18n.define({
     up: '执行迁移逻辑',
     down: '回滚迁移逻辑',
     file_not_found: "迁移文件 '{{file}}' 不存在",
-    input_file_name: '迁移文件名是什么？',
+    input_file_name: '迁移文件名是什么？> ',
+    file_created: '迁移文件创建成功 "{{file}}"',
   },
 });
