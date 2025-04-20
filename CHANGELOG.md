@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.24.0](https://github.com/aomex/aomex/compare/v3.23.3...v3.24.0) (2025-04-20)
+
+
+### Features
+
+* **mongoose:** decimal123和objectid验证器的默认值支持传入字符串 ([e954d56](https://github.com/aomex/aomex/commit/e954d5653af0854aa8e1f84fbf57da4a3b77e572))
+* **mongoose:** 创建迁移文件时，支持使用对话输入文件名 ([9261a31](https://github.com/aomex/aomex/commit/9261a314539532f01d96049be9b31c4856ba36ec))
+* **mongoose:** 回滚指令增加--all参数回滚全部 ([2136394](https://github.com/aomex/aomex/commit/213639407dc232f60fd53251e0a1d040011b87a1))
+* **redoc-ui:** 增加redoc文档平台 ([b5f4197](https://github.com/aomex/aomex/commit/b5f4197a68cb361d95483888f727d5dbb579350d))
+
+
+
+
+
 ## [3.23.3](https://github.com/aomex/aomex/compare/v3.23.2...v3.23.3) (2025-04-18)
 
 
