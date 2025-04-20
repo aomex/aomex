@@ -27,7 +27,7 @@ test('默认值传入字符串自动转为objectid', async () => {
     'config'
   ].defaultValue;
   expect(defaultValue).toBeInstanceOf(mongo.ObjectId);
-  expect(defaultValue).toMatchInlineSnapshot();
+  expect(defaultValue).toMatchInlineSnapshot(`"67e4c72dd163c5dbf922b752"`);
 });
 
 test('获取文档', () => {

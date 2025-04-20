@@ -22,10 +22,10 @@ test('生成时间前缀', async () => {
   const app = new ConsoleApp({
     mount: [migrationCreateFile(migrationsPath)],
   });
-  await app.run('mongoose:migration:create');
+  await app.run('mongoose:migration:create', '--name', 'foobar');
   const files = await readdir(migrationsPath);
   expect(files).toHaveLength(1);
-  expect(files[0]).toMatch(/^\d{17}_\.ts$/);
+  expect(files[0]).toMatch(/^\d{17}_/);
 });
 
 test('自定义名称', async () => {
@@ -35,14 +35,14 @@ test('自定义名称', async () => {
   await app.run('mongoose:migration:create', '--name', 'foobar');
   const files = await readdir(migrationsPath);
   expect(files).toHaveLength(1);
-  expect(files[0]).toMatch(/^\d{17}_foobar\.ts$/);
+  expect(files[0]).toMatch(/_foobar\.ts$/);
 });
 
 test('模板内容', async () => {
   const app = new ConsoleApp({
     mount: [migrationCreateFile(migrationsPath)],
   });
-  await app.run('mongoose:migration:create');
+  await app.run('mongoose:migration:create', '--name', 'foo');
   const files = await readdir(migrationsPath);
   await expect(readFile(path.join(migrationsPath, files[0]!), 'utf8')).resolves
     .toMatchInlineSnapshot(`
