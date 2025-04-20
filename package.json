@@ -14,10 +14,10 @@
     "sync:main": "sh scripts/develop-sync-main.sh"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=22.8.0"
   },
   "volta": {
-    "node": "22.0.0",
+    "node": "22.8.0",
     "pnpm": "10.8.1"
   },
   "packageManager": "pnpm@10.8.1",

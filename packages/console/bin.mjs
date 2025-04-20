@@ -3,6 +3,7 @@
 import { pathToFileURL } from 'node:url';
 import { glob } from 'glob';
 import { tsImport } from 'tsx/esm/api';
+import { enableCompileCache } from 'node:module';
 
 const fileName = 'cli.{ts,js,mts,mjs}';
 const files = await glob([fileName, `src/${fileName}`], { magicalBraces: true });
@@ -18,6 +19,8 @@ if (!cliEntry) {
 }
 
 process.env['AOMEX_CLI_MODE'] = '1';
+
+enableCompileCache();
 
 if (cliEntry.endsWith('ts')) {
   await tsImport(pathToFileURL(cliEntry).toString(), import.meta.url);
