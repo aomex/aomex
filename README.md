@@ -48,8 +48,6 @@ npx create-aomex@latest
 | [response-time](./packages/response-time) | [![npm](https://img.shields.io/npm/v/@aomex/response-time)](https://www.npmjs.com/package/@aomex/response-time) | web         | 设置服务响应时长报文 |
 | [rate-limit](./packages/rate-limit)       | [![npm](https://img.shields.io/npm/v/@aomex/rate-limit)](https://www.npmjs.com/package/@aomex/rate-limit)       | web         | 请求限速             |
 | [etag](./packages/etag)                   | [![npm](https://img.shields.io/npm/v/@aomex/etag)](https://www.npmjs.com/package/@aomex/etag)                   | web         | 设置etag报文         |
-| [openapi](./packages/openapi)             | [![npm](https://img.shields.io/npm/v/@aomex/openapi)](https://www.npmjs.com/package/@aomex/openapi)             | web/console | 生成接口文档         |
-| [swagger-ui](./packages/swagger-ui)       | [![npm](https://img.shields.io/npm/v/@aomex/swagger-ui)](https://www.npmjs.com/package/@aomex/swagger-ui)       | web         | swagger文档服务      |
 | [cron](./packages/cron)                   | [![npm](https://img.shields.io/npm/v/@aomex/cron)](https://www.npmjs.com/package/@aomex/cron)                   | console     | 定时任务             |
 | [async-trace](./packages/async-trace)     | [![npm](https://img.shields.io/npm/v/@aomex/async-trace)](https://www.npmjs.com/package/@aomex/async-trace)     | web/console | 异步逻辑链路追踪     |
 
@@ -59,6 +57,15 @@ npx create-aomex@latest
 | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | [cache](./packages/cache)                             | [![npm](https://img.shields.io/npm/v/@aomex/cache)](https://www.npmjs.com/package/@aomex/cache)                             | 缓存库入口  |
 | [cache-redis-adapter](./packages/cache-redis-adapter) | [![npm](https://img.shields.io/npm/v/@aomex/cache-redis-adapter)](https://www.npmjs.com/package/@aomex/cache-redis-adapter) | redis适配器 |
+
+# 文档服务
+
+| Name                                                    | Version                                                                                                   | Desc                                                   |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| [openapi](./packages/openapi)                           | [![npm](https://img.shields.io/npm/v/@aomex/openapi)](https://www.npmjs.com/package/@aomex/openapi)       | 根据接口生成 openapi{.json,.yaml} 文件                 |
+| [foca-openapi](https://github.com/foca-js/foca-openapi) | [![npm](https://img.shields.io/npm/v/foca-openapi)](https://www.npmjs.com/package/foca-openapi)           | 根据 openapi{.json,.yaml} 文件生成Typescript请求客户端 |
+| [swagger-ui](./packages/swagger-ui)                     | [![npm](https://img.shields.io/npm/v/@aomex/swagger-ui)](https://www.npmjs.com/package/@aomex/swagger-ui) | swagger文档渲染网页                                    |
+| [redoc-ui](./packages/redoc-ui)                         | [![npm](https://img.shields.io/npm/v/@aomex/redoc-ui)](https://www.npmjs.com/package/@aomex/redoc-ui)     | redoc文档渲染网页                                      |
 
 # 身份认证
 

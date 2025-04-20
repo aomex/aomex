@@ -1,7 +1,7 @@
 {
-  "name": "@aomex/swagger-ui",
-  "version": "3.23.3",
-  "description": "Swagger文档展示UI",
+  "name": "@aomex/redoc-ui",
+  "version": "3.23.2",
+  "description": "Redoc文档展示UI",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
   "license": "MIT",
@@ -37,8 +37,8 @@
   },
   "dependencies": {
     "@aomex/serve-static": "workspace:^",
-    "swagger-ui": "^5.18.3",
-    "yaml": "^2.6.0"
+    "redoc": "^2.5.0",
+    "yaml": "^2.7.1"
   },
   "devDependencies": {
     "@aomex/common": "workspace:^",
