@@ -9,9 +9,8 @@ import {
   Validator,
 } from '@aomex/common';
 import { Schema, SchemaTypes, type SchemaDefinition } from 'mongoose';
-import { MongoDecimal128Validator } from '../overrides/mongo-decimal128.validator';
 import { i18n } from '../i18n';
-import { MongoObjectIdValidator } from '../overrides/mongo-object-id.validator';
+import { MongoDecimal128Validator, MongoObjectIdValidator } from '../validators';
 
 export const validatorToSchema = (validator: Validator) => {
   const defaultValue = validator['config']['nullable']

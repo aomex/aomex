@@ -16,12 +16,21 @@ export class MongoObjectIdValidator<T = mongo.ObjectId> extends Validator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   public declare optional: () => MongoObjectIdValidator<T | Validator.TOptional>;
-  public declare default: (
-    objectId: mongo.ObjectId,
-  ) => MongoObjectIdValidator<T | Validator.TDefault>;
+  public declare nullable: () => MongoObjectIdValidator<T | null>;
   public declare transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
+
+  override default(
+    value: string | mongo.ObjectId,
+  ): MongoObjectIdValidator<T | Validator.TDefault> {
+    const validator = super.default(
+      typeof value === 'string'
+        ? mongo.ObjectId.createFromHexString(value.toString())
+        : value,
+    );
+    return validator as MongoObjectIdValidator<T | Validator.TDefault>;
+  }
 
   protected validateValue(
     value: any,
@@ -44,8 +53,12 @@ export class MongoObjectIdValidator<T = mongo.ObjectId> extends Validator<T> {
   protected declare copy: () => MongoObjectIdValidator<T>;
 
   protected override toDocument(): OpenAPI.SchemaObject {
+    const defaultValue: mongo.ObjectId | undefined = this.getDefaultValue(
+      this.config.defaultValue,
+    );
     return {
       type: 'string',
+      default: defaultValue && defaultValue.toHexString(),
     };
   }
 }

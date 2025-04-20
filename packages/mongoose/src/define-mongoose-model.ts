@@ -21,8 +21,7 @@ import {
 } from 'mongoose';
 import type { TimestampSetting, VersionKeySetting } from './type-d';
 import { validatorToSchema } from './libs/validator-to-schema';
-import type { MongoDecimal128Validator } from './overrides/mongo-decimal128.validator';
-import type { MongoObjectIdValidator } from './overrides/mongo-object-id.validator';
+import type { MongoDecimal128Validator, MongoObjectIdValidator } from './validators';
 
 export const defineMongooseModel = <
   const Schema extends {

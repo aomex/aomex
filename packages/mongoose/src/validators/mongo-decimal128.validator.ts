@@ -16,12 +16,21 @@ export class MongoDecimal128Validator<T = mongo.Decimal128> extends Validator<T>
     mode?: Validator.DocumentMergeMode,
   ) => this;
   public declare optional: () => MongoDecimal128Validator<T | Validator.TOptional>;
-  public declare default: (
-    decimal128: mongo.Decimal128,
-  ) => MongoDecimal128Validator<T | Validator.TDefault>;
+  public declare nullable: () => MongoDecimal128Validator<T | null>;
   public declare transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
+
+  override default(
+    value: number | string | mongo.Decimal128,
+  ): MongoDecimal128Validator<T | Validator.TDefault> {
+    const validator = super.default(
+      typeof value === 'string' || typeof value === 'number'
+        ? mongo.Decimal128.fromString(value.toString())
+        : value,
+    );
+    return validator as MongoDecimal128Validator<T | Validator.TDefault>;
+  }
 
   protected validateValue(
     value: any,
@@ -44,8 +53,12 @@ export class MongoDecimal128Validator<T = mongo.Decimal128> extends Validator<T>
   protected declare copy: () => MongoDecimal128Validator<T>;
 
   protected override toDocument(): OpenAPI.SchemaObject {
+    const defaultValue: mongo.Decimal128 | undefined = this.getDefaultValue(
+      this.config.defaultValue,
+    );
     return {
       type: 'string',
+      default: defaultValue && defaultValue.toString(),
     };
   }
 }
