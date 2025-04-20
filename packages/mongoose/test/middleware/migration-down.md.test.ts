@@ -156,9 +156,52 @@ test('每次只滚一个', async () => {
       },
     ]
   `);
-  await expect(
-    MigrationModel.find({}, { filename: 1, _id: 0 }),
-  ).resolves.toMatchInlineSnapshot(`[]`);
+  await expect(MigrationModel.find()).resolves.toMatchInlineSnapshot(`[]`);
+});
+
+test('一次回滚全部', async () => {
+  await MigrationModel.insertMany([
+    { filename: '12345_test' },
+    { filename: '12346_test' },
+  ]);
+  await writeFile(
+    path.join(migrationsPath, '12345_test.ts'),
+    `
+    import { migrate } from '../../../src';
+    export default migrate({
+      up: async () => {},
+      down: async (db, session) => {
+        await db.collection('foo').updateMany({}, { $rename: { fooooo: 'good' }}, { session });
+      },
+    });`,
+  );
+  await writeFile(
+    path.join(migrationsPath, '12346_test.ts'),
+    `
+    import { migrate } from '../../../src';
+    export default migrate({
+      up: async () => {},
+      down: async (db, session) => {
+        await db.collection('foo').updateMany({}, { $rename: { foo: 'fooooo' }}, { session });
+      },
+    });`,
+  );
+  await app.run('mongoose:migration:down', '--all');
+  await expect(FooModel.find({}, { _id: 0 }).lean()).resolves.toMatchInlineSnapshot(`
+    [
+      {
+        "good": "bar1",
+      },
+      {
+        "good": "bar2",
+      },
+      {
+        "bar": 1,
+        "fo": "bar3",
+      },
+    ]
+  `);
+  await expect(MigrationModel.find()).resolves.toMatchInlineSnapshot(`[]`);
 });
 
 test('出错回滚', async () => {

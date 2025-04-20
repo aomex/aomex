@@ -34,6 +34,13 @@ test('文档', async () => {
         "summary": "创建迁移文件",
       },
       "mongoose:migration:down": {
+        "parameters": [
+          {
+            "defaultValue": false,
+            "name": "all",
+            "type": "boolean",
+          },
+        ],
         "summary": "回滚迁移逻辑",
       },
       "mongoose:migration:up": {
