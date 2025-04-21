@@ -8,7 +8,7 @@ import {
 } from '../lib/constant';
 
 export interface CropProps {
-  readonly cron?: {
+  readonly cron: {
     /**
      * 计划执行的时间
      */
@@ -38,6 +38,14 @@ export class CronMiddleware extends ConsoleMiddleware<CropProps> {
           scheduleTime: new Date(process.env[ENV_CRON_SCHEDULE_TIME]!),
           nextScheduleTime: nextTime,
           remainTimeMS: Math.max(0, nextTime.getTime() - Date.now()),
+        };
+      } else {
+        const now = new Date();
+        ctx.cron = {
+          executionTime: now,
+          scheduleTime: now,
+          nextScheduleTime: now,
+          remainTimeMS: 0,
         };
       }
       return next();
