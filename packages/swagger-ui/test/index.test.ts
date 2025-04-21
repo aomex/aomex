@@ -15,7 +15,21 @@ test('中间件', () => {
 
 test('获取html', async () => {
   const app = new WebApp({
-    mount: [swaggerUI({ openapi: openapiJson })],
+    mount: [
+      swaggerUI({
+        openapi: openapiJson,
+        headTags: [
+          {
+            tag: 'link',
+            props: {
+              rel: 'shortcut icon',
+              type: 'image/x-icon',
+              href: 'http://host/favicon.ico',
+            },
+          },
+        ],
+      }),
+    ],
   });
   await supertest(app.listen())
     .get('/swagger')
@@ -34,6 +48,7 @@ test('获取html', async () => {
               name="viewport"
               content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
             />
+            <link rel="shortcut icon" type="image/x-icon" href="http://host/favicon.ico" />
             <link rel="stylesheet" href="./swagger/swagger-ui.css" />
           </head>
           <body>
@@ -132,6 +147,7 @@ test('动态返回openapi文档', async () => {
               name="viewport"
               content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
             />
+            
             <link rel="stylesheet" href="./swagger/swagger-ui.css" />
           </head>
           <body>
@@ -173,6 +189,7 @@ test('yaml文档', async () => {
               name="viewport"
               content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
             />
+            
             <link rel="stylesheet" href="./swagger/swagger-ui.css" />
           </head>
           <body>
@@ -214,6 +231,7 @@ test('yml文档', async () => {
               name="viewport"
               content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
             />
+            
             <link rel="stylesheet" href="./swagger/swagger-ui.css" />
           </head>
           <body>

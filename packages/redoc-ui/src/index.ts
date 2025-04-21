@@ -43,10 +43,38 @@ export interface RedocUIOptions {
    * 是否允许访问文档服务，每次请求都会询问
    */
   enable?: (ctx?: WebContext) => boolean | Promise<boolean>;
+  /**
+   * 放在<head></head>内的标签集合
+   *
+   * ```javascript
+   * [{
+   *   tag: 'link',
+   *   props: {
+   *     rel: 'shortcut icon',
+   *     type: 'image/x-icon',
+   *     href: 'http://host/favicon.ico',
+   *   },
+   * }]
+   * ```
+   */
+  headTags?: {
+    /**
+     * 标签名，如：meta, link
+     */
+    tag: string;
+    /**
+     * 标签内属性
+     */
+    props: Record<string, any>;
+    /**
+     * 是否自闭合标签，类似 <br />。默认值：`true`
+     */
+    selfClosing?: boolean;
+  }[];
 }
 
 export const redocUI = (opts: RedocUIOptions): WebMiddleware => {
-  let { uriPrefix = '/redoc', openapi, enable } = opts;
+  let { uriPrefix = '/redoc', openapi, enable, headTags = [] } = opts;
   uriPrefix = uriPrefix.split('/').map(encodeURIComponent).join('/');
   if (!uriPrefix.startsWith('/')) uriPrefix = '/' + uriPrefix;
 
@@ -101,7 +129,17 @@ export const redocUI = (opts: RedocUIOptions): WebMiddleware => {
       html = html
         .replaceAll('#title#', docs.info.title)
         .replaceAll('#prefix#', '.' + uriPrefix)
-        .replaceAll('#lang#', i18n.language);
+        .replaceAll('#lang#', i18n.language)
+        .replaceAll(
+          '#headTags#',
+          headTags
+            .map(({ tag, props, selfClosing = true }) => {
+              return `<${tag} ${Object.entries(props)
+                .map(([key, value]) => `${key}="${value}"`)
+                .join(' ')} ${selfClosing ? '/>' : `></${tag}>`}`;
+            })
+            .join('\n'),
+        );
       resolve(undefined);
     });
     return promise;

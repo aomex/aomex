@@ -15,7 +15,21 @@ test('中间件', () => {
 
 test('获取html', async () => {
   const app = new WebApp({
-    mount: [redocUI({ openapi: openapiJson })],
+    mount: [
+      redocUI({
+        openapi: openapiJson,
+        headTags: [
+          {
+            tag: 'link',
+            props: {
+              rel: 'shortcut icon',
+              type: 'image/x-icon',
+              href: 'http://host/favicon.ico',
+            },
+          },
+        ],
+      }),
+    ],
   });
   await supertest(app.listen())
     .get('/redoc')
@@ -40,6 +54,7 @@ test('获取html', async () => {
                 padding: 0;
               }
             </style>
+            <link rel="shortcut icon" type="image/x-icon" href="http://host/favicon.ico" />
             <script src="./redoc/redoc.standalone.js"></script>
           </head>
           <body>
@@ -142,6 +157,7 @@ test('动态返回openapi文档', async () => {
                 padding: 0;
               }
             </style>
+            
             <script src="./redoc/redoc.standalone.js"></script>
           </head>
           <body>
@@ -187,6 +203,7 @@ test('yaml文档', async () => {
                 padding: 0;
               }
             </style>
+            
             <script src="./redoc/redoc.standalone.js"></script>
           </head>
           <body>
@@ -232,6 +249,7 @@ test('yml文档', async () => {
                 padding: 0;
               }
             </style>
+            
             <script src="./redoc/redoc.standalone.js"></script>
           </head>
           <body>
