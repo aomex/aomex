@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.25.0](https://github.com/aomex/aomex/compare/v3.24.0...v3.25.0) (2025-04-22)
+
+
+### Features
+
+* **swagger-ui,redoc-ui:** 增加头部标签配置 ([ac30843](https://github.com/aomex/aomex/commit/ac30843bcd61885c0f8ab39d8e6e412f5a867707))
+
+
+
+
+
 # [3.24.0](https://github.com/aomex/aomex/compare/v3.23.3...v3.24.0) (2025-04-20)
 
 

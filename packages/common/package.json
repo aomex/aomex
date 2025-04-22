@@ -1,6 +1,6 @@
 {
   "name": "@aomex/common",
-  "version": "3.24.0",
+  "version": "3.25.0",
   "description": "aomex公共库",
   "scripts": {
     "prepublishOnly": "tsup"

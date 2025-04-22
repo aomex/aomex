@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.25.0](https://github.com/aomex/aomex/compare/v3.24.0...v3.25.0) (2025-04-22)
+
+
+### Features
+
+* **console:** cli 模式下开启编译缓存 ([6715f9f](https://github.com/aomex/aomex/commit/6715f9fabc326fb666fa015037b54f35d53b05e7))
+
+
+
+
+
 # [3.24.0](https://github.com/aomex/aomex/compare/v3.23.3...v3.24.0) (2025-04-20)
 
 **Note:** Version bump only for package @aomex/console

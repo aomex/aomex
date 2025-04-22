@@ -1,6 +1,6 @@
 {
   "name": "@aomex/async-trace",
-  "version": "3.24.0",
+  "version": "3.25.0",
   "description": "异步逻辑链路追踪",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",

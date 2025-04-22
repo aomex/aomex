@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.25.0](https://github.com/aomex/aomex/compare/v3.24.0...v3.25.0) (2025-04-22)
+
+
+### Features
+
+* **mongoose:** 增加迁移文件创建成功提示信息 ([3631ae2](https://github.com/aomex/aomex/commit/3631ae23743c7fe0a51e73f2a28612475d4f0d67))
+
+
+
+
+
 # [3.24.0](https://github.com/aomex/aomex/compare/v3.23.3...v3.24.0) (2025-04-20)
 
 
