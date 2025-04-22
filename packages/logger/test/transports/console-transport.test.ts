@@ -6,7 +6,7 @@ test('标准输出', async () => {
   const t = new ConsoleTransport();
   const spy = vitest.spyOn(process.stdout, 'write').mockImplementation(() => true);
   await t.consume({
-    text: 'hello world',
+    content: 'hello world',
     timestamp: new Date(1730296983321),
     level: 'foo',
   });
@@ -19,7 +19,7 @@ test('标准错误', async () => {
   const t = new ConsoleTransport({ output: process.stderr });
   const spy = vitest.spyOn(process.stderr, 'write').mockImplementation(() => true);
   await t.consume({
-    text: 'hello world',
+    content: 'hello world',
     timestamp: new Date(1730296983321),
     level: 'foo',
   });
@@ -34,7 +34,7 @@ test('颜色', async () => {
   });
   const spy = vitest.spyOn(process.stdout, 'write').mockImplementation(() => true);
   await t.consume({
-    text: 'hello world',
+    content: 'hello world',
     timestamp: new Date(1730296983321),
     level: 'foo',
   });
@@ -43,7 +43,7 @@ test('颜色', async () => {
   );
 
   await t.consume({
-    text: 'hello world',
+    content: 'hello world',
     timestamp: new Date(1730296983321),
     level: 'bar',
   });

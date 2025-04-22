@@ -7,6 +7,7 @@ import { Logger } from '../src';
   });
 
   logger.foo('abc');
+  // @ts-expect-error
   logger.bar('abcd %s', 'efg');
   logger.baz('abc');
   // @ts-expect-error

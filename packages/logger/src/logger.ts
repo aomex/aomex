@@ -1,6 +1,5 @@
-import type { LoggerTransport } from './logger-transport';
+import type { Transport } from './transports/transport';
 import { transports } from './transports';
-import util from 'node:util';
 import timers from 'node:timers/promises';
 
 export namespace Logger {
@@ -18,7 +17,7 @@ export namespace Logger {
       /**
        * 接收日志。内置方案汇聚在 `Logger.transports` 属性中。用户也可以自己实现
        */
-      transport: LoggerTransport;
+      transport: Transport;
       /**
        * 日志输出等级，有以下几种传值方式：
        * - `all` 输出全部等级的日志
@@ -33,28 +32,32 @@ export namespace Logger {
   export interface Log<T extends string = string> {
     timestamp: Date;
     level: T;
-    text: string;
+    content: string;
   }
 }
 
 export abstract class Logger<T extends string> {
   static transports = transports;
 
-  static create = <Levels extends string>(
-    opts: Logger.Options<Levels>,
-  ): Logger<Levels> & { [K in Levels]: (text: string, ...args: any[]) => void } => {
+  static create = <L extends string>(
+    opts: Logger.Options<L>,
+  ): Logger<L> & { [K in L]: (content: string) => void } => {
     // @ts-expect-error
     return new Logger(opts);
   };
 
   protected readonly levels: T[];
   protected readonly logs: Logger.Log<T>[] = [];
-  protected transportAndLevels: { transport: LoggerTransport; levels: T[] }[];
+  protected transportAndLevels: { transport: Transport; levels: T[] }[];
   protected timer?: NodeJS.Timeout;
 
   readonly transports: {
-    add(opts: { transport: LoggerTransport; level: Logger.Level<T> }): void;
-    remove(strip: (transport: LoggerTransport, levels: T[]) => boolean): void;
+    add(opts: { transport: Transport; level: Logger.Level<T> }): void;
+    remove(strip: (transport: Transport, levels: T[]) => boolean): void;
+    /**
+     * 统计某个级别有几个消费实例
+     */
+    count: (level: T) => number;
   };
 
   constructor(opts: Logger.Options<T>) {
@@ -85,6 +88,13 @@ export abstract class Logger<T extends string> {
           },
         );
       },
+      count: (level) => {
+        let counter = 0;
+        for (const { levels } of this.transportAndLevels) {
+          if (levels.includes(level)) ++counter;
+        }
+        return counter;
+      },
     };
   }
 
@@ -99,21 +109,10 @@ export abstract class Logger<T extends string> {
     }
   }
 
-  /**
-   * 统计某个级别有几个消费实例
-   */
-  countTransports(level: T): number {
-    let counter = 0;
-    for (const { levels } of this.transportAndLevels) {
-      if (levels.includes(level)) ++counter;
-    }
-    return counter;
-  }
-
-  protected log(level: T, text: string, ...args: any[]) {
+  protected log(level: T, content: string) {
     this.logs.push({
       timestamp: new Date(),
-      text: util.format(text, ...args),
+      content,
       level,
     });
     this.timer ||= setTimeout(async () => {

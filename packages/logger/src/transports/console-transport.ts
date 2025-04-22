@@ -1,9 +1,9 @@
 import { styleText } from 'node:util';
 import type tty from 'node:tty';
-import { LoggerTransport } from '../logger-transport';
+import { Transport } from './transport';
 import type { Logger } from '../logger';
 
-export class ConsoleTransport extends LoggerTransport {
+export class ConsoleTransport extends Transport {
   protected readonly colors: Record<string, Parameters<typeof styleText>[0]>;
   protected readonly writer: tty.WriteStream;
 
@@ -23,7 +23,7 @@ export class ConsoleTransport extends LoggerTransport {
     const time = this.dateToString(log.timestamp);
     const level = `[${log.level}]`;
     this.writer.write(
-      `${color ? styleText(color, level) : level} ${color ? styleText(color, time) : time} ${log.text}\n`,
+      `${color ? styleText(color, level) : level} ${color ? styleText(color, time) : time} ${log.content}\n`,
     );
   }
 }

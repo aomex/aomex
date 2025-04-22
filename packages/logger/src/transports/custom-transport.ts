@@ -1,15 +1,10 @@
-import { LoggerTransport } from '../logger-transport';
+import { Transport } from './transport';
 import type { Logger } from '../logger';
 
-export class CustomTransport extends LoggerTransport {
-  protected readonly consumeHandle: (
-    this: LoggerTransport,
-    log: Logger.Log,
-  ) => Promise<any>;
+export class CustomTransport extends Transport {
+  protected readonly consumeHandle: (this: Transport, log: Logger.Log) => Promise<any>;
 
-  constructor(opts: {
-    consume: (this: LoggerTransport, log: Logger.Log) => Promise<any>;
-  }) {
+  constructor(opts: { consume: (this: Transport, log: Logger.Log) => Promise<any> }) {
     super();
     this.consumeHandle = opts.consume.bind(this);
   }

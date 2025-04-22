@@ -15,14 +15,14 @@ test('按顺序记录日志', () => {
   const logger = Logger.create({ levels: ['foo', 'bar'] });
   logger.foo('aa');
   logger.bar('bb');
-  logger.foo('hello %s', 'world');
-  expect(logger['logs'].map((m) => m.text)).toStrictEqual(['aa', 'bb', 'hello world']);
+  logger.foo('hello world');
+  expect(logger['logs'].map((m) => m.content)).toStrictEqual(['aa', 'bb', 'hello world']);
 });
 
 test('统计消费实例数量', () => {
   {
     const logger = Logger.create({ levels: ['foo', 'bar'] });
-    expect(logger.countTransports('foo')).toBe(0);
+    expect(logger.transports.count('foo')).toBe(0);
   }
 
   {
@@ -35,8 +35,8 @@ test('统计消费实例数量', () => {
         },
       ],
     });
-    expect(logger.countTransports('foo')).toBe(1);
-    expect(logger.countTransports('bar')).toBe(0);
+    expect(logger.transports.count('foo')).toBe(1);
+    expect(logger.transports.count('bar')).toBe(0);
   }
 
   {
@@ -49,8 +49,8 @@ test('统计消费实例数量', () => {
         },
       ],
     });
-    expect(logger.countTransports('foo')).toBe(1);
-    expect(logger.countTransports('bar')).toBe(1);
+    expect(logger.transports.count('foo')).toBe(1);
+    expect(logger.transports.count('bar')).toBe(1);
   }
 });
 
@@ -164,9 +164,9 @@ test('消费者同时消费', async () => {
   });
 
   logger['logs'].push(
-    { text: 'hello foo!', level: 'foo', timestamp: new Date(1730355001000) },
-    { text: 'hello bar!', level: 'bar', timestamp: new Date(1730355002000) },
-    { text: 'hello baz!', level: 'baz', timestamp: new Date(1730355003000) },
+    { content: 'hello foo!', level: 'foo', timestamp: new Date(1730355001000) },
+    { content: 'hello bar!', level: 'bar', timestamp: new Date(1730355002000) },
+    { content: 'hello baz!', level: 'baz', timestamp: new Date(1730355003000) },
   );
 
   await logger['consume']();
@@ -175,13 +175,13 @@ test('消费者同时消费', async () => {
   expect(t1.messages).toMatchInlineSnapshot(`
     [
       {
+        "content": "hello foo!",
         "level": "foo",
-        "text": "hello foo!",
         "timestamp": 2024-10-31T06:10:01.000Z,
       },
       {
+        "content": "hello bar!",
         "level": "bar",
-        "text": "hello bar!",
         "timestamp": 2024-10-31T06:10:02.000Z,
       },
     ]
@@ -189,13 +189,13 @@ test('消费者同时消费', async () => {
   expect(t2.messages).toMatchInlineSnapshot(`
     [
       {
+        "content": "hello bar!",
         "level": "bar",
-        "text": "hello bar!",
         "timestamp": 2024-10-31T06:10:02.000Z,
       },
       {
+        "content": "hello baz!",
         "level": "baz",
-        "text": "hello baz!",
         "timestamp": 2024-10-31T06:10:03.000Z,
       },
     ]

@@ -1,5 +1,5 @@
 import { middleware } from '@aomex/common';
-import { Logger, LoggerTransport } from '@aomex/logger';
+import { Logger, Transport } from '@aomex/logger';
 import type { WebContext, WebMiddleware } from '@aomex/web';
 import { HttpLoggerToken } from './http-logger-token';
 import { Counter } from './counter';
@@ -18,7 +18,7 @@ export interface HttpLoggerOptions {
   /**
    * 日志输出端口。默认使用 `Logger.transport.Console`。
    */
-  transports?: LoggerTransport[];
+  transports?: Transport[];
   /**
    * 自定义关键词
    * ```
@@ -52,7 +52,7 @@ export const httpLogger = (options: HttpLoggerOptions = {}): WebMiddleware => {
   });
 
   return middleware.web(async (ctx, next) => {
-    if (disable || logger.countTransports('http') === 0) return next();
+    if (disable || logger.transports.count('http') === 0) return next();
 
     const start = process.hrtime();
     const tokens = customTokens

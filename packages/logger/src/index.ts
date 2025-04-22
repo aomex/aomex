@@ -1,2 +1,2 @@
 export * from './logger';
-export * from './logger-transport';
+export * from './transports/transport';

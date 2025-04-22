@@ -2,10 +2,10 @@ import { dirname } from 'node:path';
 import type { Mode } from 'node:fs';
 import { stripVTControlCharacters } from 'node:util';
 import { appendFile, mkdir } from 'node:fs/promises';
-import { LoggerTransport } from '../logger-transport';
+import { Transport } from './transport';
 import type { Logger } from '../logger';
 
-export class FileTransport extends LoggerTransport {
+export class FileTransport extends Transport {
   protected readonly file: string | ((log: Logger.Log) => string);
   protected readonly fileMode?: Mode;
   protected readonly dirMode?: Mode;
@@ -57,7 +57,7 @@ export class FileTransport extends LoggerTransport {
     await appendFile(file, this.getContent(log), { mode: this.fileMode });
   }
 
-  protected getContent(message: Logger.Log) {
-    return `\n[${message.level}] ${this.dateToString(message.timestamp)} ${stripVTControlCharacters(message.text)}\n`;
+  protected getContent(log: Logger.Log) {
+    return `\n[${log.level}] ${this.dateToString(log.timestamp)} ${stripVTControlCharacters(log.content)}\n`;
   }
 }

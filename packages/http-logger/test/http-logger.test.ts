@@ -1,5 +1,5 @@
 import { middleware } from '@aomex/common';
-import { Logger, LoggerTransport } from '@aomex/logger';
+import { Logger, Transport } from '@aomex/logger';
 import { WebApp } from '@aomex/web';
 import { stripVTControlCharacters } from 'node:util';
 import {
@@ -19,10 +19,10 @@ import sleep from 'sleep-promise';
 
 let msgs: string[] = [];
 
-class MockTransport extends LoggerTransport {
+class MockTransport extends Transport {
   override async consume(message: Logger.Log): Promise<any> {
     msgs.push(
-      `[${message.level}] ${this.dateToString(new Date(message.timestamp))} ${stripVTControlCharacters(message.text)}`,
+      `[${message.level}] ${this.dateToString(new Date(message.timestamp))} ${stripVTControlCharacters(message.content)}`,
     );
   }
 }

@@ -12,7 +12,7 @@ test('输出到文件', async () => {
   } catch {}
   const t = new FileTransport({ file });
   await t.consume({
-    text: 'hello world',
+    content: 'hello world',
     timestamp: new Date(1730296983321),
     level: 'foo',
   });
@@ -21,7 +21,11 @@ test('输出到文件', async () => {
     [foo] 2024-10-30 22:03:03 hello world
     "
   `);
-  await t.consume({ text: 'hi earth', timestamp: new Date(1730296983321), level: 'bar' });
+  await t.consume({
+    content: 'hi earth',
+    timestamp: new Date(1730296983321),
+    level: 'bar',
+  });
   expect(readFileSync(file, 'utf8')).toMatchInlineSnapshot(`
     "
     [foo] 2024-10-30 22:03:03 hello world
@@ -43,7 +47,7 @@ test('时间文件名', async () => {
   } catch {}
   const t = new FileTransport({ file });
   await t.consume({
-    text: 'hello world',
+    content: 'hello world',
     timestamp: new Date(1730296983321),
     level: 'foo',
   });
@@ -53,7 +57,7 @@ test('时间文件名', async () => {
     "
   `);
   await t.consume({
-    text: 'hello world',
+    content: 'hello world',
     timestamp: new Date(1730296983321),
     level: 'bar',
   });
@@ -65,7 +69,7 @@ test('时间文件名', async () => {
     "
   `);
   await t.consume({
-    text: 'hello world',
+    content: 'hello world',
     timestamp: new Date(1740296983321),
     level: 'bar',
   });
@@ -90,7 +94,7 @@ test('动态文件名', async () => {
   } catch {}
   const t = new FileTransport({ file: () => file });
   await t.consume({
-    text: 'hello world',
+    content: 'hello world',
     timestamp: new Date(1730296983321),
     level: 'foo',
   });
@@ -108,7 +112,7 @@ test('过滤掉样式字符', async () => {
   } catch {}
   const t = new FileTransport({ file });
   await t.consume({
-    text: 'hello ' + styleText('green', 'world'),
+    content: 'hello ' + styleText('green', 'world'),
     timestamp: new Date(1730296983321),
     level: 'foo',
   });
