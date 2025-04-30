@@ -1,5 +1,6 @@
 import { traceBlock } from '@aomex/async-trace';
 import { CacheAdapter } from './cache-adapter';
+import { sleep } from '@aomex/common';
 
 export namespace Caching {
   export type Types =
@@ -38,8 +39,12 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * ```
    */
   async get<T>(key: string, defaultValue: T): Promise<T>;
+  async get<T extends Caching.Types>(
+    key: string,
+    defaultValue: T | null | undefined,
+  ): Promise<T | null>;
   async get<T extends Caching.Types>(key: string): Promise<T | null>;
-  async get(key: string, defaultValue?: Caching.Types): Promise<any> {
+  async get(key: string, defaultValue?: Caching.Types | null): Promise<any> {
     await this.adapter.connect();
     const result = await this.adapter.getValue(key);
     return this.decodeValue(result, defaultValue);
@@ -189,12 +194,11 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
     defaultValue?: Q;
   }) {
     const instance = this;
-    const fetching: Record<string, Promise<T>> = {};
     const { key: getKey, duration, defaultValue = null } = opts;
 
     return (originalMethod: P, context: ClassMethodDecoratorContext) => {
       return async function (this: object, ...args: Parameters<P>): Promise<any> {
-        const key =
+        const dataKey =
           getKey === undefined
             ? `${
                 'displayName' in this && typeof this.displayName === 'string'
@@ -204,23 +208,42 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
             : typeof getKey === 'string'
               ? getKey
               : getKey.apply(this, args);
-        let value = await traceBlock('Cache.get', () =>
-          instance.get<NonNullable<T>>(key),
-        );
-        if (value === null) {
-          if (fetching[key]) {
-            const promise = fetching[key];
-            value = await traceBlock('Cache.share', () => promise);
-          } else {
-            const promise = (fetching[key] = originalMethod.apply(this, args));
-            value = await traceBlock('Cache.wait', () => promise);
-            if (value !== null) {
-              await traceBlock('Cache.set', () => instance.set(key, value!, duration));
+        const waitingKey = dataKey + ':$#_waiting_#$';
+
+        const value = await traceBlock('Cache.get', () => instance.get<Q>(dataKey));
+        if (value !== null) return value;
+
+        const win = await instance.setNX(waitingKey, 1, 10_000);
+        if (win) {
+          const timer = setInterval(() => {
+            instance.expire(waitingKey, 10_000);
+          }, 5_000);
+          try {
+            const result = await traceBlock('Cache.exec', async () => {
+              return originalMethod.apply(this, args);
+            });
+            if (result !== null) {
+              await traceBlock('Cache.set', async () => {
+                await instance.set(dataKey, result!, duration);
+              });
             }
-            Reflect.deleteProperty(fetching, key);
+            return result === null ? defaultValue : result;
+          } finally {
+            clearInterval(timer);
+            await instance.delete(waitingKey);
           }
+        } else {
+          return traceBlock('Cache.wait', async () => {
+            while (true) {
+              const waiting = await instance.exists(waitingKey);
+              if (waiting) {
+                await sleep(100);
+                continue;
+              }
+              return instance.get<Q>(dataKey, defaultValue);
+            }
+          });
         }
-        return value === null ? defaultValue : value;
       };
     };
   }
@@ -261,7 +284,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
     return value;
   }
 
-  protected decodeValue(value: string | null, defaultValue?: Caching.Types) {
+  protected decodeValue(value: string | null, defaultValue?: Caching.Types | null) {
     if (value === null) {
       return defaultValue === void 0 ? null : defaultValue;
     }
