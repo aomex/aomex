@@ -5,7 +5,14 @@ import { middleware } from '@aomex/common';
 import { bytes } from '@aomex/internal-tools';
 import { statuses, type WebMiddleware } from '@aomex/web';
 
-type AcceptEncodingMethods = 'gzip' | 'deflate' | 'br' | 'identity' | 'compress' | '*';
+type AcceptEncodingMethods =
+  | 'zstd'
+  | 'gzip'
+  | 'br'
+  | 'deflate'
+  | 'identity'
+  | 'compress'
+  | '*';
 
 export interface CompressOptions {
   /**
@@ -25,6 +32,11 @@ export interface CompressOptions {
    * - 3gb
    */
   threshold?: number | string;
+
+  /**
+   * `zstd`压缩配置。设置false则代表禁止使用zstd压缩算法
+   */
+  zstd?: zlib.ZstdOptions | false;
 
   /**
    * `brotli`压缩配置。设置false则代表禁止使用br压缩算法
@@ -47,11 +59,13 @@ const ENCODING_METHODS = {
   br: zlib.createBrotliCompress,
   gzip: zlib.createGzip,
   deflate: zlib.createDeflate,
+  zstd: zlib.createZstdCompress,
 } satisfies {
   [K in AcceptEncodingMethods]?: (...args: any[]) => Transform;
 };
-const PREFERRED_ENCODINGS = <const>['br', 'gzip', 'deflate'];
+const PREFERRED_ENCODINGS = <const>['zstd', 'br', 'gzip', 'deflate'];
 const ENCODING_METHOD_OPTIONS = {
+  zstd: {},
   br: {
     params: {
       [zlib.constants.BROTLI_PARAM_QUALITY]: 4,
@@ -72,7 +86,8 @@ export interface CompressProps {
 
 /**
  * Web请求响应体积太大时，会消耗额外的服务器带宽以及花费更多时间用于内容的下载，甚至影响到用户的访问体验。
- * 因此我们希望使用[gzip](https://www.gzip.org)或者[brotli](https://github.com/google/brotli)算法压缩响应内容的体积。
+ *
+ * 因此我们希望压缩响应内容的体积。
  */
 export const compress = (options: CompressOptions = {}): WebMiddleware<CompressProps> => {
   let { filter = compressible, threshold = 1024 } = options;

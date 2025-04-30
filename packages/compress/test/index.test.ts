@@ -344,6 +344,15 @@ describe('accept-encoding', () => {
       .expect('content-encoding', 'br');
   });
 
+  test('zstd', async () => {
+    await request(app.listen())
+      .get('/')
+      .set('Accept-Encoding', 'zstd, br, gzip, deflate')
+      .expect(200)
+      .expect('vary', 'Accept-Encoding')
+      .expect('content-encoding', 'zstd');
+  });
+
   test('包含未知压缩方案', async () => {
     await request(app.listen())
       .get('/')
