@@ -45,7 +45,7 @@
     "content-disposition": "^0.5.4",
     "cookie": "^1.0.1",
     "destroy": "^1.2.0",
-    "formidable": "^3.5.1",
+    "formidable": "^3.5.4",
     "fresh": "^0.5.2",
     "http-errors": "^2.0.0",
     "mime-types": "^3.0.1",
