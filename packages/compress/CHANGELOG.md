@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.26.0](https://github.com/aomex/aomex/compare/v3.25.0...v3.26.0) (2025-05-03)
+
+
+### Features
+
+* **compress:** 增加zstd压缩算法 ([278436c](https://github.com/aomex/aomex/commit/278436c6abd4abd8cb9a18d749c9e3f83fa546d7))
+
+
+
+
+
 # [3.25.0](https://github.com/aomex/aomex/compare/v3.24.0...v3.25.0) (2025-04-22)
 
 **Note:** Version bump only for package @aomex/compress

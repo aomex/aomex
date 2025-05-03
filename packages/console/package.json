@@ -1,6 +1,6 @@
 {
   "name": "@aomex/console",
-  "version": "3.25.0",
+  "version": "3.26.0",
   "description": "控制台应用",
   "scripts": {
     "prepublishOnly": "tsup && node ./scripts/version-shim.mjs"

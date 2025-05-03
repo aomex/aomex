@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.26.0](https://github.com/aomex/aomex/compare/v3.25.0...v3.26.0) (2025-05-03)
+
+
+### Bug Fixes
+
+* **file-import:** 文件路径转换成url协议 ([c989625](https://github.com/aomex/aomex/commit/c989625e0d2e02fe1a6e144bd3706a55ce24a2b9))
+
+
+
+
+
 # [3.25.0](https://github.com/aomex/aomex/compare/v3.24.0...v3.25.0) (2025-04-22)
 
 **Note:** Version bump only for package @aomex/internal-file-import

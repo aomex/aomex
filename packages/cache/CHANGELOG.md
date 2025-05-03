@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.26.0](https://github.com/aomex/aomex/compare/v3.25.0...v3.26.0) (2025-05-03)
+
+
+### Bug Fixes
+
+* **cache:** 装饰器模式在分布式服务中有缓存击穿的风险 ([3f3d4aa](https://github.com/aomex/aomex/commit/3f3d4aadb0a8cea6cdb13a9cf7288311194b1822))
+
+
+
+
+
 # [3.25.0](https://github.com/aomex/aomex/compare/v3.24.0...v3.25.0) (2025-04-22)
 
 **Note:** Version bump only for package @aomex/cache

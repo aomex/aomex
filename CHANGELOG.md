@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.26.0](https://github.com/aomex/aomex/compare/v3.25.0...v3.26.0) (2025-05-03)
+
+
+### Bug Fixes
+
+* **cache:** 装饰器模式在分布式服务中有缓存击穿的风险 ([3f3d4aa](https://github.com/aomex/aomex/commit/3f3d4aadb0a8cea6cdb13a9cf7288311194b1822))
+* **file-import:** 文件路径转换成url协议 ([c989625](https://github.com/aomex/aomex/commit/c989625e0d2e02fe1a6e144bd3706a55ce24a2b9))
+
+
+### Features
+
+* **compress:** 增加zstd压缩算法 ([278436c](https://github.com/aomex/aomex/commit/278436c6abd4abd8cb9a18d749c9e3f83fa546d7))
+* **cron:** 指令运行时允许使用`ctx.cron.isAlive()`半永久执行 ([a91f228](https://github.com/aomex/aomex/commit/a91f228234fe0960c38550a38fb241b970e9bb12))
+
+
+
+
+
 # [3.25.0](https://github.com/aomex/aomex/compare/v3.24.0...v3.25.0) (2025-04-22)
 
 

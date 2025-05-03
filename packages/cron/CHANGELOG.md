@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.26.0](https://github.com/aomex/aomex/compare/v3.25.0...v3.26.0) (2025-05-03)
+
+
+### Features
+
+* **cron:** 指令运行时允许使用`ctx.cron.isAlive()`半永久执行 ([a91f228](https://github.com/aomex/aomex/commit/a91f228234fe0960c38550a38fb241b970e9bb12))
+
+
+
+
+
 # [3.25.0](https://github.com/aomex/aomex/compare/v3.24.0...v3.25.0) (2025-04-22)
 
 
