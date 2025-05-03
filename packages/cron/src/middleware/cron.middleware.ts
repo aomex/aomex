@@ -5,7 +5,10 @@ import {
   ENV_CRON_EXECUTION_TIME,
   ENV_CRON_NEXT_SCHEDULE_TIME,
   ENV_CRON_SCHEDULE_TIME,
+  TELL_CHILD_REJECT,
+  TELL_CHILD_RESOLVE,
   TELL_CHILD_STOP,
+  TELL_PARENT_INIT,
 } from '../lib/constant';
 
 export interface CropProps {
@@ -45,35 +48,49 @@ export interface CropProps {
 export class CronMiddleware extends ConsoleMiddleware<CropProps> {
   constructor(protected readonly options: CronOptions) {
     super(async (ctx, next) => {
-      let alive = true;
-      const onStop = (message: string) => {
-        if (message === TELL_CHILD_STOP) {
-          alive = false;
-        }
-      };
-      process.once('message', onStop);
-
       if (process.env[ENV_CRON] === '1') {
-        const nextTime = new Date(process.env[ENV_CRON_NEXT_SCHEDULE_TIME]!);
+        let alive = true;
+        const { promise: init, resolve } = Promise.withResolvers();
+        const onInitOrStop = (message: string) => {
+          switch (message) {
+            case TELL_CHILD_RESOLVE:
+              alive = true;
+              resolve(undefined);
+              break;
+            case TELL_CHILD_REJECT:
+              alive = false;
+              resolve(undefined);
+              break;
+            case TELL_CHILD_STOP:
+              alive = false;
+              break;
+          }
+        };
+        process.on('message', onInitOrStop);
+        process.send!(TELL_PARENT_INIT);
+
         ctx.cron = {
           executionTime: new Date(process.env[ENV_CRON_EXECUTION_TIME]!),
           scheduleTime: new Date(process.env[ENV_CRON_SCHEDULE_TIME]!),
-          nextScheduleTime: nextTime,
+          nextScheduleTime: new Date(process.env[ENV_CRON_NEXT_SCHEDULE_TIME]!),
           isAlive: () => alive,
         };
+
+        try {
+          await init;
+          await next();
+        } finally {
+          process.removeListener('message', onInitOrStop);
+        }
       } else {
         const now = new Date();
         ctx.cron = {
           executionTime: now,
           scheduleTime: now,
           nextScheduleTime: now,
-          isAlive: () => alive,
+          isAlive: () => true,
         };
-      }
-      try {
-        await next();
-      } finally {
-        process.removeListener('message', onStop);
+        return next();
       }
     });
   }

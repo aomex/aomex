@@ -6,6 +6,9 @@ import {
   ENV_CRON_EXECUTION_TIME,
   ENV_CRON_NEXT_SCHEDULE_TIME,
   ENV_CRON_SCHEDULE_TIME,
+  TELL_CHILD_REJECT,
+  TELL_CHILD_RESOLVE,
+  TELL_PARENT_INIT,
 } from './constant';
 
 export class Task {
@@ -72,6 +75,12 @@ export class Task {
     childProcess.on('close', resolve);
     childProcess.on('exit', resolve);
     childProcess.on('error', resolve);
+
+    childProcess.on('message', (message: string) => {
+      if (message === TELL_PARENT_INIT) {
+        childProcess.send(this.cron.stopping ? TELL_CHILD_REJECT : TELL_CHILD_RESOLVE);
+      }
+    });
 
     await promise.finally(() => {
       this.child = null;
