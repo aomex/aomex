@@ -4,6 +4,7 @@ import type { CronsOptions, CronOptions } from './type';
 import { CronExpression, CronExpressionParser } from 'cron-parser';
 import { Task } from './task';
 import { i18n } from '../i18n';
+import { TELL_CHILD_STOP } from './constant';
 
 export class Cron {
   public readonly cronExpression: CronExpression;
@@ -12,11 +13,11 @@ export class Cron {
   public runningLevel: number = 0;
   public readonly time: string;
 
-  protected readonly _pidList = new Set<string>();
   protected _time?: string;
   protected _seconds?: number[];
   protected _argv?: string[];
   protected _cache?: Caching;
+  protected _tasks = new Set<Task>();
 
   constructor(
     protected readonly options: CronOptions & CronsOptions & { command: string },
@@ -75,15 +76,7 @@ export class Cron {
   }
 
   getPIDs(): string[] {
-    return [...this._pidList];
-  }
-
-  insertPID(pid: string | undefined) {
-    pid && this._pidList.add(pid);
-  }
-
-  removePID(pid: string | undefined) {
-    pid && this._pidList.delete(pid);
+    return [...this._tasks].map((task) => task.pid).filter((pid) => pid !== undefined);
   }
 
   async start(): Promise<void> {
@@ -103,7 +96,10 @@ export class Cron {
       if (currentTime - Date.now() <= 0) {
         // 不要使用`await`语法，因为需要立即进入下一个循环
         ++this.runningLevel;
-        new Task(this, currentTime, nextTime).consume().finally(() => {
+        const task = new Task(this, currentTime, nextTime);
+        this._tasks.add(task);
+        task.consume().finally(() => {
+          this._tasks.delete(task);
           --this.runningLevel;
         });
         break;
@@ -129,6 +125,9 @@ export class Cron {
       clearTimeout(this.handle.timer);
       this.handle.resolve();
     }
+    this._tasks.forEach((task) => {
+      task.child?.send(TELL_CHILD_STOP);
+    });
   }
 
   toString(): string {

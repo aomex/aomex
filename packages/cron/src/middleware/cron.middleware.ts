@@ -5,6 +5,7 @@ import {
   ENV_CRON_EXECUTION_TIME,
   ENV_CRON_NEXT_SCHEDULE_TIME,
   ENV_CRON_SCHEDULE_TIME,
+  TELL_CHILD_STOP,
 } from '../lib/constant';
 
 export interface CropProps {
@@ -22,22 +23,43 @@ export interface CropProps {
      */
     nextScheduleTime: Date;
     /**
-     * 距离下一次任务开始还剩多少时间
+     * 是否可以持续执行任务，一般用于while循环。手动执行`aomex cron:stop`之后，返回值为`false`
+     *
+     * ```
+     * commander.create('schedule', {
+     *   mount: [cron({
+     *     minute: '*',
+     *   })],
+     *   action: async (ctx) => {
+     *     while (ctx.cron.isAlive()) {
+     *       // 逻辑...
+     *     }
+     *   }
+     * });
+     * ```
      */
-    remainTimeMS: number;
+    isAlive: () => boolean;
   };
 }
 
 export class CronMiddleware extends ConsoleMiddleware<CropProps> {
   constructor(protected readonly options: CronOptions) {
     super(async (ctx, next) => {
+      let alive = true;
+      const onStop = (message: string) => {
+        if (message === TELL_CHILD_STOP) {
+          alive = false;
+        }
+      };
+      process.once('message', onStop);
+
       if (process.env[ENV_CRON] === '1') {
         const nextTime = new Date(process.env[ENV_CRON_NEXT_SCHEDULE_TIME]!);
         ctx.cron = {
           executionTime: new Date(process.env[ENV_CRON_EXECUTION_TIME]!),
           scheduleTime: new Date(process.env[ENV_CRON_SCHEDULE_TIME]!),
           nextScheduleTime: nextTime,
-          remainTimeMS: Math.max(0, nextTime.getTime() - Date.now()),
+          isAlive: () => alive,
         };
       } else {
         const now = new Date();
@@ -45,10 +67,14 @@ export class CronMiddleware extends ConsoleMiddleware<CropProps> {
           executionTime: now,
           scheduleTime: now,
           nextScheduleTime: now,
-          remainTimeMS: 0,
+          isAlive: () => alive,
         };
       }
-      return next();
+      try {
+        await next();
+      } finally {
+        process.removeListener('message', onStop);
+      }
     });
   }
 }

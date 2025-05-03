@@ -126,17 +126,16 @@ test('执行时记录pid', { timeout: 12_000 }, async () => {
 
   const cron = new Cron({ commanders: '', command: 'foo:bar' });
   const task = new Task(cron, 1, 2);
+  cron['_tasks'].add(task);
   // @ts-expect-error
   task.filePath = file;
   // @ts-expect-error
   task.execArgv = ['--no-warnings'];
-  const promise1 = task.runChildProcess();
+  const promise = task.runChildProcess();
+  expect(task.pid).toMatch(/\d+/);
   expect(cron.getPIDs()).toHaveLength(1);
-  const promise2 = task.runChildProcess();
-  expect(cron.getPIDs()).toHaveLength(2);
   expect(cron.getPIDs().every((pid) => /^\d+$/.test(pid)));
 
-  await promise1;
-  await promise2;
+  await promise;
   expect(cron.getPIDs()).toHaveLength(0);
 });

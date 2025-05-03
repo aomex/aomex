@@ -1,6 +1,6 @@
 import { sleep } from '@aomex/internal-tools';
 import type { Cron } from './cron';
-import { spawn } from 'node:child_process';
+import { ChildProcess, spawn } from 'node:child_process';
 import {
   ENV_CRON,
   ENV_CRON_EXECUTION_TIME,
@@ -9,6 +9,7 @@ import {
 } from './constant';
 
 export class Task {
+  child: ChildProcess | null = null;
   readonly concurrentKey: string;
   readonly servesKey: string;
   protected readonly filePath: string;
@@ -28,6 +29,10 @@ export class Task {
     }
   }
 
+  get pid(): string | undefined {
+    return this.child?.pid?.toString();
+  }
+
   async consume() {
     if (!(await this.win())) return;
     const pong = this.ping();
@@ -39,41 +44,37 @@ export class Task {
   }
 
   async runChildProcess() {
+    if (this.child) return;
     const { argv } = this.cron;
-
-    return new Promise<void>((resolve) => {
-      const childProcess = spawn(
-        process.argv0,
-        [...this.execArgv, this.filePath, ...argv],
-        {
-          cwd: process.cwd(),
-          env: {
-            /**
-             * 支持颜色输出。默认值是 `0` 代表不输出颜色。
-             * @link https://nodejs.org/api/tty.html#writestreamgetcolordepthenv
-             */
-            FORCE_COLOR: '3',
-            ...process.env,
-            [ENV_CRON]: '1',
-            [ENV_CRON_SCHEDULE_TIME]: new Date(this.currentTimestamp).toISOString(),
-            [ENV_CRON_EXECUTION_TIME]: new Date().toISOString(),
-            [ENV_CRON_NEXT_SCHEDULE_TIME]: new Date(this.nextTimestamp).toISOString(),
-          },
-          stdio: 'inherit',
+    const { promise, resolve } = Promise.withResolvers();
+    const childProcess = spawn(
+      process.argv0,
+      [...this.execArgv, this.filePath, ...argv],
+      {
+        cwd: process.cwd(),
+        env: {
+          /**
+           * 支持颜色输出。默认值是 `0` 代表不输出颜色。
+           * @link https://nodejs.org/api/tty.html#writestreamgetcolordepthenv
+           */
+          FORCE_COLOR: '3',
+          ...process.env,
+          [ENV_CRON]: '1',
+          [ENV_CRON_SCHEDULE_TIME]: new Date(this.currentTimestamp).toISOString(),
+          [ENV_CRON_EXECUTION_TIME]: new Date().toISOString(),
+          [ENV_CRON_NEXT_SCHEDULE_TIME]: new Date(this.nextTimestamp).toISOString(),
         },
-      );
+        stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
+      },
+    );
+    this.child = childProcess;
 
-      const pid = childProcess.pid!.toString();
-      this.cron.insertPID(pid);
+    childProcess.on('close', resolve);
+    childProcess.on('exit', resolve);
+    childProcess.on('error', resolve);
 
-      const onDone = () => {
-        this.cron.removePID(pid);
-        resolve();
-      };
-
-      childProcess.on('close', onDone);
-      childProcess.on('exit', onDone);
-      childProcess.on('error', onDone);
+    await promise.finally(() => {
+      this.child = null;
     });
   }
 
