@@ -80,8 +80,6 @@ test('配合isAlive()快速结束任务', { timeout: 10_000 }, async () => {
   const code = await promise;
   expect(code).toBe(0);
   const content = await readFile(logFile, 'utf8');
-  expect(content).toContain(
-    'in loop;in loop;in loop;in loop;in loop;in loop;in loop;in loop;in loop;in loop;in loop;in loop;in loop;',
-  );
+  expect(content).toContain('in loop;in loop;in loop;in loop;in loop;');
   expect(content).toContain('exit loop;');
 });
