@@ -26,7 +26,7 @@ export interface CropProps {
      */
     nextScheduleTime: Date;
     /**
-     * 是否可以持续执行任务，一般用于while循环。手动执行`aomex cron:stop`之后，返回值为`false`
+     * 是否可以持续执行任务，一般用于while循环不需要间断的逻辑。手动执行`aomex cron:stop`之后，返回值为`false`
      *
      * ```
      * commander.create('schedule', {
@@ -41,7 +41,11 @@ export interface CropProps {
      * });
      * ```
      */
-    isAlive: () => boolean;
+    isAlive: (maxTimeoutMS?: number) => boolean;
+    /**
+     * 是否仍处于触发当前任务的时间点。判断方式：`nextScheduleTime > now`
+     */
+    isCurrentTime: () => boolean;
   };
 }
 
@@ -69,11 +73,13 @@ export class CronMiddleware extends ConsoleMiddleware<CropProps> {
         process.on('message', onInitOrStop);
         process.send!(TELL_PARENT_INIT);
 
+        const nextTime = new Date(process.env[ENV_CRON_NEXT_SCHEDULE_TIME]!);
         ctx.cron = {
           executionTime: new Date(process.env[ENV_CRON_EXECUTION_TIME]!),
           scheduleTime: new Date(process.env[ENV_CRON_SCHEDULE_TIME]!),
-          nextScheduleTime: new Date(process.env[ENV_CRON_NEXT_SCHEDULE_TIME]!),
+          nextScheduleTime: nextTime,
           isAlive: () => alive,
+          isCurrentTime: () => nextTime.getTime() - Date.now() > 0,
         };
 
         try {
@@ -89,6 +95,7 @@ export class CronMiddleware extends ConsoleMiddleware<CropProps> {
           scheduleTime: now,
           nextScheduleTime: now,
           isAlive: () => true,
+          isCurrentTime: () => true,
         };
         return next();
       }
