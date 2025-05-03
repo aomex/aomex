@@ -1,6 +1,6 @@
 {
   "name": "@aomex/internal-file-import",
-  "version": "3.26.0",
+  "version": "3.27.0",
   "description": "aomex根据文件路径导入模块",
   "scripts": {
     "prepublishOnly": "tsup"

@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.27.0](https://github.com/aomex/aomex/compare/v3.26.0...v3.27.0) (2025-05-03)
+
+
+### Bug Fixes
+
+* **cron:** 子进程初始化状态可能会遗漏cron:stop事件 ([d6759b1](https://github.com/aomex/aomex/commit/d6759b150e61088d4460ef93def411c129e9c245))
+* **cron:** 延迟发送停止指令以确保子进程正确处理cron:stop指令 ([98fd2c9](https://github.com/aomex/aomex/commit/98fd2c9f2523e5c87911404adcb056f9558ad509))
+
+
+### Features
+
+* **cron:** 指令增加isCurrentTime方法 ([54057b6](https://github.com/aomex/aomex/commit/54057b6b845476c2d30e313f31506fb87547b65a))
+
+
+
+
+
 # [3.26.0](https://github.com/aomex/aomex/compare/v3.25.0...v3.26.0) (2025-05-03)
 
 
