@@ -125,9 +125,12 @@ export class Cron {
       clearTimeout(this.handle.timer);
       this.handle.resolve();
     }
-    this._tasks.forEach((task) => {
-      task.child?.send(TELL_CHILD_STOP);
-    });
+    // 延迟结束，这样cron:stop终端能看到半永久运行的任务
+    setTimeout(() => {
+      this._tasks.forEach((task) => {
+        task.child?.send(TELL_CHILD_STOP);
+      });
+    }, 1_000);
   }
 
   toString(): string {
