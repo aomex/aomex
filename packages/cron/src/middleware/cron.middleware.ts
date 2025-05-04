@@ -43,9 +43,9 @@ export interface CropProps {
      */
     isAlive: (maxTimeoutMS?: number) => boolean;
     /**
-     * 是否仍处于触发当前任务的时间点。判断方式：`nextScheduleTime > now`
+     * 是否仍处于触发当前任务的时间段，即下一次任务还没出发。判断方式：`nextScheduleTime > now`
      */
-    isCurrentTime: () => boolean;
+    isCurrentEpoch: () => boolean;
   };
 }
 
@@ -79,7 +79,7 @@ export class CronMiddleware extends ConsoleMiddleware<CropProps> {
           scheduleTime: new Date(process.env[ENV_CRON_SCHEDULE_TIME]!),
           nextScheduleTime: nextTime,
           isAlive: () => alive,
-          isCurrentTime: () => nextTime.getTime() - Date.now() > 0,
+          isCurrentEpoch: () => nextTime.getTime() - Date.now() > 0,
         };
 
         try {
@@ -95,7 +95,7 @@ export class CronMiddleware extends ConsoleMiddleware<CropProps> {
           scheduleTime: now,
           nextScheduleTime: now,
           isAlive: () => true,
-          isCurrentTime: () => true,
+          isCurrentEpoch: () => true,
         };
         return next();
       }
