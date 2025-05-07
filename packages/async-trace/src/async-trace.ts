@@ -41,42 +41,41 @@ class AsyncTrace {
   protected readonly storage = new AsyncLocalStorage<string>();
   protected idSequence = 0;
 
-  run<T>(label: string, callback: (id: string) => Promise<T>): Promise<T> {
+  async run<T>(label: string, callback: (id: string) => Promise<T>): Promise<T> {
     const parent = this.storage.getStore();
 
     if (++this.idSequence >= Number.MAX_SAFE_INTEGER) {
       this.idSequence = 0;
     }
 
-    return new Promise<T>((resolve, reject) => {
-      const start = Date.now();
-      const id = start + '.' + this.idSequence;
+    const start = Date.now();
+    const id = start + '.' + this.idSequence;
 
-      this.storage.run(id, async () => {
-        const done = (err: Error | null) => {
-          const end = Date.now();
-          this.records.push({
-            id,
-            start,
-            end,
-            delta: end - start,
-            label,
-            parent,
-            children: this.records.filter((item) => item.parent === id),
-            error: err,
-          });
-          this.records = this.records.filter((item) => item.parent !== id);
-        };
+    return this.storage.run(id, async () => {
+      const done = (err: Error | null) => {
+        const end = Date.now();
+        this.records.push({
+          id,
+          start,
+          end,
+          delta: end - start,
+          label,
+          parent,
+          children: this.records.filter((item) => item.parent === id),
+          error: err,
+        });
+        this.records = this.records.filter((item) => item.parent !== id);
+      };
 
-        try {
-          const result = await callback(id);
-          done(null);
-          resolve(result);
-        } catch (e) {
-          done(e instanceof Error ? e : Error(String(e)));
-          reject(e);
-        }
-      });
+      try {
+        const result = await callback(id);
+        done(null);
+        return result;
+      } catch (e) {
+        const err = e instanceof Error ? e : new Error(String(e));
+        done(err);
+        throw err;
+      }
     });
   }
 
