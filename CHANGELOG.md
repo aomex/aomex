@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.27.1](https://github.com/aomex/aomex/compare/v3.27.0...v3.27.1) (2025-05-22)
+
+
+### Bug Fixes
+
+* **console:** 动态引入tsImport ([964958f](https://github.com/aomex/aomex/commit/964958f79b083c15c9235cc7c84289b325581c4a))
+
+
+
+
+
 # [3.27.0](https://github.com/aomex/aomex/compare/v3.26.0...v3.27.0) (2025-05-03)
 
 
