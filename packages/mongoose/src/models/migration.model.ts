@@ -1,7 +1,7 @@
 import { rule } from '@aomex/common';
 import { defineMongooseModel } from '../define-mongoose-model';
 
-export const MigrationModel = defineMongooseModel('__aomex_migration__', {
+export const MigrationModel = defineMongooseModel('__aomex_migration', {
   schemas: {
     filename: rule.string(),
     finished_at: rule.date().nullable(),
