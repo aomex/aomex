@@ -4,7 +4,7 @@ import ansi from 'ansi-escapes';
 import type tableCJS from 'table';
 import { createLogUpdate } from 'log-update';
 import isUnicodeSupported from 'is-unicode-supported';
-import stripAnsi from 'strip-ansi';
+import { stripVTControlCharacters } from 'node:util';
 import { createRequire } from 'node:module';
 
 const requireCJS = createRequire(import.meta.url);
@@ -18,16 +18,6 @@ class Terminal {
    */
   print(...messages: any[]) {
     console.log(...messages);
-  }
-
-  /**
-   * 打印蓝色通知信息，开头显示小图标 ℹ
-   */
-  printInfo(...messages: any[]) {
-    console.info(
-      symbols.info,
-      ...messages.map((message) => this.style('blue', String(message))),
-    );
   }
 
   /**
@@ -92,13 +82,6 @@ class Terminal {
     // CJS包，内容也多，直接import影响了node首次启动时间
     const { table } = requireCJS('table') as typeof tableCJS;
     return table(data, config).replace(/\n$/, '');
-  }
-
-  /**
-   * 打印对象，自动展开深层级属性
-   */
-  printObject(obj: object) {
-    console.dir(obj, { depth: null, colors: true });
   }
 
   /**
@@ -340,7 +323,7 @@ class Terminal {
    * ```
    */
   stripStyle(string: string) {
-    return stripAnsi(string);
+    return stripVTControlCharacters(string);
   }
 }
 

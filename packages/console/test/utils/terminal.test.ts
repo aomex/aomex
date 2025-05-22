@@ -62,14 +62,6 @@ test('日志', () => {
   spy.mockRestore();
 });
 
-test('信息', () => {
-  const spy = vitest.spyOn(console, 'info');
-  terminal.printInfo('放学别跑');
-  expect(spy).toBeCalledTimes(1);
-  terminal.printInfo(1, true, {}, []);
-  spy.mockRestore();
-});
-
 test('错误', () => {
   const spy = vitest.spyOn(console, 'error');
   terminal.printError('放学别跑');

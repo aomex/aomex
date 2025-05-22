@@ -221,9 +221,6 @@ importers:
       log-update:
         specifier: ^6.1.0
         version: 6.1.0
-      strip-ansi:
-        specifier: ^7.1.0
-        version: 7.1.0
       table:
         specifier: ^6.8.2
         version: 6.8.2
