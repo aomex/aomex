@@ -130,7 +130,7 @@ export const generateOpenapiWithSpinner = async (
 
   if (error) return null;
 
-  const logSession = terminal.applySession();
+  const logSession = terminal.createSession();
   const { errors, warnings } = context.validateResult;
   for (const error of errors) {
     logSession.update(`  %error% ${formatValidateMessage(error)}`);

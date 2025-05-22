@@ -21,7 +21,7 @@ export const stop = (opts: CronsOptions): ConsoleMiddleware => {
         client.write(commandName);
       });
 
-      const logSession = terminal.applySession();
+      const logSession = terminal.createSession();
       let runners: {
         cpu: number;
         memory: number;

@@ -112,7 +112,7 @@ class Terminal {
    * session.commit();
    * ```
    */
-  applySession() {
+  createSession() {
     const supportUnicode = isUnicodeSupported();
     const logSession = createLogUpdate(process.stdout);
     const loadingFrames = supportUnicode
@@ -212,7 +212,7 @@ class Terminal {
     { context: Context } & ({ error: Error | null } | { errors: Error[] | null })
   > {
     const { concurrent = false } = opts;
-    const log = this.applySession();
+    const log = this.createSession();
     const tasks = _tasks.map((task) => {
       return { ...task, suffix: '', status: 'prepare' as TaskStatus };
     });

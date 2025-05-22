@@ -30,7 +30,7 @@ export const stats = (opts: CronsOptions): ConsoleMiddleware => {
         });
       });
 
-      const logSession = terminal.applySession();
+      const logSession = terminal.createSession();
 
       const { resolve, reject, promise } = Promise.withResolvers();
       // 多次resolve不会报错
