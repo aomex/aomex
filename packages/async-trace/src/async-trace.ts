@@ -20,7 +20,7 @@ export interface AsyncTraceRecord {
   /**
    * 时间周期，毫秒
    */
-  delta: number;
+  duration: number;
   /**
    * 父链路
    */
@@ -58,7 +58,7 @@ class AsyncTrace {
           id,
           start,
           end,
-          delta: end - start,
+          duration: end - start,
           label,
           parent,
           children: this.records.filter((item) => item.parent === id),
@@ -100,7 +100,7 @@ class AsyncTrace {
   toStack(records: AsyncTraceRecord[], indent: number = 4, level: number = 0): string {
     return records
       .map((record) => {
-        return `${' '.repeat(level * indent)}${record.label}: ${record.delta}ms
+        return `${' '.repeat(level * indent)}${record.label}: ${record.duration}ms
 ${this.toStack(record.children, indent, level + 1)}`;
       })
       .join('');
