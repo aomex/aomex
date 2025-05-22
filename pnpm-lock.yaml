@@ -275,8 +275,8 @@ importers:
         specifier: workspace:^
         version: link:../internal-tools
       cron-parser:
-        specifier: ^5.0.4
-        version: 5.0.4
+        specifier: ^5.2.0
+        version: 5.2.0
       format-duration:
         specifier: ^3.0.2
         version: 3.0.2
@@ -2421,8 +2421,8 @@ packages:
       typescript:
         optional: true
 
-  cron-parser@5.0.4:
-    resolution: {integrity: sha512-ud6L7uGE4a7QxKndq106+99iKMlhG1/gSVlA4SH7qy3xO/R/EUoXFTJFMBOogdk00mZiXPONRI4wFKAcymKp6w==}
+  cron-parser@5.2.0:
+    resolution: {integrity: sha512-ED2qJtcjelmUEuoV3btwxiOm3NI8H4/eCZNX3adUkrm+/b3Xq05+YoDXyjIN57VGhskuHx/KzC367GAklo1lRg==}
     engines: {node: '>=18'}
 
   cross-spawn@7.0.3:
@@ -3709,6 +3709,10 @@ packages:
 
   luxon@3.5.0:
     resolution: {integrity: sha512-rh+Zjr6DNfUYR3bPwJEnuwDdqMbxZW7LOQfUN4B54+Cl+0o5zaU9RJ6bcidfDtC1cWCZXQ+nvX8bf6bAji37QQ==}
+    engines: {node: '>=12'}
+
+  luxon@3.6.1:
+    resolution: {integrity: sha512-tJLxrKJhO2ukZ5z0gyjY1zPh3Rh88Ej9P7jNrZiHMUXHae1yvI2imgOZtL1TO8TW6biMMKfTtAOoEJANgtWBMQ==}
     engines: {node: '>=12'}
 
   magic-string@0.30.17:
@@ -7944,9 +7948,9 @@ snapshots:
     optionalDependencies:
       typescript: 5.8.2
 
-  cron-parser@5.0.4:
+  cron-parser@5.2.0:
     dependencies:
-      luxon: 3.5.0
+      luxon: 3.6.1
 
   cross-spawn@7.0.3:
     dependencies:
@@ -9345,6 +9349,8 @@ snapshots:
   lunr@2.3.9: {}
 
   luxon@3.5.0: {}
+
+  luxon@3.6.1: {}
 
   magic-string@0.30.17:
     dependencies:
