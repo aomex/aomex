@@ -162,15 +162,27 @@ describe('options.exposeHeaders', function () {
 });
 
 describe('options.maxAge', function () {
-  test('使用数字', async () => {
+  test('默认值', async () => {
     const app = new WebApp({
-      mount: [cors({ maxAge: 3600 })],
+      mount: [cors()],
     });
     await request(app.listen())
       .options('/')
       .set('Origin', 'https://aomex.js.org')
       .set('Access-Control-Request-Method', 'PUT')
       .expect('Access-Control-Max-Age', '3600')
+      .expect(204);
+  });
+
+  test('使用数字', async () => {
+    const app = new WebApp({
+      mount: [cors({ maxAge: 7200 })],
+    });
+    await request(app.listen())
+      .options('/')
+      .set('Origin', 'https://aomex.js.org')
+      .set('Access-Control-Request-Method', 'PUT')
+      .expect('Access-Control-Max-Age', '7200')
       .expect(204);
   });
 

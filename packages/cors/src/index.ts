@@ -44,7 +44,7 @@ export interface CorsOptions {
   allowHeaders?: string[] | string;
 
   /**
-   * 设置报头 Access-Control-Max-Age，表示 Access-Control-Allow-Methods 和 Access-Control-Allow-Headers 提供的信息可以被缓存的最长时间（秒）
+   * 设置报头 Access-Control-Max-Age，表示 Access-Control-Allow-Methods 和 Access-Control-Allow-Headers 提供的信息可以被缓存的最长时间。默认值：`3600`（单位：`秒`）
    *
    * 如果值为`-1`，表示禁用缓存，则每次请求前都需要使用 OPTIONS 预检请求
    */
@@ -77,6 +77,7 @@ export const cors = (options: CorsOptions = {}): WebMiddleware => {
   options = {
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH',
     secureContext: false,
+    maxAge: 3600,
     ...options,
   };
 
@@ -87,7 +88,7 @@ export const cors = (options: CorsOptions = {}): WebMiddleware => {
     }
   });
 
-  if (options.maxAge) {
+  if (options.maxAge !== undefined) {
     options.maxAge = String(options.maxAge);
   }
 
