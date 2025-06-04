@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.27.2](https://github.com/aomex/aomex/compare/v3.27.1...v3.27.2) (2025-06-04)
+
+
+### Bug Fixes
+
+* **mongoose:** 修改迁移表名为__aomex_migration ([5f12d41](https://github.com/aomex/aomex/commit/5f12d4199d466da5ddd7676bfbe554b39c1fef2a))
+
+
+
+
+
 ## [3.27.1](https://github.com/aomex/aomex/compare/v3.27.0...v3.27.1) (2025-05-22)
 
 **Note:** Version bump only for package @aomex/mongoose

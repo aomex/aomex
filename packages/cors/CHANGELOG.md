@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.27.2](https://github.com/aomex/aomex/compare/v3.27.1...v3.27.2) (2025-06-04)
+
+
+### Bug Fixes
+
+* **cors:** 设置 Access-Control-Max-Age 默认值为 3600 秒 ([ad070a9](https://github.com/aomex/aomex/commit/ad070a9c96eaa2be1ec48657127c8da1525ccbcb))
+
+
+
+
+
 ## [3.27.1](https://github.com/aomex/aomex/compare/v3.27.0...v3.27.1) (2025-05-22)
 
 **Note:** Version bump only for package @aomex/cors

@@ -1,6 +1,6 @@
 {
   "name": "@aomex/openapi",
-  "version": "3.27.1",
+  "version": "3.27.2",
   "description": "Openapi文档生成工具",
   "scripts": {
     "prepublishOnly": "tsup"
