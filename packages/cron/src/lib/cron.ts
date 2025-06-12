@@ -1,13 +1,13 @@
 import { scriptName } from '@aomex/console';
 import { CacheMemoryAdapter, Caching } from '@aomex/cache';
 import type { CronsOptions, CronOptions } from './type';
-import { CronExpression, CronExpressionParser } from 'cron-parser';
+import * as cronParser from 'cron-parser';
 import { Task } from './task';
 import { i18n } from '../i18n';
 import { TELL_CHILD_STOP } from './constant';
 
 export class Cron {
-  public readonly cronExpression: CronExpression;
+  public readonly cronExpression: cronParser.CronExpression;
   public stopping = false;
   public handle: { timer: NodeJS.Timeout; resolve: (data: void) => void } | null = null;
   public runningLevel: number = 0;
@@ -35,7 +35,7 @@ export class Cron {
           ].join(' ');
 
     try {
-      this.cronExpression = CronExpressionParser.parse(scheduleTime);
+      this.cronExpression = cronParser.CronExpressionParser.parse(scheduleTime);
     } catch {
       throw new Error(i18n.t('invalid_cron_time', { time: scheduleTime }));
     }
