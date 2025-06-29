@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.27.3](https://github.com/aomex/aomex/compare/v3.27.2...v3.27.3) (2025-06-29)
+
+
+### Bug Fixes
+
+* **cron:** cjs包使用了具名导出 ([2b0f37c](https://github.com/aomex/aomex/commit/2b0f37cc3e11699ea44257223b19985d3126745d))
+* **cron:** 非正常退出时可能导致不可重叠任务一直无法触发 ([b063df4](https://github.com/aomex/aomex/commit/b063df47269ac50f1899e329dade02c88caaede9))
+
+
+
+
+
 ## [3.27.2](https://github.com/aomex/aomex/compare/v3.27.1...v3.27.2) (2025-06-04)
 
 **Note:** Version bump only for package @aomex/cron
