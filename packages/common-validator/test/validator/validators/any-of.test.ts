@@ -45,10 +45,10 @@ test('管道', async () => {
 
 test('匹配不上则报错', async () => {
   const validator = new AnyOfValidator([new ArrayValidator(), new BigIntValidator()]);
-  await expect(validator['validate']({})).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate']({}, '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：未匹配规则",
+        "LABEL未匹配规则",
       ],
     }
   `);

@@ -7,10 +7,10 @@ test('只允许整数', async () => {
   await expect(validator['validate'](123)).resolves.toStrictEqual(
     ValidateResult.accept(123),
   );
-  await expect(validator['validate'](123.4)).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate'](123.4, '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：必须是整数",
+        "LABEL必须是整数",
       ],
     }
   `);

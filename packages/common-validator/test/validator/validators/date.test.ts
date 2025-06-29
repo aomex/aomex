@@ -57,10 +57,11 @@ test('字符串带时区和毫秒', async () => {
 
 test('解析格式', async () => {
   const validator = new DateValidator(['yyyy---MM----dd', 'yyyy---MM-ddZZ']);
-  await expect(validator['validate']('2024---10-01')).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate']('2024---10-01', '', 'LABEL')).resolves
+    .toMatchInlineSnapshot(`
     {
       "errors": [
-        "：必须是时间类型",
+        "LABEL必须是时间类型",
       ],
     }
   `);
@@ -101,11 +102,11 @@ describe('时间戳', () => {
 
   test('关闭解析时间戳', async () => {
     const validator = new DateValidator().parseFromTimestamp(false);
-    const result = await validator['validate'](1711257956199);
+    const result = await validator['validate'](1711257956199, '', 'LABEL');
     expect(result).toMatchInlineSnapshot(`
       {
         "errors": [
-          "：必须是时间类型",
+          "LABEL必须是时间类型",
         ],
       }
     `);
@@ -121,11 +122,11 @@ describe('范围', () => {
     await expect(validator['validate'](new Date(1711257_956_000))).resolves.toStrictEqual(
       ValidateResult.accept(new Date(1711257_956_000)),
     );
-    await expect(validator['validate'](new Date(1711257_955_999))).resolves
+    await expect(validator['validate'](new Date(1711257_955_999), '', 'LABEL')).resolves
       .toMatchInlineSnapshot(`
       {
         "errors": [
-          "：不在指定时间内",
+          "LABEL不在指定时间内",
         ],
       }
     `);
@@ -133,11 +134,11 @@ describe('范围', () => {
 
   test('最小时间（不包含）', async () => {
     const validator = new DateValidator().min(() => new Date(1711257_956_000), false);
-    await expect(validator['validate'](new Date(1711257_956_000))).resolves
+    await expect(validator['validate'](new Date(1711257_956_000), '', 'LABEL')).resolves
       .toMatchInlineSnapshot(`
       {
         "errors": [
-          "：不在指定时间内",
+          "LABEL不在指定时间内",
         ],
       }
     `);
@@ -151,11 +152,11 @@ describe('范围', () => {
     await expect(validator['validate'](new Date(1711257_956_000))).resolves.toStrictEqual(
       ValidateResult.accept(new Date(1711257_956_000)),
     );
-    await expect(validator['validate'](new Date(1711257_956_001))).resolves
+    await expect(validator['validate'](new Date(1711257_956_001), '', 'LABEL')).resolves
       .toMatchInlineSnapshot(`
       {
         "errors": [
-          "：不在指定时间内",
+          "LABEL不在指定时间内",
         ],
       }
     `);
@@ -163,11 +164,11 @@ describe('范围', () => {
 
   test('最大时间（不包含）', async () => {
     const validator = new DateValidator().max(() => new Date(1711257_956_000), false);
-    await expect(validator['validate'](new Date(1711257_956_000))).resolves
+    await expect(validator['validate'](new Date(1711257_956_000), '', 'LABEL')).resolves
       .toMatchInlineSnapshot(`
       {
         "errors": [
-          "：不在指定时间内",
+          "LABEL不在指定时间内",
         ],
       }
     `);

@@ -10,11 +10,11 @@ test('md5', async () => {
 
 test('长度不符', async () => {
   const validator = new HashValidator('md5');
-  await expect(validator['validate']('b2a902e0e31cee64611271fe622b1', '')).resolves
-    .toMatchInlineSnapshot(`
+  await expect(validator['validate']('b2a902e0e31cee64611271fe622b1', '', 'LABEL'))
+    .resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：必须是哈希格式",
+        "LABEL必须是哈希格式",
       ],
     }
   `);

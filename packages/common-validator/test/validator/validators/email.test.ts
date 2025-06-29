@@ -11,8 +11,8 @@ test('必须是邮箱格式', async () => {
 test('一些不合法的邮箱格式', async () => {
   const validator = new EmailValidator();
   for (const data of ['@gmail.com', 'notemail', 'a@gmail', 'b@', 'cc@g_mail.com']) {
-    await expect(validator['validate'](data)).resolves.toStrictEqual({
-      errors: ['：必须是电子邮件格式'],
+    await expect(validator['validate'](data, '', 'LABEL')).resolves.toStrictEqual({
+      errors: ['LABEL必须是电子邮件格式'],
     });
   }
 });

@@ -48,7 +48,7 @@ test('属性验证失败报错', async () => {
   expect(result).toMatchInlineSnapshot(`
     {
       "errors": [
-        "path_1.data：必须是对象类型",
+        "path_1.data必须是对象类型",
       ],
     }
   `);
@@ -64,19 +64,19 @@ describe('解析字符串', () => {
 
   test('非法字符串', async () => {
     const validator = new ObjectValidator();
-    const result1 = await validator['validate']('abc');
+    const result1 = await validator['validate']('abc', '', 'LABEL');
     expect(result1).toMatchInlineSnapshot(`
       {
         "errors": [
-          "：必须是对象类型",
+          "LABEL必须是对象类型",
         ],
       }
     `);
-    const result2 = await validator['validate'](JSON.stringify('abc'));
+    const result2 = await validator['validate'](JSON.stringify('abc'), '', 'LABEL');
     expect(result2).toMatchInlineSnapshot(`
       {
         "errors": [
-          "：必须是对象类型",
+          "LABEL必须是对象类型",
         ],
       }
     `);
@@ -85,11 +85,11 @@ describe('解析字符串', () => {
   test('严格模式，默认不从字符串恢复', async () => {
     const validator = new ObjectValidator().strict();
     const data = { key: 'value' };
-    const result = await validator['validate'](JSON.stringify(data));
+    const result = await validator['validate'](JSON.stringify(data), '', 'LABEL');
     expect(result).toMatchInlineSnapshot(`
       {
         "errors": [
-          "：必须是对象类型",
+          "LABEL必须是对象类型",
         ],
       }
     `);

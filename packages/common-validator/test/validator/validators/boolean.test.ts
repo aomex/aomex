@@ -37,10 +37,10 @@ test('测试假值', async () => {
 
 test('不在范围内则报错', async () => {
   const validator = new BooleanValidator();
-  await expect(validator['validate']('yes')).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate']('yes', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：必须是布尔类型",
+        "LABEL必须是布尔类型",
       ],
     }
   `);

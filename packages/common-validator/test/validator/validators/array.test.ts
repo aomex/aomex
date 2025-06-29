@@ -31,12 +31,12 @@ test('指定元素类型', async () => {
   await expect(validator['validate']([[], []])).resolves.toStrictEqual(
     ValidateResult.accept([[], []]),
   );
-  await expect(validator['validate'](data)).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate'](data, '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "0：必须是数组类型",
-        "1：必须是数组类型",
-        "2：必须是数组类型",
+        "0必须是数组类型",
+        "1必须是数组类型",
+        "2必须是数组类型",
       ],
     }
   `);
@@ -71,10 +71,11 @@ describe('长度', () => {
     await expect(validator['validate'](['a', 'b'])).resolves.toStrictEqual(
       ValidateResult.accept(['a', 'b']),
     );
-    await expect(validator['validate'](['a', 'b', 'c'])).resolves.toMatchInlineSnapshot(`
+    await expect(validator['validate'](['a', 'b', 'c'], '', 'LABEL')).resolves
+      .toMatchInlineSnapshot(`
       {
         "errors": [
-          "：数组长度不在指定范围内",
+          "LABEL数组长度不在指定范围内",
         ],
       }
     `);
@@ -88,10 +89,11 @@ describe('长度', () => {
     await expect(validator['validate'](['a', 'b', 'c'])).resolves.toStrictEqual(
       ValidateResult.accept(['a', 'b', 'c']),
     );
-    await expect(validator['validate'](['a'])).resolves.toMatchInlineSnapshot(`
+    await expect(validator['validate'](['a'], '', 'LABEL')).resolves
+      .toMatchInlineSnapshot(`
       {
         "errors": [
-          "：数组长度不在指定范围内",
+          "LABEL数组长度不在指定范围内",
         ],
       }
     `);
@@ -105,10 +107,11 @@ describe('长度', () => {
     await expect(validator['validate'](['a', 'b'])).resolves.toStrictEqual(
       ValidateResult.accept(['a', 'b']),
     );
-    await expect(validator['validate'](['a', 'b', 'c'])).resolves.toMatchInlineSnapshot(`
+    await expect(validator['validate'](['a', 'b', 'c'], '', 'LABEL')).resolves
+      .toMatchInlineSnapshot(`
       {
         "errors": [
-          "：数组长度不在指定范围内",
+          "LABEL数组长度不在指定范围内",
         ],
       }
     `);

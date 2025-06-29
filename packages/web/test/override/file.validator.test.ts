@@ -95,11 +95,11 @@ test('使用array+file的形式可以接受多个文件', async () => {
 });
 
 test('非文件类型', async () => {
-  await expect(new FileValidator()['validate']({ file1: 'foo' })).resolves
+  await expect(new FileValidator()['validate']({ file1: 'foo' }, '', 'LABEL')).resolves
     .toMatchInlineSnapshot(`
     {
       "errors": [
-        "：必须是文件类型",
+        "LABEL必须是文件类型",
       ],
     }
   `);
@@ -114,12 +114,7 @@ test('体积太大', async () => {
     validate(req.body, {
       file1: validator,
     }),
-  ).rejects.toThrowErrorMatchingInlineSnapshot(`
-    [Error: 验证失败：
-
-    - file1：文件体积太大
-    ]
-  `);
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: file1文件体积太大]`);
   res.flush();
 });
 
@@ -132,12 +127,7 @@ test('媒体类型', async () => {
     validate(req.body, {
       file1: validator,
     }),
-  ).rejects.toThrowErrorMatchingInlineSnapshot(`
-    [Error: 验证失败：
-
-    - file1：不支持的文件类型
-    ]
-  `);
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: file1包含不支持的文件类型]`);
   res.flush();
 });
 

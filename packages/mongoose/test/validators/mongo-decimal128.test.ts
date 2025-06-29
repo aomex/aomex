@@ -13,10 +13,10 @@ test('检测decimal类型', async () => {
 
 test('非decimal类型', async () => {
   const validator = new MongoDecimal128Validator();
-  await expect(validator['validate']('abc')).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate']('abc', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：必须是 Decimal128 类型",
+        "LABEL必须是 Decimal128 类型",
       ],
     }
   `);

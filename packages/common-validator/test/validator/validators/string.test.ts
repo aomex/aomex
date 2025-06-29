@@ -13,10 +13,10 @@ describe('链式调用返回新的实例', () => {
 
 test('默认允许空字符串', async () => {
   const validator = new StringValidator();
-  await expect(validator['validate']('')).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate']('', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：必填",
+        "LABEL必填",
       ],
     }
   `);

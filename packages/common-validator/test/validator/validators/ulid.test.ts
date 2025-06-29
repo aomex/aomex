@@ -22,8 +22,8 @@ test('不合法的ulid', async () => {
     '81234567898764535345434321',
     '7123456723sw5353re4c54x34321',
   ]) {
-    await expect(validator['validate'](data)).resolves.toStrictEqual({
-      errors: ['：必须是ULID格式'],
+    await expect(validator['validate'](data, '', 'LABEL')).resolves.toStrictEqual({
+      errors: ['LABEL必须是ULID格式'],
     });
   }
 });

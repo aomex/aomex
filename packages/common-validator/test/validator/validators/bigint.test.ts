@@ -19,10 +19,10 @@ describe('链式调用返回新的实例', () => {
 
 test('最小值（包含自身）', async () => {
   const validator = new BigIntValidator().min(10n);
-  await expect(validator['validate'](1n)).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate'](1n, '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：不在指定的数字范围",
+        "LABEL不在指定的数字范围",
       ],
     }
   `);
@@ -36,10 +36,10 @@ test('最小值（包含自身）', async () => {
 
 test('最小值（不包含自身）', async () => {
   const validator = new BigIntValidator().min(10n, false);
-  await expect(validator['validate'](10n)).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate'](10n, '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：不在指定的数字范围",
+        "LABEL不在指定的数字范围",
       ],
     }
   `);
@@ -50,10 +50,10 @@ test('最小值（不包含自身）', async () => {
 
 test('最大值（包含自身）', async () => {
   const validator = new BigIntValidator().max(10n);
-  await expect(validator['validate'](101n)).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate'](101n, '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：不在指定的数字范围",
+        "LABEL不在指定的数字范围",
       ],
     }
   `);
@@ -67,10 +67,10 @@ test('最大值（包含自身）', async () => {
 
 test('最大值（不包含自身）', async () => {
   const validator = new BigIntValidator().max(10n, false);
-  await expect(validator['validate'](10n)).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate'](10n, '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：不在指定的数字范围",
+        "LABEL不在指定的数字范围",
       ],
     }
   `);
@@ -82,7 +82,7 @@ test('最大值（不包含自身）', async () => {
 test('从字符串或者数字转换', async () => {
   const validator = new BigIntValidator();
   for (const data of [123, '123']) {
-    await expect(validator['validate'](data)).resolves.toStrictEqual(
+    await expect(validator['validate'](data, '', 'LABEL')).resolves.toStrictEqual(
       ValidateResult.accept(123n),
     );
   }
@@ -91,8 +91,8 @@ test('从字符串或者数字转换', async () => {
 test('严格模式下，禁止从字符串或者数字转换', async () => {
   const validator = new BigIntValidator().strict();
   for (const data of [123, '123']) {
-    await expect(validator['validate'](data)).resolves.toStrictEqual({
-      errors: ['：必须是大整数类型'],
+    await expect(validator['validate'](data, '', 'LABEL')).resolves.toStrictEqual({
+      errors: ['LABEL必须是大整数类型'],
     });
   }
 });

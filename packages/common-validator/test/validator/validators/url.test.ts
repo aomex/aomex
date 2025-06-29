@@ -35,8 +35,8 @@ test('不合法的URL格式', async () => {
     'http:/example.com',
     'http://example.com:3000000',
   ]) {
-    await expect(validator['validate'](data)).resolves.toStrictEqual({
-      errors: ['：必须是URL格式'],
+    await expect(validator['validate'](data, '', 'LABEL')).resolves.toStrictEqual({
+      errors: ['LABEL必须是URL格式'],
     });
   }
 });
@@ -46,10 +46,11 @@ test('扩展协议', async () => {
   await expect(validator['validate']('abc://baidu.com')).resolves.toStrictEqual(
     ValidateResult.accept('abc://baidu.com'),
   );
-  await expect(validator['validate']('ftp://baidu.com')).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate']('ftp://baidu.com', '', 'LABEL')).resolves
+    .toMatchInlineSnapshot(`
     {
       "errors": [
-        "：URL包含不支持的协议：ftp",
+        "LABEL包含不支持的URL协议ftp",
       ],
     }
   `);

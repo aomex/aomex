@@ -28,11 +28,11 @@ test('匹配多个则报错', async () => {
   await expect(validator['validate']('x')).resolves.toStrictEqual(
     ValidateResult.accept('x'),
   );
-  await expect(validator['validate']('http://www.example.com')).resolves
+  await expect(validator['validate']('http://www.example.com', '', 'LABEL')).resolves
     .toMatchInlineSnapshot(`
     {
       "errors": [
-        "：匹配超过1个规则",
+        "LABEL匹配超过1个规则",
       ],
     }
   `);
@@ -40,10 +40,10 @@ test('匹配多个则报错', async () => {
 
 test('匹配不上则报错', async () => {
   const validator = new OneOfValidator([new ArrayValidator(), new BigIntValidator()]);
-  await expect(validator['validate']({})).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate']({}, '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：未匹配规则",
+        "LABEL未匹配规则",
       ],
     }
   `);

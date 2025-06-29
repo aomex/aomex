@@ -1,4 +1,3 @@
-import { i18n } from '../i18n';
 import { ValidateResult, Validator, ValidateDeniedError } from '../base';
 import { toValidator, type ValidatorToken } from './to-validator';
 
@@ -30,13 +29,5 @@ export const validate = async <T extends ValidatorToken>(
 };
 
 const defaultErrorFormatter = (errors: ValidateResult.Denied['errors']) => {
-  let msg: string = i18n.t('validator.validation_failed');
-
-  msg += '\n';
-  errors.forEach((err) => {
-    msg += `\n- ${err}`;
-  });
-  msg += '\n';
-
-  return msg;
+  return errors[0];
 };

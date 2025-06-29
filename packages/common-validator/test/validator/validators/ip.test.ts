@@ -6,10 +6,10 @@ test('ipv4格式', async () => {
   await expect(validator['validate']('10.0.0.0')).resolves.toStrictEqual(
     ValidateResult.accept('10.0.0.0'),
   );
-  await expect(validator['validate']('::1')).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate']('::1', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：必须是IPv4地址",
+        "LABEL必须是IPv4地址",
       ],
     }
   `);
@@ -22,10 +22,11 @@ test('ipv6格式', async () => {
       ValidateResult.accept(data),
     );
   }
-  await expect(validator['validate']('0.0.0.0')).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate']('0.0.0.0', '', 'LABEL')).resolves
+    .toMatchInlineSnapshot(`
     {
       "errors": [
-        "：必须是IPv6地址",
+        "LABEL必须是IPv6地址",
       ],
     }
   `);
@@ -43,8 +44,8 @@ test('v4,v6混合', async () => {
 test('一些不合法的ip', async () => {
   const validator = new IpValidator(['v4', 'v6']);
   for (const data of ['@gmail.com', 'notemail', 'a@gmail', 'b@', 'cc@g_mail.com']) {
-    await expect(validator['validate'](data)).resolves.toStrictEqual({
-      errors: ['：必须是IPv4,v6地址'],
+    await expect(validator['validate'](data, '', 'LABEL')).resolves.toStrictEqual({
+      errors: ['LABEL必须是IPv4,v6地址'],
     });
   }
 });

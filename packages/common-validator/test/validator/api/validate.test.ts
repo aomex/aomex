@@ -34,13 +34,7 @@ test('验证失败时抛出异常', async () => {
   );
   await expect(() => promise).rejects.toThrowError(ValidateDeniedError);
   await promise.catch((err: ValidateDeniedError) => {
-    expect(err.message).toMatchInlineSnapshot(`
-      "验证失败：
-
-      - test：必须是对象类型
-      - test1：必须是ULID格式
-      "
-    `);
+    expect(err.message).toMatchInlineSnapshot(`"test必须是对象类型"`);
   });
 });
 
@@ -60,7 +54,7 @@ test('支持自定义报错文字格式', async () => {
   await expect(() => promise).rejects.toThrowError(ValidateDeniedError);
   await promise.catch((err: ValidateDeniedError) => {
     expect(err.message).toMatchInlineSnapshot(
-      `"["test：必须是对象类型","test1：必须是ULID格式"]"`,
+      `"["test必须是对象类型","test1必须是ULID格式"]"`,
     );
   });
 });
@@ -79,11 +73,6 @@ test('根路径报错', async () => {
   const promise = validate({ test: '1', test1: '2' }, rule.array(rule.string()));
   await expect(() => promise).rejects.toThrowError(ValidateDeniedError);
   await promise.catch((err: ValidateDeniedError) => {
-    expect(err.message).toMatchInlineSnapshot(`
-      "验证失败：
-
-      - ：必须是数组类型
-      "
-    `);
+    expect(err.message).toMatchInlineSnapshot(`"必须是数组类型"`);
   });
 });

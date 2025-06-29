@@ -13,10 +13,10 @@ test('检测objectid类型', async () => {
 
 test('非objectid类型', async () => {
   const validator = new MongoObjectIdValidator();
-  await expect(validator['validate']('abc')).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate']('abc', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：必须是 ObjectId 类型",
+        "LABEL必须是 ObjectId 类型",
       ],
     }
   `);

@@ -7,10 +7,10 @@ test('枚举限制', async () => {
   await expect(validator['validate']('a')).resolves.toStrictEqual(
     ValidateResult.accept('a'),
   );
-  await expect(validator['validate'](4)).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate'](4, '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：不在枚举范围",
+        "LABEL不在枚举范围",
       ],
     }
   `);
@@ -25,10 +25,10 @@ test('宽松模式下，字符串允许与数字对比', async () => {
 
 test('严格模式下，字符串不允许与数字对比', async () => {
   const validator = new EnumValidator(['1', 2, 3]).strict();
-  await expect(validator['validate']('2')).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate']('2', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：不在枚举范围",
+        "LABEL不在枚举范围",
       ],
     }
   `);

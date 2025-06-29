@@ -86,8 +86,8 @@ describe('optional()', async () => {
 
   test('空数据合集', async () => {
     for (const value of empty) {
-      await expect(validator['validate'](value, '')).resolves.toStrictEqual({
-        errors: ['：必填'],
+      await expect(validator['validate'](value, '', 'LABEL')).resolves.toStrictEqual({
+        errors: ['LABEL必填'],
       });
     }
   });

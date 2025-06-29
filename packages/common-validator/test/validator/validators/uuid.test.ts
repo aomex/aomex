@@ -12,11 +12,15 @@ test('合法的uuid', async () => {
 
 test('版本必须对应', async () => {
   await expect(
-    new UuidValidator(['v1'])['validate']('59eb9789-08de-4286-abb2-cc2ef12045ea'),
+    new UuidValidator(['v1'])['validate'](
+      '59eb9789-08de-4286-abb2-cc2ef12045ea',
+      '',
+      'LABEL',
+    ),
   ).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：必须是UUIDv1格式",
+        "LABEL必须是UUIDv1格式",
       ],
     }
   `);

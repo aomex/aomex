@@ -21,10 +21,10 @@ test('检测缓冲类型', async () => {
 
 test('非缓冲类型', async () => {
   const validator = new BufferValidator();
-  await expect(validator['validate']([])).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate']([], '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：必须是buffer类型",
+        "LABEL必须是buffer类型",
       ],
     }
   `);
@@ -37,10 +37,10 @@ test('从十六进制恢复', async () => {
       ValidateResult.accept(Buffer.from([0, 1])),
     );
   }
-  await expect(validator['validate']('zzz')).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate']('zzz', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：必须是buffer类型",
+        "LABEL必须是buffer类型",
       ],
     }
   `);
@@ -51,10 +51,10 @@ test('从base64字符串恢复', async () => {
   await expect(validator['validate']('AAE=')).resolves.toStrictEqual(
     ValidateResult.accept(Buffer.from([0, 1])),
   );
-  await expect(validator['validate']('AAE')).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate']('AAE', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：必须是buffer类型",
+        "LABEL必须是buffer类型",
       ],
     }
   `);

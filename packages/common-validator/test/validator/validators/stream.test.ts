@@ -12,10 +12,11 @@ test('检测缓冲类型', async () => {
 
 test('非缓冲类型', async () => {
   const validator = new StreamValidator();
-  await expect(validator['validate'](Buffer.from([]))).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate'](Buffer.from([]), '', 'LABEL')).resolves
+    .toMatchInlineSnapshot(`
     {
       "errors": [
-        "：必须是stream类型",
+        "LABEL必须是stream类型",
       ],
     }
   `);

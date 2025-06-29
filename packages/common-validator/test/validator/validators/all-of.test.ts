@@ -23,10 +23,10 @@ test('必须匹配所有规则', async () => {
   await expect(validator['validate']('http://www.example.com')).resolves.toStrictEqual(
     ValidateResult.accept('http://www.example.com'),
   );
-  await expect(validator['validate']('x')).resolves.toMatchInlineSnapshot(`
+  await expect(validator['validate']('x', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "：未匹配所有规则",
+        "LABEL未匹配所有规则",
       ],
     }
   `);
