@@ -125,6 +125,9 @@ export class Task {
       cache.expire(this.concurrentKey, this.expireDuration);
     }, this.expireDuration / 4);
 
+    // 任务可能在timer执行之前就结束了，有可能会导致key永不过期
+    cache.expire(this.concurrentKey, this.expireDuration);
+
     return async () => {
       clearInterval(timer);
       const count = await cache.decrement(this.concurrentKey);
