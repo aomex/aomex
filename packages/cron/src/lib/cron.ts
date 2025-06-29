@@ -46,14 +46,8 @@ export class Cron {
     return this.options.command;
   }
 
-  public get servesCount(): number {
-    let { serves = 1 } = this.options;
-    if (serves === 'infinity') serves = Infinity;
-    return Math.max(1, serves);
-  }
-
   public get concurrent(): number {
-    let { concurrent = this.servesCount } = this.options;
+    let { concurrent = 1 } = this.options;
     if (concurrent === 'infinity') concurrent = Infinity;
     return Math.max(1, concurrent);
   }
@@ -61,7 +55,7 @@ export class Cron {
   public getWaitingTimeout(timeDelta: number = Infinity): number {
     return Math.max(
       0,
-      Math.min(this.options.waitingTimeout || 10_000, Math.abs(timeDelta) - 2_000),
+      Math.min(this.options.waitingTimeout || 10_000, Math.abs(timeDelta)),
     );
   }
 
@@ -148,7 +142,6 @@ export class Cron {
       time: this.time,
       argv: this.argv,
       concurrent: this.concurrent,
-      serves: this.servesCount,
       waitingTimeout: this.getWaitingTimeout(),
     };
   }

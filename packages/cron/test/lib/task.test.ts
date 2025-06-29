@@ -6,16 +6,15 @@ import { tmpdir } from 'os';
 import { writeFileSync } from 'fs';
 import { sleep } from '@aomex/internal-tools';
 
-test('并发达上限后，多余的servers不能触发任务', { timeout: 10_000 }, async () => {
+test('并发达上限', { timeout: 10_000 }, async () => {
   const cron = new Cron({
     commanders: '',
     command: '',
     concurrent: 4,
-    serves: Infinity,
     waitingTimeout: 2_000,
   });
-  const task1 = new Task(cron, 1, 2);
-  const task2 = new Task(cron, 2, 3);
+  const task1 = new Task(cron, 10000, 20000);
+  const task2 = new Task(cron, 20000, 30000);
   await expect(task1.win()).resolves.toBeTruthy();
   await expect(task1.win()).resolves.toBeTruthy();
   await expect(task1.win()).resolves.toBeTruthy();
@@ -24,35 +23,18 @@ test('并发达上限后，多余的servers不能触发任务', { timeout: 10_00
   await expect(task1.win()).resolves.toBeFalsy();
 });
 
-test('servers多于并发数部分无法触发任务', async () => {
-  const cron = new Cron({
-    commanders: '',
-    command: '',
-    concurrent: Infinity,
-    serves: 3,
-    waitingTimeout: 3_000,
-  });
-  const task = new Task(cron, 1, 2);
-  await expect(task.win()).resolves.toBeTruthy();
-  await expect(task.win()).resolves.toBeTruthy();
-  await expect(task.win()).resolves.toBeTruthy();
-  await expect(task.win()).resolves.toBeFalsy();
-  await expect(task.win()).resolves.toBeFalsy();
-});
-
 test('任务结束后可补充排队中的任务', { timeout: 20_000 }, async () => {
   const cron = new Cron({
     commanders: '',
     command: '',
     concurrent: 2,
-    serves: Infinity,
     waitingTimeout: 5_000,
   });
 
-  const task1 = new Task(cron, 1, 2);
-  const task2 = new Task(cron, 2, 3);
-  const task3 = new Task(cron, 3, 4);
-  const task4 = new Task(cron, 4, 5);
+  const task1 = new Task(cron, 10000, 20000);
+  const task2 = new Task(cron, 20000, 30000);
+  const task3 = new Task(cron, 30000, 40000);
+  const task4 = new Task(cron, 40000, 50000);
   await expect(task1.win()).resolves.toBeTruthy();
   await expect(task2.win()).resolves.toBeTruthy();
   const result = task3.win();
@@ -67,12 +49,11 @@ test('排队中的任务超时后被放弃', { timeout: 10_000 }, async () => {
     commanders: '',
     command: '',
     concurrent: 1,
-    serves: Infinity,
     waitingTimeout: 4_000,
   });
 
-  const task1 = new Task(cron, 1, 2);
-  const task2 = new Task(cron, 2, 3);
+  const task1 = new Task(cron, 10000, 20000);
+  const task2 = new Task(cron, 20000, 30000);
 
   await expect(task1.win()).resolves.toBeTruthy();
   const result = task2.win();
@@ -87,12 +68,11 @@ test('排队中的任务在遇到cron:stop后需放弃排队', { timeout: 10_000
     commanders: '',
     command: '',
     concurrent: 1,
-    serves: Infinity,
     waitingTimeout: 40_000,
   });
 
-  const task1 = new Task(cron, 1, 2);
-  const task2 = new Task(cron, 2, 3);
+  const task1 = new Task(cron, 10000, 20000);
+  const task2 = new Task(cron, 20000, 30000);
 
   await expect(task1.win()).resolves.toBeTruthy();
   const result = task2.win();
@@ -105,7 +85,6 @@ test('无限并发', { timeout: 12_000 }, async () => {
   const cron = new Cron({
     commanders: '',
     command: '',
-    serves: Infinity,
     concurrent: Infinity,
   });
   const task = new Task(cron, 1, 2);

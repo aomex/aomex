@@ -69,15 +69,9 @@ export type CronOptions = (CronTimeObject | CronTimeString) & {
    */
   args?: (string | number)[];
   /**
-   * 每个时间点能在几个服务（一个`aomex cron:start`指令代表一个服务）中产生任务，任务能否执行受到并发数和等待时间的约束。
-   *
-   * 默认值：`1`
-   */
-  serves?: number | 'infinity';
-  /**
    * 允许同时执行的任务数量，如果允许不同时间点的任务重叠执行，可以设置 >1 的值。
    *
-   * 未设置时，使用`serves`的值作为默认值，这样可以保证同一时间点集群指定服务生成的任务能够刚好被允许执行。
+   * 默认值：`1`
    */
   concurrent?: number | 'infinity';
   /**

@@ -59,38 +59,6 @@ test('时间', () => {
   ).toThrowErrorMatchingInlineSnapshot(`[Error: 时间表达式不合法：* * * * * * *]`);
 });
 
-test('serves默认是1', async () => {
-  expect(new Cron({ time: '', command: '', commanders: '' }).servesCount).toBe(1);
-  expect(
-    new Cron({ time: '', command: '', commanders: '', serves: -2 }).servesCount,
-  ).toBe(1);
-  expect(new Cron({ time: '', command: '', commanders: '', serves: 0 }).servesCount).toBe(
-    1,
-  );
-  expect(new Cron({ time: '', command: '', commanders: '', serves: 2 }).servesCount).toBe(
-    2,
-  );
-});
-
-test('concurrent默认是serves的值', async () => {
-  expect(new Cron({ time: '', command: '', commanders: '' }).concurrent).toBe(1);
-  expect(new Cron({ time: '', command: '', commanders: '', serves: 3 }).concurrent).toBe(
-    3,
-  );
-  expect(
-    new Cron({ time: '', command: '', commanders: '', serves: 3, concurrent: -2 })
-      .concurrent,
-  ).toBe(1);
-  expect(
-    new Cron({ time: '', command: '', commanders: '', serves: 3, concurrent: 0 })
-      .concurrent,
-  ).toBe(1);
-  expect(
-    new Cron({ time: '', command: '', commanders: '', serves: 3, concurrent: 2 })
-      .concurrent,
-  ).toBe(2);
-});
-
 test('转换为字符串', async () => {
   expect(
     new Cron({
@@ -132,7 +100,6 @@ test('转换为对象', async () => {
       ],
       "command": "schedule:command",
       "concurrent": 5,
-      "serves": 1,
       "time": "0 * * */2 * *",
       "waitingTimeout": 10000,
     }
@@ -161,7 +128,8 @@ test('队列等待时间不能超过任务时间间隔', () => {
   const cron = new Cron({ time: '* * * * *', command: '', commanders: '' });
 
   expect(cron.getWaitingTimeout(20_000)).toBe(10_000);
-  expect(cron.getWaitingTimeout(10_000)).toBe(8_000);
+  expect(cron.getWaitingTimeout(10_000)).toBe(10_000);
+  expect(cron.getWaitingTimeout(6_000)).toBe(6_000);
   expect(cron.getWaitingTimeout(-30_000)).toBe(10_000);
 
   expect(
