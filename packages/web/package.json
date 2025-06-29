@@ -1,6 +1,6 @@
 {
   "name": "@aomex/web",
-  "version": "3.27.3",
+  "version": "3.27.4",
   "description": "aomex web层应用",
   "scripts": {
     "prepublishOnly": "tsup && node ./scripts/patch-dist.mjs"

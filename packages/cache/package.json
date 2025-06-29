@@ -1,6 +1,6 @@
 {
   "name": "@aomex/cache",
-  "version": "3.27.3",
+  "version": "3.27.4",
   "description": "缓存基础类",
   "scripts": {
     "prepublishOnly": "tsup"

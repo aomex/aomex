@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.27.4](https://github.com/aomex/aomex/compare/v3.27.3...v3.27.4) (2025-06-29)
+
+
+### Bug Fixes
+
+* **cron:** 任务结束前可能未设置过期时间导致缓存无法释放 ([6bc0b7f](https://github.com/aomex/aomex/commit/6bc0b7fb8b961c13394bfb183a28dc0ff9afc3d9))
+
+
+
+
+
 ## [3.27.3](https://github.com/aomex/aomex/compare/v3.27.2...v3.27.3) (2025-06-29)
 
 
