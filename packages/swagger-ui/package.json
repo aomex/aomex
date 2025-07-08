@@ -1,6 +1,6 @@
 {
   "name": "@aomex/swagger-ui",
-  "version": "3.28.0",
+  "version": "3.28.1",
   "description": "Swagger文档展示UI",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",

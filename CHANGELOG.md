@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.28.1](https://github.com/aomex/aomex/compare/v3.28.0...v3.28.1) (2025-07-08)
+
+
+### Bug Fixes
+
+* **auth:** 策略权限参数使用扩展符时无法获得类型提示 ([6f10710](https://github.com/aomex/aomex/commit/6f1071008b171f6d413bb36840a2a1e63dd100e7))
+
+
+
+
+
 # [3.28.0](https://github.com/aomex/aomex/compare/v3.27.4...v3.28.0) (2025-07-08)
 
 
