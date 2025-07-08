@@ -15,7 +15,7 @@ export namespace Auth {
     StrategyName extends keyof S,
   > =
     S[StrategyName] extends Strategy<any, infer Args>
-      ? any[] extends Args
+      ? unknown[] extends Args
         ? []
         : Args
       : never;

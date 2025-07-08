@@ -105,6 +105,43 @@ import { Auth } from '@aomex/auth';
   expectType<TypeEqual<object, T>>(true);
 }
 
+// 无授权
+{
+  const bearer = new JwtStrategy({
+    secret: '',
+    onVerified(_token) {
+      return { userId: 1 };
+    },
+  });
+  const auth = new Auth({ strategies: { bearer } });
+  auth.authorize('bearer');
+  // @ts-expect-error
+  auth.authorize('bearer', 0);
+  // @ts-expect-error
+  auth.authorize('bearer1', 0, 'no');
+  // @ts-expect-error
+  auth.authorize('bearer', 0, 1, 3);
+}
+
+// 扩展数组
+{
+  const bearer = new JwtStrategy({
+    secret: '',
+    onVerified(_token) {
+      return { userId: 1 };
+    },
+    onAuthorize: (...roles: number[]) => {
+      return roles.length > 1;
+    },
+  });
+  const auth = new Auth({ strategies: { bearer } });
+  auth.authorize('bearer');
+  auth.authorize('bearer', 0);
+  // @ts-expect-error
+  auth.authorize('bearer1', 0, 'no');
+  auth.authorize('bearer', 0, 1, 3);
+}
+
 // 自循环
 {
   new JwtStrategy({
