@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.28.0](https://github.com/aomex/aomex/compare/v3.27.4...v3.28.0) (2025-07-08)
+
+
+### Features
+
+* **auth:** 增加权限认证 ([bb8d7ff](https://github.com/aomex/aomex/commit/bb8d7ff105126cb9c4e5171142ee07f6d56a8000))
+
+
+
+
+
 ## [3.27.4](https://github.com/aomex/aomex/compare/v3.27.3...v3.27.4) (2025-06-29)
 
 **Note:** Version bump only for package @aomex/auth-bearer-strategy
