@@ -1,12 +1,12 @@
 import supertest from 'supertest';
 import { expect, test } from 'vitest';
-import { Authentication } from '@aomex/auth';
+import { Auth } from '@aomex/auth';
 import { WebApp } from '@aomex/web';
 import { BearerStrategy } from '../src';
 import { middleware } from '@aomex/common';
 
 test('无令牌', async () => {
-  const auth = new Authentication({
+  const auth = new Auth({
     strategies: {
       bearer: new BearerStrategy({
         async onLoaded(token) {
@@ -22,7 +22,7 @@ test('无令牌', async () => {
 });
 
 test('报头令牌', async () => {
-  const auth = new Authentication({
+  const auth = new Auth({
     strategies: {
       bearer: new BearerStrategy({
         async onLoaded(token) {
@@ -51,7 +51,7 @@ test('报头令牌', async () => {
 });
 
 test('报头令牌格式错误', async () => {
-  const auth = new Authentication({
+  const auth = new Auth({
     strategies: {
       bearer: new BearerStrategy({
         async onLoaded(token) {
@@ -68,7 +68,7 @@ test('报头令牌格式错误', async () => {
 });
 
 test('从cookie获取令牌', async () => {
-  const auth = new Authentication({
+  const auth = new Auth({
     strategies: {
       bearer: new BearerStrategy({
         async onLoaded(token) {
@@ -95,7 +95,7 @@ test('从cookie获取令牌', async () => {
 });
 
 test('从查询字符串获取令牌', async () => {
-  const auth = new Authentication({
+  const auth = new Auth({
     strategies: {
       bearer: new BearerStrategy({
         async onLoaded(token) {
@@ -121,7 +121,7 @@ test('从查询字符串获取令牌', async () => {
 });
 
 test('从请求实体获取令牌', async () => {
-  const auth = new Authentication({
+  const auth = new Auth({
     strategies: {
       bearer: new BearerStrategy({
         async onLoaded(token) {
@@ -148,7 +148,7 @@ test('从请求实体获取令牌', async () => {
 });
 
 test('按顺序获取', async () => {
-  const auth = new Authentication({
+  const auth = new Auth({
     strategies: {
       bearer: new BearerStrategy({
         async onLoaded(token) {
@@ -192,7 +192,7 @@ test('按顺序获取', async () => {
 });
 
 test('签名', () => {
-  const auth = new Authentication({
+  const auth = new Auth({
     strategies: {
       bearer: new BearerStrategy({
         async onLoaded(token) {
@@ -204,4 +204,40 @@ test('签名', () => {
 
   expect(auth.strategy('bearer').signature('md5')).toMatch(/^[a-z0-9]{32}$/);
   expect(auth.strategy('bearer').signature('sha1')).toMatch(/^[a-z0-9]{40}$/);
+});
+
+test('权限认证', async () => {
+  const auth = new Auth({
+    strategies: {
+      bearer: new BearerStrategy({
+        onLoaded(token) {
+          return { token };
+        },
+        onAuthorize(role: 0 | 1) {
+          const data = this.getIdentity();
+          const character = data.token.slice(-1);
+          return character === role.toString();
+        },
+      }),
+    },
+  });
+
+  const app = new WebApp({
+    mount: [
+      auth.authenticate('bearer').authorize(0),
+      middleware.web((ctx) => {
+        ctx.send('ok');
+      }),
+    ],
+  });
+
+  await supertest(app.listen())
+    .post('/')
+    .set('Authorization', `Bearer abcd0`)
+    .expect(200);
+
+  await supertest(app.listen())
+    .post('/')
+    .set('Authorization', `Bearer abcd1`)
+    .expect(403);
 });

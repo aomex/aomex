@@ -1,5 +1,5 @@
 import { expectType, type TypeEqual } from 'ts-expect';
-import { Authentication, Strategy } from '../src';
+import { Auth, Strategy } from '../src';
 import { Middleware } from '@aomex/common';
 import { Router } from '@aomex/web';
 
@@ -7,7 +7,7 @@ import { Router } from '@aomex/web';
 {
   let strategy1!: Strategy<'foo'>;
   let strategy2!: Strategy<'bar'>;
-  const auth = new Authentication({
+  const auth = new Auth({
     strategies: { foo: strategy1, bar: strategy2 },
   });
 
@@ -16,7 +16,7 @@ import { Router } from '@aomex/web';
   // @ts-expect-error
   auth.strategy('fooo');
 
-  new Authentication({
+  new Auth({
     strategies: {
       foo: strategy1,
       // @ts-expect-error
@@ -28,7 +28,7 @@ import { Router } from '@aomex/web';
 // 中间件：字符串
 {
   let strategy!: Strategy<'foo'>;
-  const auth = new Authentication({
+  const auth = new Auth({
     strategies: { foo: strategy },
   }).authenticate('foo');
   expectType<TypeEqual<Middleware.Infer<typeof auth>, { readonly foo: 'foo' }>>(true);
@@ -37,7 +37,7 @@ import { Router } from '@aomex/web';
 // 中间件：对象
 {
   let strategy!: Strategy<{ foo: 'bar' }>;
-  const auth = new Authentication({
+  const auth = new Auth({
     strategies: { foo: strategy },
   }).authenticate('foo');
   expectType<TypeEqual<Middleware.Infer<typeof auth>, { readonly foo: { foo: 'bar' } }>>(
@@ -48,7 +48,7 @@ import { Router } from '@aomex/web';
 // 在路由组使用
 {
   let strategy!: Strategy<{ foo: 'bar' }>;
-  const auth = new Authentication({
+  const auth = new Auth({
     strategies: { authFoo: strategy },
   });
 

@@ -1,4 +1,4 @@
-import { Strategy } from '@aomex/auth';
+import { AuthError, Strategy } from '@aomex/auth';
 import { WebContext } from '@aomex/web';
 import { createHash } from 'node:crypto';
 
@@ -32,7 +32,10 @@ export type TokenLoaderItem =
       key: `access_token` | (string & {});
     };
 
-export abstract class BaseBearerStrategy<T extends object | string> extends Strategy<T> {
+export abstract class BaseBearerStrategy<
+  T extends object | string | number,
+  AuthorizeArgs extends any[],
+> extends Strategy<T, AuthorizeArgs> {
   protected readonly loaders: TokenLoaderItem[];
 
   constructor(loaders?: TokenLoaderItem[]) {
@@ -93,16 +96,48 @@ export abstract class BaseBearerStrategy<T extends object | string> extends Stra
 }
 
 export namespace BearerStrategy {
-  export interface Options<T extends object | string> {
+  export type Options<T extends object | string | number, AuthorizeArgs extends any[]> = {
     /**
      * 找到token后的回调，解析并返回真正的身份数据
      */
-    onLoaded: (token: string, ctx: WebContext) => Promise<T | false>;
+    onLoaded: (
+      token: string,
+      ctx: WebContext,
+    ) => T | AuthError | false | Promise<T | AuthError | false>;
+
     /**
      * 按从左到右的顺序获取token。默认：`[{ type: 'header', key: 'authorization' }]`
      */
     tokenLoaders?: TokenLoaderItem[];
-  }
+  } & ({
+    /**
+     * 身份认证后的权限判断，如果权限不足，则返回`false`，系统会自动响应`403`状态码
+     *
+     * 有两种方式可以获得认证的身份数据
+     * ```
+     * {
+     *   onLoaded(token) {
+     *     return { userId: 1, role: 1 };
+     *   },
+     *   // 方式一：
+     *   onAuthorize(role: number) {
+     *     const identity = this.getIdentity();
+     *     return identity.role === role;
+     *   },
+     *   // 方式二：
+     *   onAuthorize: (role: number) => (identity) => {
+     *     return identity.role === role;
+     *   }
+     * }
+     * ```
+     */
+    onAuthorize?: (
+      ...args: AuthorizeArgs
+    ) =>
+      | boolean
+      | Promise<boolean>
+      | ((data: T) => boolean | AuthError | Promise<boolean | AuthError>);
+  } & ThisType<{ getIdentity: () => T }>);
 }
 
 /**
@@ -110,11 +145,17 @@ export namespace BearerStrategy {
  *
  * 解析优先级： 自定义 -> header -> body -> query -> cookie
  */
-export class BearerStrategy<T extends object | string> extends BaseBearerStrategy<{
-  readonly token: string;
-  readonly data: T;
-}> {
-  constructor(protected readonly opts: BearerStrategy.Options<T>) {
+export class BearerStrategy<
+  T extends object | string | number,
+  AuthorizeArgs extends any[],
+> extends BaseBearerStrategy<
+  {
+    readonly token: string;
+    readonly data: T;
+  },
+  AuthorizeArgs
+> {
+  constructor(protected readonly opts: BearerStrategy.Options<T, AuthorizeArgs>) {
     super(opts.tokenLoaders);
   }
 
@@ -141,6 +182,22 @@ export class BearerStrategy<T extends object | string> extends BaseBearerStrateg
     const { onLoaded } = this.opts;
     const token = this.loadToken(ctx);
     const data = token ? await onLoaded(token, ctx) : false;
+    if (data instanceof AuthError) throw data;
     return data !== false && token !== false ? { token, data } : false;
+  }
+
+  protected override authorize(
+    payload: { readonly token: string; readonly data: T },
+    ...args: AuthorizeArgs
+  ) {
+    if (!this.opts.onAuthorize) return false;
+    const result = this.opts.onAuthorize.call(
+      { getIdentity: () => payload.data },
+      ...args,
+    );
+    if (typeof result === 'function') {
+      return result(payload.data);
+    }
+    return result;
   }
 }
