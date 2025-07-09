@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.28.2](https://github.com/aomex/aomex/compare/v3.28.1...v3.28.2) (2025-07-09)
+
+
+### Bug Fixes
+
+* **web:** 上传文件指定后缀名为媒体类型时无法正确识别 ([574a3df](https://github.com/aomex/aomex/commit/574a3df76d773bd131f6d5cae8506e4a9e580f92))
+
+
+
+
+
 ## [3.28.1](https://github.com/aomex/aomex/compare/v3.28.0...v3.28.1) (2025-07-08)
 
 **Note:** Version bump only for package @aomex/web

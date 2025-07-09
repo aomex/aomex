@@ -1,6 +1,6 @@
 {
   "name": "@aomex/serve-static",
-  "version": "3.28.1",
+  "version": "3.28.2",
   "description": "静态文件服务",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",

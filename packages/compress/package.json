@@ -1,6 +1,6 @@
 {
   "name": "@aomex/compress",
-  "version": "3.28.1",
+  "version": "3.28.2",
   "description": "压缩响应内容",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
