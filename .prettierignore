@@ -5,5 +5,6 @@ coverage/
 .changeset/*.md
 openapi.json
 packages/serve-static/test/fixtures/world/index.html
+packages/web/test/fixture/*.html
 /.nx/workspace-data
 packages/swagger-ui/public/swagger-ui.*

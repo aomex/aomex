@@ -118,7 +118,7 @@ test('体积太大', async () => {
   res.flush();
 });
 
-test('媒体类型', async () => {
+test('媒体类型不正确', async () => {
   const { req, res } = await mockServer((agent) =>
     agent.post('/').attach('file1', join(dir, 'fixture/upload-1.txt')),
   );
@@ -128,6 +128,26 @@ test('媒体类型', async () => {
       file1: validator,
     }),
   ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: file1包含不支持的文件类型]`);
+  res.flush();
+});
+
+test('指定后缀名为媒体类型', async () => {
+  const { req, res } = await mockServer((agent) =>
+    agent.post('/').attach('file1', join(dir, 'fixture/upload-1.html')),
+  );
+  const validator = new FileValidator().mimeTypes('.html');
+  await expect(
+    validate(req.body, {
+      file1: validator,
+    }),
+  ).resolves.toMatchObject({
+    file1: {
+      hash: '3e25960a79dbc69b674cd4ec67a72c62',
+      mimetype: 'text/html',
+      originalFilename: 'upload-1.html',
+      size: 11,
+    },
+  });
   res.flush();
 });
 

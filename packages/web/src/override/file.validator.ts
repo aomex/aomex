@@ -71,7 +71,7 @@ export class FileValidator<T = FileValidator.FormidableFile> extends Validator<T
         ([] as string[])
           .concat(mineOrExt)
           .concat(others)
-          .map(mimeTypes.contentType)
+          .map(mimeTypes.lookup)
           .filter(Boolean),
       ),
     ];
