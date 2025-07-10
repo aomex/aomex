@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.28.3](https://github.com/aomex/aomex/compare/v3.28.2...v3.28.3) (2025-07-10)
+
+
+### Bug Fixes
+
+* **auth:** bearer认证方式未设置openapi ([90055d7](https://github.com/aomex/aomex/commit/90055d74897797cae246a16712540f6983e6317c))
+
+
+
+
+
 ## [3.28.2](https://github.com/aomex/aomex/compare/v3.28.1...v3.28.2) (2025-07-09)
 
 **Note:** Version bump only for package @aomex/auth-bearer-strategy
