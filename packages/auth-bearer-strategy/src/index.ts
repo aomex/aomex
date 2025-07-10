@@ -1,5 +1,5 @@
 import { AuthError, Strategy } from '@aomex/auth';
-import { WebContext } from '@aomex/web';
+import { WebContext, type OpenApiInjector } from '@aomex/web';
 import { createHash } from 'node:crypto';
 
 export type TokenLoaderItem =
@@ -199,5 +199,23 @@ export class BearerStrategy<
       return result(payload.data);
     }
     return result;
+  }
+
+  protected override openapi(): OpenApiInjector {
+    return {
+      ...super.openapi(),
+      onDocument(document) {
+        document.components ||= {};
+        document.components.securitySchemes ||= {};
+        document.components.securitySchemes['bearerAuth'] ||= {
+          type: 'http',
+          scheme: 'bearer',
+        };
+      },
+      onMethod(methodItem) {
+        methodItem.security ||= [];
+        methodItem.security.push({ bearerAuth: [] });
+      },
+    };
   }
 }

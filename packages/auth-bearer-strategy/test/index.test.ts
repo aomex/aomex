@@ -3,7 +3,7 @@ import { expect, test } from 'vitest';
 import { Auth } from '@aomex/auth';
 import { WebApp } from '@aomex/web';
 import { BearerStrategy } from '../src';
-import { middleware } from '@aomex/common';
+import { middleware, OpenAPI } from '@aomex/common';
 
 test('无令牌', async () => {
   const auth = new Auth({
@@ -240,4 +240,72 @@ test('权限认证', async () => {
     .post('/')
     .set('Authorization', `Bearer abcd1`)
     .expect(403);
+});
+
+test('文档', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+  const md = new Auth({
+    strategies: {
+      bear: new BearerStrategy({
+        onLoaded() {
+          return {};
+        },
+      }),
+    },
+  }).authenticate('bear');
+  const openapi = md['openapi']();
+  openapi.onDocument?.(doc);
+  openapi.onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  openapi.postMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  openapi.postDocument?.(doc);
+
+  expect(doc).toMatchInlineSnapshot(`
+    {
+      "components": {
+        "securitySchemes": {
+          "bearerAuth": {
+            "scheme": "bearer",
+            "type": "http",
+          },
+        },
+      },
+      "info": {
+        "title": "",
+        "version": "",
+      },
+      "openapi": "",
+      "paths": {
+        "/": {
+          "get": {
+            "responses": {
+              "401": {
+                "description": "Unauthorized",
+              },
+            },
+            "security": [
+              {
+                "bearerAuth": [],
+              },
+            ],
+          },
+        },
+      },
+    }
+  `);
 });
