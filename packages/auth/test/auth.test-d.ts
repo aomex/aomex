@@ -31,7 +31,9 @@ import { Router } from '@aomex/web';
   const auth = new Auth({
     strategies: { foo: strategy },
   }).authenticate('foo');
-  expectType<TypeEqual<Middleware.Infer<typeof auth>, { readonly foo: 'foo' }>>(true);
+  expectType<
+    TypeEqual<Middleware.Infer<typeof auth>, { readonly auth: { readonly foo: 'foo' } }>
+  >(true);
 }
 
 // 中间件：对象
@@ -40,29 +42,38 @@ import { Router } from '@aomex/web';
   const auth = new Auth({
     strategies: { foo: strategy },
   }).authenticate('foo');
-  expectType<TypeEqual<Middleware.Infer<typeof auth>, { readonly foo: { foo: 'bar' } }>>(
-    true,
-  );
+  expectType<
+    TypeEqual<
+      Middleware.Infer<typeof auth>,
+      { readonly auth: { readonly foo: { foo: 'bar' } } }
+    >
+  >(true);
 }
 
 // 在路由组使用
 {
-  let strategy!: Strategy<{ foo: 'bar' }>;
+  let strategy1!: Strategy<{ foo: 'bar' }>;
+  let strategy2!: Strategy<{ test: boolean }>;
   const auth = new Auth({
-    strategies: { authFoo: strategy },
+    strategies: { authFoo: strategy1, authBar: strategy2 },
   });
 
-  new Router({ mount: [auth.authenticate('authFoo')] }).get('test-auth', {
-    action: (ctx) => {
-      const data = ctx.authFoo;
-      expectType<TypeEqual<{ foo: 'bar' }, typeof data>>(true);
+  new Router({ mount: [auth.authenticate('authFoo'), auth.authenticate('authBar')] }).get(
+    'test-auth',
+    {
+      action: (ctx) => {
+        const foo = ctx.auth.authFoo;
+        expectType<TypeEqual<{ foo: 'bar' }, typeof foo>>(true);
+        const bar = ctx.auth.authBar;
+        expectType<TypeEqual<{ test: boolean }, typeof bar>>(true);
+      },
     },
-  });
+  );
 
   new Router().get('test-auth', {
     mount: [auth.authenticate('authFoo')],
     action: (ctx) => {
-      const data = ctx.authFoo;
+      const data = ctx.auth.authFoo;
       expectType<TypeEqual<{ foo: 'bar' }, typeof data>>(true);
     },
   });

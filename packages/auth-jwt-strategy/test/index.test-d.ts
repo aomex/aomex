@@ -30,7 +30,7 @@ import { Auth } from '@aomex/auth';
   });
   const md = new Auth({ strategies: { jwt } }).authenticate('jwt');
   type T = typeof md extends WebMiddleware<infer U> ? U : never;
-  expectType<TypeEqual<{ readonly jwt: { userId: number } }, T>>(true);
+  expectType<TypeEqual<{ readonly auth: { readonly jwt: { userId: number } } }, T>>(true);
 }
 
 // 返回处理过的值
@@ -43,7 +43,7 @@ import { Auth } from '@aomex/auth';
   });
   const md = new Auth({ strategies: { jwt } }).authenticate('jwt');
   type T = typeof md extends WebMiddleware<infer U> ? U : never;
-  expectType<TypeEqual<{ readonly jwt: { hello: string } }, T>>(true);
+  expectType<TypeEqual<{ readonly auth: { readonly jwt: { hello: string } } }, T>>(true);
 }
 
 // 认证加授权
@@ -71,8 +71,10 @@ import { Auth } from '@aomex/auth';
   expectType<
     TypeEqual<
       {
-        readonly jwt: {
-          userId: number;
+        readonly auth: {
+          readonly jwt: {
+            userId: number;
+          };
         };
       },
       T

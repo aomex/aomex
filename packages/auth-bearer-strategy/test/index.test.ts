@@ -37,7 +37,7 @@ test('报头令牌', async () => {
       auth.authenticate('bearer'),
       middleware.web((ctx) => {
         // @ts-expect-error
-        ctx.send(ctx.bearer);
+        ctx.send(ctx.auth.bearer);
       }),
     ],
   });
@@ -83,7 +83,7 @@ test('从cookie获取令牌', async () => {
       auth.authenticate('bearer'),
       middleware.web((ctx) => {
         // @ts-expect-error
-        ctx.send(ctx.bearer);
+        ctx.send(ctx.auth.bearer);
       }),
     ],
   });
@@ -110,7 +110,7 @@ test('从查询字符串获取令牌', async () => {
       auth.authenticate('bearer'),
       middleware.web((ctx) => {
         // @ts-expect-error
-        ctx.send(ctx.bearer);
+        ctx.send(ctx.auth.bearer);
       }),
     ],
   });
@@ -136,7 +136,7 @@ test('从请求实体获取令牌', async () => {
       auth.authenticate('bearer'),
       middleware.web((ctx) => {
         // @ts-expect-error
-        ctx.send(ctx.bearer);
+        ctx.send(ctx.auth.bearer);
       }),
     ],
   });
@@ -167,7 +167,7 @@ test('按顺序获取', async () => {
       auth.authenticate('bearer'),
       middleware.web((ctx) => {
         // @ts-expect-error
-        ctx.send(ctx.bearer);
+        ctx.send(ctx.auth.bearer);
       }),
     ],
   });

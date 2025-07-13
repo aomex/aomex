@@ -24,9 +24,11 @@ export namespace Auth {
     S extends { [K: string]: Strategy<object | string | number, any[]> },
     StrategyName extends keyof S,
   > = {
-    readonly [K in StrategyName]: S[StrategyName] extends Strategy<infer P, any>
-      ? P
-      : never;
+    readonly auth: {
+      readonly [K in StrategyName]: S[StrategyName] extends Strategy<infer P, any>
+        ? P
+        : never;
+    };
   };
 }
 
@@ -51,7 +53,7 @@ export class Auth<S extends { [K: string]: Strategy<object | string | number, an
 
     return middleware.web<Auth.DetermineMiddlewareProps<S, StrategyName>>({
       fn: async (ctx, next) => {
-        const payload = ctx[name];
+        const payload = ctx.auth[name];
         await this.internalAuthorize(ctx, strategy, payload, args);
         return next();
       },
@@ -72,7 +74,7 @@ export class Auth<S extends { [K: string]: Strategy<object | string | number, an
     let withAuthorize = false;
     const authorizeArgs: any[] = [];
 
-    const md = middleware.web({
+    const md = middleware.web<{ readonly auth: Record<any, any> }>({
       fn: async (ctx, next) => {
         let payload: string | number | false | object | AuthError = false;
         try {
@@ -93,9 +95,8 @@ export class Auth<S extends { [K: string]: Strategy<object | string | number, an
         if (withAuthorize) {
           await this.internalAuthorize(ctx, strategy, payload, authorizeArgs);
         }
-        Object.defineProperty(ctx, name, {
-          get: () => payload,
-        });
+        ctx.auth ||= {};
+        ctx.auth[name] = payload;
         return next();
       },
       openapi: strategy['openapi'](),

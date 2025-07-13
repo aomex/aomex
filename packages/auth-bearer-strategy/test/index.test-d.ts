@@ -15,10 +15,12 @@ import { WebMiddleware } from '@aomex/web';
   expectType<
     TypeEqual<
       {
-        readonly bearer: {
-          readonly token: string;
-          readonly data: {
-            userId: number;
+        readonly auth: {
+          readonly bearer: {
+            readonly token: string;
+            readonly data: {
+              userId: number;
+            };
           };
         };
       },
@@ -51,10 +53,12 @@ import { WebMiddleware } from '@aomex/web';
   expectType<
     TypeEqual<
       {
-        readonly bearer: {
-          readonly token: string;
-          readonly data: {
-            userId: number;
+        readonly auth: {
+          readonly bearer: {
+            readonly token: string;
+            readonly data: {
+              userId: number;
+            };
           };
         };
       },

@@ -25,7 +25,7 @@ test('认证返回对象', async () => {
       auth.authenticate('mock'),
       middleware.web((ctx) => {
         // @ts-expect-error
-        ctx.send(ctx.mock);
+        ctx.send(ctx.auth.mock);
       }),
     ],
   });
@@ -48,7 +48,7 @@ test('认证返回字符串', async () => {
       auth.authenticate('mock'),
       middleware.web((ctx) => {
         // @ts-expect-error
-        ctx.send(ctx.mock);
+        ctx.send(ctx.auth.mock);
       }),
     ],
   });
