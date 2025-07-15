@@ -310,8 +310,8 @@ importers:
   packages/helmet:
     dependencies:
       helmet:
-        specifier: ^8.0.0
-        version: 8.0.0
+        specifier: ^8.1.0
+        version: 8.1.0
     devDependencies:
       '@aomex/common':
         specifier: workspace:^
@@ -3072,8 +3072,8 @@ packages:
   hastscript@6.0.0:
     resolution: {integrity: sha512-nDM6bvd7lIqDUiYEiu5Sl/+6ReP0BMk/2f4U/Rooccxkj0P5nm+acM5PrGJ/t5I8qPGiqZSE6hVAwZEdZIvP4w==}
 
-  helmet@8.0.0:
-    resolution: {integrity: sha512-VyusHLEIIO5mjQPUI1wpOAEu+wl6Q0998jzTxqUYGE45xCIcAxy3MsbEK/yyJUJ3ADeMoB6MornPH6GMWAf+Pw==}
+  helmet@8.1.0:
+    resolution: {integrity: sha512-jOiHyAZsmnr8LqoPGmCjYAaiuWwjAPLgY8ZX2XrmHawt99/u1y6RgrZMTeoPfpUbV96HOalYgz1qzkRbw54Pmg==}
     engines: {node: '>=18.0.0'}
 
   highlight.js@10.7.3:
@@ -8658,7 +8658,7 @@ snapshots:
       property-information: 5.6.0
       space-separated-tokens: 1.1.5
 
-  helmet@8.0.0: {}
+  helmet@8.1.0: {}
 
   highlight.js@10.7.3: {}
 

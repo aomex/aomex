@@ -35,7 +35,7 @@
     "@aomex/web": "^3.0.0"
   },
   "dependencies": {
-    "helmet": "^8.0.0"
+    "helmet": "^8.1.0"
   },
   "devDependencies": {
     "@aomex/common": "workspace:^",
