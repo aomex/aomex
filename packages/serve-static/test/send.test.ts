@@ -168,18 +168,20 @@ describe('压缩', () => {
     const app = new WebApp({
       mount: [middleware.web((ctx) => send(ctx, { root: fixturesDir }))],
     });
-    const brText = readFileSync(join(fixturesDir, 'compress.txt.br'), 'utf8');
+    // brotli可以被直接解析了
+    // https://github.com/forwardemail/superagent/releases/tag/v10.0.0
+    const text = readFileSync(join(fixturesDir, 'compress.txt'), 'utf8');
 
     await request(app.listen())
       .get('/compress.txt')
       .set('Accept-Encoding', 'br, deflate, gzip, zstd')
       .expect('Content-Encoding', 'br')
-      .expect(200, brText);
+      .expect(200, text);
     await request(app.listen())
       .get('/compress.txt')
       .set('Accept-Encoding', 'gzip, deflate, br, zstd')
       .expect('Content-Encoding', 'br')
-      .expect(200, brText);
+      .expect(200, text);
   });
 
   test('gzip', async () => {
