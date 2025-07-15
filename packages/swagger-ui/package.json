@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@aomex/serve-static": "workspace:^",
-    "swagger-ui": "^5.18.3",
+    "swagger-ui": "^5.26.2",
     "yaml": "^2.6.0"
   },
   "devDependencies": {
