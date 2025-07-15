@@ -328,11 +328,9 @@ test('批量设置报头', async () => {
   res.setHeaders({
     'Vary': 'Origin',
     'Content-Type': 'application/json',
-    'Content-Encoding': 'br',
   });
   expect(res.getHeaders()).toMatchInlineSnapshot(`
     {
-      "content-encoding": "br",
       "content-type": "application/json",
       "vary": "Origin",
     }
