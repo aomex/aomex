@@ -2,7 +2,7 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    workspace: ['packages/*'],
+    projects: ['packages/*'],
     coverage: {
       provider: 'v8',
       enabled: true,
