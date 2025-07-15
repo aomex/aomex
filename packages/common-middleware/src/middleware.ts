@@ -20,9 +20,9 @@ export interface MiddlewarePlatform {}
  * 中间件基类
  */
 export abstract class Middleware<Props extends object = object> {
-  public declare _contextType: object;
+  declare public _contextType: object;
 
-  protected declare _props_must_be_used_: Props;
+  declare protected _props_must_be_used_: Props;
 
   constructor(protected readonly fn: Middleware.Fn) {}
 

@@ -118,7 +118,7 @@ interface ConsoleMiddlewareArguments<T extends object> {
 }
 
 export class ConsoleMiddleware<Props extends object = object> extends Middleware<Props> {
-  protected declare _console_middleware_: 'console-middleware';
+  declare protected _console_middleware_: 'console-middleware';
   private readonly helpInjector: ConsoleHelpInjector;
 
   constructor(

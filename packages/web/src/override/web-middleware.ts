@@ -42,8 +42,8 @@ interface WebMiddlewareArguments<T extends object> {
 }
 
 export class WebMiddleware<Props extends object = object> extends Middleware<Props> {
-  public declare _contextType: WebContext;
-  protected declare _web_middleware_: 'web-middleware';
+  declare public _contextType: WebContext;
+  declare protected _web_middleware_: 'web-middleware';
   private readonly openapiInjector: OpenApiInjector;
 
   constructor(args: WebMiddlewareArguments<Props>['fn'] | WebMiddlewareArguments<Props>) {

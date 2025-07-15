@@ -14,7 +14,7 @@ export declare namespace ObjectValidator {
 }
 
 export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
-  protected declare config: ObjectValidator.Options<T>;
+  declare protected config: ObjectValidator.Options<T>;
 
   constructor(properties?: ObjectValidator.Property) {
     super();
@@ -25,18 +25,18 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
    * 开启严格模式后：
    * - 不从字符串解析出对象，除非通过`parseFromString()`手动指定
    */
-  public declare strict: (is?: boolean) => this;
+  declare public strict: (is?: boolean) => this;
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => ObjectValidator<T | Validator.TOptional>;
-  public declare nullable: () => ObjectValidator<T | null>;
-  public declare default: (
+  declare public optional: () => ObjectValidator<T | Validator.TOptional>;
+  declare public nullable: () => ObjectValidator<T | null>;
+  declare public default: (
     object: Validator.ParameterOrFn<T>,
   ) => ObjectValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
@@ -196,7 +196,7 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
     return ValidateResult.accept(obj);
   }
 
-  protected declare copy: () => ObjectValidator<T>;
+  declare protected copy: () => ObjectValidator<T>;
 
   protected override copyConfig(prev: ObjectValidator): this {
     super.copyConfig(prev);

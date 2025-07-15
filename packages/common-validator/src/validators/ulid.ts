@@ -15,18 +15,18 @@ export declare namespace UlidValidator {
 }
 
 export class UlidValidator<T = string> extends BaseStringValidator<T> {
-  protected declare config: UlidValidator.Options<T>;
+  declare protected config: UlidValidator.Options<T>;
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => UlidValidator<T | Validator.TOptional>;
-  public declare nullable: () => UlidValidator<T | null>;
-  public declare default: (
+  declare public optional: () => UlidValidator<T | Validator.TOptional>;
+  declare public nullable: () => UlidValidator<T | null>;
+  declare public default: (
     uuid: Validator.ParameterOrFn<T>,
   ) => UlidValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 

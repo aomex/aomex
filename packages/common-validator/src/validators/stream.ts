@@ -8,15 +8,15 @@ export declare namespace StreamValidator {
 }
 
 export class StreamValidator<T = stream.Stream> extends Validator<T> {
-  protected declare config: StreamValidator.Options<T>;
+  declare protected config: StreamValidator.Options<T>;
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => StreamValidator<T | Validator.TOptional>;
-  public declare nullable: () => StreamValidator<T | null>;
-  public declare transform: <T1>(
+  declare public optional: () => StreamValidator<T | Validator.TOptional>;
+  declare public nullable: () => StreamValidator<T | null>;
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
@@ -32,7 +32,7 @@ export class StreamValidator<T = stream.Stream> extends Validator<T> {
     return ValidateResult.accept(value);
   }
 
-  protected declare copy: () => this;
+  declare protected copy: () => this;
 
   protected override toDocument(): OpenAPI.SchemaObject {
     return {

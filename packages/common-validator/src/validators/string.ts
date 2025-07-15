@@ -13,24 +13,24 @@ export declare namespace StringValidator {
 }
 
 export class StringValidator<T = string> extends BaseStringValidator<T> {
-  protected declare config: StringValidator.Options<T>;
+  declare protected config: StringValidator.Options<T>;
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => StringValidator<T | Validator.TOptional>;
-  public declare nullable: () => StringValidator<T | null>;
-  public declare default: (
+  declare public optional: () => StringValidator<T | Validator.TOptional>;
+  declare public nullable: () => StringValidator<T | null>;
+  declare public default: (
     string: Validator.ParameterOrFn<T>,
   ) => StringValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
-  public declare match: (pattern: RegExp) => this;
-  public declare trim: (is?: boolean) => this;
-  public declare length: (exactOrRange: number | BaseStringValidator.LengthRange) => this;
+  declare public match: (pattern: RegExp) => this;
+  declare public trim: (is?: boolean) => this;
+  declare public length: (exactOrRange: number | BaseStringValidator.LengthRange) => this;
 
   /**
    * 把空字符串`''`设置为合法的值
@@ -50,7 +50,7 @@ export class StringValidator<T = string> extends BaseStringValidator<T> {
     return ValidateResult.accept(value);
   }
 
-  protected declare copy: () => StringValidator<T>;
+  declare protected copy: () => StringValidator<T>;
 
   protected override toDocument(): OpenAPI.SchemaObject {
     return super.toDocument();

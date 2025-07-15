@@ -9,7 +9,7 @@ export declare namespace EnumValidator {
 }
 
 export class EnumValidator<const T = never> extends Validator<T> {
-  protected declare config: EnumValidator.Options<T>;
+  declare protected config: EnumValidator.Options<T>;
 
   constructor(ranges: T[] = []) {
     super();
@@ -28,17 +28,17 @@ export class EnumValidator<const T = never> extends Validator<T> {
    * 开启/关闭严格模式。开启后有如下限制：
    * - 枚举中包含数字时，如果传递的值为字符串类型，则不再转换为数字后再对比
    */
-  public declare strict: (is?: boolean) => this;
-  public declare docs: (
+  declare public strict: (is?: boolean) => this;
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => EnumValidator<T | Validator.TOptional>;
-  public declare nullable: () => EnumValidator<T | null>;
-  public declare default: (
+  declare public optional: () => EnumValidator<T | Validator.TOptional>;
+  declare public nullable: () => EnumValidator<T | null>;
+  declare public default: (
     value: Validator.ParameterOrFn<T>,
   ) => EnumValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 

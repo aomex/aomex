@@ -46,7 +46,7 @@ middleware.mixin<{ test1: 'a'; test2: boolean }>((ctx) => {
   });
 
   class MyMiddleWare<Props extends object> extends Middleware<Props> {
-    public declare _contextType: { foo: 'bar' };
+    declare public _contextType: { foo: 'bar' };
   }
 
   const md2 = new MyMiddleWare(() => {});

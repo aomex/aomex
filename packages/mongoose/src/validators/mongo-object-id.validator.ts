@@ -9,15 +9,15 @@ import { i18n } from '../i18n';
 import { mongo } from 'mongoose';
 
 export class MongoObjectIdValidator<T = mongo.ObjectId> extends Validator<T> {
-  protected declare config: Validator.Options<T>;
+  declare protected config: Validator.Options<T>;
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => MongoObjectIdValidator<T | Validator.TOptional>;
-  public declare nullable: () => MongoObjectIdValidator<T | null>;
-  public declare transform: <T1>(
+  declare public optional: () => MongoObjectIdValidator<T | Validator.TOptional>;
+  declare public nullable: () => MongoObjectIdValidator<T | null>;
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
@@ -50,7 +50,7 @@ export class MongoObjectIdValidator<T = mongo.ObjectId> extends Validator<T> {
     }
   }
 
-  protected declare copy: () => MongoObjectIdValidator<T>;
+  declare protected copy: () => MongoObjectIdValidator<T>;
 
   protected override toDocument(): OpenAPI.SchemaObject {
     const defaultValue: mongo.ObjectId | undefined = this.getDefaultValue(

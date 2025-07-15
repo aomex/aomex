@@ -41,29 +41,29 @@ export class UuidValidator<T = string> extends BaseStringValidator<T> {
     all: createRegexp('all'),
   };
 
-  protected declare config: UuidValidator.Options<T>;
+  declare protected config: UuidValidator.Options<T>;
 
   constructor(versions: UuidValidator.Version[]) {
     super();
     this.config.uuidVersion = [...new Set(versions)];
   }
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => UuidValidator<T | Validator.TOptional>;
-  public declare nullable: () => UuidValidator<T | null>;
+  declare public optional: () => UuidValidator<T | Validator.TOptional>;
+  declare public nullable: () => UuidValidator<T | null>;
 
-  public declare default: (
+  declare public default: (
     uuid: Validator.ParameterOrFn<T>,
   ) => UuidValidator<T | Validator.TDefault>;
 
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
-  public declare match: (pattern: RegExp) => this;
+  declare public match: (pattern: RegExp) => this;
 
   protected validateString(
     uuid: string,

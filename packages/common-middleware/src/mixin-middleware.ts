@@ -16,7 +16,7 @@ declare module './middleware' {
 }
 
 export class MixinMiddleware<Props extends object = object> extends Middleware<Props> {
-  protected declare _mixin_middleware_: 'mixin-middleware';
+  declare protected _mixin_middleware_: 'mixin-middleware';
 }
 
 Middleware.register('mixin', MixinMiddleware);

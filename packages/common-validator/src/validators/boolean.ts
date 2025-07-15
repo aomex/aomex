@@ -10,20 +10,20 @@ export declare namespace BooleanValidator {
 }
 
 export class BooleanValidator<T = boolean> extends Validator<T> {
-  protected declare config: BooleanValidator.Options<T>;
+  declare protected config: BooleanValidator.Options<T>;
   protected static defaultTruthyValues: any[] = [1, '1', true, 'true'];
   protected static defaultFalsyValues: any[] = [0, '0', false, 'false'];
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => BooleanValidator<T | Validator.TOptional>;
-  public declare nullable: () => BooleanValidator<T | null>;
-  public declare default: (
+  declare public optional: () => BooleanValidator<T | Validator.TOptional>;
+  declare public nullable: () => BooleanValidator<T | null>;
+  declare public default: (
     boolValue: boolean,
   ) => BooleanValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
@@ -74,7 +74,7 @@ export class BooleanValidator<T = boolean> extends Validator<T> {
     return ValidateResult.deny(i18n.t('validator.boolean.must_be_boolean', { label }));
   }
 
-  protected declare copy: () => BooleanValidator<T>;
+  declare protected copy: () => BooleanValidator<T>;
 
   protected override toDocument(): OpenAPI.SchemaObject {
     return {

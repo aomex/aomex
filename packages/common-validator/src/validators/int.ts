@@ -8,14 +8,14 @@ import {
 } from '../base';
 
 export class IntValidator<T = number> extends BaseNumberValidator<T> {
-  protected declare config: BaseNumberValidator.Options<T>;
+  declare protected config: BaseNumberValidator.Options<T>;
 
-  public declare optional: () => IntValidator<T | Validator.TOptional>;
-  public declare nullable: () => IntValidator<T | null>;
-  public declare default: (
+  declare public optional: () => IntValidator<T | Validator.TOptional>;
+  declare public nullable: () => IntValidator<T | null>;
+  declare public default: (
     integer: Validator.ParameterOrFn<T>,
   ) => IntValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 

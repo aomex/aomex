@@ -17,7 +17,7 @@ export declare namespace BaseStringValidator {
 }
 
 export abstract class BaseStringValidator<T = string> extends Validator<T> {
-  protected declare config: BaseStringValidator.Options<T>;
+  declare protected config: BaseStringValidator.Options<T>;
 
   /**
    * 删除两边空格后再进行验证
@@ -89,7 +89,7 @@ export abstract class BaseStringValidator<T = string> extends Validator<T> {
     label: string,
   ): ValidateResult.Any<any> | Promise<ValidateResult.Any<any>>;
 
-  protected declare copy: () => BaseStringValidator<T>;
+  declare protected copy: () => BaseStringValidator<T>;
 
   protected override toDocument(): OpenAPI.SchemaObject {
     const { lengthRange = {}, pattern } = this.config;

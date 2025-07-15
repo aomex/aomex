@@ -11,24 +11,24 @@ export declare namespace NumberValidator {
 }
 
 export class NumberValidator<T = number> extends BaseNumberValidator<T> {
-  protected declare config: NumberValidator.Options<T>;
+  declare protected config: NumberValidator.Options<T>;
 
-  public declare optional: () => NumberValidator<T | Validator.TOptional>;
-  public declare nullable: () => NumberValidator<T | null>;
-  public declare default: (
+  declare public optional: () => NumberValidator<T | Validator.TOptional>;
+  declare public nullable: () => NumberValidator<T | null>;
+  declare public default: (
     number: Validator.ParameterOrFn<T>,
   ) => NumberValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
-  public declare precision: (decimals: number) => this;
+  declare public precision: (decimals: number) => this;
 
   protected override validateNumber(num: number): ValidateResult.Any<number> {
     return ValidateResult.accept(num);
   }
 
-  protected declare copy: () => this;
+  declare protected copy: () => this;
 
   protected override toDocument(): OpenAPI.SchemaObject {
     return {

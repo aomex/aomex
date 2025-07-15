@@ -14,14 +14,14 @@ export declare namespace BaseNumberValidator {
 }
 
 export abstract class BaseNumberValidator<T = number> extends Validator<T> {
-  protected declare config: BaseNumberValidator.Options<T>;
+  declare protected config: BaseNumberValidator.Options<T>;
 
   /**
    * 开启/关闭严格模式，开启后有以下限制：
    * - 字符串不再尝试转换为数字
    */
-  public declare strict: (is?: boolean) => this;
-  public declare docs: (
+  declare public strict: (is?: boolean) => this;
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
@@ -101,7 +101,7 @@ export abstract class BaseNumberValidator<T = number> extends Validator<T> {
     label: string,
   ): ValidateResult.Any<number>;
 
-  protected declare copy: () => BaseNumberValidator<T>;
+  declare protected copy: () => BaseNumberValidator<T>;
 
   protected override toDocument(): OpenAPI.SchemaObject {
     const { max, maxInclusive, min, minInclusive } = this.config;

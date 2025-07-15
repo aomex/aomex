@@ -15,23 +15,23 @@ export declare namespace UrlValidator {
 }
 
 export class UrlValidator<T = string> extends BaseStringValidator<T> {
-  protected declare config: UrlValidator.Options<T>;
+  declare protected config: UrlValidator.Options<T>;
 
   constructor() {
     super();
     this.config.allowedScheme = ['http', 'https'];
   }
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => UrlValidator<T | Validator.TOptional>;
-  public declare nullable: () => UrlValidator<T | null>;
-  public declare default: (
+  declare public optional: () => UrlValidator<T | Validator.TOptional>;
+  declare public nullable: () => UrlValidator<T | null>;
+  declare public default: (
     Url: Validator.ParameterOrFn<T>,
   ) => UrlValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
@@ -67,7 +67,7 @@ export class UrlValidator<T = string> extends BaseStringValidator<T> {
     return ValidateResult.accept(url);
   }
 
-  protected declare copy: () => UrlValidator<T>;
+  declare protected copy: () => UrlValidator<T>;
 
   protected override toDocument(): OpenAPI.SchemaObject {
     return {

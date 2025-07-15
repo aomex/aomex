@@ -9,15 +9,15 @@ import { i18n } from '../i18n';
 import { mongo } from 'mongoose';
 
 export class MongoDecimal128Validator<T = mongo.Decimal128> extends Validator<T> {
-  protected declare config: Validator.Options<T>;
+  declare protected config: Validator.Options<T>;
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => MongoDecimal128Validator<T | Validator.TOptional>;
-  public declare nullable: () => MongoDecimal128Validator<T | null>;
-  public declare transform: <T1>(
+  declare public optional: () => MongoDecimal128Validator<T | Validator.TOptional>;
+  declare public nullable: () => MongoDecimal128Validator<T | null>;
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
@@ -50,7 +50,7 @@ export class MongoDecimal128Validator<T = mongo.Decimal128> extends Validator<T>
     }
   }
 
-  protected declare copy: () => MongoDecimal128Validator<T>;
+  declare protected copy: () => MongoDecimal128Validator<T>;
 
   protected override toDocument(): OpenAPI.SchemaObject {
     const defaultValue: mongo.Decimal128 | undefined = this.getDefaultValue(

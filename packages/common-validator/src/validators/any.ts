@@ -13,16 +13,16 @@ export declare namespace AnyValidator {
 }
 
 export class AnyValidator<T = AnyValidator.Type> extends Validator<T> {
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => AnyValidator<T | Validator.TOptional>;
-  public declare nullable: () => AnyValidator<T | null>;
-  public declare default: (
+  declare public optional: () => AnyValidator<T | Validator.TOptional>;
+  declare public nullable: () => AnyValidator<T | null>;
+  declare public default: (
     anyValue: Validator.ParameterOrFn<T>,
   ) => AnyValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 

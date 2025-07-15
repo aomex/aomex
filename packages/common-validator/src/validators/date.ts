@@ -18,23 +18,23 @@ const regTimestamp = /^[0-9.]+$/;
 const regUnixTimeWithMS = /^[0-9]{10}\.[0-9]{3}$/;
 
 export class DateValidator<T = Date> extends Validator<T> {
-  protected declare config: DateValidator.Options<T>;
+  declare protected config: DateValidator.Options<T>;
 
   constructor(formats?: string[]) {
     super();
     this.config.formats = formats;
   }
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => DateValidator<T | Validator.TOptional>;
-  public declare nullable: () => DateValidator<T | null>;
-  public declare default: (
+  declare public optional: () => DateValidator<T | Validator.TOptional>;
+  declare public nullable: () => DateValidator<T | null>;
+  declare public default: (
     date: Validator.ParameterOrFn<Date>,
   ) => DateValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
@@ -132,7 +132,7 @@ export class DateValidator<T = Date> extends Validator<T> {
     return true;
   }
 
-  protected declare copy: () => this;
+  declare protected copy: () => this;
 
   protected override toDocument(): OpenAPI.SchemaObject {
     const defaultValue: Date | undefined = this.getDefaultValue(this.config.defaultValue);

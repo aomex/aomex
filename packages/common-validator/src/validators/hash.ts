@@ -43,7 +43,7 @@ export class HashValidator<T = string> extends BaseStringValidator<T> {
     return patterns;
   })();
 
-  protected declare config: HashValidator.Options<T>;
+  declare protected config: HashValidator.Options<T>;
 
   constructor(algorithm: HashValidator.Algorithm) {
     super();
@@ -54,16 +54,16 @@ export class HashValidator<T = string> extends BaseStringValidator<T> {
     }
   }
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => HashValidator<T | Validator.TOptional>;
-  public declare nullable: () => HashValidator<T | null>;
-  public declare default: (
+  declare public optional: () => HashValidator<T | Validator.TOptional>;
+  declare public nullable: () => HashValidator<T | null>;
+  declare public default: (
     algorithm: Validator.ParameterOrFn<T>,
   ) => HashValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 

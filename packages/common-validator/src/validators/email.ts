@@ -13,22 +13,22 @@ export declare namespace EmailValidator {
 }
 
 export class EmailValidator<T = string> extends BaseStringValidator<T> {
-  protected declare config: EmailValidator.Options<T>;
+  declare protected config: EmailValidator.Options<T>;
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => EmailValidator<T | Validator.TOptional>;
-  public declare nullable: () => EmailValidator<T | null>;
-  public declare default: (
+  declare public optional: () => EmailValidator<T | Validator.TOptional>;
+  declare public nullable: () => EmailValidator<T | null>;
+  declare public default: (
     email: Validator.ParameterOrFn<T>,
   ) => EmailValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
-  public declare match: (pattern: RegExp) => this;
+  declare public match: (pattern: RegExp) => this;
 
   protected validateString(
     email: string,

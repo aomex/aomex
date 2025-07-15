@@ -9,22 +9,22 @@ export declare namespace AllOfValidator {
 }
 
 export class AllOfValidator<T = never> extends Validator<T> {
-  protected declare config: AllOfValidator.Options<T>;
+  declare protected config: AllOfValidator.Options<T>;
 
   constructor(validators: [Validator, ...Validator[]]) {
     super();
     this.config.validators = validators;
   }
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
-  public declare optional: () => AllOfValidator<T | Validator.TOptional>;
-  public declare nullable: () => AllOfValidator<T | null>;
+  declare public optional: () => AllOfValidator<T | Validator.TOptional>;
+  declare public nullable: () => AllOfValidator<T | null>;
 
   protected override isEmpty(_: any): boolean {
     return false;

@@ -20,7 +20,7 @@ export declare namespace ArrayValidator {
 }
 
 export class ArrayValidator<T = unknown[]> extends Validator<T> {
-  protected declare config: ArrayValidator.Options<T>;
+  declare protected config: ArrayValidator.Options<T>;
 
   constructor(validator?: Validator) {
     super();
@@ -28,16 +28,16 @@ export class ArrayValidator<T = unknown[]> extends Validator<T> {
     this.config.lengthRange = {};
   }
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => ArrayValidator<T | Validator.TOptional>;
-  public declare nullable: () => ArrayValidator<T | null>;
-  public declare default: (
+  declare public optional: () => ArrayValidator<T | Validator.TOptional>;
+  declare public nullable: () => ArrayValidator<T | null>;
+  declare public default: (
     array: Validator.ParameterOrFn<T>,
   ) => ArrayValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
@@ -137,7 +137,7 @@ export class ArrayValidator<T = unknown[]> extends Validator<T> {
     return ValidateResult.accept(items);
   }
 
-  protected declare copy: () => ArrayValidator<T>;
+  declare protected copy: () => ArrayValidator<T>;
 
   protected override toDocument(): OpenAPI.SchemaObject {
     const { itemValidator, lengthRange } = this.config;

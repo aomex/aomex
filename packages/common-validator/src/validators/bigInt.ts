@@ -12,21 +12,21 @@ export declare namespace BigIntValidator {
 }
 
 export class BigIntValidator<T = bigint> extends Validator<T> {
-  protected declare config: BigIntValidator.Options<T>;
+  declare protected config: BigIntValidator.Options<T>;
 
   /**
    * 开启严格模式后：
    * - string或者number不再转换为大整数
    */
-  public declare strict: (is?: boolean) => this;
-  public declare docs: (
+  declare public strict: (is?: boolean) => this;
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => BigIntValidator<T | Validator.TOptional>;
-  public declare nullable: () => BigIntValidator<T | null>;
-  public declare default: (value: bigint) => BigIntValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public optional: () => BigIntValidator<T | Validator.TOptional>;
+  declare public nullable: () => BigIntValidator<T | null>;
+  declare public default: (value: bigint) => BigIntValidator<T | Validator.TDefault>;
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
@@ -83,7 +83,7 @@ export class BigIntValidator<T = bigint> extends Validator<T> {
     return ValidateResult.accept(num);
   }
 
-  protected declare copy: () => BigIntValidator<T>;
+  declare protected copy: () => BigIntValidator<T>;
 
   protected override toDocument(): OpenAPI.SchemaObject {
     const { min, max, minInclusive, maxInclusive } = this.config;

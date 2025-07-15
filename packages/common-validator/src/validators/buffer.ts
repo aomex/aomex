@@ -14,16 +14,16 @@ const hexReg = /^(?:0x)?[0-9a-f]+$/i;
 const base64Reg = /^([a-z0-9+/]{4})*([a-z0-9+/]{3}=|[a-z0-9+/]{2}==)?$/i;
 
 export class BufferValidator<T = Buffer> extends Validator<T> {
-  protected declare config: BufferValidator.Options<T>;
+  declare protected config: BufferValidator.Options<T>;
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => BufferValidator<T | Validator.TOptional>;
-  public declare nullable: () => BufferValidator<T | null>;
-  public declare default: (buffer: Buffer) => BufferValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public optional: () => BufferValidator<T | Validator.TOptional>;
+  declare public nullable: () => BufferValidator<T | null>;
+  declare public default: (buffer: Buffer) => BufferValidator<T | Validator.TDefault>;
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
@@ -78,7 +78,7 @@ export class BufferValidator<T = Buffer> extends Validator<T> {
     return ValidateResult.accept(buffer);
   }
 
-  protected declare copy: () => this;
+  declare protected copy: () => this;
 
   protected override toDocument(): OpenAPI.SchemaObject {
     const defaultValue: Buffer | undefined = this.getDefaultValue(

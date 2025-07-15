@@ -17,27 +17,27 @@ export declare namespace IpValidator {
 }
 
 export class IpValidator<T = string> extends BaseStringValidator<T> {
-  protected declare config: IpValidator.Options<T>;
+  declare protected config: IpValidator.Options<T>;
 
   constructor(version: IpValidator.Version[]) {
     super();
     this.config.ipVersion = [...new Set(version)];
   }
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => IpValidator<T | Validator.TOptional>;
-  public declare nullable: () => IpValidator<T | null>;
-  public declare default: (
+  declare public optional: () => IpValidator<T | Validator.TOptional>;
+  declare public nullable: () => IpValidator<T | null>;
+  declare public default: (
     ip: Validator.ParameterOrFn<T>,
   ) => IpValidator<T | Validator.TDefault>;
-  public declare transform: <T1>(
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
-  public declare match: (pattern: RegExp) => this;
+  declare public match: (pattern: RegExp) => this;
 
   protected validateString(
     ip: string,

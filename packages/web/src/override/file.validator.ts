@@ -30,14 +30,14 @@ export declare namespace FileValidator {
 }
 
 export class FileValidator<T = FileValidator.FormidableFile> extends Validator<T> {
-  protected declare config: FileValidator.Options<T>;
+  declare protected config: FileValidator.Options<T>;
 
-  public declare docs: (
+  declare public docs: (
     docs: Validator.PartialOpenAPISchema,
     mode?: Validator.DocumentMergeMode,
   ) => this;
-  public declare optional: () => FileValidator<T | Validator.TOptional>;
-  public declare transform: <T1>(
+  declare public optional: () => FileValidator<T | Validator.TOptional>;
+  declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
 
@@ -113,7 +113,7 @@ export class FileValidator<T = FileValidator.FormidableFile> extends Validator<T
     return ValidateResult.accept(file);
   }
 
-  protected declare copy: () => FileValidator<T>;
+  declare protected copy: () => FileValidator<T>;
 
   protected override toDocument(): OpenAPI.SchemaObject {
     return {
