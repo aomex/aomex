@@ -16,7 +16,12 @@ export abstract class Service {
   }
 
   /**
-   * 会自动触发的初始化方法。如果返回值是Promise类型，主进程会等待Promise结束
+   * 会自动触发的初始化方法。主进程会等待Promise结束才算初始化完成
    */
-  protected init(): void | Promise<void> {}
+  protected async init(): Promise<void> {}
+
+  /**
+   * 实例销毁方法，调用函数`destroyServices`后触发
+   */
+  protected async destroy(): Promise<void> {}
 }

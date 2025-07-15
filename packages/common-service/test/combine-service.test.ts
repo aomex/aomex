@@ -52,7 +52,7 @@ test('执行init方法期间可以访问其它service', async () => {
   class MyService3 extends Service {
     froms2data!: string;
 
-    protected override init(): void | Promise<void> {
+    protected override async init(): Promise<void> {
       // @ts-expect-error
       this.froms2data = this.services['s2'].action2();
     }
