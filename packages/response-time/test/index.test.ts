@@ -5,7 +5,7 @@ import { responseTime } from '../src';
 import { middleware } from '@aomex/common';
 
 test('增加报头 x-response-time', () => {
-  const app = new WebApp({ mount: [responseTime] });
+  const app = new WebApp({ mount: [responseTime()] });
 
   return request(app.listen())
     .get('/')
@@ -16,7 +16,7 @@ test('增加报头 x-response-time', () => {
 test('报错不影响', () => {
   const app = new WebApp({
     mount: [
-      responseTime,
+      responseTime(),
       middleware.web((ctx) => {
         ctx.throw(400);
       }),
