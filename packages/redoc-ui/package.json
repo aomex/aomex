@@ -38,7 +38,7 @@
   "dependencies": {
     "@aomex/serve-static": "workspace:^",
     "redoc": "^2.5.0",
-    "yaml": "^2.7.1"
+    "yaml": "^2.8.0"
   },
   "devDependencies": {
     "@aomex/common": "workspace:^",
