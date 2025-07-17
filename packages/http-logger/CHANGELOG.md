@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.29.0](https://github.com/aomex/aomex/compare/v3.28.3...v3.29.0) (2025-07-17)
+
+**Note:** Version bump only for package @aomex/http-logger
+
+
+
+
+
 ## [3.28.3](https://github.com/aomex/aomex/compare/v3.28.2...v3.28.3) (2025-07-10)
 
 **Note:** Version bump only for package @aomex/http-logger

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.29.0](https://github.com/aomex/aomex/compare/v3.28.3...v3.29.0) (2025-07-17)
+
+
+### Features
+
+* **response-time:** 中间件导出为函数类型 ([00d99e0](https://github.com/aomex/aomex/commit/00d99e0aa4566bd225fa73e7dbf839be2ac93d7c))
+
+
+
+
+
 ## [3.28.3](https://github.com/aomex/aomex/compare/v3.28.2...v3.28.3) (2025-07-10)
 
 **Note:** Version bump only for package @aomex/response-time
