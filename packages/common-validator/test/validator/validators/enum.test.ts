@@ -38,6 +38,14 @@ test('枚举值不能是空值', () => {
   expect(() => new EnumValidator([''])).toThrowError();
 });
 
+test('枚举值包含字符串0时可以正确判断', async () => {
+  const validator = new EnumValidator([0, 1, 2]);
+  await expect(validator['validate'](0)).resolves.toStrictEqual(ValidateResult.accept(0));
+  await expect(validator['validate']('0')).resolves.toStrictEqual(
+    ValidateResult.accept(0),
+  );
+});
+
 test('枚举值只能是数字或者字符串', () => {
   expect(() => new EnumValidator([{}])).toThrowError();
   expect(() => new EnumValidator([true])).toThrowError();

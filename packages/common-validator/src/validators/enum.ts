@@ -57,7 +57,7 @@ export class EnumValidator<const T = never> extends Validator<T> {
         const matched = ranges.find((item) =>
           typeof item === 'number' ? item === num : false,
         );
-        if (matched) return ValidateResult.accept(matched);
+        if (matched !== undefined) return ValidateResult.accept(matched);
       }
     }
 
