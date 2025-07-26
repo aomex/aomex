@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.29.1](https://github.com/aomex/aomex/compare/v3.29.0...v3.29.1) (2025-07-26)
+
+
+### Bug Fixes
+
+* **cron:** 部分场景下未能按任务时间准时执行 ([fe3cb88](https://github.com/aomex/aomex/commit/fe3cb8801641cb1aca09bf071e58c89af70bb25f))
+* **tools:** sleep指定时间超过最大值时会立刻执行 ([7c0b771](https://github.com/aomex/aomex/commit/7c0b771b04037fcfde6d262fb4bde433b8d59429))
+
+
+
+
+
 # [3.29.0](https://github.com/aomex/aomex/compare/v3.28.3...v3.29.0) (2025-07-17)
 
 

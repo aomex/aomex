@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.29.1](https://github.com/aomex/aomex/compare/v3.29.0...v3.29.1) (2025-07-26)
+
+
+### Bug Fixes
+
+* **tools:** sleep指定时间超过最大值时会立刻执行 ([7c0b771](https://github.com/aomex/aomex/commit/7c0b771b04037fcfde6d262fb4bde433b8d59429))
+
+
+
+
+
 # [3.29.0](https://github.com/aomex/aomex/compare/v3.28.3...v3.29.0) (2025-07-17)
 
 **Note:** Version bump only for package @aomex/internal-tools
