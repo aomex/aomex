@@ -140,3 +140,18 @@ test('队列等待时间不能超过任务时间间隔', () => {
     }).getWaitingTimeout(60_000),
   ).toBe(40_000);
 });
+
+test('有两个cronParser', () => {
+  const cron = new Cron({ time: '* * * * *', command: '', commanders: '' });
+
+  cron.cronExpression.next();
+  expect(cron.cronExpression.next().getTime()).toBe(
+    cron.cronExpressionForNext.next().getTime(),
+  );
+
+  cron.cronExpression.next();
+  cron.cronExpressionForNext.next();
+  expect(cron.cronExpression.next().getTime()).toBe(
+    cron.cronExpressionForNext.next().getTime(),
+  );
+});

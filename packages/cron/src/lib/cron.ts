@@ -8,6 +8,7 @@ import { TELL_CHILD_STOP } from './constant';
 
 export class Cron {
   public readonly cronExpression: cronParser.CronExpression;
+  public readonly cronExpressionForNext: cronParser.CronExpression;
   public stopping = false;
   public handle: { timer: NodeJS.Timeout; resolve: (data: void) => void } | null = null;
   public runningLevel: number = 0;
@@ -36,10 +37,15 @@ export class Cron {
 
     try {
       this.cronExpression = cronParser.CronExpressionParser.parse(scheduleTime);
+      this.cronExpressionForNext = cronParser.CronExpressionParser.parse(scheduleTime);
     } catch {
       throw new Error(i18n.t('invalid_cron_time', { time: scheduleTime }));
     }
     this.time = this.cronExpression.stringify(true);
+    // 提前消耗掉一个时间点。
+    // 为啥不用 .next() + .prev() ？因为有bug。
+    // https://github.com/harrisiirak/cron-parser/issues/378
+    this.cronExpressionForNext.next();
   }
 
   public get command(): string {
@@ -76,8 +82,7 @@ export class Cron {
   async start(): Promise<void> {
     if (!this.cronExpression.hasNext()) return;
     const currentTime = this.cronExpression.next().getTime();
-    const nextTime = this.cronExpression.next().getTime();
-    this.cronExpression.prev();
+    const nextTime = this.cronExpressionForNext.next().getTime();
 
     while (true) {
       /**
