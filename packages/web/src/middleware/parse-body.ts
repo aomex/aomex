@@ -22,6 +22,8 @@ export const parseBody = (): WebMiddleware => {
 
     if (methodName) {
       const { parsed, raw } = await coBody[methodName](request, {
+        // 默认值：1mb for json and 56kb for form-urlencoded
+        limit: '32mb',
         returnRawBody: true,
         // @ts-expect-error
         onProtoPoisoning: 'remove',
