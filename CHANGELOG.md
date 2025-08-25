@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.29.2](https://github.com/aomex/aomex/compare/v3.29.1...v3.29.2) (2025-08-25)
+
+
+### Bug Fixes
+
+* **validator:** 支持布尔值作为枚举值 ([a00920d](https://github.com/aomex/aomex/commit/a00920d3cfb7cc33bf9c6c8b2223662f4f41215b))
+* **web:** 请求体限制从1mb增加到32mb ([dc38862](https://github.com/aomex/aomex/commit/dc38862f57548f7211b6ba7bf9b0a60333c9c346))
+
+
+
+
+
 ## [3.29.1](https://github.com/aomex/aomex/compare/v3.29.0...v3.29.1) (2025-07-26)
 
 

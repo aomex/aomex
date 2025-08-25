@@ -1,6 +1,6 @@
 {
   "name": "@aomex/prisma",
-  "version": "3.29.1",
+  "version": "3.29.2",
   "description": "从prisma表结构生成对应的验证器",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
