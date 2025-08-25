@@ -42,7 +42,7 @@ export const zh = I18n.define({
     },
     enum: {
       not_in_range: '{{label}}不在枚举范围',
-      only_support_string_number: '枚举值只能是数组或者字符串',
+      only_support_string_number_boolean: '枚举值只能是数组、字符串和布尔值',
       can_not_be_empty: '枚举值不能是空值"{{item}}"',
     },
     one_of: {

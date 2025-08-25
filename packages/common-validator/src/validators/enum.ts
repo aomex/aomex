@@ -18,8 +18,12 @@ export class EnumValidator<const T = never> extends Validator<T> {
       if (this.isEmpty(item)) {
         throw new Error(i18n.t('validator.enum.can_not_be_empty', { item }));
       }
-      if (typeof item !== 'string' && typeof item !== 'number') {
-        throw new Error(i18n.t('validator.enum.only_support_string_number'));
+      if (
+        typeof item !== 'string' &&
+        typeof item !== 'number' &&
+        typeof item !== 'boolean'
+      ) {
+        throw new Error(i18n.t('validator.enum.only_support_string_number_boolean'));
       }
     });
   }
@@ -27,6 +31,7 @@ export class EnumValidator<const T = never> extends Validator<T> {
   /**
    * 开启/关闭严格模式。开启后有如下限制：
    * - 枚举中包含数字时，如果传递的值为字符串类型，则不再转换为数字后再对比
+   * - 枚举中包含布尔值时，如果传递的值为字符串类型，则不再转换为布尔值后再对比
    */
   declare public strict: (is?: boolean) => this;
   declare public docs: (
@@ -47,17 +52,22 @@ export class EnumValidator<const T = never> extends Validator<T> {
     _key: string,
     label: string,
   ): ValidateResult.Any<any> {
-    const { ranges, strict } = this.config;
+    const { strict } = this.config;
+    const ranges = this.config.ranges as any[];
 
     if (ranges.includes(value)) return ValidateResult.accept(value);
-
-    if (!strict && typeof value === 'string') {
-      const num = Number(value);
-      if (!Number.isNaN(num)) {
-        const matched = ranges.find((item) =>
-          typeof item === 'number' ? item === num : false,
-        );
-        if (matched !== undefined) return ValidateResult.accept(matched);
+    if (!strict) {
+      if (value === 'true' && ranges.includes(true)) {
+        return ValidateResult.accept(true);
+      }
+      if (value === 'false' && ranges.includes(false)) {
+        return ValidateResult.accept(false);
+      }
+      if (typeof value === 'string') {
+        const num = Number(value);
+        if (!Number.isNaN(num)) {
+          if (ranges.includes(num)) return ValidateResult.accept(num);
+        }
       }
     }
 
@@ -66,7 +76,9 @@ export class EnumValidator<const T = never> extends Validator<T> {
 
   protected override toDocument(): OpenAPI.SchemaObject {
     const { ranges } = this.config;
-    const types = ranges.map((value) => typeof value) as Array<'string' | 'number'>;
+    const types = ranges.map((value) => typeof value) as Array<
+      'string' | 'number' | 'boolean'
+    >;
 
     return {
       type: new Set(types).size === 1 ? types[0] : undefined,

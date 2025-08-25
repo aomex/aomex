@@ -5,8 +5,8 @@ import {
   type TransformedValidator,
 } from '../../../src';
 
-type DefaultType = 'a' | 1 | 2;
-const validator = new TargetValidator(['a', 1, 2]);
+type DefaultType = 'a' | 1 | 2 | true | false;
+const validator = new TargetValidator(['a', 1, 2, true, false]);
 
 // 可选
 {
@@ -28,6 +28,11 @@ const validator = new TargetValidator(['a', 1, 2]);
   expectType<TargetValidator<any>>(v);
   expectType<TypeEqual<DefaultType, Validator.Infer<typeof v>>>(true);
 
+  validator.default(true);
+  validator.default(false);
+  validator.default(1);
+  validator.default(2);
+  validator.default('a');
   // @ts-expect-error
   validator.default(5);
   // @ts-expect-error
