@@ -1,18 +1,23 @@
-import { getGenerators } from '@prisma/internals';
 import { existsSync, rmSync } from 'fs';
+import { promisify } from 'node:util';
+import { exec } from 'node:child_process';
 import path from 'path';
 import { expect, test } from 'vitest';
-import pkg from '../package.json';
+
+const execPromise = promisify(exec);
 
 const fixtures = path.join(import.meta.dirname, 'fixtures');
 
-test('meta', async () => {
-  const generators = await getGenerators({
-    schemaPath: path.join(fixtures, 'mysql.prisma'),
-  });
-  const generator = generators.pop()!;
-  expect(generator.getPrettyName()).toBe(Object.keys(pkg!.bin!)[0]);
-}, 100_000);
+/**
+ * 动态加载数据库配置并获取 schema 路径
+ */
+function getSchemaPath(provider: string): string {
+  return path.join(fixtures, `${provider}.prisma`);
+}
+
+const getConfigPath = (provider: string): string => {
+  return path.relative(process.cwd(), path.join(fixtures, `${provider}.config.ts`));
+};
 
 test.each(['mysql', 'postgresql', 'mongodb', 'sqlite'])(
   'generate %s',
@@ -23,10 +28,9 @@ test.each(['mysql', 'postgresql', 'mongodb', 'sqlite'])(
       rmSync(jsFile);
       rmSync(dtsFile);
     } catch {}
-    const generators = await getGenerators({
-      schemaPath: path.join(fixtures, `${provider}.prisma`),
-    });
-    await generators.pop()!.generate();
+    await execPromise(
+      `npx prisma generate --schema ${getSchemaPath(provider)} --generator aomex --config ${getConfigPath(provider)}`,
+    );
     expect(existsSync(jsFile)).toBeTruthy();
     expect(existsSync(dtsFile)).toBeTruthy();
     try {
@@ -34,5 +38,5 @@ test.each(['mysql', 'postgresql', 'mongodb', 'sqlite'])(
       rmSync(dtsFile);
     } catch {}
   },
-  100_000,
+  300_000,
 );

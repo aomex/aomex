@@ -1,12 +1,6 @@
-// cd packages/prisma && npx prisma format --schema ./test/fixtures/mysql.prisma
-
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
+  // url      = "DATABASE_URL"
 }
 
 generator aomex {

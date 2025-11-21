@@ -8,8 +8,8 @@ import { transform } from './lib/transform';
 cjsPrismaHelper.generatorHandler({
   onManifest() {
     return {
-      prettyName: 'aomex-prisma',
-      defaultOutput: path.join(import.meta.dirname, 'index'),
+      prettyName: 'Prisma aomex rules generator',
+      defaultOutput: path.resolve('src', 'generated', 'aomex-prisma'),
     };
   },
   async onGenerate(options) {

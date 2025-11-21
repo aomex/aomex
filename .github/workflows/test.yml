@@ -25,21 +25,3 @@ jobs:
           verbose: true
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
-  legacy-prisma:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        prisma: [5.x]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          cache: 'pnpm'
-          node-version-file: 'package.json'
-      - run: |
-          pnpm install
-          pnpm install prisma@${{ matrix.prisma }} @prisma/client@${{ matrix.prisma }} @prisma/internals@${{ matrix.prisma }} @prisma/generator-helper@${{ matrix.prisma }} -w
-      - run: pnpm exec vitest --no-coverage "./packages/prisma/test/"
