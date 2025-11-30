@@ -4,9 +4,9 @@ import camelCase from 'lodash.camelcase';
 
 export const generateModels = (origin: readonly DMMF.Model[]) => {
   const getters = origin.map((model) => {
-    const inputFields = parseFields(model.fields, true);
-    const outputFields = parseFields(model.fields, false);
     const className = camelCase(model.name);
+    const inputFields = parseFields(model.fields, className, true);
+    const outputFields = parseFields(model.fields, className, false);
     const fieldNames = model.fields
       .filter((field) => field.kind !== 'object')
       .map((field) => `"${field.name}"`)
@@ -28,10 +28,12 @@ export const generateModels = (origin: readonly DMMF.Model[]) => {
       columns: ${className}InputColumns,
       /** 选择部分字段 */
       pick: <Keys extends ${fieldNames}>(...keys: Keys[]): { [K in Keys]: (typeof ${className}InputColumns)[K] } => {
+        // @ts-ignore
         return pick(${className}InputColumns, ...keys);
       },
       /** 去除部分字段 */
       omit: <Keys extends ${fieldNames}>(...keys: Keys[]): { [K in (keyof typeof ${className}InputColumns) as K extends Keys ? never : K]: (typeof ${className}InputColumns)[K] } => {
+        // @ts-ignore
         return omit(${className}InputColumns, ...keys);
       },
     },
@@ -43,10 +45,12 @@ export const generateModels = (origin: readonly DMMF.Model[]) => {
       columns: ${className}OutputColumns,
       /** 选择部分字段 */
       pick: <Keys extends ${fieldNames}>(...keys: Keys[]): { [K in Keys]: (typeof ${className}OutputColumns)[K] } => {
+        // @ts-ignore
         return pick(${className}OutputColumns, ...keys);
       },
       /** 去除部分字段 */
       omit: <Keys extends ${fieldNames}>(...keys: Keys[]): { [K in (keyof typeof ${className}OutputColumns) as K extends Keys ? never : K]: (typeof ${className}OutputColumns)[K] } => {
+        // @ts-ignore
         return omit(${className}OutputColumns, ...keys);
       },
     },

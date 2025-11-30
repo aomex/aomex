@@ -19,23 +19,21 @@ const getConfigPath = (provider: string): string => {
   return path.relative(process.cwd(), path.join(fixtures, `${provider}.config.ts`));
 };
 
+const bin = path.join(import.meta.dirname, '..', 'node_modules', '.bin', 'prisma');
+
 test.each(['mysql', 'postgresql', 'mongodb', 'sqlite'])(
   'generate %s',
   async (provider) => {
-    const jsFile = path.join(fixtures, `temp.${provider}.js`);
-    const dtsFile = path.join(fixtures, `temp.${provider}.d.ts`);
+    const tsFile = path.join(fixtures, `temp.${provider}.ts`);
     try {
-      rmSync(jsFile);
-      rmSync(dtsFile);
+      rmSync(tsFile);
     } catch {}
     await execPromise(
-      `npx prisma generate --schema ${getSchemaPath(provider)} --generator aomex --config ${getConfigPath(provider)}`,
+      `${bin} generate --schema ${getSchemaPath(provider)} --generator aomex --config ${getConfigPath(provider)}`,
     );
-    expect(existsSync(jsFile)).toBeTruthy();
-    expect(existsSync(dtsFile)).toBeTruthy();
+    expect(existsSync(tsFile)).toBeTruthy();
     try {
-      rmSync(jsFile);
-      rmSync(dtsFile);
+      rmSync(tsFile);
     } catch {}
   },
   300_000,

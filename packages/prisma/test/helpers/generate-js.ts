@@ -1,4 +1,5 @@
 import ts from 'typescript';
+import { formatContent } from '../../src/lib/format-content';
 
 export const generateJS = (source: string) => {
   const content = ts.transpileModule(source, {
@@ -10,5 +11,7 @@ export const generateJS = (source: string) => {
       declaration: false,
     },
   }).outputText;
-  return content.replaceAll(/^(export\sconst\s|class\s|export class\s)/gm, '\n$1');
+  return formatContent(
+    content.replaceAll(/^(export\sconst\s|class\s|export class\s)/gm, '\n$1'),
+  );
 };

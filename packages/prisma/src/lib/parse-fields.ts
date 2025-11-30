@@ -4,7 +4,11 @@ import { generateComments } from './generate-comments';
 import { UuidValidator } from '@aomex/common';
 import { matchUUID } from './match-uuid';
 
-export const parseFields = (fields: readonly DMMF.Field[], isInput: boolean) => {
+export const parseFields = (
+  fields: readonly DMMF.Field[],
+  modelName: string,
+  isInput: boolean,
+) => {
   const modelFields: string[] = [];
 
   fields.forEach((field) => {
@@ -77,7 +81,10 @@ export const parseFields = (fields: readonly DMMF.Field[], isInput: boolean) => 
       validator += `.docs({ description: "${field.documentation}" })`;
     }
 
-    modelFields.push(generateComments(field, validator), `${field.name}: ${validator},`);
+    modelFields.push(
+      generateComments(field, validator),
+      `${field.name}: customColumns.${modelName}?.${field.name}?.input || ${validator},`,
+    );
   });
 
   return modelFields;

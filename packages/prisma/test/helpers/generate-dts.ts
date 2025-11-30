@@ -1,7 +1,8 @@
 // typescript 是核心包 `@aomex/common` 的 peerDependencies，因此用户一定会安装
 import ts from 'typescript';
-import { pascalCase } from './pascal-case';
+import { pascalCase } from '../../src/lib/pascal-case';
 import path from 'path';
+import { formatContent } from '../../src/lib/format-content';
 
 const ruleMapping: Record<string, string> = {
   bigint: 'BigIntValidator',
@@ -18,8 +19,7 @@ export const generateDTS = (source: string) => {
       const shortName = matched[1]!;
       imports.add(ruleMapping[shortName] || pascalCase(shortName) + 'Validator');
     }
-    source =
-      `import { ${Array.from(imports).sort().join(',')} } from "@aomex/common";` + source;
+    source += `\nimport type { ${Array.from(imports).sort().join(',')} } from "@aomex/common";`;
   }
 
   {
@@ -33,6 +33,7 @@ export const generateDTS = (source: string) => {
       strictNullChecks: true,
       skipLibCheck: true, // speed up,
       skipDefaultLibCheck: true,
+      moduleResolution: ts.ModuleResolutionKind.Bundler,
     };
     const host = ts.createCompilerHost(options);
     const originReadFile = host.readFile.bind(host);
@@ -45,5 +46,5 @@ export const generateDTS = (source: string) => {
     ts.createProgram([tsFile], options, host).emit();
   }
 
-  return content.replaceAll(/(export\sdeclare\s)/gm, '\n$1');
+  return formatContent(content.replaceAll(/(export\sdeclare\s)/gm, '\n$1'));
 };

@@ -6,7 +6,7 @@ export const generateTypes = (types: readonly DMMF.Model[]) => {
   return types
     .map(({ name, fields }) => {
       const typeName = pascalCase(name) + 'Type';
-      const modelFields = parseFields(fields, true);
+      const modelFields = parseFields(fields, typeName, true);
       return {
         key: typeName,
         value: `const ${typeName} = {

@@ -13,8 +13,8 @@ cjsPrismaHelper.generatorHandler({
     };
   },
   async onGenerate(options) {
-    const [jsContent, dtsContent] = transform(options.dmmf);
     const output = options.generator.output!.value!;
-    await save(output, jsContent, dtsContent);
+    const tsContent = await transform(options.dmmf, output);
+    await save(output, tsContent);
   },
 });

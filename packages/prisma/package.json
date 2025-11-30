@@ -8,7 +8,7 @@
   "type": "module",
   "sideEffects": false,
   "scripts": {
-    "prepublishOnly": "tsup && node ./scripts/remove-sourcemap.mjs"
+    "prepublishOnly": "tsup"
   },
   "types": "src/index.ts",
   "exports": "./src/index.ts",
@@ -43,7 +43,8 @@
   "dependencies": {
     "@prisma/generator-helper": "^7.0.0",
     "lodash.camelcase": "^4.3.0",
-    "lodash.upperfirst": "^4.3.1"
+    "lodash.upperfirst": "^4.3.1",
+    "prettier": "^3.6.2"
   },
   "devDependencies": {
     "@aomex/common": "workspace:^",
