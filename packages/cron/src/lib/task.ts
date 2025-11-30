@@ -8,6 +8,7 @@ import {
   ENV_CRON_SCHEDULE_TIME,
   TELL_CHILD_REJECT,
   TELL_CHILD_RESOLVE,
+  TELL_PARENT_ENDED,
   TELL_PARENT_INIT,
 } from './constant';
 
@@ -80,14 +81,29 @@ export class Task {
     childProcess.on('exit', resolve);
     childProcess.on('error', resolve);
 
+    let timer: NodeJS.Timeout | null = null;
     childProcess.on('message', (message: string) => {
       if (message === TELL_PARENT_INIT) {
         childProcess.send(this.cron.stopping ? TELL_CHILD_REJECT : TELL_CHILD_RESOLVE);
+      }
+      if (message === TELL_PARENT_ENDED) {
+        // 30秒内还没有收到子进程关闭的消息，说明变成僵尸进程了，需要强制关闭。
+        timer = setTimeout(() => {
+          try {
+            childProcess.kill();
+          } finally {
+            resolve(undefined);
+            timer = null;
+          }
+        }, 30_000);
       }
     });
 
     await promise.finally(() => {
       this.child = null;
+      if (timer) {
+        clearTimeout(timer);
+      }
     });
   }
 

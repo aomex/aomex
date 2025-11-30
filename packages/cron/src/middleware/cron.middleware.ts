@@ -9,6 +9,7 @@ import {
   TELL_CHILD_RESOLVE,
   TELL_CHILD_STOP,
   TELL_PARENT_INIT,
+  TELL_PARENT_ENDED,
 } from '../lib/constant';
 
 export interface CropProps {
@@ -87,6 +88,7 @@ export class CronMiddleware extends ConsoleMiddleware<CropProps> {
           await next();
         } finally {
           process.removeListener('message', onInitOrStop);
+          process.send!(TELL_PARENT_ENDED);
         }
       } else {
         const now = new Date();
