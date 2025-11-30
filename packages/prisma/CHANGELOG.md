@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.30.0](https://github.com/aomex/aomex/compare/v3.29.2...v3.30.0) (2025-11-30)
+
+
+### Features
+
+* **prisma:** prisma版本升级到7.0 ([a8c9880](https://github.com/aomex/aomex/commit/a8c98808303ac6ba2ac5bc0a9322d90b0097fd65))
+* **prisma:** 支持覆盖字段规则 ([13f2aee](https://github.com/aomex/aomex/commit/13f2aeea730a0715a5d601e48dd51ba70c41bcd8))
+
+
+
+
+
 ## [3.29.2](https://github.com/aomex/aomex/compare/v3.29.1...v3.29.2) (2025-08-25)
 
 **Note:** Version bump only for package @aomex/prisma
