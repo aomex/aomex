@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.30.2](https://github.com/aomex/aomex/compare/v3.30.1...v3.30.2) (2025-12-01)
+
+
+### Bug Fixes
+
+* **prisma:** 覆盖字段未区分input和output ([a2a7b5f](https://github.com/aomex/aomex/commit/a2a7b5f4df2510d6084bf4115e943fe7cdb62123))
+
+
+
+
+
 ## [3.30.1](https://github.com/aomex/aomex/compare/v3.30.0...v3.30.1) (2025-12-01)
 
 
