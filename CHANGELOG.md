@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.30.3](https://github.com/aomex/aomex/compare/v3.30.2...v3.30.3) (2025-12-01)
+
+
+### Bug Fixes
+
+* **prisma:** 带空字符串默认值的字段允许传入空字符串 ([65b698f](https://github.com/aomex/aomex/commit/65b698f0a45b88539e34c7c41d2ac59281599452))
+* **prisma:** 非必填字段允许传入null值 ([5187a53](https://github.com/aomex/aomex/commit/5187a533169d844db88100b31aa2d6fd098e1113))
+
+
+
+
+
 ## [3.30.2](https://github.com/aomex/aomex/compare/v3.30.1...v3.30.2) (2025-12-01)
 
 
