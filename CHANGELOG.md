@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.30.1](https://github.com/aomex/aomex/compare/v3.30.0...v3.30.1) (2025-12-01)
+
+
+### Bug Fixes
+
+* **prisma:** 导出路径从文件名变成目录 ([597b18e](https://github.com/aomex/aomex/commit/597b18ede0a4106bde32c6d9d2966a16b9a0635e))
+
+
+
+
+
 # [3.30.0](https://github.com/aomex/aomex/compare/v3.29.2...v3.30.0) (2025-11-30)
 
 
