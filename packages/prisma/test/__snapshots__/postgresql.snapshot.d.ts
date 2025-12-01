@@ -24,7 +24,7 @@ declare const userInputColumns: {
    *
    * 数据库默认值：
    */
-  name_nu: StringValidator<string | Validator.TOptional>;
+  name_nu: StringValidator<string | Validator.TOptional | null>;
   /**
    * Prisma类型：`String`
    *
@@ -48,7 +48,7 @@ declare const userInputColumns: {
    *
    * 数据库默认值：
    */
-  age_nu: IntValidator<number | Validator.TOptional>;
+  age_nu: IntValidator<number | Validator.TOptional | null>;
   /**
    * Prisma类型：`Int`
    *
@@ -101,7 +101,7 @@ declare const userInputColumns: {
    *
    * 数据库默认值：
    */
-  deci_nu: NumberValidator<number | Validator.TOptional>;
+  deci_nu: NumberValidator<number | Validator.TOptional | null>;
   /**
    * Prisma类型：`Decimal`
    *
@@ -119,7 +119,7 @@ declare const userInputColumns: {
    *
    * 数据库默认值：
    */
-  flo_nu: NumberValidator<number | Validator.TOptional>;
+  flo_nu: NumberValidator<number | Validator.TOptional | null>;
   /**
    * Prisma类型：`Float`
    *
@@ -230,7 +230,14 @@ declare const userInputColumns: {
    * 数据库默认值：
    */
   lang_nu: EnumValidator<
-    Validator.TOptional | 'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp'
+    | Validator.TOptional
+    | 'Typescript'
+    | 'Javascript'
+    | 'Rust'
+    | 'Go'
+    | 'Python'
+    | 'Cpp'
+    | null
   >;
   /**
    * Prisma类型：`Language`
@@ -251,7 +258,7 @@ declare const userInputColumns: {
    *
    * 数据库默认值：
    */
-  time_nu: DateValidator<Validator.TOptional | Date>;
+  time_nu: DateValidator<Validator.TOptional | Date | null>;
   /**
    * Prisma类型：`DateTime`
    *
@@ -269,7 +276,7 @@ declare const userInputColumns: {
    *
    * 数据库默认值：
    */
-  boo_nu: BooleanValidator<boolean | Validator.TOptional>;
+  boo_nu: BooleanValidator<boolean | Validator.TOptional | null>;
   /**
    * Prisma类型：`Boolean`
    *
@@ -287,7 +294,7 @@ declare const userInputColumns: {
    *
    * 数据库默认值：
    */
-  big_nu: BigIntValidator<bigint | Validator.TOptional>;
+  big_nu: BigIntValidator<bigint | Validator.TOptional | null>;
   /**
    * Prisma类型：`BigInt`
    *
@@ -305,7 +312,7 @@ declare const userInputColumns: {
    *
    * 数据库默认值：
    */
-  byt_nu: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
+  byt_nu: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike> | null>;
   /**
    * Prisma类型：`Bytes`
    *
@@ -722,7 +729,7 @@ export declare const prismaInput: {
        *
        * 数据库默认值：
        */
-      name_nu: StringValidator<string | Validator.TOptional>;
+      name_nu: StringValidator<string | Validator.TOptional | null>;
       /**
        * Prisma类型：`String`
        *
@@ -746,7 +753,7 @@ export declare const prismaInput: {
        *
        * 数据库默认值：
        */
-      age_nu: IntValidator<number | Validator.TOptional>;
+      age_nu: IntValidator<number | Validator.TOptional | null>;
       /**
        * Prisma类型：`Int`
        *
@@ -799,7 +806,7 @@ export declare const prismaInput: {
        *
        * 数据库默认值：
        */
-      deci_nu: NumberValidator<number | Validator.TOptional>;
+      deci_nu: NumberValidator<number | Validator.TOptional | null>;
       /**
        * Prisma类型：`Decimal`
        *
@@ -817,7 +824,7 @@ export declare const prismaInput: {
        *
        * 数据库默认值：
        */
-      flo_nu: NumberValidator<number | Validator.TOptional>;
+      flo_nu: NumberValidator<number | Validator.TOptional | null>;
       /**
        * Prisma类型：`Float`
        *
@@ -935,6 +942,7 @@ export declare const prismaInput: {
         | 'Go'
         | 'Python'
         | 'Cpp'
+        | null
       >;
       /**
        * Prisma类型：`Language`
@@ -961,7 +969,7 @@ export declare const prismaInput: {
        *
        * 数据库默认值：
        */
-      time_nu: DateValidator<Validator.TOptional | Date>;
+      time_nu: DateValidator<Validator.TOptional | Date | null>;
       /**
        * Prisma类型：`DateTime`
        *
@@ -979,7 +987,7 @@ export declare const prismaInput: {
        *
        * 数据库默认值：
        */
-      boo_nu: BooleanValidator<boolean | Validator.TOptional>;
+      boo_nu: BooleanValidator<boolean | Validator.TOptional | null>;
       /**
        * Prisma类型：`Boolean`
        *
@@ -997,7 +1005,7 @@ export declare const prismaInput: {
        *
        * 数据库默认值：
        */
-      big_nu: BigIntValidator<bigint | Validator.TOptional>;
+      big_nu: BigIntValidator<bigint | Validator.TOptional | null>;
       /**
        * Prisma类型：`BigInt`
        *
@@ -1015,7 +1023,7 @@ export declare const prismaInput: {
        *
        * 数据库默认值：
        */
-      byt_nu: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
+      byt_nu: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike> | null>;
       /**
        * Prisma类型：`Bytes`
        *

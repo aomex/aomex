@@ -79,6 +79,9 @@ export const parseFields = (
       if (field.hasDefaultValue || !field.isRequired) {
         validator += '.optional()';
       }
+      if (!field.hasDefaultValue && !field.isRequired) {
+        validator += '.nullable()';
+      }
     } else {
       if (!field.isRequired && !field.hasDefaultValue) {
         validator += '.nullable()';

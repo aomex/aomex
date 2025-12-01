@@ -50,7 +50,7 @@ const userInputColumns = {
    *
    * 数据库默认值：
    */
-  name_nu: customColumns.user?.name_nu?.input || rule.string().optional(),
+  name_nu: customColumns.user?.name_nu?.input || rule.string().optional().nullable(),
 
   /**
    * Prisma类型：`String`
@@ -80,7 +80,7 @@ const userInputColumns = {
    *
    * 数据库默认值：
    */
-  age_nu: customColumns.user?.age_nu?.input || rule.int().optional(),
+  age_nu: customColumns.user?.age_nu?.input || rule.int().optional().nullable(),
 
   /**
    * Prisma类型：`Int`
@@ -126,7 +126,7 @@ const userInputColumns = {
    *
    * 数据库默认值：
    */
-  deci_nu: customColumns.user?.deci_nu?.input || rule.number().optional(),
+  deci_nu: customColumns.user?.deci_nu?.input || rule.number().optional().nullable(),
 
   /**
    * Prisma类型：`Decimal`
@@ -147,7 +147,7 @@ const userInputColumns = {
    *
    * 数据库默认值：
    */
-  flo_nu: customColumns.user?.flo_nu?.input || rule.number().optional(),
+  flo_nu: customColumns.user?.flo_nu?.input || rule.number().optional().nullable(),
 
   /**
    * Prisma类型：`Float`
@@ -277,7 +277,8 @@ const userInputColumns = {
    *
    * 数据库默认值：
    */
-  lang_nu: customColumns.user?.lang_nu?.input || rule.enum(LanguageEnum).optional(),
+  lang_nu:
+    customColumns.user?.lang_nu?.input || rule.enum(LanguageEnum).optional().nullable(),
 
   /**
    * Prisma类型：`Language`
@@ -298,7 +299,7 @@ const userInputColumns = {
    *
    * 数据库默认值：
    */
-  time_nu: customColumns.user?.time_nu?.input || rule.date().optional(),
+  time_nu: customColumns.user?.time_nu?.input || rule.date().optional().nullable(),
 
   /**
    * Prisma类型：`DateTime`
@@ -319,7 +320,7 @@ const userInputColumns = {
    *
    * 数据库默认值：
    */
-  boo_nu: customColumns.user?.boo_nu?.input || rule.boolean().optional(),
+  boo_nu: customColumns.user?.boo_nu?.input || rule.boolean().optional().nullable(),
 
   /**
    * Prisma类型：`Boolean`
@@ -340,7 +341,7 @@ const userInputColumns = {
    *
    * 数据库默认值：
    */
-  big_nu: customColumns.user?.big_nu?.input || rule.bigint().optional(),
+  big_nu: customColumns.user?.big_nu?.input || rule.bigint().optional().nullable(),
 
   /**
    * Prisma类型：`BigInt`
@@ -361,7 +362,7 @@ const userInputColumns = {
    *
    * 数据库默认值：
    */
-  byt_nu: customColumns.user?.byt_nu?.input || rule.buffer().optional(),
+  byt_nu: customColumns.user?.byt_nu?.input || rule.buffer().optional().nullable(),
 
   /**
    * Prisma类型：`Bytes`
