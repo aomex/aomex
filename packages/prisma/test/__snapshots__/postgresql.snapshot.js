@@ -1,9 +1,9 @@
 // @ts-nocheck
 import { rule } from '@aomex/common';
-import { overrideColumns } from '@aomex/prisma';
-// 如果想覆盖默认生成的类型，可以同目录下创建一个 postgresql.snapshot.override.ts 文件，然后重新执行 prisma generate 命令
-// import customColumns from './postgresql.snapshot.override';
-const customColumns = overrideColumns()({});
+import { overrideColumnsFactory } from '@aomex/prisma';
+// 如果想覆盖默认生成的类型，可以同目录下创建一个 index.override.ts 文件，然后重新执行 prisma generate 命令
+// import customColumns from './index.override';
+const customColumns = overrideColumnsFactory()({});
 function pick(obj, ...keys) {
   const subObj = {};
   for (const key of keys) {

@@ -9,7 +9,9 @@ export const generateSchemaMap = (
   export type PrismaSchemaMap = {
     ${models
       .map(({ model, type }) => {
-        return `${type === 'model' ? camelCase(model.name) : pascalCase(model.name) + 'Type'}: [
+        const modelOrTypeName =
+          type === 'model' ? camelCase(model.name) : pascalCase(model.name) + 'Type';
+        return `${modelOrTypeName}: [
             ${model.fields.map((field) => `"${field.name}"`).join(', ')}
           ],`;
       })

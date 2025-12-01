@@ -1,5 +1,5 @@
 import { BooleanValidator, rule, StringValidator, Validator } from '@aomex/common';
-import { overrideColumns } from '../src';
+import { overrideColumnsFactory } from '../src';
 import { expectType, type TypeEqual } from 'ts-expect';
 
 type PrismaSchemaMap = {
@@ -7,7 +7,7 @@ type PrismaSchemaMap = {
   admin: ['nickname', 'email', 'password'];
 };
 
-overrideColumns<PrismaSchemaMap>()({
+overrideColumnsFactory<PrismaSchemaMap>()({
   admin: {
     // @ts-expect-error
     nickname: {
@@ -16,7 +16,7 @@ overrideColumns<PrismaSchemaMap>()({
   },
 });
 
-overrideColumns<PrismaSchemaMap>()({
+overrideColumnsFactory<PrismaSchemaMap>()({
   admin: {
     // @ts-expect-error
     nickname: {
@@ -25,7 +25,7 @@ overrideColumns<PrismaSchemaMap>()({
   },
 });
 
-overrideColumns<PrismaSchemaMap>()({
+overrideColumnsFactory<PrismaSchemaMap>()({
   user: {
     age: {
       input: rule.boolean().default(true),
@@ -38,7 +38,7 @@ overrideColumns<PrismaSchemaMap>()({
   },
 });
 
-const columns = overrideColumns<PrismaSchemaMap>()({
+const columns = overrideColumnsFactory<PrismaSchemaMap>()({
   user: {
     name: {
       input: rule.boolean().default(true),

@@ -1,6 +1,8 @@
 import type { Validator } from '@aomex/common';
 
-export const overrideColumns = <PrismaSchemaMap extends Record<string, string[]>>() => {
+export const overrideColumnsFactory = <
+  PrismaSchemaMap extends Record<string, string[]>,
+>() => {
   return function overrideColumns<
     T extends {
       [ModalName in keyof PrismaSchemaMap]?: {

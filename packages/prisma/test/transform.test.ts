@@ -14,15 +14,15 @@ test.each(['mysql', 'postgresql', 'mongodb', 'sqlite', 'table-name'])(
     const schemaPath = path.join(fixtures, `${provider}.prisma`);
     const schema = await getSchemaWithPath(schemaPath);
     const dmmf = await getDMMF({ datamodel: schema.schemas });
-    const content = await transform(dmmf, path.join(snapshots, `${provider}.snapshot`));
+    const tsContent = await transform(dmmf, path.join(snapshots, `${provider}.snapshot`));
 
-    await expect(content).toMatchFileSnapshot(
+    await expect(tsContent).toMatchFileSnapshot(
       path.join(snapshots, `${provider}.snapshot.ts`),
     );
-    await expect(generateJS(content)).resolves.toMatchFileSnapshot(
+    await expect(generateJS(tsContent)).resolves.toMatchFileSnapshot(
       path.join(snapshots, `${provider}.snapshot.js`),
     );
-    await expect(generateDTS(content)).resolves.toMatchFileSnapshot(
+    await expect(generateDTS(tsContent)).resolves.toMatchFileSnapshot(
       path.join(snapshots, `${provider}.snapshot.d.ts`),
     );
   },

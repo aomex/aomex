@@ -24,16 +24,18 @@ const bin = path.join(import.meta.dirname, '..', 'node_modules', '.bin', 'prisma
 test.each(['mysql', 'postgresql', 'mongodb', 'sqlite'])(
   'generate %s',
   async (provider) => {
-    const tsFile = path.join(fixtures, `temp.${provider}.ts`);
+    const tsFile = path.join(fixtures, `temp.${provider}`, 'index.ts');
+    const helperFile = path.join(fixtures, `temp.${provider}`, 'helper.ts');
     try {
-      rmSync(tsFile);
+      rmSync(path.dirname(tsFile), { recursive: true });
     } catch {}
     await execPromise(
       `${bin} generate --schema ${getSchemaPath(provider)} --generator aomex --config ${getConfigPath(provider)}`,
     );
     expect(existsSync(tsFile)).toBeTruthy();
+    expect(existsSync(helperFile)).toBeTruthy();
     try {
-      rmSync(tsFile);
+      rmSync(path.dirname(tsFile), { recursive: true });
     } catch {}
   },
   300_000,

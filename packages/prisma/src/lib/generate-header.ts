@@ -2,21 +2,20 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 
 export const generateHeader = (output: string) => {
-  const overrideFile = output + '.override';
-  const existOverrideFile = existsSync(overrideFile + '.ts');
-  const baseName = path.basename(overrideFile);
+  const overrideFileName = 'index.override';
+  const overrideFileFullPath = path.join(output, overrideFileName + '.ts');
 
   return `
   // @ts-nocheck
   import { rule } from "@aomex/common";
   ${
-    existOverrideFile
-      ? `import customColumns from './${baseName}';`
+    existsSync(overrideFileFullPath)
+      ? `import customColumns from './${overrideFileName}';`
       : `
-  import { overrideColumns } from '@aomex/prisma';
-  // 如果想覆盖默认生成的类型，可以同目录下创建一个 ${baseName}.ts 文件，然后重新执行 prisma generate 命令
-  // import customColumns from './${baseName}';
-  const customColumns = overrideColumns<PrismaSchemaMap>()({});
+  import { overrideColumnsFactory } from '@aomex/prisma';
+  // 如果想覆盖默认生成的类型，可以同目录下创建一个 ${overrideFileName}.ts 文件，然后重新执行 prisma generate 命令
+  // import customColumns from './${overrideFileName}';
+  const customColumns = overrideColumnsFactory<PrismaSchemaMap>()({});
   `
   }
   
