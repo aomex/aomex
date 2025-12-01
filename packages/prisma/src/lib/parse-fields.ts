@@ -69,6 +69,13 @@ export const parseFields = (
     }
 
     if (isInput) {
+      if (
+        field.hasDefaultValue &&
+        field.default === '' &&
+        validator.startsWith('rule.string()')
+      ) {
+        validator += '.allowEmptyString()';
+      }
       if (field.hasDefaultValue || !field.isRequired) {
         validator += '.optional()';
       }

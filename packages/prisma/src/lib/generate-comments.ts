@@ -13,9 +13,7 @@ export const generateComments = (field: DMMF.Field, runtimeValidator: string) =>
 /**
  * Prisma类型：\`${type}${arrayModifier}${requireModifier}\` ${support}
  * 
- * 数据库默认值：${defaultValue}
- * 
- * 运行时规则：\`${runtimeValidator}\` ${
+ * 数据库默认值：${defaultValue} ${
    documentation
      ? `
  *

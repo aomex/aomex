@@ -3,8 +3,6 @@ declare const lowercaseInputColumns: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: IntValidator<number | Validator.TOptional>;
 };
@@ -13,8 +11,6 @@ declare const lowercaseOutputColumns: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: IntValidator<number>;
 };
@@ -23,8 +19,6 @@ declare const uppercaseInputColumns: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: IntValidator<number | Validator.TOptional>;
 };
@@ -33,8 +27,6 @@ declare const uppercaseOutputColumns: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: IntValidator<number>;
 };
@@ -43,8 +35,6 @@ declare const camelCaseInputColumns: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: IntValidator<number | Validator.TOptional>;
 };
@@ -53,8 +43,6 @@ declare const camelCaseOutputColumns: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: IntValidator<number>;
 };
@@ -63,8 +51,6 @@ declare const pascalCaseInputColumns: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: IntValidator<number | Validator.TOptional>;
 };
@@ -73,8 +59,6 @@ declare const pascalCaseOutputColumns: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: IntValidator<number>;
 };
@@ -83,8 +67,6 @@ declare const titlecaseInputColumns: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: IntValidator<number | Validator.TOptional>;
 };
@@ -93,8 +75,6 @@ declare const titlecaseOutputColumns: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: IntValidator<number>;
 };
@@ -103,8 +83,6 @@ declare const snakeCaseInputColumns: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: IntValidator<number | Validator.TOptional>;
 };
@@ -113,8 +91,6 @@ declare const snakeCaseOutputColumns: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: IntValidator<number>;
 };
@@ -123,8 +99,6 @@ declare const completeCaseInputColumns: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: IntValidator<number | Validator.TOptional>;
 };
@@ -133,8 +107,6 @@ declare const completeCaseOutputColumns: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: IntValidator<number>;
 };
@@ -147,8 +119,6 @@ export declare const prismaInput: {
        * Prisma类型：`Int`
        *
        * 数据库默认值：`autoincrement()`
-       *
-       * 运行时规则：`rule.int().optional()`
        */
       id: IntValidator<number | Validator.TOptional>;
     };
@@ -172,8 +142,6 @@ export declare const prismaInput: {
        * Prisma类型：`Int`
        *
        * 数据库默认值：`autoincrement()`
-       *
-       * 运行时规则：`rule.int().optional()`
        */
       id: IntValidator<number | Validator.TOptional>;
     };
@@ -197,8 +165,6 @@ export declare const prismaInput: {
        * Prisma类型：`Int`
        *
        * 数据库默认值：`autoincrement()`
-       *
-       * 运行时规则：`rule.int().optional()`
        */
       id: IntValidator<number | Validator.TOptional>;
     };
@@ -222,8 +188,6 @@ export declare const prismaInput: {
        * Prisma类型：`Int`
        *
        * 数据库默认值：`autoincrement()`
-       *
-       * 运行时规则：`rule.int().optional()`
        */
       id: IntValidator<number | Validator.TOptional>;
     };
@@ -247,8 +211,6 @@ export declare const prismaInput: {
        * Prisma类型：`Int`
        *
        * 数据库默认值：`autoincrement()`
-       *
-       * 运行时规则：`rule.int().optional()`
        */
       id: IntValidator<number | Validator.TOptional>;
     };
@@ -272,8 +234,6 @@ export declare const prismaInput: {
        * Prisma类型：`Int`
        *
        * 数据库默认值：`autoincrement()`
-       *
-       * 运行时规则：`rule.int().optional()`
        */
       id: IntValidator<number | Validator.TOptional>;
     };
@@ -297,8 +257,6 @@ export declare const prismaInput: {
        * Prisma类型：`Int`
        *
        * 数据库默认值：`autoincrement()`
-       *
-       * 运行时规则：`rule.int().optional()`
        */
       id: IntValidator<number | Validator.TOptional>;
     };
@@ -325,8 +283,6 @@ export declare const prismaOutput: {
        * Prisma类型：`Int`
        *
        * 数据库默认值：`autoincrement()`
-       *
-       * 运行时规则：`rule.int()`
        */
       id: IntValidator<number>;
     };
@@ -350,8 +306,6 @@ export declare const prismaOutput: {
        * Prisma类型：`Int`
        *
        * 数据库默认值：`autoincrement()`
-       *
-       * 运行时规则：`rule.int()`
        */
       id: IntValidator<number>;
     };
@@ -375,8 +329,6 @@ export declare const prismaOutput: {
        * Prisma类型：`Int`
        *
        * 数据库默认值：`autoincrement()`
-       *
-       * 运行时规则：`rule.int()`
        */
       id: IntValidator<number>;
     };
@@ -400,8 +352,6 @@ export declare const prismaOutput: {
        * Prisma类型：`Int`
        *
        * 数据库默认值：`autoincrement()`
-       *
-       * 运行时规则：`rule.int()`
        */
       id: IntValidator<number>;
     };
@@ -425,8 +375,6 @@ export declare const prismaOutput: {
        * Prisma类型：`Int`
        *
        * 数据库默认值：`autoincrement()`
-       *
-       * 运行时规则：`rule.int()`
        */
       id: IntValidator<number>;
     };
@@ -450,8 +398,6 @@ export declare const prismaOutput: {
        * Prisma类型：`Int`
        *
        * 数据库默认值：`autoincrement()`
-       *
-       * 运行时规则：`rule.int()`
        */
       id: IntValidator<number>;
     };
@@ -475,8 +421,6 @@ export declare const prismaOutput: {
        * Prisma类型：`Int`
        *
        * 数据库默认值：`autoincrement()`
-       *
-       * 运行时规则：`rule.int()`
        */
       id: IntValidator<number>;
     };

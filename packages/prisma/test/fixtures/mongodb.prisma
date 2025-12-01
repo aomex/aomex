@@ -9,50 +9,51 @@ generator aomex {
 }
 
 model user {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  name       String
-  name_nu    String?   @unique
-  name_de    String    @default("abc")
-  str_arr    String[]
-  str_arr_de String[]  @default([])
-  age        Int
-  age_nu     Int?
-  age_de     Int       @default(100)
-  int_arr    Int[]
-  int_arr_de Int[]     @default([])
-  obj        Json
-  obj_de_obj Json      @default("{}")
-  obj_de_arr Json      @default("[]")
-  flo        Float
-  flo_nu     Float?
-  flo_de     Float     @default(100.1)
-  flo_arr    Float[]
-  flo_arr_de Float[]   @default([100.1])
-  uu         String    @default(uuid())
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  name_nu       String?   @unique
+  name_de       String    @default("abc")
+  name_de_empty String    @default("")
+  str_arr       String[]
+  str_arr_de    String[]  @default([])
+  age           Int
+  age_nu        Int?
+  age_de        Int       @default(100)
+  int_arr       Int[]
+  int_arr_de    Int[]     @default([])
+  obj           Json
+  obj_de_obj    Json      @default("{}")
+  obj_de_arr    Json      @default("[]")
+  flo           Float
+  flo_nu        Float?
+  flo_de        Float     @default(100.1)
+  flo_arr       Float[]
+  flo_arr_de    Float[]   @default([100.1])
+  uu            String    @default(uuid())
   /// I am the comments
-  comme_ok   String
+  comme_ok      String
   // I am the comments
-  comme_fail String
-  posts      post[]
-  profile    profile?
-  lang       Language
-  lang_nu    Language?
-  lang_de    Language  @default(Typescript)
-  time       DateTime
-  time_nu    DateTime?
-  time_de    DateTime  @default(now())
-  boo        Boolean
-  boo_nu     Boolean?
-  boo_de     Boolean   @default(true)
-  big        BigInt
-  big_nu     BigInt?
-  big_de     BigInt    @default(30)
-  byt        Bytes
-  byt_nu     Bytes?
-  byt_de     Bytes     @default("")
-  custom     MyType    @map("cc")
-  custom_nu  MyType?
-  custom_arr MyType[]
+  comme_fail    String
+  posts         post[]
+  profile       profile?
+  lang          Language
+  lang_nu       Language?
+  lang_de       Language  @default(Typescript)
+  time          DateTime
+  time_nu       DateTime?
+  time_de       DateTime  @default(now())
+  boo           Boolean
+  boo_nu        Boolean?
+  boo_de        Boolean   @default(true)
+  big           BigInt
+  big_nu        BigInt?
+  big_de        BigInt    @default(30)
+  byt           Bytes
+  byt_nu        Bytes?
+  byt_de        Bytes     @default("")
+  custom        MyType    @map("cc")
+  custom_nu     MyType?
+  custom_arr    MyType[]
 }
 
 model profile {

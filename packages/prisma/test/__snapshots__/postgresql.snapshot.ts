@@ -35,8 +35,6 @@ const userInputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: customColumns.user?.id?.input || rule.int().optional(),
 
@@ -44,8 +42,6 @@ const userInputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   name: customColumns.user?.name?.input || rule.string(),
 
@@ -53,8 +49,6 @@ const userInputColumns = {
    * Prisma类型：`String?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string().optional()`
    */
   name_nu: customColumns.user?.name_nu?.input || rule.string().optional(),
 
@@ -62,17 +56,22 @@ const userInputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`"abc"`
-   *
-   * 运行时规则：`rule.string().optional()`
    */
   name_de: customColumns.user?.name_de?.input || rule.string().optional(),
+
+  /**
+   * Prisma类型：`String`
+   *
+   * 数据库默认值：`""`
+   */
+  name_de_empty:
+    customColumns.user?.name_de_empty?.input ||
+    rule.string().allowEmptyString().optional(),
 
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.int()`
    */
   age: customColumns.user?.age?.input || rule.int(),
 
@@ -80,8 +79,6 @@ const userInputColumns = {
    * Prisma类型：`Int?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   age_nu: customColumns.user?.age_nu?.input || rule.int().optional(),
 
@@ -89,8 +86,6 @@ const userInputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`100`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   age_de: customColumns.user?.age_de?.input || rule.int().optional(),
 
@@ -98,8 +93,6 @@ const userInputColumns = {
    * Prisma类型：`Json`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.anyOf([rule.object(), rule.array()])`
    */
   obj: customColumns.user?.obj?.input || rule.anyOf([rule.object(), rule.array()]),
 
@@ -107,8 +100,6 @@ const userInputColumns = {
    * Prisma类型：`Json`
    *
    * 数据库默认值：`"{}"`
-   *
-   * 运行时规则：`rule.anyOf([rule.object(), rule.array()]).optional()`
    */
   obj_de_obj:
     customColumns.user?.obj_de_obj?.input ||
@@ -118,8 +109,6 @@ const userInputColumns = {
    * Prisma类型：`Json`
    *
    * 数据库默认值：`"[]"`
-   *
-   * 运行时规则：`rule.anyOf([rule.object(), rule.array()]).optional()`
    */
   obj_de_arr:
     customColumns.user?.obj_de_arr?.input ||
@@ -129,8 +118,6 @@ const userInputColumns = {
    * Prisma类型：`Decimal`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.number()`
    */
   deci: customColumns.user?.deci?.input || rule.number(),
 
@@ -138,8 +125,6 @@ const userInputColumns = {
    * Prisma类型：`Decimal?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.number().optional()`
    */
   deci_nu: customColumns.user?.deci_nu?.input || rule.number().optional(),
 
@@ -147,8 +132,6 @@ const userInputColumns = {
    * Prisma类型：`Decimal`
    *
    * 数据库默认值：`100`
-   *
-   * 运行时规则：`rule.number().optional()`
    */
   deci_de: customColumns.user?.deci_de?.input || rule.number().optional(),
 
@@ -156,8 +139,6 @@ const userInputColumns = {
    * Prisma类型：`Float`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.number()`
    */
   flo: customColumns.user?.flo?.input || rule.number(),
 
@@ -165,8 +146,6 @@ const userInputColumns = {
    * Prisma类型：`Float?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.number().optional()`
    */
   flo_nu: customColumns.user?.flo_nu?.input || rule.number().optional(),
 
@@ -174,8 +153,6 @@ const userInputColumns = {
    * Prisma类型：`Float`
    *
    * 数据库默认值：`100.10000000000001`
-   *
-   * 运行时规则：`rule.number().optional()`
    */
   flo_de: customColumns.user?.flo_de?.input || rule.number().optional(),
 
@@ -183,8 +160,6 @@ const userInputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`uuid(4)`
-   *
-   * 运行时规则：`rule.uuid(["v4"]).optional()`
    */
   uu: customColumns.user?.uu?.input || rule.uuid(['v4']).optional(),
 
@@ -192,8 +167,6 @@ const userInputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v1())`
-   *
-   * 运行时规则：`rule.uuid(["v1"]).optional()`
    */
   uu_1: customColumns.user?.uu_1?.input || rule.uuid(['v1']).optional(),
 
@@ -201,8 +174,6 @@ const userInputColumns = {
    * Prisma类型：`String?`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v1())`
-   *
-   * 运行时规则：`rule.uuid(["v1"]).optional()`
    */
   uu_1_nu: customColumns.user?.uu_1_nu?.input || rule.uuid(['v1']).optional(),
 
@@ -210,8 +181,6 @@ const userInputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v2())`
-   *
-   * 运行时规则：`rule.uuid(["v2"]).optional()`
    */
   uu_2: customColumns.user?.uu_2?.input || rule.uuid(['v2']).optional(),
 
@@ -219,8 +188,6 @@ const userInputColumns = {
    * Prisma类型：`String?`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v2())`
-   *
-   * 运行时规则：`rule.uuid(["v2"]).optional()`
    */
   uu_2_nu: customColumns.user?.uu_2_nu?.input || rule.uuid(['v2']).optional(),
 
@@ -228,8 +195,6 @@ const userInputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v3())`
-   *
-   * 运行时规则：`rule.uuid(["v3"]).optional()`
    */
   uu_3: customColumns.user?.uu_3?.input || rule.uuid(['v3']).optional(),
 
@@ -237,8 +202,6 @@ const userInputColumns = {
    * Prisma类型：`String?`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v3())`
-   *
-   * 运行时规则：`rule.uuid(["v3"]).optional()`
    */
   uu_3_nu: customColumns.user?.uu_3_nu?.input || rule.uuid(['v3']).optional(),
 
@@ -246,8 +209,6 @@ const userInputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v4())`
-   *
-   * 运行时规则：`rule.uuid(["v4"]).optional()`
    */
   uu_4: customColumns.user?.uu_4?.input || rule.uuid(['v4']).optional(),
 
@@ -255,8 +216,6 @@ const userInputColumns = {
    * Prisma类型：`String?`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v4())`
-   *
-   * 运行时规则：`rule.uuid(["v4"]).optional()`
    */
   uu_4_nu: customColumns.user?.uu_4_nu?.input || rule.uuid(['v4']).optional(),
 
@@ -264,8 +223,6 @@ const userInputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v5())`
-   *
-   * 运行时规则：`rule.uuid(["v5"]).optional()`
    */
   uu_5: customColumns.user?.uu_5?.input || rule.uuid(['v5']).optional(),
 
@@ -273,8 +230,6 @@ const userInputColumns = {
    * Prisma类型：`String?`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v5())`
-   *
-   * 运行时规则：`rule.uuid(["v5"]).optional()`
    */
   uu_5_nu: customColumns.user?.uu_5_nu?.input || rule.uuid(['v5']).optional(),
 
@@ -282,8 +237,6 @@ const userInputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v6())`
-   *
-   * 运行时规则：`rule.string().optional()`
    */
   uu_6: customColumns.user?.uu_6?.input || rule.string().optional(),
 
@@ -291,8 +244,6 @@ const userInputColumns = {
    * Prisma类型：`String?`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v6())`
-   *
-   * 运行时规则：`rule.string().optional()`
    */
   uu_6_nu: customColumns.user?.uu_6_nu?.input || rule.string().optional(),
 
@@ -300,8 +251,6 @@ const userInputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string().docs({ description: "I am the comments" })`
    *
    * I am the comments
    */
@@ -313,8 +262,6 @@ const userInputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   comme_fail: customColumns.user?.comme_fail?.input || rule.string(),
 
@@ -322,8 +269,6 @@ const userInputColumns = {
    * Prisma类型：`Language`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.enum(LanguageEnum)`
    */
   lang: customColumns.user?.lang?.input || rule.enum(LanguageEnum),
 
@@ -331,8 +276,6 @@ const userInputColumns = {
    * Prisma类型：`Language?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.enum(LanguageEnum).optional()`
    */
   lang_nu: customColumns.user?.lang_nu?.input || rule.enum(LanguageEnum).optional(),
 
@@ -340,8 +283,6 @@ const userInputColumns = {
    * Prisma类型：`Language`
    *
    * 数据库默认值：`"Typescript"`
-   *
-   * 运行时规则：`rule.enum(LanguageEnum).optional()`
    */
   lang_de: customColumns.user?.lang_de?.input || rule.enum(LanguageEnum).optional(),
 
@@ -349,8 +290,6 @@ const userInputColumns = {
    * Prisma类型：`DateTime`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.date()`
    */
   time: customColumns.user?.time?.input || rule.date(),
 
@@ -358,8 +297,6 @@ const userInputColumns = {
    * Prisma类型：`DateTime?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.date().optional()`
    */
   time_nu: customColumns.user?.time_nu?.input || rule.date().optional(),
 
@@ -367,8 +304,6 @@ const userInputColumns = {
    * Prisma类型：`DateTime`
    *
    * 数据库默认值：`now()`
-   *
-   * 运行时规则：`rule.date().optional()`
    */
   time_de: customColumns.user?.time_de?.input || rule.date().optional(),
 
@@ -376,8 +311,6 @@ const userInputColumns = {
    * Prisma类型：`Boolean`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.boolean()`
    */
   boo: customColumns.user?.boo?.input || rule.boolean(),
 
@@ -385,8 +318,6 @@ const userInputColumns = {
    * Prisma类型：`Boolean?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.boolean().optional()`
    */
   boo_nu: customColumns.user?.boo_nu?.input || rule.boolean().optional(),
 
@@ -394,8 +325,6 @@ const userInputColumns = {
    * Prisma类型：`Boolean`
    *
    * 数据库默认值：`true`
-   *
-   * 运行时规则：`rule.boolean().optional()`
    */
   boo_de: customColumns.user?.boo_de?.input || rule.boolean().optional(),
 
@@ -403,8 +332,6 @@ const userInputColumns = {
    * Prisma类型：`BigInt`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.bigint()`
    */
   big: customColumns.user?.big?.input || rule.bigint(),
 
@@ -412,8 +339,6 @@ const userInputColumns = {
    * Prisma类型：`BigInt?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.bigint().optional()`
    */
   big_nu: customColumns.user?.big_nu?.input || rule.bigint().optional(),
 
@@ -421,8 +346,6 @@ const userInputColumns = {
    * Prisma类型：`BigInt`
    *
    * 数据库默认值：`"30"`
-   *
-   * 运行时规则：`rule.bigint().optional()`
    */
   big_de: customColumns.user?.big_de?.input || rule.bigint().optional(),
 
@@ -430,8 +353,6 @@ const userInputColumns = {
    * Prisma类型：`Bytes`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.buffer()`
    */
   byt: customColumns.user?.byt?.input || rule.buffer(),
 
@@ -439,8 +360,6 @@ const userInputColumns = {
    * Prisma类型：`Bytes?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.buffer().optional()`
    */
   byt_nu: customColumns.user?.byt_nu?.input || rule.buffer().optional(),
 
@@ -448,8 +367,6 @@ const userInputColumns = {
    * Prisma类型：`Bytes`
    *
    * 数据库默认值：`""`
-   *
-   * 运行时规则：`rule.buffer().optional()`
    */
   byt_de: customColumns.user?.byt_de?.input || rule.buffer().optional(),
 };
@@ -459,8 +376,6 @@ const userOutputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: customColumns.user?.id?.output || rule.int(),
 
@@ -468,8 +383,6 @@ const userOutputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   name: customColumns.user?.name?.output || rule.string(),
 
@@ -477,8 +390,6 @@ const userOutputColumns = {
    * Prisma类型：`String?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string().nullable()`
    */
   name_nu: customColumns.user?.name_nu?.output || rule.string().nullable(),
 
@@ -486,17 +397,20 @@ const userOutputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`"abc"`
-   *
-   * 运行时规则：`rule.string()`
    */
   name_de: customColumns.user?.name_de?.output || rule.string(),
+
+  /**
+   * Prisma类型：`String`
+   *
+   * 数据库默认值：`""`
+   */
+  name_de_empty: customColumns.user?.name_de_empty?.output || rule.string(),
 
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.int()`
    */
   age: customColumns.user?.age?.output || rule.int(),
 
@@ -504,8 +418,6 @@ const userOutputColumns = {
    * Prisma类型：`Int?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.int().nullable()`
    */
   age_nu: customColumns.user?.age_nu?.output || rule.int().nullable(),
 
@@ -513,8 +425,6 @@ const userOutputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`100`
-   *
-   * 运行时规则：`rule.int()`
    */
   age_de: customColumns.user?.age_de?.output || rule.int(),
 
@@ -522,8 +432,6 @@ const userOutputColumns = {
    * Prisma类型：`Json`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.anyOf([rule.object(), rule.array()])`
    */
   obj: customColumns.user?.obj?.output || rule.anyOf([rule.object(), rule.array()]),
 
@@ -531,8 +439,6 @@ const userOutputColumns = {
    * Prisma类型：`Json`
    *
    * 数据库默认值：`"{}"`
-   *
-   * 运行时规则：`rule.anyOf([rule.object(), rule.array()])`
    */
   obj_de_obj:
     customColumns.user?.obj_de_obj?.output || rule.anyOf([rule.object(), rule.array()]),
@@ -541,8 +447,6 @@ const userOutputColumns = {
    * Prisma类型：`Json`
    *
    * 数据库默认值：`"[]"`
-   *
-   * 运行时规则：`rule.anyOf([rule.object(), rule.array()])`
    */
   obj_de_arr:
     customColumns.user?.obj_de_arr?.output || rule.anyOf([rule.object(), rule.array()]),
@@ -551,8 +455,6 @@ const userOutputColumns = {
    * Prisma类型：`Decimal`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.number()`
    */
   deci: customColumns.user?.deci?.output || rule.number(),
 
@@ -560,8 +462,6 @@ const userOutputColumns = {
    * Prisma类型：`Decimal?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.number().nullable()`
    */
   deci_nu: customColumns.user?.deci_nu?.output || rule.number().nullable(),
 
@@ -569,8 +469,6 @@ const userOutputColumns = {
    * Prisma类型：`Decimal`
    *
    * 数据库默认值：`100`
-   *
-   * 运行时规则：`rule.number()`
    */
   deci_de: customColumns.user?.deci_de?.output || rule.number(),
 
@@ -578,8 +476,6 @@ const userOutputColumns = {
    * Prisma类型：`Float`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.number()`
    */
   flo: customColumns.user?.flo?.output || rule.number(),
 
@@ -587,8 +483,6 @@ const userOutputColumns = {
    * Prisma类型：`Float?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.number().nullable()`
    */
   flo_nu: customColumns.user?.flo_nu?.output || rule.number().nullable(),
 
@@ -596,8 +490,6 @@ const userOutputColumns = {
    * Prisma类型：`Float`
    *
    * 数据库默认值：`100.10000000000001`
-   *
-   * 运行时规则：`rule.number()`
    */
   flo_de: customColumns.user?.flo_de?.output || rule.number(),
 
@@ -605,8 +497,6 @@ const userOutputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`uuid(4)`
-   *
-   * 运行时规则：`rule.uuid(["v4"])`
    */
   uu: customColumns.user?.uu?.output || rule.uuid(['v4']),
 
@@ -614,8 +504,6 @@ const userOutputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v1())`
-   *
-   * 运行时规则：`rule.uuid(["v1"])`
    */
   uu_1: customColumns.user?.uu_1?.output || rule.uuid(['v1']),
 
@@ -623,8 +511,6 @@ const userOutputColumns = {
    * Prisma类型：`String?`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v1())`
-   *
-   * 运行时规则：`rule.uuid(["v1"])`
    */
   uu_1_nu: customColumns.user?.uu_1_nu?.output || rule.uuid(['v1']),
 
@@ -632,8 +518,6 @@ const userOutputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v2())`
-   *
-   * 运行时规则：`rule.uuid(["v2"])`
    */
   uu_2: customColumns.user?.uu_2?.output || rule.uuid(['v2']),
 
@@ -641,8 +525,6 @@ const userOutputColumns = {
    * Prisma类型：`String?`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v2())`
-   *
-   * 运行时规则：`rule.uuid(["v2"])`
    */
   uu_2_nu: customColumns.user?.uu_2_nu?.output || rule.uuid(['v2']),
 
@@ -650,8 +532,6 @@ const userOutputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v3())`
-   *
-   * 运行时规则：`rule.uuid(["v3"])`
    */
   uu_3: customColumns.user?.uu_3?.output || rule.uuid(['v3']),
 
@@ -659,8 +539,6 @@ const userOutputColumns = {
    * Prisma类型：`String?`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v3())`
-   *
-   * 运行时规则：`rule.uuid(["v3"])`
    */
   uu_3_nu: customColumns.user?.uu_3_nu?.output || rule.uuid(['v3']),
 
@@ -668,8 +546,6 @@ const userOutputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v4())`
-   *
-   * 运行时规则：`rule.uuid(["v4"])`
    */
   uu_4: customColumns.user?.uu_4?.output || rule.uuid(['v4']),
 
@@ -677,8 +553,6 @@ const userOutputColumns = {
    * Prisma类型：`String?`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v4())`
-   *
-   * 运行时规则：`rule.uuid(["v4"])`
    */
   uu_4_nu: customColumns.user?.uu_4_nu?.output || rule.uuid(['v4']),
 
@@ -686,8 +560,6 @@ const userOutputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v5())`
-   *
-   * 运行时规则：`rule.uuid(["v5"])`
    */
   uu_5: customColumns.user?.uu_5?.output || rule.uuid(['v5']),
 
@@ -695,8 +567,6 @@ const userOutputColumns = {
    * Prisma类型：`String?`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v5())`
-   *
-   * 运行时规则：`rule.uuid(["v5"])`
    */
   uu_5_nu: customColumns.user?.uu_5_nu?.output || rule.uuid(['v5']),
 
@@ -704,8 +574,6 @@ const userOutputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v6())`
-   *
-   * 运行时规则：`rule.string()`
    */
   uu_6: customColumns.user?.uu_6?.output || rule.string(),
 
@@ -713,8 +581,6 @@ const userOutputColumns = {
    * Prisma类型：`String?`
    *
    * 数据库默认值：`dbgenerated(uuid_generate_v6())`
-   *
-   * 运行时规则：`rule.string()`
    */
   uu_6_nu: customColumns.user?.uu_6_nu?.output || rule.string(),
 
@@ -722,8 +588,6 @@ const userOutputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string().docs({ description: "I am the comments" })`
    *
    * I am the comments
    */
@@ -735,8 +599,6 @@ const userOutputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   comme_fail: customColumns.user?.comme_fail?.output || rule.string(),
 
@@ -744,8 +606,6 @@ const userOutputColumns = {
    * Prisma类型：`Language`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.enum(LanguageEnum)`
    */
   lang: customColumns.user?.lang?.output || rule.enum(LanguageEnum),
 
@@ -753,8 +613,6 @@ const userOutputColumns = {
    * Prisma类型：`Language?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.enum(LanguageEnum).nullable()`
    */
   lang_nu: customColumns.user?.lang_nu?.output || rule.enum(LanguageEnum).nullable(),
 
@@ -762,8 +620,6 @@ const userOutputColumns = {
    * Prisma类型：`Language`
    *
    * 数据库默认值：`"Typescript"`
-   *
-   * 运行时规则：`rule.enum(LanguageEnum)`
    */
   lang_de: customColumns.user?.lang_de?.output || rule.enum(LanguageEnum),
 
@@ -771,8 +627,6 @@ const userOutputColumns = {
    * Prisma类型：`DateTime`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.date()`
    */
   time: customColumns.user?.time?.output || rule.date(),
 
@@ -780,8 +634,6 @@ const userOutputColumns = {
    * Prisma类型：`DateTime?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.date().nullable()`
    */
   time_nu: customColumns.user?.time_nu?.output || rule.date().nullable(),
 
@@ -789,8 +641,6 @@ const userOutputColumns = {
    * Prisma类型：`DateTime`
    *
    * 数据库默认值：`now()`
-   *
-   * 运行时规则：`rule.date()`
    */
   time_de: customColumns.user?.time_de?.output || rule.date(),
 
@@ -798,8 +648,6 @@ const userOutputColumns = {
    * Prisma类型：`Boolean`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.boolean()`
    */
   boo: customColumns.user?.boo?.output || rule.boolean(),
 
@@ -807,8 +655,6 @@ const userOutputColumns = {
    * Prisma类型：`Boolean?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.boolean().nullable()`
    */
   boo_nu: customColumns.user?.boo_nu?.output || rule.boolean().nullable(),
 
@@ -816,8 +662,6 @@ const userOutputColumns = {
    * Prisma类型：`Boolean`
    *
    * 数据库默认值：`true`
-   *
-   * 运行时规则：`rule.boolean()`
    */
   boo_de: customColumns.user?.boo_de?.output || rule.boolean(),
 
@@ -825,8 +669,6 @@ const userOutputColumns = {
    * Prisma类型：`BigInt`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.bigint()`
    */
   big: customColumns.user?.big?.output || rule.bigint(),
 
@@ -834,8 +676,6 @@ const userOutputColumns = {
    * Prisma类型：`BigInt?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.bigint().nullable()`
    */
   big_nu: customColumns.user?.big_nu?.output || rule.bigint().nullable(),
 
@@ -843,8 +683,6 @@ const userOutputColumns = {
    * Prisma类型：`BigInt`
    *
    * 数据库默认值：`"30"`
-   *
-   * 运行时规则：`rule.bigint()`
    */
   big_de: customColumns.user?.big_de?.output || rule.bigint(),
 
@@ -852,8 +690,6 @@ const userOutputColumns = {
    * Prisma类型：`Bytes`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.buffer()`
    */
   byt: customColumns.user?.byt?.output || rule.buffer(),
 
@@ -861,8 +697,6 @@ const userOutputColumns = {
    * Prisma类型：`Bytes?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.buffer().nullable()`
    */
   byt_nu: customColumns.user?.byt_nu?.output || rule.buffer().nullable(),
 
@@ -870,8 +704,6 @@ const userOutputColumns = {
    * Prisma类型：`Bytes`
    *
    * 数据库默认值：`""`
-   *
-   * 运行时规则：`rule.buffer()`
    */
   byt_de: customColumns.user?.byt_de?.output || rule.buffer(),
 };
@@ -881,8 +713,6 @@ const profileInputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: customColumns.profile?.id?.input || rule.int().optional(),
 
@@ -890,8 +720,6 @@ const profileInputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.int()`
    */
   user_id: customColumns.profile?.user_id?.input || rule.int(),
 };
@@ -901,8 +729,6 @@ const profileOutputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: customColumns.profile?.id?.output || rule.int(),
 
@@ -910,8 +736,6 @@ const profileOutputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.int()`
    */
   user_id: customColumns.profile?.user_id?.output || rule.int(),
 };
@@ -921,8 +745,6 @@ const postInputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: customColumns.post?.id?.input || rule.int().optional(),
 
@@ -930,8 +752,6 @@ const postInputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.int()`
    */
   user_id: customColumns.post?.user_id?.input || rule.int(),
 
@@ -939,8 +759,6 @@ const postInputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   name: customColumns.post?.name?.input || rule.string(),
 };
@@ -950,8 +768,6 @@ const postOutputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: customColumns.post?.id?.output || rule.int(),
 
@@ -959,8 +775,6 @@ const postOutputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.int()`
    */
   user_id: customColumns.post?.user_id?.output || rule.int(),
 
@@ -968,8 +782,6 @@ const postOutputColumns = {
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   name: customColumns.post?.name?.output || rule.string(),
 };
@@ -979,8 +791,6 @@ const aliasTableNameInputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: customColumns.aliasTableName?.id?.input || rule.int().optional(),
 };
@@ -990,8 +800,6 @@ const aliasTableNameOutputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: customColumns.aliasTableName?.id?.output || rule.int(),
 };
@@ -1007,6 +815,7 @@ export const prismaInput = <const>{
         | 'name'
         | 'name_nu'
         | 'name_de'
+        | 'name_de_empty'
         | 'age'
         | 'age_nu'
         | 'age_de'
@@ -1062,6 +871,7 @@ export const prismaInput = <const>{
         | 'name'
         | 'name_nu'
         | 'name_de'
+        | 'name_de_empty'
         | 'age'
         | 'age_nu'
         | 'age_de'
@@ -1197,6 +1007,7 @@ export const prismaOutput = <const>{
         | 'name'
         | 'name_nu'
         | 'name_de'
+        | 'name_de_empty'
         | 'age'
         | 'age_nu'
         | 'age_de'
@@ -1252,6 +1063,7 @@ export const prismaOutput = <const>{
         | 'name'
         | 'name_nu'
         | 'name_de'
+        | 'name_de_empty'
         | 'age'
         | 'age_nu'
         | 'age_de'
@@ -1382,6 +1194,7 @@ export type PrismaSchemaMap = {
     'name',
     'name_nu',
     'name_de',
+    'name_de_empty',
     'age',
     'age_nu',
     'age_de',

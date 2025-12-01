@@ -26,8 +26,6 @@ const lowercaseInputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: customColumns.lowercase?.id?.input || rule.int().optional(),
 };
@@ -37,8 +35,6 @@ const lowercaseOutputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: customColumns.lowercase?.id?.output || rule.int(),
 };
@@ -48,8 +44,6 @@ const uppercaseInputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: customColumns.uppercase?.id?.input || rule.int().optional(),
 };
@@ -59,8 +53,6 @@ const uppercaseOutputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: customColumns.uppercase?.id?.output || rule.int(),
 };
@@ -70,8 +62,6 @@ const camelCaseInputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: customColumns.camelCase?.id?.input || rule.int().optional(),
 };
@@ -81,8 +71,6 @@ const camelCaseOutputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: customColumns.camelCase?.id?.output || rule.int(),
 };
@@ -92,8 +80,6 @@ const pascalCaseInputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: customColumns.pascalCase?.id?.input || rule.int().optional(),
 };
@@ -103,8 +89,6 @@ const pascalCaseOutputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: customColumns.pascalCase?.id?.output || rule.int(),
 };
@@ -114,8 +98,6 @@ const titlecaseInputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: customColumns.titlecase?.id?.input || rule.int().optional(),
 };
@@ -125,8 +107,6 @@ const titlecaseOutputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: customColumns.titlecase?.id?.output || rule.int(),
 };
@@ -136,8 +116,6 @@ const snakeCaseInputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: customColumns.snakeCase?.id?.input || rule.int().optional(),
 };
@@ -147,8 +125,6 @@ const snakeCaseOutputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: customColumns.snakeCase?.id?.output || rule.int(),
 };
@@ -158,8 +134,6 @@ const completeCaseInputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   id: customColumns.completeCase?.id?.input || rule.int().optional(),
 };
@@ -169,8 +143,6 @@ const completeCaseOutputColumns = {
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
-   *
-   * 运行时规则：`rule.int()`
    */
   id: customColumns.completeCase?.id?.output || rule.int(),
 };

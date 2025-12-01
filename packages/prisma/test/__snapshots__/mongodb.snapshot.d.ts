@@ -12,16 +12,12 @@ export declare const YourTypeOutputType: {
    * Prisma类型：`String?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string().nullable()`
    */
   abc: StringValidator<string | null>;
   /**
    * Prisma类型：`Language`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.enum(LanguageEnum)`
    */
   cde: EnumValidator<'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp'>;
 };
@@ -31,16 +27,12 @@ export declare const YourTypeInputType: {
    * Prisma类型：`String?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string().optional()`
    */
   abc: StringValidator<string | Validator.TOptional>;
   /**
    * Prisma类型：`Language`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.enum(LanguageEnum)`
    */
   cde: EnumValidator<'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp'>;
 };
@@ -50,24 +42,18 @@ export declare const MyTypeOutputType: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.int()`
    */
   id: IntValidator<number>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   name: StringValidator<string>;
   /**
    * Prisma类型：`YourType`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.object(YourTypeOutputType)`
    */
   other: ObjectValidator<{
     abc: string | null;
@@ -80,24 +66,18 @@ export declare const MyTypeInputType: {
    * Prisma类型：`Int`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.int()`
    */
   id: IntValidator<number>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   name: StringValidator<string>;
   /**
    * Prisma类型：`YourType`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.object(YourTypeInputType)`
    */
   other: ObjectValidator<
     {
@@ -113,8 +93,6 @@ export declare const IAmAloseNotUsedOutputType: {
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   id: StringValidator<string>;
 };
@@ -124,8 +102,6 @@ export declare const IAmAloseNotUsedInputType: {
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   id: StringValidator<string>;
 };
@@ -135,8 +111,6 @@ export declare const IAmNotUsedOutputType: {
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   id: StringValidator<string>;
 };
@@ -146,8 +120,6 @@ export declare const IAmNotUsedInputType: {
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   id: StringValidator<string>;
 };
@@ -156,96 +128,78 @@ declare const userInputColumns: {
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
-   *
-   * 运行时规则：`rule.string().optional()`
    */
   id: StringValidator<string | Validator.TOptional>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   name: StringValidator<string>;
   /**
    * Prisma类型：`String?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string().optional()`
    */
   name_nu: StringValidator<string | Validator.TOptional>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`"abc"`
-   *
-   * 运行时规则：`rule.string().optional()`
    */
   name_de: StringValidator<string | Validator.TOptional>;
+  /**
+   * Prisma类型：`String`
+   *
+   * 数据库默认值：`""`
+   */
+  name_de_empty: StringValidator<string | Validator.TOptional>;
   /**
    * Prisma类型：`String[]`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.array(rule.string())`
    */
   str_arr: ArrayValidator<string[]>;
   /**
    * Prisma类型：`String[]`
    *
    * 数据库默认值：`[]`
-   *
-   * 运行时规则：`rule.array(rule.string()).optional()`
    */
   str_arr_de: ArrayValidator<string[] | Validator.TOptional>;
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.int()`
    */
   age: IntValidator<number>;
   /**
    * Prisma类型：`Int?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   age_nu: IntValidator<number | Validator.TOptional>;
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`100`
-   *
-   * 运行时规则：`rule.int().optional()`
    */
   age_de: IntValidator<number | Validator.TOptional>;
   /**
    * Prisma类型：`Int[]`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.array(rule.int())`
    */
   int_arr: ArrayValidator<number[]>;
   /**
    * Prisma类型：`Int[]`
    *
    * 数据库默认值：`[]`
-   *
-   * 运行时规则：`rule.array(rule.int()).optional()`
    */
   int_arr_de: ArrayValidator<number[] | Validator.TOptional>;
   /**
    * Prisma类型：`Json`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.anyOf([rule.object(), rule.array()])`
    */
   obj: AnyOfValidator<
     | unknown[]
@@ -257,8 +211,6 @@ declare const userInputColumns: {
    * Prisma类型：`Json`
    *
    * 数据库默认值：`"{}"`
-   *
-   * 运行时规则：`rule.anyOf([rule.object(), rule.array()]).optional()`
    */
   obj_de_obj: AnyOfValidator<
     | unknown[]
@@ -271,8 +223,6 @@ declare const userInputColumns: {
    * Prisma类型：`Json`
    *
    * 数据库默认值：`"[]"`
-   *
-   * 运行时规则：`rule.anyOf([rule.object(), rule.array()]).optional()`
    */
   obj_de_arr: AnyOfValidator<
     | unknown[]
@@ -285,56 +235,42 @@ declare const userInputColumns: {
    * Prisma类型：`Float`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.number()`
    */
   flo: NumberValidator<number>;
   /**
    * Prisma类型：`Float?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.number().optional()`
    */
   flo_nu: NumberValidator<number | Validator.TOptional>;
   /**
    * Prisma类型：`Float`
    *
    * 数据库默认值：`100.10000000000001`
-   *
-   * 运行时规则：`rule.number().optional()`
    */
   flo_de: NumberValidator<number | Validator.TOptional>;
   /**
    * Prisma类型：`Float[]`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.array(rule.number())`
    */
   flo_arr: ArrayValidator<number[]>;
   /**
    * Prisma类型：`Float[]`
    *
    * 数据库默认值：`[100.10000000000001]`
-   *
-   * 运行时规则：`rule.array(rule.number()).optional()`
    */
   flo_arr_de: ArrayValidator<number[] | Validator.TOptional>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`uuid(4)`
-   *
-   * 运行时规则：`rule.uuid(["v4"]).optional()`
    */
   uu: UuidValidator<string | Validator.TOptional>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string().docs({ description: "I am the comments" })`
    *
    * I am the comments
    */
@@ -343,24 +279,18 @@ declare const userInputColumns: {
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   comme_fail: StringValidator<string>;
   /**
    * Prisma类型：`Language`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.enum(LanguageEnum)`
    */
   lang: EnumValidator<'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp'>;
   /**
    * Prisma类型：`Language?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.enum(LanguageEnum).optional()`
    */
   lang_nu: EnumValidator<
     Validator.TOptional | 'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp'
@@ -369,8 +299,6 @@ declare const userInputColumns: {
    * Prisma类型：`Language`
    *
    * 数据库默认值：`"Typescript"`
-   *
-   * 运行时规则：`rule.enum(LanguageEnum).optional()`
    */
   lang_de: EnumValidator<
     Validator.TOptional | 'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp'
@@ -379,104 +307,78 @@ declare const userInputColumns: {
    * Prisma类型：`DateTime`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.date()`
    */
   time: DateValidator<Date>;
   /**
    * Prisma类型：`DateTime?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.date().optional()`
    */
   time_nu: DateValidator<Validator.TOptional | Date>;
   /**
    * Prisma类型：`DateTime`
    *
    * 数据库默认值：`now()`
-   *
-   * 运行时规则：`rule.date().optional()`
    */
   time_de: DateValidator<Validator.TOptional | Date>;
   /**
    * Prisma类型：`Boolean`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.boolean()`
    */
   boo: BooleanValidator<boolean>;
   /**
    * Prisma类型：`Boolean?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.boolean().optional()`
    */
   boo_nu: BooleanValidator<boolean | Validator.TOptional>;
   /**
    * Prisma类型：`Boolean`
    *
    * 数据库默认值：`true`
-   *
-   * 运行时规则：`rule.boolean().optional()`
    */
   boo_de: BooleanValidator<boolean | Validator.TOptional>;
   /**
    * Prisma类型：`BigInt`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.bigint()`
    */
   big: BigIntValidator<bigint>;
   /**
    * Prisma类型：`BigInt?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.bigint().optional()`
    */
   big_nu: BigIntValidator<bigint | Validator.TOptional>;
   /**
    * Prisma类型：`BigInt`
    *
    * 数据库默认值：`"30"`
-   *
-   * 运行时规则：`rule.bigint().optional()`
    */
   big_de: BigIntValidator<bigint | Validator.TOptional>;
   /**
    * Prisma类型：`Bytes`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.buffer()`
    */
   byt: BufferValidator<Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：`Bytes?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.buffer().optional()`
    */
   byt_nu: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：`Bytes`
    *
    * 数据库默认值：`""`
-   *
-   * 运行时规则：`rule.buffer().optional()`
    */
   byt_de: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：`MyType`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.object(MyTypeInputType)`
    */
   custom: ObjectValidator<{
     id: number;
@@ -491,8 +393,6 @@ declare const userInputColumns: {
    * Prisma类型：`MyType?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.object(MyTypeInputType).optional()`
    */
   custom_nu: ObjectValidator<
     | Validator.TOptional
@@ -510,8 +410,6 @@ declare const userInputColumns: {
    * Prisma类型：`MyType[]`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.array(MyTypeInputType)`
    */
   custom_arr: ArrayValidator<
     {
@@ -530,96 +428,78 @@ declare const userOutputColumns: {
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
-   *
-   * 运行时规则：`rule.string()`
    */
   id: StringValidator<string>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   name: StringValidator<string>;
   /**
    * Prisma类型：`String?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string().nullable()`
    */
   name_nu: StringValidator<string | null>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`"abc"`
-   *
-   * 运行时规则：`rule.string()`
    */
   name_de: StringValidator<string>;
+  /**
+   * Prisma类型：`String`
+   *
+   * 数据库默认值：`""`
+   */
+  name_de_empty: StringValidator<string>;
   /**
    * Prisma类型：`String[]`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.array(rule.string())`
    */
   str_arr: ArrayValidator<string[]>;
   /**
    * Prisma类型：`String[]`
    *
    * 数据库默认值：`[]`
-   *
-   * 运行时规则：`rule.array(rule.string())`
    */
   str_arr_de: ArrayValidator<string[]>;
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.int()`
    */
   age: IntValidator<number>;
   /**
    * Prisma类型：`Int?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.int().nullable()`
    */
   age_nu: IntValidator<number | null>;
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`100`
-   *
-   * 运行时规则：`rule.int()`
    */
   age_de: IntValidator<number>;
   /**
    * Prisma类型：`Int[]`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.array(rule.int())`
    */
   int_arr: ArrayValidator<number[]>;
   /**
    * Prisma类型：`Int[]`
    *
    * 数据库默认值：`[]`
-   *
-   * 运行时规则：`rule.array(rule.int())`
    */
   int_arr_de: ArrayValidator<number[]>;
   /**
    * Prisma类型：`Json`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.anyOf([rule.object(), rule.array()])`
    */
   obj: AnyOfValidator<
     | unknown[]
@@ -631,8 +511,6 @@ declare const userOutputColumns: {
    * Prisma类型：`Json`
    *
    * 数据库默认值：`"{}"`
-   *
-   * 运行时规则：`rule.anyOf([rule.object(), rule.array()])`
    */
   obj_de_obj: AnyOfValidator<
     | unknown[]
@@ -644,8 +522,6 @@ declare const userOutputColumns: {
    * Prisma类型：`Json`
    *
    * 数据库默认值：`"[]"`
-   *
-   * 运行时规则：`rule.anyOf([rule.object(), rule.array()])`
    */
   obj_de_arr: AnyOfValidator<
     | unknown[]
@@ -657,56 +533,42 @@ declare const userOutputColumns: {
    * Prisma类型：`Float`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.number()`
    */
   flo: NumberValidator<number>;
   /**
    * Prisma类型：`Float?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.number().nullable()`
    */
   flo_nu: NumberValidator<number | null>;
   /**
    * Prisma类型：`Float`
    *
    * 数据库默认值：`100.10000000000001`
-   *
-   * 运行时规则：`rule.number()`
    */
   flo_de: NumberValidator<number>;
   /**
    * Prisma类型：`Float[]`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.array(rule.number())`
    */
   flo_arr: ArrayValidator<number[]>;
   /**
    * Prisma类型：`Float[]`
    *
    * 数据库默认值：`[100.10000000000001]`
-   *
-   * 运行时规则：`rule.array(rule.number())`
    */
   flo_arr_de: ArrayValidator<number[]>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`uuid(4)`
-   *
-   * 运行时规则：`rule.uuid(["v4"])`
    */
   uu: UuidValidator<string>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string().docs({ description: "I am the comments" })`
    *
    * I am the comments
    */
@@ -715,24 +577,18 @@ declare const userOutputColumns: {
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   comme_fail: StringValidator<string>;
   /**
    * Prisma类型：`Language`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.enum(LanguageEnum)`
    */
   lang: EnumValidator<'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp'>;
   /**
    * Prisma类型：`Language?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.enum(LanguageEnum).nullable()`
    */
   lang_nu: EnumValidator<
     'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp' | null
@@ -741,112 +597,84 @@ declare const userOutputColumns: {
    * Prisma类型：`Language`
    *
    * 数据库默认值：`"Typescript"`
-   *
-   * 运行时规则：`rule.enum(LanguageEnum)`
    */
   lang_de: EnumValidator<'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp'>;
   /**
    * Prisma类型：`DateTime`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.date()`
    */
   time: DateValidator<Date>;
   /**
    * Prisma类型：`DateTime?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.date().nullable()`
    */
   time_nu: DateValidator<Date | null>;
   /**
    * Prisma类型：`DateTime`
    *
    * 数据库默认值：`now()`
-   *
-   * 运行时规则：`rule.date()`
    */
   time_de: DateValidator<Date>;
   /**
    * Prisma类型：`Boolean`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.boolean()`
    */
   boo: BooleanValidator<boolean>;
   /**
    * Prisma类型：`Boolean?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.boolean().nullable()`
    */
   boo_nu: BooleanValidator<boolean | null>;
   /**
    * Prisma类型：`Boolean`
    *
    * 数据库默认值：`true`
-   *
-   * 运行时规则：`rule.boolean()`
    */
   boo_de: BooleanValidator<boolean>;
   /**
    * Prisma类型：`BigInt`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.bigint()`
    */
   big: BigIntValidator<bigint>;
   /**
    * Prisma类型：`BigInt?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.bigint().nullable()`
    */
   big_nu: BigIntValidator<bigint | null>;
   /**
    * Prisma类型：`BigInt`
    *
    * 数据库默认值：`"30"`
-   *
-   * 运行时规则：`rule.bigint()`
    */
   big_de: BigIntValidator<bigint>;
   /**
    * Prisma类型：`Bytes`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.buffer()`
    */
   byt: BufferValidator<Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：`Bytes?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.buffer().nullable()`
    */
   byt_nu: BufferValidator<Buffer<ArrayBufferLike> | null>;
   /**
    * Prisma类型：`Bytes`
    *
    * 数据库默认值：`""`
-   *
-   * 运行时规则：`rule.buffer()`
    */
   byt_de: BufferValidator<Buffer<ArrayBufferLike>>;
   /**
    * Prisma类型：`MyType`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.object(MyTypeOutputType)`
    */
   custom: ObjectValidator<{
     id: number;
@@ -860,8 +688,6 @@ declare const userOutputColumns: {
    * Prisma类型：`MyType?`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.object(MyTypeOutputType).nullable()`
    */
   custom_nu: ObjectValidator<{
     id: number;
@@ -875,8 +701,6 @@ declare const userOutputColumns: {
    * Prisma类型：`MyType[]`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.array(MyTypeOutputType)`
    */
   custom_arr: ArrayValidator<
     {
@@ -894,16 +718,12 @@ declare const profileInputColumns: {
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
-   *
-   * 运行时规则：`rule.string().optional()`
    */
   id: StringValidator<string | Validator.TOptional>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   user_id: StringValidator<string>;
 };
@@ -912,16 +732,12 @@ declare const profileOutputColumns: {
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
-   *
-   * 运行时规则：`rule.string()`
    */
   id: StringValidator<string>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   user_id: StringValidator<string>;
 };
@@ -930,24 +746,18 @@ declare const postInputColumns: {
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
-   *
-   * 运行时规则：`rule.string().optional()`
    */
   id: StringValidator<string | Validator.TOptional>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   user_id: StringValidator<string>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   name: StringValidator<string>;
 };
@@ -956,24 +766,18 @@ declare const postOutputColumns: {
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
-   *
-   * 运行时规则：`rule.string()`
    */
   id: StringValidator<string>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   user_id: StringValidator<string>;
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
-   *
-   * 运行时规则：`rule.string()`
    */
   name: StringValidator<string>;
 };
@@ -982,8 +786,6 @@ declare const aliasTableNameInputColumns: {
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
-   *
-   * 运行时规则：`rule.string().optional()`
    */
   id: StringValidator<string | Validator.TOptional>;
 };
@@ -992,8 +794,6 @@ declare const aliasTableNameOutputColumns: {
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
-   *
-   * 运行时规则：`rule.string()`
    */
   id: StringValidator<string>;
 };
@@ -1006,96 +806,78 @@ export declare const prismaInput: {
        * Prisma类型：`String`
        *
        * 数据库默认值：`auto()`
-       *
-       * 运行时规则：`rule.string().optional()`
        */
       id: StringValidator<string | Validator.TOptional>;
       /**
        * Prisma类型：`String`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.string()`
        */
       name: StringValidator<string>;
       /**
        * Prisma类型：`String?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.string().optional()`
        */
       name_nu: StringValidator<string | Validator.TOptional>;
       /**
        * Prisma类型：`String`
        *
        * 数据库默认值：`"abc"`
-       *
-       * 运行时规则：`rule.string().optional()`
        */
       name_de: StringValidator<string | Validator.TOptional>;
+      /**
+       * Prisma类型：`String`
+       *
+       * 数据库默认值：`""`
+       */
+      name_de_empty: StringValidator<string | Validator.TOptional>;
       /**
        * Prisma类型：`String[]`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.array(rule.string())`
        */
       str_arr: ArrayValidator<string[]>;
       /**
        * Prisma类型：`String[]`
        *
        * 数据库默认值：`[]`
-       *
-       * 运行时规则：`rule.array(rule.string()).optional()`
        */
       str_arr_de: ArrayValidator<string[] | Validator.TOptional>;
       /**
        * Prisma类型：`Int`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.int()`
        */
       age: IntValidator<number>;
       /**
        * Prisma类型：`Int?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.int().optional()`
        */
       age_nu: IntValidator<number | Validator.TOptional>;
       /**
        * Prisma类型：`Int`
        *
        * 数据库默认值：`100`
-       *
-       * 运行时规则：`rule.int().optional()`
        */
       age_de: IntValidator<number | Validator.TOptional>;
       /**
        * Prisma类型：`Int[]`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.array(rule.int())`
        */
       int_arr: ArrayValidator<number[]>;
       /**
        * Prisma类型：`Int[]`
        *
        * 数据库默认值：`[]`
-       *
-       * 运行时规则：`rule.array(rule.int()).optional()`
        */
       int_arr_de: ArrayValidator<number[] | Validator.TOptional>;
       /**
        * Prisma类型：`Json`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.anyOf([rule.object(), rule.array()])`
        */
       obj: AnyOfValidator<
         | unknown[]
@@ -1107,8 +889,6 @@ export declare const prismaInput: {
        * Prisma类型：`Json`
        *
        * 数据库默认值：`"{}"`
-       *
-       * 运行时规则：`rule.anyOf([rule.object(), rule.array()]).optional()`
        */
       obj_de_obj: AnyOfValidator<
         | unknown[]
@@ -1121,8 +901,6 @@ export declare const prismaInput: {
        * Prisma类型：`Json`
        *
        * 数据库默认值：`"[]"`
-       *
-       * 运行时规则：`rule.anyOf([rule.object(), rule.array()]).optional()`
        */
       obj_de_arr: AnyOfValidator<
         | unknown[]
@@ -1135,56 +913,42 @@ export declare const prismaInput: {
        * Prisma类型：`Float`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.number()`
        */
       flo: NumberValidator<number>;
       /**
        * Prisma类型：`Float?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.number().optional()`
        */
       flo_nu: NumberValidator<number | Validator.TOptional>;
       /**
        * Prisma类型：`Float`
        *
        * 数据库默认值：`100.10000000000001`
-       *
-       * 运行时规则：`rule.number().optional()`
        */
       flo_de: NumberValidator<number | Validator.TOptional>;
       /**
        * Prisma类型：`Float[]`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.array(rule.number())`
        */
       flo_arr: ArrayValidator<number[]>;
       /**
        * Prisma类型：`Float[]`
        *
        * 数据库默认值：`[100.10000000000001]`
-       *
-       * 运行时规则：`rule.array(rule.number()).optional()`
        */
       flo_arr_de: ArrayValidator<number[] | Validator.TOptional>;
       /**
        * Prisma类型：`String`
        *
        * 数据库默认值：`uuid(4)`
-       *
-       * 运行时规则：`rule.uuid(["v4"]).optional()`
        */
       uu: UuidValidator<string | Validator.TOptional>;
       /**
        * Prisma类型：`String`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.string().docs({ description: "I am the comments" })`
        *
        * I am the comments
        */
@@ -1193,24 +957,18 @@ export declare const prismaInput: {
        * Prisma类型：`String`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.string()`
        */
       comme_fail: StringValidator<string>;
       /**
        * Prisma类型：`Language`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.enum(LanguageEnum)`
        */
       lang: EnumValidator<'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp'>;
       /**
        * Prisma类型：`Language?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.enum(LanguageEnum).optional()`
        */
       lang_nu: EnumValidator<
         | Validator.TOptional
@@ -1225,8 +983,6 @@ export declare const prismaInput: {
        * Prisma类型：`Language`
        *
        * 数据库默认值：`"Typescript"`
-       *
-       * 运行时规则：`rule.enum(LanguageEnum).optional()`
        */
       lang_de: EnumValidator<
         | Validator.TOptional
@@ -1241,104 +997,78 @@ export declare const prismaInput: {
        * Prisma类型：`DateTime`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.date()`
        */
       time: DateValidator<Date>;
       /**
        * Prisma类型：`DateTime?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.date().optional()`
        */
       time_nu: DateValidator<Validator.TOptional | Date>;
       /**
        * Prisma类型：`DateTime`
        *
        * 数据库默认值：`now()`
-       *
-       * 运行时规则：`rule.date().optional()`
        */
       time_de: DateValidator<Validator.TOptional | Date>;
       /**
        * Prisma类型：`Boolean`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.boolean()`
        */
       boo: BooleanValidator<boolean>;
       /**
        * Prisma类型：`Boolean?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.boolean().optional()`
        */
       boo_nu: BooleanValidator<boolean | Validator.TOptional>;
       /**
        * Prisma类型：`Boolean`
        *
        * 数据库默认值：`true`
-       *
-       * 运行时规则：`rule.boolean().optional()`
        */
       boo_de: BooleanValidator<boolean | Validator.TOptional>;
       /**
        * Prisma类型：`BigInt`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.bigint()`
        */
       big: BigIntValidator<bigint>;
       /**
        * Prisma类型：`BigInt?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.bigint().optional()`
        */
       big_nu: BigIntValidator<bigint | Validator.TOptional>;
       /**
        * Prisma类型：`BigInt`
        *
        * 数据库默认值：`"30"`
-       *
-       * 运行时规则：`rule.bigint().optional()`
        */
       big_de: BigIntValidator<bigint | Validator.TOptional>;
       /**
        * Prisma类型：`Bytes`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.buffer()`
        */
       byt: BufferValidator<Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：`Bytes?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.buffer().optional()`
        */
       byt_nu: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：`Bytes`
        *
        * 数据库默认值：`""`
-       *
-       * 运行时规则：`rule.buffer().optional()`
        */
       byt_de: BufferValidator<Validator.TOptional | Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：`MyType`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.object(MyTypeInputType)`
        */
       custom: ObjectValidator<{
         id: number;
@@ -1353,8 +1083,6 @@ export declare const prismaInput: {
        * Prisma类型：`MyType?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.object(MyTypeInputType).optional()`
        */
       custom_nu: ObjectValidator<
         | Validator.TOptional
@@ -1372,8 +1100,6 @@ export declare const prismaInput: {
        * Prisma类型：`MyType[]`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.array(MyTypeInputType)`
        */
       custom_arr: ArrayValidator<
         {
@@ -1394,6 +1120,7 @@ export declare const prismaInput: {
         | 'name'
         | 'name_nu'
         | 'name_de'
+        | 'name_de_empty'
         | 'str_arr'
         | 'str_arr_de'
         | 'age'
@@ -1437,6 +1164,7 @@ export declare const prismaInput: {
         | 'name'
         | 'name_nu'
         | 'name_de'
+        | 'name_de_empty'
         | 'str_arr'
         | 'str_arr_de'
         | 'age'
@@ -1485,16 +1213,12 @@ export declare const prismaInput: {
        * Prisma类型：`String`
        *
        * 数据库默认值：`auto()`
-       *
-       * 运行时规则：`rule.string().optional()`
        */
       id: StringValidator<string | Validator.TOptional>;
       /**
        * Prisma类型：`String`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.string()`
        */
       user_id: StringValidator<string>;
     };
@@ -1518,24 +1242,18 @@ export declare const prismaInput: {
        * Prisma类型：`String`
        *
        * 数据库默认值：`auto()`
-       *
-       * 运行时规则：`rule.string().optional()`
        */
       id: StringValidator<string | Validator.TOptional>;
       /**
        * Prisma类型：`String`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.string()`
        */
       user_id: StringValidator<string>;
       /**
        * Prisma类型：`String`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.string()`
        */
       name: StringValidator<string>;
     };
@@ -1559,8 +1277,6 @@ export declare const prismaInput: {
        * Prisma类型：`String`
        *
        * 数据库默认值：`auto()`
-       *
-       * 运行时规则：`rule.string().optional()`
        */
       id: StringValidator<string | Validator.TOptional>;
     };
@@ -1587,96 +1303,78 @@ export declare const prismaOutput: {
        * Prisma类型：`String`
        *
        * 数据库默认值：`auto()`
-       *
-       * 运行时规则：`rule.string()`
        */
       id: StringValidator<string>;
       /**
        * Prisma类型：`String`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.string()`
        */
       name: StringValidator<string>;
       /**
        * Prisma类型：`String?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.string().nullable()`
        */
       name_nu: StringValidator<string | null>;
       /**
        * Prisma类型：`String`
        *
        * 数据库默认值：`"abc"`
-       *
-       * 运行时规则：`rule.string()`
        */
       name_de: StringValidator<string>;
+      /**
+       * Prisma类型：`String`
+       *
+       * 数据库默认值：`""`
+       */
+      name_de_empty: StringValidator<string>;
       /**
        * Prisma类型：`String[]`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.array(rule.string())`
        */
       str_arr: ArrayValidator<string[]>;
       /**
        * Prisma类型：`String[]`
        *
        * 数据库默认值：`[]`
-       *
-       * 运行时规则：`rule.array(rule.string())`
        */
       str_arr_de: ArrayValidator<string[]>;
       /**
        * Prisma类型：`Int`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.int()`
        */
       age: IntValidator<number>;
       /**
        * Prisma类型：`Int?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.int().nullable()`
        */
       age_nu: IntValidator<number | null>;
       /**
        * Prisma类型：`Int`
        *
        * 数据库默认值：`100`
-       *
-       * 运行时规则：`rule.int()`
        */
       age_de: IntValidator<number>;
       /**
        * Prisma类型：`Int[]`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.array(rule.int())`
        */
       int_arr: ArrayValidator<number[]>;
       /**
        * Prisma类型：`Int[]`
        *
        * 数据库默认值：`[]`
-       *
-       * 运行时规则：`rule.array(rule.int())`
        */
       int_arr_de: ArrayValidator<number[]>;
       /**
        * Prisma类型：`Json`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.anyOf([rule.object(), rule.array()])`
        */
       obj: AnyOfValidator<
         | unknown[]
@@ -1688,8 +1386,6 @@ export declare const prismaOutput: {
        * Prisma类型：`Json`
        *
        * 数据库默认值：`"{}"`
-       *
-       * 运行时规则：`rule.anyOf([rule.object(), rule.array()])`
        */
       obj_de_obj: AnyOfValidator<
         | unknown[]
@@ -1701,8 +1397,6 @@ export declare const prismaOutput: {
        * Prisma类型：`Json`
        *
        * 数据库默认值：`"[]"`
-       *
-       * 运行时规则：`rule.anyOf([rule.object(), rule.array()])`
        */
       obj_de_arr: AnyOfValidator<
         | unknown[]
@@ -1714,56 +1408,42 @@ export declare const prismaOutput: {
        * Prisma类型：`Float`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.number()`
        */
       flo: NumberValidator<number>;
       /**
        * Prisma类型：`Float?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.number().nullable()`
        */
       flo_nu: NumberValidator<number | null>;
       /**
        * Prisma类型：`Float`
        *
        * 数据库默认值：`100.10000000000001`
-       *
-       * 运行时规则：`rule.number()`
        */
       flo_de: NumberValidator<number>;
       /**
        * Prisma类型：`Float[]`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.array(rule.number())`
        */
       flo_arr: ArrayValidator<number[]>;
       /**
        * Prisma类型：`Float[]`
        *
        * 数据库默认值：`[100.10000000000001]`
-       *
-       * 运行时规则：`rule.array(rule.number())`
        */
       flo_arr_de: ArrayValidator<number[]>;
       /**
        * Prisma类型：`String`
        *
        * 数据库默认值：`uuid(4)`
-       *
-       * 运行时规则：`rule.uuid(["v4"])`
        */
       uu: UuidValidator<string>;
       /**
        * Prisma类型：`String`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.string().docs({ description: "I am the comments" })`
        *
        * I am the comments
        */
@@ -1772,24 +1452,18 @@ export declare const prismaOutput: {
        * Prisma类型：`String`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.string()`
        */
       comme_fail: StringValidator<string>;
       /**
        * Prisma类型：`Language`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.enum(LanguageEnum)`
        */
       lang: EnumValidator<'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp'>;
       /**
        * Prisma类型：`Language?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.enum(LanguageEnum).nullable()`
        */
       lang_nu: EnumValidator<
         'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp' | null
@@ -1798,8 +1472,6 @@ export declare const prismaOutput: {
        * Prisma类型：`Language`
        *
        * 数据库默认值：`"Typescript"`
-       *
-       * 运行时规则：`rule.enum(LanguageEnum)`
        */
       lang_de: EnumValidator<
         'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp'
@@ -1808,104 +1480,78 @@ export declare const prismaOutput: {
        * Prisma类型：`DateTime`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.date()`
        */
       time: DateValidator<Date>;
       /**
        * Prisma类型：`DateTime?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.date().nullable()`
        */
       time_nu: DateValidator<Date | null>;
       /**
        * Prisma类型：`DateTime`
        *
        * 数据库默认值：`now()`
-       *
-       * 运行时规则：`rule.date()`
        */
       time_de: DateValidator<Date>;
       /**
        * Prisma类型：`Boolean`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.boolean()`
        */
       boo: BooleanValidator<boolean>;
       /**
        * Prisma类型：`Boolean?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.boolean().nullable()`
        */
       boo_nu: BooleanValidator<boolean | null>;
       /**
        * Prisma类型：`Boolean`
        *
        * 数据库默认值：`true`
-       *
-       * 运行时规则：`rule.boolean()`
        */
       boo_de: BooleanValidator<boolean>;
       /**
        * Prisma类型：`BigInt`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.bigint()`
        */
       big: BigIntValidator<bigint>;
       /**
        * Prisma类型：`BigInt?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.bigint().nullable()`
        */
       big_nu: BigIntValidator<bigint | null>;
       /**
        * Prisma类型：`BigInt`
        *
        * 数据库默认值：`"30"`
-       *
-       * 运行时规则：`rule.bigint()`
        */
       big_de: BigIntValidator<bigint>;
       /**
        * Prisma类型：`Bytes`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.buffer()`
        */
       byt: BufferValidator<Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：`Bytes?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.buffer().nullable()`
        */
       byt_nu: BufferValidator<Buffer<ArrayBufferLike> | null>;
       /**
        * Prisma类型：`Bytes`
        *
        * 数据库默认值：`""`
-       *
-       * 运行时规则：`rule.buffer()`
        */
       byt_de: BufferValidator<Buffer<ArrayBufferLike>>;
       /**
        * Prisma类型：`MyType`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.object(MyTypeOutputType)`
        */
       custom: ObjectValidator<{
         id: number;
@@ -1919,8 +1565,6 @@ export declare const prismaOutput: {
        * Prisma类型：`MyType?`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.object(MyTypeOutputType).nullable()`
        */
       custom_nu: ObjectValidator<{
         id: number;
@@ -1934,8 +1578,6 @@ export declare const prismaOutput: {
        * Prisma类型：`MyType[]`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.array(MyTypeOutputType)`
        */
       custom_arr: ArrayValidator<
         {
@@ -1955,6 +1597,7 @@ export declare const prismaOutput: {
         | 'name'
         | 'name_nu'
         | 'name_de'
+        | 'name_de_empty'
         | 'str_arr'
         | 'str_arr_de'
         | 'age'
@@ -1998,6 +1641,7 @@ export declare const prismaOutput: {
         | 'name'
         | 'name_nu'
         | 'name_de'
+        | 'name_de_empty'
         | 'str_arr'
         | 'str_arr_de'
         | 'age'
@@ -2046,16 +1690,12 @@ export declare const prismaOutput: {
        * Prisma类型：`String`
        *
        * 数据库默认值：`auto()`
-       *
-       * 运行时规则：`rule.string()`
        */
       id: StringValidator<string>;
       /**
        * Prisma类型：`String`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.string()`
        */
       user_id: StringValidator<string>;
     };
@@ -2079,24 +1719,18 @@ export declare const prismaOutput: {
        * Prisma类型：`String`
        *
        * 数据库默认值：`auto()`
-       *
-       * 运行时规则：`rule.string()`
        */
       id: StringValidator<string>;
       /**
        * Prisma类型：`String`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.string()`
        */
       user_id: StringValidator<string>;
       /**
        * Prisma类型：`String`
        *
        * 数据库默认值：
-       *
-       * 运行时规则：`rule.string()`
        */
       name: StringValidator<string>;
     };
@@ -2120,8 +1754,6 @@ export declare const prismaOutput: {
        * Prisma类型：`String`
        *
        * 数据库默认值：`auto()`
-       *
-       * 运行时规则：`rule.string()`
        */
       id: StringValidator<string>;
     };
@@ -2145,6 +1777,7 @@ export type PrismaSchemaMap = {
     'name',
     'name_nu',
     'name_de',
+    'name_de_empty',
     'str_arr',
     'str_arr_de',
     'age',

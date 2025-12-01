@@ -9,50 +9,51 @@ generator aomex {
 }
 
 model user {
-  id         Int       @id @default(autoincrement())
-  name       String
-  name_nu    String?   @unique
-  name_de    String    @default("abc")
-  age        Int
-  age_nu     Int?
-  age_de     Int       @default(100)
-  deci       Decimal
-  deci_nu    Decimal?
-  deci_de    Decimal   @default(100)
-  flo        Float
-  flo_nu     Float?
-  flo_de     Float     @default(100.1)
-  uu         String    @default(uuid())
-  uu_1       String    @default(dbgenerated("uuid_generate_v1()"))
-  uu_1_nu    String?   @default(dbgenerated("uuid_generate_v1()"))
-  uu_2       String    @default(dbgenerated("uuid_generate_v2()"))
-  uu_2_nu    String?   @default(dbgenerated("uuid_generate_v2()"))
-  uu_3       String    @default(dbgenerated("uuid_generate_v3()"))
-  uu_3_nu    String?   @default(dbgenerated("uuid_generate_v3()"))
-  uu_4       String    @default(dbgenerated("uuid_generate_v4()"))
-  uu_4_nu    String?   @default(dbgenerated("uuid_generate_v4()"))
-  uu_5       String    @default(dbgenerated("uuid_generate_v5()"))
-  uu_5_nu    String?   @default(dbgenerated("uuid_generate_v5()"))
-  uu_6       String    @default(dbgenerated("uuid_generate_v6()"))
-  uu_6_nu    String?   @default(dbgenerated("uuid_generate_v6()"))
+  id            Int       @id @default(autoincrement())
+  name          String
+  name_nu       String?   @unique
+  name_de       String    @default("abc")
+  name_de_empty String    @default("")
+  age           Int
+  age_nu        Int?
+  age_de        Int       @default(100)
+  deci          Decimal
+  deci_nu       Decimal?
+  deci_de       Decimal   @default(100)
+  flo           Float
+  flo_nu        Float?
+  flo_de        Float     @default(100.1)
+  uu            String    @default(uuid())
+  uu_1          String    @default(dbgenerated("uuid_generate_v1()"))
+  uu_1_nu       String?   @default(dbgenerated("uuid_generate_v1()"))
+  uu_2          String    @default(dbgenerated("uuid_generate_v2()"))
+  uu_2_nu       String?   @default(dbgenerated("uuid_generate_v2()"))
+  uu_3          String    @default(dbgenerated("uuid_generate_v3()"))
+  uu_3_nu       String?   @default(dbgenerated("uuid_generate_v3()"))
+  uu_4          String    @default(dbgenerated("uuid_generate_v4()"))
+  uu_4_nu       String?   @default(dbgenerated("uuid_generate_v4()"))
+  uu_5          String    @default(dbgenerated("uuid_generate_v5()"))
+  uu_5_nu       String?   @default(dbgenerated("uuid_generate_v5()"))
+  uu_6          String    @default(dbgenerated("uuid_generate_v6()"))
+  uu_6_nu       String?   @default(dbgenerated("uuid_generate_v6()"))
   /// I am the comments
-  comme_ok   String
+  comme_ok      String
   // I am the comments
-  comme_fail String
-  posts      post[]
-  profile    profile?
-  time       DateTime
-  time_nu    DateTime?
-  time_de    DateTime  @default(now())
-  boo        Boolean
-  boo_nu     Boolean?
-  boo_de     Boolean   @default(true)
-  big        BigInt
-  big_nu     BigInt?
-  big_de     BigInt    @default(30)
-  byt        Bytes
-  byt_nu     Bytes?
-  byt_de     Bytes     @default("")
+  comme_fail    String
+  posts         post[]
+  profile       profile?
+  time          DateTime
+  time_nu       DateTime?
+  time_de       DateTime  @default(now())
+  boo           Boolean
+  boo_nu        Boolean?
+  boo_de        Boolean   @default(true)
+  big           BigInt
+  big_nu        BigInt?
+  big_de        BigInt    @default(30)
+  byt           Bytes
+  byt_nu        Bytes?
+  byt_de        Bytes     @default("")
 }
 
 model profile {
