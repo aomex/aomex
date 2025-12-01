@@ -40,7 +40,7 @@ const lowercaseOutputColumns = {
    *
    * 运行时规则：`rule.int()`
    */
-  id: customColumns.lowercase?.id?.input || rule.int(),
+  id: customColumns.lowercase?.id?.output || rule.int(),
 };
 
 const uppercaseInputColumns = {
@@ -62,7 +62,7 @@ const uppercaseOutputColumns = {
    *
    * 运行时规则：`rule.int()`
    */
-  id: customColumns.uppercase?.id?.input || rule.int(),
+  id: customColumns.uppercase?.id?.output || rule.int(),
 };
 
 const camelCaseInputColumns = {
@@ -84,7 +84,7 @@ const camelCaseOutputColumns = {
    *
    * 运行时规则：`rule.int()`
    */
-  id: customColumns.camelCase?.id?.input || rule.int(),
+  id: customColumns.camelCase?.id?.output || rule.int(),
 };
 
 const pascalCaseInputColumns = {
@@ -106,7 +106,7 @@ const pascalCaseOutputColumns = {
    *
    * 运行时规则：`rule.int()`
    */
-  id: customColumns.pascalCase?.id?.input || rule.int(),
+  id: customColumns.pascalCase?.id?.output || rule.int(),
 };
 
 const titlecaseInputColumns = {
@@ -128,7 +128,7 @@ const titlecaseOutputColumns = {
    *
    * 运行时规则：`rule.int()`
    */
-  id: customColumns.titlecase?.id?.input || rule.int(),
+  id: customColumns.titlecase?.id?.output || rule.int(),
 };
 
 const snakeCaseInputColumns = {
@@ -150,7 +150,7 @@ const snakeCaseOutputColumns = {
    *
    * 运行时规则：`rule.int()`
    */
-  id: customColumns.snakeCase?.id?.input || rule.int(),
+  id: customColumns.snakeCase?.id?.output || rule.int(),
 };
 
 const completeCaseInputColumns = {
@@ -172,7 +172,7 @@ const completeCaseOutputColumns = {
    *
    * 运行时规则：`rule.int()`
    */
-  id: customColumns.completeCase?.id?.input || rule.int(),
+  id: customColumns.completeCase?.id?.output || rule.int(),
 };
 
 export const prismaInput = <const>{

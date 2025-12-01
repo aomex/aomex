@@ -16,7 +16,8 @@ export const parseFields = (
 
     if (field.kind === 'object') {
       if (!field.relationName) {
-        const relatedName = pascalCase(field.type) + 'Type';
+        const relatedName =
+          pascalCase(field.type) + (isInput ? 'Input' : 'Output') + 'Type';
         validator = field.isList ? `${relatedName}` : `rule.object(${relatedName})`;
       }
     } else if (field.kind === 'enum') {
@@ -83,7 +84,7 @@ export const parseFields = (
 
     modelFields.push(
       generateComments(field, validator),
-      `${field.name}: customColumns.${modelName}?.${field.name}?.input || ${validator},`,
+      `${field.name}: customColumns.${modelName}?.${field.name}?.${isInput ? 'input' : 'output'} || ${validator},`,
     );
   });
 

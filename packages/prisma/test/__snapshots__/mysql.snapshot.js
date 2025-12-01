@@ -17,7 +17,8 @@ function omit(obj, ...keys) {
   const allKeys = Object.keys(obj);
   return pick(obj, ...allKeys.filter((key) => !keys.includes(key)));
 }
-const LanguageEnum = ['Typescript', 'Javascript', 'Rust', 'Go', 'Python', 'Cpp'];
+
+export const LanguageEnum = ['Typescript', 'Javascript', 'Rust', 'Go', 'Python', 'Cpp'];
 const userInputColumns = {
   /**
    * Prisma类型：`Int`
@@ -404,7 +405,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.int()`
    */
-  id: customColumns.user?.id?.input || rule.int(),
+  id: customColumns.user?.id?.output || rule.int(),
   /**
    * Prisma类型：`String`
    *
@@ -412,7 +413,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.string()`
    */
-  name: customColumns.user?.name?.input || rule.string(),
+  name: customColumns.user?.name?.output || rule.string(),
   /**
    * Prisma类型：`String?`
    *
@@ -420,7 +421,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.string().nullable()`
    */
-  name_nu: customColumns.user?.name_nu?.input || rule.string().nullable(),
+  name_nu: customColumns.user?.name_nu?.output || rule.string().nullable(),
   /**
    * Prisma类型：`String`
    *
@@ -428,7 +429,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.string()`
    */
-  name_de: customColumns.user?.name_de?.input || rule.string(),
+  name_de: customColumns.user?.name_de?.output || rule.string(),
   /**
    * Prisma类型：`Int`
    *
@@ -436,7 +437,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.int()`
    */
-  age: customColumns.user?.age?.input || rule.int(),
+  age: customColumns.user?.age?.output || rule.int(),
   /**
    * Prisma类型：`Int?`
    *
@@ -444,7 +445,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.int().nullable()`
    */
-  age_nu: customColumns.user?.age_nu?.input || rule.int().nullable(),
+  age_nu: customColumns.user?.age_nu?.output || rule.int().nullable(),
   /**
    * Prisma类型：`Int`
    *
@@ -452,7 +453,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.int()`
    */
-  age_de: customColumns.user?.age_de?.input || rule.int(),
+  age_de: customColumns.user?.age_de?.output || rule.int(),
   /**
    * Prisma类型：`Json`
    *
@@ -460,7 +461,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.anyOf([rule.object(), rule.array()])`
    */
-  obj: customColumns.user?.obj?.input || rule.anyOf([rule.object(), rule.array()]),
+  obj: customColumns.user?.obj?.output || rule.anyOf([rule.object(), rule.array()]),
   /**
    * Prisma类型：`Json`
    *
@@ -469,7 +470,7 @@ const userOutputColumns = {
    * 运行时规则：`rule.anyOf([rule.object(), rule.array()])`
    */
   obj_de_obj:
-    customColumns.user?.obj_de_obj?.input || rule.anyOf([rule.object(), rule.array()]),
+    customColumns.user?.obj_de_obj?.output || rule.anyOf([rule.object(), rule.array()]),
   /**
    * Prisma类型：`Json`
    *
@@ -478,7 +479,7 @@ const userOutputColumns = {
    * 运行时规则：`rule.anyOf([rule.object(), rule.array()])`
    */
   obj_de_arr:
-    customColumns.user?.obj_de_arr?.input || rule.anyOf([rule.object(), rule.array()]),
+    customColumns.user?.obj_de_arr?.output || rule.anyOf([rule.object(), rule.array()]),
   /**
    * Prisma类型：`Decimal`
    *
@@ -486,7 +487,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.number()`
    */
-  deci: customColumns.user?.deci?.input || rule.number(),
+  deci: customColumns.user?.deci?.output || rule.number(),
   /**
    * Prisma类型：`Decimal?`
    *
@@ -494,7 +495,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.number().nullable()`
    */
-  deci_nu: customColumns.user?.deci_nu?.input || rule.number().nullable(),
+  deci_nu: customColumns.user?.deci_nu?.output || rule.number().nullable(),
   /**
    * Prisma类型：`Decimal`
    *
@@ -502,7 +503,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.number()`
    */
-  deci_de: customColumns.user?.deci_de?.input || rule.number(),
+  deci_de: customColumns.user?.deci_de?.output || rule.number(),
   /**
    * Prisma类型：`Float`
    *
@@ -510,7 +511,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.number()`
    */
-  flo: customColumns.user?.flo?.input || rule.number(),
+  flo: customColumns.user?.flo?.output || rule.number(),
   /**
    * Prisma类型：`Float?`
    *
@@ -518,7 +519,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.number().nullable()`
    */
-  flo_nu: customColumns.user?.flo_nu?.input || rule.number().nullable(),
+  flo_nu: customColumns.user?.flo_nu?.output || rule.number().nullable(),
   /**
    * Prisma类型：`Float`
    *
@@ -526,7 +527,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.number()`
    */
-  flo_de: customColumns.user?.flo_de?.input || rule.number(),
+  flo_de: customColumns.user?.flo_de?.output || rule.number(),
   /**
    * Prisma类型：`String`
    *
@@ -534,7 +535,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.uuid(["v4"])`
    */
-  uu: customColumns.user?.uu?.input || rule.uuid(['v4']),
+  uu: customColumns.user?.uu?.output || rule.uuid(['v4']),
   /**
    * Prisma类型：`String`
    *
@@ -542,7 +543,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.uuid(["v1"])`
    */
-  uu_1: customColumns.user?.uu_1?.input || rule.uuid(['v1']),
+  uu_1: customColumns.user?.uu_1?.output || rule.uuid(['v1']),
   /**
    * Prisma类型：`String?`
    *
@@ -550,7 +551,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.uuid(["v1"])`
    */
-  uu_1_nu: customColumns.user?.uu_1_nu?.input || rule.uuid(['v1']),
+  uu_1_nu: customColumns.user?.uu_1_nu?.output || rule.uuid(['v1']),
   /**
    * Prisma类型：`String`
    *
@@ -558,7 +559,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.uuid(["v2"])`
    */
-  uu_2: customColumns.user?.uu_2?.input || rule.uuid(['v2']),
+  uu_2: customColumns.user?.uu_2?.output || rule.uuid(['v2']),
   /**
    * Prisma类型：`String?`
    *
@@ -566,7 +567,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.uuid(["v2"])`
    */
-  uu_2_nu: customColumns.user?.uu_2_nu?.input || rule.uuid(['v2']),
+  uu_2_nu: customColumns.user?.uu_2_nu?.output || rule.uuid(['v2']),
   /**
    * Prisma类型：`String`
    *
@@ -574,7 +575,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.uuid(["v3"])`
    */
-  uu_3: customColumns.user?.uu_3?.input || rule.uuid(['v3']),
+  uu_3: customColumns.user?.uu_3?.output || rule.uuid(['v3']),
   /**
    * Prisma类型：`String?`
    *
@@ -582,7 +583,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.uuid(["v3"])`
    */
-  uu_3_nu: customColumns.user?.uu_3_nu?.input || rule.uuid(['v3']),
+  uu_3_nu: customColumns.user?.uu_3_nu?.output || rule.uuid(['v3']),
   /**
    * Prisma类型：`String`
    *
@@ -590,7 +591,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.uuid(["v4"])`
    */
-  uu_4: customColumns.user?.uu_4?.input || rule.uuid(['v4']),
+  uu_4: customColumns.user?.uu_4?.output || rule.uuid(['v4']),
   /**
    * Prisma类型：`String?`
    *
@@ -598,7 +599,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.uuid(["v4"])`
    */
-  uu_4_nu: customColumns.user?.uu_4_nu?.input || rule.uuid(['v4']),
+  uu_4_nu: customColumns.user?.uu_4_nu?.output || rule.uuid(['v4']),
   /**
    * Prisma类型：`String`
    *
@@ -606,7 +607,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.uuid(["v5"])`
    */
-  uu_5: customColumns.user?.uu_5?.input || rule.uuid(['v5']),
+  uu_5: customColumns.user?.uu_5?.output || rule.uuid(['v5']),
   /**
    * Prisma类型：`String?`
    *
@@ -614,7 +615,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.uuid(["v5"])`
    */
-  uu_5_nu: customColumns.user?.uu_5_nu?.input || rule.uuid(['v5']),
+  uu_5_nu: customColumns.user?.uu_5_nu?.output || rule.uuid(['v5']),
   /**
    * Prisma类型：`String`
    *
@@ -622,7 +623,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.string()`
    */
-  uu_6: customColumns.user?.uu_6?.input || rule.string(),
+  uu_6: customColumns.user?.uu_6?.output || rule.string(),
   /**
    * Prisma类型：`String?`
    *
@@ -630,7 +631,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.string()`
    */
-  uu_6_nu: customColumns.user?.uu_6_nu?.input || rule.string(),
+  uu_6_nu: customColumns.user?.uu_6_nu?.output || rule.string(),
   /**
    * Prisma类型：`String`
    *
@@ -641,7 +642,7 @@ const userOutputColumns = {
    * I am the comments
    */
   comme_ok:
-    customColumns.user?.comme_ok?.input ||
+    customColumns.user?.comme_ok?.output ||
     rule.string().docs({ description: 'I am the comments' }),
   /**
    * Prisma类型：`String`
@@ -650,7 +651,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.string()`
    */
-  comme_fail: customColumns.user?.comme_fail?.input || rule.string(),
+  comme_fail: customColumns.user?.comme_fail?.output || rule.string(),
   /**
    * Prisma类型：`Language`
    *
@@ -658,7 +659,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.enum(LanguageEnum)`
    */
-  lang: customColumns.user?.lang?.input || rule.enum(LanguageEnum),
+  lang: customColumns.user?.lang?.output || rule.enum(LanguageEnum),
   /**
    * Prisma类型：`Language?`
    *
@@ -666,7 +667,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.enum(LanguageEnum).nullable()`
    */
-  lang_nu: customColumns.user?.lang_nu?.input || rule.enum(LanguageEnum).nullable(),
+  lang_nu: customColumns.user?.lang_nu?.output || rule.enum(LanguageEnum).nullable(),
   /**
    * Prisma类型：`Language`
    *
@@ -674,7 +675,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.enum(LanguageEnum)`
    */
-  lang_de: customColumns.user?.lang_de?.input || rule.enum(LanguageEnum),
+  lang_de: customColumns.user?.lang_de?.output || rule.enum(LanguageEnum),
   /**
    * Prisma类型：`DateTime`
    *
@@ -682,7 +683,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.date()`
    */
-  time: customColumns.user?.time?.input || rule.date(),
+  time: customColumns.user?.time?.output || rule.date(),
   /**
    * Prisma类型：`DateTime?`
    *
@@ -690,7 +691,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.date().nullable()`
    */
-  time_nu: customColumns.user?.time_nu?.input || rule.date().nullable(),
+  time_nu: customColumns.user?.time_nu?.output || rule.date().nullable(),
   /**
    * Prisma类型：`DateTime`
    *
@@ -698,7 +699,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.date()`
    */
-  time_de: customColumns.user?.time_de?.input || rule.date(),
+  time_de: customColumns.user?.time_de?.output || rule.date(),
   /**
    * Prisma类型：`Boolean`
    *
@@ -706,7 +707,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.boolean()`
    */
-  boo: customColumns.user?.boo?.input || rule.boolean(),
+  boo: customColumns.user?.boo?.output || rule.boolean(),
   /**
    * Prisma类型：`Boolean?`
    *
@@ -714,7 +715,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.boolean().nullable()`
    */
-  boo_nu: customColumns.user?.boo_nu?.input || rule.boolean().nullable(),
+  boo_nu: customColumns.user?.boo_nu?.output || rule.boolean().nullable(),
   /**
    * Prisma类型：`Boolean`
    *
@@ -722,7 +723,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.boolean()`
    */
-  boo_de: customColumns.user?.boo_de?.input || rule.boolean(),
+  boo_de: customColumns.user?.boo_de?.output || rule.boolean(),
   /**
    * Prisma类型：`BigInt`
    *
@@ -730,7 +731,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.bigint()`
    */
-  big: customColumns.user?.big?.input || rule.bigint(),
+  big: customColumns.user?.big?.output || rule.bigint(),
   /**
    * Prisma类型：`BigInt?`
    *
@@ -738,7 +739,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.bigint().nullable()`
    */
-  big_nu: customColumns.user?.big_nu?.input || rule.bigint().nullable(),
+  big_nu: customColumns.user?.big_nu?.output || rule.bigint().nullable(),
   /**
    * Prisma类型：`BigInt`
    *
@@ -746,7 +747,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.bigint()`
    */
-  big_de: customColumns.user?.big_de?.input || rule.bigint(),
+  big_de: customColumns.user?.big_de?.output || rule.bigint(),
   /**
    * Prisma类型：`Bytes`
    *
@@ -754,7 +755,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.buffer()`
    */
-  byt: customColumns.user?.byt?.input || rule.buffer(),
+  byt: customColumns.user?.byt?.output || rule.buffer(),
   /**
    * Prisma类型：`Bytes?`
    *
@@ -762,7 +763,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.buffer().nullable()`
    */
-  byt_nu: customColumns.user?.byt_nu?.input || rule.buffer().nullable(),
+  byt_nu: customColumns.user?.byt_nu?.output || rule.buffer().nullable(),
   /**
    * Prisma类型：`Bytes`
    *
@@ -770,7 +771,7 @@ const userOutputColumns = {
    *
    * 运行时规则：`rule.buffer()`
    */
-  byt_de: customColumns.user?.byt_de?.input || rule.buffer(),
+  byt_de: customColumns.user?.byt_de?.output || rule.buffer(),
 };
 const profileInputColumns = {
   /**
@@ -798,7 +799,7 @@ const profileOutputColumns = {
    *
    * 运行时规则：`rule.int()`
    */
-  id: customColumns.profile?.id?.input || rule.int(),
+  id: customColumns.profile?.id?.output || rule.int(),
   /**
    * Prisma类型：`Int`
    *
@@ -806,7 +807,7 @@ const profileOutputColumns = {
    *
    * 运行时规则：`rule.int()`
    */
-  user_id: customColumns.profile?.user_id?.input || rule.int(),
+  user_id: customColumns.profile?.user_id?.output || rule.int(),
 };
 const postInputColumns = {
   /**
@@ -842,7 +843,7 @@ const postOutputColumns = {
    *
    * 运行时规则：`rule.int()`
    */
-  id: customColumns.post?.id?.input || rule.int(),
+  id: customColumns.post?.id?.output || rule.int(),
   /**
    * Prisma类型：`Int`
    *
@@ -850,7 +851,7 @@ const postOutputColumns = {
    *
    * 运行时规则：`rule.int()`
    */
-  user_id: customColumns.post?.user_id?.input || rule.int(),
+  user_id: customColumns.post?.user_id?.output || rule.int(),
   /**
    * Prisma类型：`String`
    *
@@ -858,7 +859,7 @@ const postOutputColumns = {
    *
    * 运行时规则：`rule.string()`
    */
-  name: customColumns.post?.name?.input || rule.string(),
+  name: customColumns.post?.name?.output || rule.string(),
 };
 const aliasTableNameInputColumns = {
   /**
@@ -878,7 +879,7 @@ const aliasTableNameOutputColumns = {
    *
    * 运行时规则：`rule.int()`
    */
-  id: customColumns.aliasTableName?.id?.input || rule.int(),
+  id: customColumns.aliasTableName?.id?.output || rule.int(),
 };
 
 export const prismaInput = {

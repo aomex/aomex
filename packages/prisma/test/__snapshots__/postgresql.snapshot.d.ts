@@ -1,3 +1,11 @@
+export declare const LanguageEnum: readonly [
+  'Typescript',
+  'Javascript',
+  'Rust',
+  'Go',
+  'Python',
+  'Cpp',
+];
 declare const userInputColumns: {
   /**
    * Prisma类型：`Int`

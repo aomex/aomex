@@ -1,3 +1,156 @@
+export declare const LanguageEnum: readonly [
+  'Typescript',
+  'Javascript',
+  'Rust',
+  'Go',
+  'Python',
+  'Cpp',
+];
+
+export declare const YourTypeOutputType: {
+  /**
+   * Prisma类型：`String?`
+   *
+   * 数据库默认值：
+   *
+   * 运行时规则：`rule.string().nullable()`
+   */
+  abc: StringValidator<string | null>;
+  /**
+   * Prisma类型：`Language`
+   *
+   * 数据库默认值：
+   *
+   * 运行时规则：`rule.enum(LanguageEnum)`
+   */
+  cde: EnumValidator<'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp'>;
+};
+
+export declare const YourTypeInputType: {
+  /**
+   * Prisma类型：`String?`
+   *
+   * 数据库默认值：
+   *
+   * 运行时规则：`rule.string().optional()`
+   */
+  abc: StringValidator<string | Validator.TOptional>;
+  /**
+   * Prisma类型：`Language`
+   *
+   * 数据库默认值：
+   *
+   * 运行时规则：`rule.enum(LanguageEnum)`
+   */
+  cde: EnumValidator<'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp'>;
+};
+
+export declare const MyTypeOutputType: {
+  /**
+   * Prisma类型：`Int`
+   *
+   * 数据库默认值：
+   *
+   * 运行时规则：`rule.int()`
+   */
+  id: IntValidator<number>;
+  /**
+   * Prisma类型：`String`
+   *
+   * 数据库默认值：
+   *
+   * 运行时规则：`rule.string()`
+   */
+  name: StringValidator<string>;
+  /**
+   * Prisma类型：`YourType`
+   *
+   * 数据库默认值：
+   *
+   * 运行时规则：`rule.object(YourTypeOutputType)`
+   */
+  other: ObjectValidator<{
+    abc: string | null;
+    cde: 'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp';
+  }>;
+};
+
+export declare const MyTypeInputType: {
+  /**
+   * Prisma类型：`Int`
+   *
+   * 数据库默认值：
+   *
+   * 运行时规则：`rule.int()`
+   */
+  id: IntValidator<number>;
+  /**
+   * Prisma类型：`String`
+   *
+   * 数据库默认值：
+   *
+   * 运行时规则：`rule.string()`
+   */
+  name: StringValidator<string>;
+  /**
+   * Prisma类型：`YourType`
+   *
+   * 数据库默认值：
+   *
+   * 运行时规则：`rule.object(YourTypeInputType)`
+   */
+  other: ObjectValidator<
+    {
+      cde: 'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp';
+    } & {
+      abc?: string | undefined;
+    }
+  >;
+};
+
+export declare const IAmAloseNotUsedOutputType: {
+  /**
+   * Prisma类型：`String`
+   *
+   * 数据库默认值：
+   *
+   * 运行时规则：`rule.string()`
+   */
+  id: StringValidator<string>;
+};
+
+export declare const IAmAloseNotUsedInputType: {
+  /**
+   * Prisma类型：`String`
+   *
+   * 数据库默认值：
+   *
+   * 运行时规则：`rule.string()`
+   */
+  id: StringValidator<string>;
+};
+
+export declare const IAmNotUsedOutputType: {
+  /**
+   * Prisma类型：`String`
+   *
+   * 数据库默认值：
+   *
+   * 运行时规则：`rule.string()`
+   */
+  id: StringValidator<string>;
+};
+
+export declare const IAmNotUsedInputType: {
+  /**
+   * Prisma类型：`String`
+   *
+   * 数据库默认值：
+   *
+   * 运行时规则：`rule.string()`
+   */
+  id: StringValidator<string>;
+};
 declare const userInputColumns: {
   /**
    * Prisma类型：`String`
@@ -323,7 +476,7 @@ declare const userInputColumns: {
    *
    * 数据库默认值：
    *
-   * 运行时规则：`rule.object(MyTypeType)`
+   * 运行时规则：`rule.object(MyTypeInputType)`
    */
   custom: ObjectValidator<{
     id: number;
@@ -339,7 +492,7 @@ declare const userInputColumns: {
    *
    * 数据库默认值：
    *
-   * 运行时规则：`rule.object(MyTypeType).optional()`
+   * 运行时规则：`rule.object(MyTypeInputType).optional()`
    */
   custom_nu: ObjectValidator<
     | Validator.TOptional
@@ -358,7 +511,7 @@ declare const userInputColumns: {
    *
    * 数据库默认值：
    *
-   * 运行时规则：`rule.array(MyTypeType)`
+   * 运行时规则：`rule.array(MyTypeInputType)`
    */
   custom_arr: ArrayValidator<
     {
@@ -693,15 +846,14 @@ declare const userOutputColumns: {
    *
    * 数据库默认值：
    *
-   * 运行时规则：`rule.object(MyTypeType)`
+   * 运行时规则：`rule.object(MyTypeOutputType)`
    */
   custom: ObjectValidator<{
     id: number;
     name: string;
     other: {
+      abc: string | null;
       cde: 'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp';
-    } & {
-      abc?: string | undefined;
     };
   }>;
   /**
@@ -709,15 +861,14 @@ declare const userOutputColumns: {
    *
    * 数据库默认值：
    *
-   * 运行时规则：`rule.object(MyTypeType).nullable()`
+   * 运行时规则：`rule.object(MyTypeOutputType).nullable()`
    */
   custom_nu: ObjectValidator<{
     id: number;
     name: string;
     other: {
+      abc: string | null;
       cde: 'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp';
-    } & {
-      abc?: string | undefined;
     };
   } | null>;
   /**
@@ -725,16 +876,15 @@ declare const userOutputColumns: {
    *
    * 数据库默认值：
    *
-   * 运行时规则：`rule.array(MyTypeType)`
+   * 运行时规则：`rule.array(MyTypeOutputType)`
    */
   custom_arr: ArrayValidator<
     {
       id: number;
       name: string;
       other: {
+        abc: string | null;
         cde: 'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp';
-      } & {
-        abc?: string | undefined;
       };
     }[]
   >;
@@ -1188,7 +1338,7 @@ export declare const prismaInput: {
        *
        * 数据库默认值：
        *
-       * 运行时规则：`rule.object(MyTypeType)`
+       * 运行时规则：`rule.object(MyTypeInputType)`
        */
       custom: ObjectValidator<{
         id: number;
@@ -1204,7 +1354,7 @@ export declare const prismaInput: {
        *
        * 数据库默认值：
        *
-       * 运行时规则：`rule.object(MyTypeType).optional()`
+       * 运行时规则：`rule.object(MyTypeInputType).optional()`
        */
       custom_nu: ObjectValidator<
         | Validator.TOptional
@@ -1223,7 +1373,7 @@ export declare const prismaInput: {
        *
        * 数据库默认值：
        *
-       * 运行时规则：`rule.array(MyTypeType)`
+       * 运行时规则：`rule.array(MyTypeInputType)`
        */
       custom_arr: ArrayValidator<
         {
@@ -1755,15 +1905,14 @@ export declare const prismaOutput: {
        *
        * 数据库默认值：
        *
-       * 运行时规则：`rule.object(MyTypeType)`
+       * 运行时规则：`rule.object(MyTypeOutputType)`
        */
       custom: ObjectValidator<{
         id: number;
         name: string;
         other: {
+          abc: string | null;
           cde: 'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp';
-        } & {
-          abc?: string | undefined;
         };
       }>;
       /**
@@ -1771,15 +1920,14 @@ export declare const prismaOutput: {
        *
        * 数据库默认值：
        *
-       * 运行时规则：`rule.object(MyTypeType).nullable()`
+       * 运行时规则：`rule.object(MyTypeOutputType).nullable()`
        */
       custom_nu: ObjectValidator<{
         id: number;
         name: string;
         other: {
+          abc: string | null;
           cde: 'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp';
-        } & {
-          abc?: string | undefined;
         };
       } | null>;
       /**
@@ -1787,16 +1935,15 @@ export declare const prismaOutput: {
        *
        * 数据库默认值：
        *
-       * 运行时规则：`rule.array(MyTypeType)`
+       * 运行时规则：`rule.array(MyTypeOutputType)`
        */
       custom_arr: ArrayValidator<
         {
           id: number;
           name: string;
           other: {
+            abc: string | null;
             cde: 'Typescript' | 'Javascript' | 'Rust' | 'Go' | 'Python' | 'Cpp';
-          } & {
-            abc?: string | undefined;
           };
         }[]
       >;
