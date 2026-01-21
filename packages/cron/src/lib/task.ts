@@ -17,7 +17,7 @@ export class Task {
   readonly concurrentKey: string;
   protected readonly filePath: string;
   protected readonly execArgv: string[];
-  protected readonly expireDuration: number;
+  protected readonly concurrentExpireDuration: number;
 
   constructor(
     readonly cron: Cron,
@@ -26,7 +26,7 @@ export class Task {
   ) {
     this.concurrentKey = `aomex-cron|v:${cron.argv}|t:${cron.time}|s:1|c:${cron.concurrent}`;
     // 并发过期时间，必须保证在下一次执行前失效，否则在非正常退出后并发数值一直无法被释放
-    this.expireDuration = Math.min(
+    this.concurrentExpireDuration = Math.min(
       300_000,
       Math.max(10_000, Math.round((nextTimestamp - currentTimestamp) * 0.6)),
     );
@@ -107,18 +107,20 @@ export class Task {
     });
   }
 
+  getWaitingTimeout() {
+    return this.cron.getWaitingTimeout(this.nextTimestamp - this.currentTimestamp);
+  }
+
   async win(): Promise<boolean> {
     const { cache, concurrent: maxConcurrent } = this.cron;
-    const waitingTimeout = this.cron.getWaitingTimeout(
-      this.nextTimestamp - this.currentTimestamp,
-    );
+    const waitingTimeout = this.getWaitingTimeout();
     const startTime = Date.now();
 
     // 如果有任务在执行，则会触发setInterval不断更新过期时间，此处属于无用功。
     // 如果没有任务，则当前可能是第一次，则设置不成功。
     // 如果是非正常的退出，则过期时间是不确定的，需要提前设置以防止获得执行权后立马失效了，
     // 但是设置的过期时间不能超过下一次执行的时间，否则就会导致退出之前的并发数值一直无法释放。
-    await cache.expire(this.concurrentKey, this.expireDuration);
+    await cache.expire(this.concurrentKey, this.concurrentExpireDuration);
 
     while (true) {
       if (this.cron.stopping) return false;
@@ -127,7 +129,7 @@ export class Task {
       await cache.decrement(this.concurrentKey);
       if (waitingTimeout <= 0) return false;
       if (startTime + waitingTimeout <= Date.now()) return false;
-      await sleep(1_000);
+      await sleep(500);
       continue;
     }
   }
@@ -138,13 +140,20 @@ export class Task {
   ping() {
     const cache = this.cron.cache;
     const timer = setInterval(() => {
-      cache.expire(this.concurrentKey, this.expireDuration);
-    }, this.expireDuration / 4);
+      cache.expire(this.concurrentKey, this.concurrentExpireDuration);
+    }, this.concurrentExpireDuration / 4);
 
     // 任务可能在timer执行之前就结束了，有可能会导致key永不过期
-    cache.expire(this.concurrentKey, this.expireDuration);
+    cache.expire(this.concurrentKey, this.concurrentExpireDuration);
+
+    // 任务如果太快完成，会导致同一批拥有waitingTimeout的竞争者在排队期间获得执行权，导致任务重复执行。
+    // 因此必须在排队期间结束后，才能结束任务。
+    const mustAfterWaitingTimeout = new Promise((resolve) => {
+      sleep(this.getWaitingTimeout() + 1_000).then(resolve);
+    });
 
     return async () => {
+      await mustAfterWaitingTimeout;
       clearInterval(timer);
       const count = await cache.decrement(this.concurrentKey);
       if (count < 0) {

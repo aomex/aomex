@@ -61,7 +61,7 @@ export class Cron {
   public getWaitingTimeout(timeDelta: number = Infinity): number {
     return Math.max(
       0,
-      Math.min(this.options.waitingTimeout || 10_000, Math.abs(timeDelta)),
+      Math.min(this.options.waitingTimeout ?? 10_000, Math.abs(timeDelta)),
     );
   }
 

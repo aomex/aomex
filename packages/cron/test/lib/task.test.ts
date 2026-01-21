@@ -28,19 +28,44 @@ test('任务结束后可补充排队中的任务', { timeout: 20_000 }, async ()
     commanders: '',
     command: '',
     concurrent: 2,
-    waitingTimeout: 5_000,
+    waitingTimeout: 3_000,
   });
 
-  const task1 = new Task(cron, 10000, 20000);
-  const task2 = new Task(cron, 20000, 30000);
-  const task3 = new Task(cron, 30000, 40000);
-  const task4 = new Task(cron, 40000, 50000);
+  const task1 = new Task(cron, 10_000, 20_000);
+  const task2 = new Task(cron, 10_000, 20_000);
+  const task3 = new Task(cron, 10_000, 20_000);
+  const task4 = new Task(cron, 10_000, 20_000);
   await expect(task1.win()).resolves.toBeTruthy();
   await expect(task2.win()).resolves.toBeTruthy();
+  const pong = task1.ping();
+  await sleep(3_000);
   const result = task3.win();
-  await task1.ping()();
+  pong();
   await expect(result).resolves.toBeTruthy();
   await expect(task4.win()).resolves.toBeFalsy();
+  await expect(task1.win()).resolves.toBeFalsy();
+});
+
+test('任务结束后，如果还在排队期间，则仍占用名额', { timeout: 20_000 }, async () => {
+  const cron = new Cron({
+    commanders: '',
+    command: '',
+    concurrent: 2,
+    waitingTimeout: 3_000,
+  });
+
+  const task1 = new Task(cron, 10_000, 20_000);
+  const task2 = new Task(cron, 10_000, 20_000);
+  const task3 = new Task(cron, 10_000, 20_000);
+  const task4 = new Task(cron, 10_000, 20_000);
+  await expect(task1.win()).resolves.toBeTruthy();
+  await expect(task2.win()).resolves.toBeTruthy();
+  const pong = task1.ping();
+  const result = task3.win();
+  pong();
+  await expect(result).resolves.toBeFalsy();
+  await sleep(2_000);
+  await expect(task4.win()).resolves.toBeTruthy();
   await expect(task1.win()).resolves.toBeFalsy();
 });
 
