@@ -1,6 +1,6 @@
 {
   "name": "@aomex/auth",
-  "version": "3.30.3",
+  "version": "3.30.4",
   "description": "身份认证统一入口",
   "scripts": {
     "prepublishOnly": "tsup"

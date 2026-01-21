@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.30.4](https://github.com/aomex/aomex/compare/v3.30.3...v3.30.4) (2026-01-21)
+
+
+### Bug Fixes
+
+* **cron:** 任务早于waitingTimeout结束，会导致排队任务获得执行权 ([8e26cfb](https://github.com/aomex/aomex/commit/8e26cfb9eb8db49db14cc29ca54fd97b0c589c1c))
+
+
+
+
+
 ## [3.30.3](https://github.com/aomex/aomex/compare/v3.30.2...v3.30.3) (2025-12-01)
 
 **Note:** Version bump only for package @aomex/cron
