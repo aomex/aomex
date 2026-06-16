@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.30.5](https://github.com/aomex/aomex/compare/v3.30.4...v3.30.5) (2026-06-16)
+
+
+### Bug Fixes
+
+* **cron:** 停止任务时，可能会提前终止接收指令列表 ([9621676](https://github.com/aomex/aomex/commit/9621676346d583c850ccce53ab9944f29df16a3b))
+
+
+
+
+
 ## [3.30.4](https://github.com/aomex/aomex/compare/v3.30.3...v3.30.4) (2026-01-21)
 
 
