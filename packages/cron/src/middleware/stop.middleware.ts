@@ -22,6 +22,7 @@ export const stop = (opts: CronsOptions): ConsoleMiddleware => {
       });
 
       const logSession = terminal.createSession();
+      let initialized = false;
       let runners: {
         cpu: number;
         memory: number;
@@ -92,7 +93,7 @@ export const stop = (opts: CronsOptions): ConsoleMiddleware => {
             );
           }
 
-          if (runners.every((item) => item.status === 'success')) {
+          if (initialized && runners.every((item) => item.status === 'success')) {
             logSession.commit();
             client.destroy();
           } else {
@@ -115,7 +116,9 @@ export const stop = (opts: CronsOptions): ConsoleMiddleware => {
           terminal.printWarning(i18n.t('not_started', { port: PORT }));
           resolve(undefined);
         } else {
-          reject(err);
+          reject(
+            new Error(`[cron:stop] ${err instanceof Error ? err.message : String(err)}`),
+          );
         }
       });
       client.on('data', async (data) => {
@@ -123,6 +126,7 @@ export const stop = (opts: CronsOptions): ConsoleMiddleware => {
         for (const stringifyData of data.toString().split('\n').filter(Boolean)) {
           const jsonData = JSON.parse(stringifyData) as ServerWriteData;
           if ('runners' in jsonData) {
+            initialized = true;
             runners = jsonData.runners.map((runner) => {
               return {
                 ...runner,

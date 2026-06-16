@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/common';
+import { middleware, sleep } from '@aomex/common';
 import { collectCrontab as collectCrontab } from '../lib/collect-crontab';
 import type { CronsOptions, ServerWriteData } from '../lib/type';
 import net, { Socket } from 'node:net';
@@ -14,10 +14,11 @@ export const start = (opts: CronsOptions) => {
 
       ctx.commandMatched = true;
       const crontab = await collectCrontab(opts);
+      const DELAY = 300;
 
       if (!crontab.length) return;
 
-      const stopTasks = async (callback: (remain: number) => void) => {
+      const stopTasks = async (callback?: (remain: number) => void) => {
         crontab.forEach((cron) => cron.stop());
         let remain = crontab.length;
         await Promise.all(
@@ -27,9 +28,9 @@ export const start = (opts: CronsOptions) => {
               if (!cron.runningLevel) {
                 clearInterval(timer);
                 resolve(void 0);
-                callback(--remain);
+                callback?.(--remain);
               }
-            }, 300);
+            }, DELAY);
             return promise;
           }),
         );
@@ -80,20 +81,27 @@ export const start = (opts: CronsOptions) => {
               break;
           }
         });
+
+        socket.on('error', (err) => {
+          console.log(`[cron:start] ${err instanceof Error ? err.message : String(err)}`);
+        });
       });
-      server.listen(opts.port || DEFAULT_PORT);
+
+      const PORT = opts.port || DEFAULT_PORT;
+      server.listen(PORT);
 
       // CTRL + C
       // 子进程也会被立即杀死，但是task.start仍然在生产任务
       process.once('SIGINT', async () => {
-        stopTasks(() => {});
+        stopTasks();
       });
 
       await Promise.all(crontab.map((cron) => cron.start()));
       // 确保执行中的任务已经完成
-      await stopTasks((remain) => {
-        if (!remain) server.close();
-      });
+      await stopTasks();
+      // 等 socket.write 结束才能close
+      await sleep(DELAY + 10);
+      server.close();
     },
     help: {
       onDocument(doc) {
