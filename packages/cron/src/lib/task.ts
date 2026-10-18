@@ -8,16 +8,22 @@ import {
   ENV_CRON_SCHEDULE_TIME,
   TELL_CHILD_REJECT,
   TELL_CHILD_RESOLVE,
+  TELL_CHILD_STOP,
   TELL_PARENT_ENDED,
   TELL_PARENT_INIT,
 } from './constant';
+import { randomBytes } from 'node:crypto';
 
 export class Task {
   child: ChildProcess | null = null;
   readonly concurrentKey: string;
   protected readonly filePath: string;
   protected readonly execArgv: string[];
-  protected readonly concurrentExpireDuration: number;
+  /**
+   * 并发锁定时间。非正常退出时要等20分钟才释放，正常情况下任务执行完就会立即释放。
+   * 之所以要设置这么长，是为了防止服务器卡顿时，容易造成任务双跑问题
+   */
+  protected readonly concurrentExpireDuration: number = 1200_000;
 
   constructor(
     readonly cron: Cron,
@@ -25,11 +31,6 @@ export class Task {
     readonly nextTimestamp: number,
   ) {
     this.concurrentKey = `aomex-cron|v:${cron.argv}|t:${cron.time}|s:1|c:${cron.concurrent}`;
-    // 并发过期时间，必须保证在下一次执行前失效，否则在非正常退出后并发数值一直无法被释放
-    this.concurrentExpireDuration = Math.min(
-      300_000,
-      Math.max(10_000, Math.round((nextTimestamp - currentTimestamp) * 0.6)),
-    );
     this.filePath = process.argv[1]!;
     this.execArgv = [...process.execArgv];
     if (!this.execArgv.includes('--enable-source-maps')) {
@@ -42,8 +43,9 @@ export class Task {
   }
 
   async consume() {
-    if (!(await this.win())) return;
-    const pong = this.ping();
+    const result = await this.win();
+    if (result === 'lose') return;
+    const pong = this.ping(result.slot, result.token);
     try {
       await this.runChildProcess();
     } finally {
@@ -111,40 +113,69 @@ export class Task {
     return this.cron.getWaitingTimeout(this.nextTimestamp - this.currentTimestamp);
   }
 
-  async win(): Promise<boolean> {
-    const { cache, concurrent: maxConcurrent } = this.cron;
+  async win(): Promise<{ slot: string; token: string } | 'lose'> {
+    const { cache } = this.cron;
     const waitingTimeout = this.getWaitingTimeout();
     const startTime = Date.now();
-
-    // 如果有任务在执行，则会触发setInterval不断更新过期时间，此处属于无用功。
-    // 如果没有任务，则当前可能是第一次，则设置不成功。
-    // 如果是非正常的退出，则过期时间是不确定的，需要提前设置以防止获得执行权后立马失效了，
-    // 但是设置的过期时间不能超过下一次执行的时间，否则就会导致退出之前的并发数值一直无法释放。
-    await cache.expire(this.concurrentKey, this.concurrentExpireDuration);
+    const token = `${process.pid}:${Date.now()}:${randomBytes(16).toString('hex')}`;
+    const maxConcurrent = Math.min(this.cron.concurrent, 65535);
 
     while (true) {
-      if (this.cron.stopping) return false;
-      const concurrent = await cache.increment(this.concurrentKey);
-      if (concurrent <= maxConcurrent) return true;
-      await cache.decrement(this.concurrentKey);
-      if (waitingTimeout <= 0) return false;
-      if (startTime + waitingTimeout <= Date.now()) return false;
+      for (let i = 0; i < maxConcurrent; ++i) {
+        if (this.cron.stopping) return 'lose';
+        const slot = `${this.concurrentKey}|slot:${i}`;
+        const win = await cache.setNX(slot, token, this.concurrentExpireDuration);
+        if (win) return { slot, token };
+        await sleep(5);
+      }
+
+      if (waitingTimeout <= 0) return 'lose';
+      if (startTime + waitingTimeout <= Date.now()) return 'lose';
       await sleep(500);
       continue;
     }
   }
 
-  /**
-   * 设置过期时间，防止进程崩溃或者被强制关闭导致无法重叠执行
-   */
-  ping() {
+  ping(slot: string, token: string) {
     const cache = this.cron.cache;
-    const timer = setInterval(() => {
-      cache.expire(this.concurrentKey, this.concurrentExpireDuration);
-    }, this.concurrentExpireDuration / 4);
+    let isStopped = false;
 
-    // 任务可能在timer执行之前就结束了，有可能会导致key永不过期
-    cache.expire(this.concurrentKey, this.concurrentExpireDuration);
+    const refresh = async () => {
+      let shouldContinue = true;
+      if (isStopped) return;
+
+      try {
+        const remoteToken = await cache.get<string>(slot);
+        if (remoteToken === token) {
+          await cache.expire(slot, this.concurrentExpireDuration);
+          return;
+        }
+
+        if (isStopped) return;
+
+        // 任务被释放了，但是下一次任务还没获得执行权，需要重新竞争，尽量不要中断任务
+        if (remoteToken === null) {
+          const win = await cache.setNX(slot, token, this.concurrentExpireDuration);
+          if (win) return;
+        }
+
+        // 任务被抢了，开始清理当前进程，防止双跑
+        try {
+          this.child?.send(TELL_CHILD_STOP);
+        } catch {
+          // Error: Channel closed / ERR_IPC_CHANNEL_CLOSED
+        }
+        await sleep(5_000);
+        this.child?.kill();
+        shouldContinue = false;
+      } finally {
+        if (shouldContinue && !isStopped) {
+          timer = setTimeout(refresh, 10_000);
+        }
+      }
+    };
+
+    let timer = setTimeout(refresh, 10_000);
 
     // 任务如果太快完成，会导致同一批拥有waitingTimeout的竞争者在排队期间获得执行权，导致任务重复执行。
     // 因此必须在排队期间结束后，才能结束任务。
@@ -153,11 +184,14 @@ export class Task {
     });
 
     return async () => {
+      isStopped = true;
+      clearTimeout(timer);
       await mustAfterWaitingTimeout;
-      clearInterval(timer);
-      const count = await cache.decrement(this.concurrentKey);
-      if (count < 0) {
-        await cache.delete(this.concurrentKey);
+
+      const remoteToken = await cache.get<string>(slot);
+      // 只释放属于自己的slot
+      if (remoteToken === token) {
+        await cache.delete(slot);
       }
     };
   }
