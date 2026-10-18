@@ -20,6 +20,7 @@ export const collectCrontab = async (opts: CronsOptions) => {
               ...opts,
               ...middleware['options'],
               command: builder.commands[0]!,
+              crontab: crontab,
             }),
           );
         }

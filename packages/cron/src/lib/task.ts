@@ -114,11 +114,18 @@ export class Task {
   }
 
   async win(): Promise<{ slot: string; token: string } | 'lose'> {
-    const { cache } = this.cron;
+    const { cache, globalRunningLevel, globalWinnerLevel } = this.cron;
     const waitingTimeout = this.getWaitingTimeout();
     const startTime = Date.now();
     const token = `${process.pid}:${Date.now()}:${randomBytes(16).toString('hex')}`;
     const maxConcurrent = Math.min(this.cron.concurrent, 65535);
+    const waitingLevel = Math.max(0, globalRunningLevel - globalWinnerLevel);
+
+    // 服务器正在执行的任务越多，竞争资格就越小，优先让任务更少的服务器先获得执行权。
+    // 轮到时排队次数(while循环次数)会减少，是合理的。
+    await sleep(globalWinnerLevel * 50);
+    // 正在竞争的任务，要有一定的间隔，防止同一时间大批量并发访问存储服务
+    await sleep(waitingLevel * 5);
 
     while (true) {
       for (let i = 0; i < maxConcurrent; ++i) {
@@ -138,9 +145,11 @@ export class Task {
 
   ping(slot: string, token: string) {
     const cache = this.cron.cache;
+    // 检查时间越短，越能及时发现任务被抢了，防止双跑。
+    const CHECK_INTERVAL = 15_000;
     let isStopped = false;
 
-    const refresh = async () => {
+    const checkTask = async () => {
       let shouldContinue = true;
       if (isStopped) return;
 
@@ -170,12 +179,12 @@ export class Task {
         shouldContinue = false;
       } finally {
         if (shouldContinue && !isStopped) {
-          timer = setTimeout(refresh, 10_000);
+          timer = setTimeout(checkTask, CHECK_INTERVAL);
         }
       }
     };
 
-    let timer = setTimeout(refresh, 10_000);
+    let timer = setTimeout(checkTask, CHECK_INTERVAL);
 
     // 任务如果太快完成，会导致同一批拥有waitingTimeout的竞争者在排队期间获得执行权，导致任务重复执行。
     // 因此必须在排队期间结束后，才能结束任务。

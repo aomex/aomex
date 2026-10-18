@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest';
 import { Task } from '../../src/lib/task';
 import { Cron } from '../../src/lib/cron';
+import type { CronOptions, CronsOptions } from '../../src/lib/type';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import { writeFileSync } from 'fs';
@@ -8,6 +9,13 @@ import { sleep } from '@aomex/internal-tools';
 import { TELL_CHILD_STOP } from '../../src/lib/constant';
 
 type WinResult = Awaited<ReturnType<Task['win']>>;
+
+function createCron(
+  options: CronOptions & CronsOptions & { command: string; crontab?: Cron[] },
+) {
+  const { crontab = [], ...rest } = options;
+  return new Cron({ ...rest, crontab });
+}
 
 function expectWon(result: WinResult): Extract<WinResult, { slot: string }> {
   expect(result).not.toBe('lose');
@@ -21,7 +29,7 @@ function expectWon(result: WinResult): Extract<WinResult, { slot: string }> {
 }
 
 test('并发达上限', { timeout: 10_000 }, async () => {
-  const cron = new Cron({
+  const cron = createCron({
     commanders: '',
     command: '',
     concurrent: 4,
@@ -38,7 +46,7 @@ test('并发达上限', { timeout: 10_000 }, async () => {
 });
 
 test('任务结束后可补充排队中的任务', { timeout: 20_000 }, async () => {
-  const cron = new Cron({
+  const cron = createCron({
     commanders: '',
     command: '',
     concurrent: 2,
@@ -61,7 +69,7 @@ test('任务结束后可补充排队中的任务', { timeout: 20_000 }, async ()
 });
 
 test('任务结束后，如果还在排队期间，则仍占用名额', { timeout: 20_000 }, async () => {
-  const cron = new Cron({
+  const cron = createCron({
     commanders: '',
     command: '',
     concurrent: 2,
@@ -84,7 +92,7 @@ test('任务结束后，如果还在排队期间，则仍占用名额', { timeou
 });
 
 test('排队中的任务超时后被放弃', { timeout: 10_000 }, async () => {
-  const cron = new Cron({
+  const cron = createCron({
     commanders: '',
     command: '',
     concurrent: 1,
@@ -102,8 +110,34 @@ test('排队中的任务超时后被放弃', { timeout: 10_000 }, async () => {
   await expect(result).resolves.toBe('lose');
 });
 
+test('优先级延迟会错过排队时间', { timeout: 10_000 }, async () => {
+  const crontab: Cron[] = [];
+  const cron = createCron({
+    commanders: '',
+    command: '',
+    concurrent: 1,
+    waitingTimeout: 800,
+    crontab,
+  });
+  crontab.push(cron);
+
+  const holder = new Task(cron, 10_000, 20_000);
+  const waiter = new Task(cron, 10_000, 20_000);
+  const won = expectWon(await holder.win());
+
+  // 20 个已获胜任务 → 1000ms 优先级延迟，长于 800ms 等待预算。
+  // 延迟结束后名额已空出，但排队时间已经错过。
+  for (let i = 0; i < 20; ++i) {
+    cron['_tasks'].add({ pid: String(i + 1) } as Task);
+  }
+  const result = waiter.win();
+  await sleep(1_200);
+  await cron.cache.delete(won.slot);
+  await expect(result).resolves.toBe('lose');
+});
+
 test('排队中的任务在遇到cron:stop后需放弃排队', { timeout: 10_000 }, async () => {
-  const cron = new Cron({
+  const cron = createCron({
     commanders: '',
     command: '',
     concurrent: 1,
@@ -121,7 +155,7 @@ test('排队中的任务在遇到cron:stop后需放弃排队', { timeout: 10_000
 });
 
 test('无限并发', { timeout: 15_000 }, async () => {
-  const cron = new Cron({
+  const cron = createCron({
     commanders: '',
     command: '',
     concurrent: Infinity,
@@ -136,7 +170,7 @@ test('无限并发', { timeout: 15_000 }, async () => {
 });
 
 test('只释放属于自己的slot', { timeout: 10_000 }, async () => {
-  const cron = new Cron({
+  const cron = createCron({
     commanders: '',
     command: '',
     concurrent: 1,
@@ -157,7 +191,7 @@ test('只释放属于自己的slot', { timeout: 10_000 }, async () => {
   expect(await cron.cache.get(won1.slot)).toBe('other-token');
 });
 
-test('slot被抢后先通知子进程停止', { timeout: 20_000 }, async () => {
+test('slot被抢后先通知子进程停止', { timeout: 30_000 }, async () => {
   const file = join(tmpdir(), 'bin_' + Date.now() + Math.random() + '.mjs');
   writeFileSync(
     file,
@@ -168,7 +202,7 @@ test('slot被抢后先通知子进程停止', { timeout: 20_000 }, async () => {
     `,
   );
 
-  const cron = new Cron({
+  const cron = createCron({
     commanders: '',
     command: 'foo:bar',
     concurrent: 1,
@@ -197,8 +231,8 @@ test('slot被抢后先通知子进程停止', { timeout: 20_000 }, async () => {
 
   await cron.cache.set(won.slot, 'stolen-token', 900_000);
 
-  // ping 默认 10s 探测一次；此处只断言会先发 STOP，不等 20s 的延迟 kill
-  await sleep(11_000);
+  // ping 默认 15s 探测一次；此处只断言会先发 STOP，不等 5s 的延迟 kill
+  await sleep(16_000);
   expect(messages).toContain(TELL_CHILD_STOP);
   expect(task.child).not.toBeNull();
 
@@ -219,7 +253,7 @@ test('执行时记录pid', { timeout: 12_000 }, async () => {
     `,
   );
 
-  const cron = new Cron({ commanders: '', command: 'foo:bar' });
+  const cron = createCron({ commanders: '', command: 'foo:bar' });
   const task = new Task(cron, 1, 2);
   cron['_tasks'].add(task);
   // @ts-expect-error

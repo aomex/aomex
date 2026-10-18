@@ -1,10 +1,18 @@
 import { describe, expect, test, vitest } from 'vitest';
 import { Cron } from '../../src/lib/cron';
+import type { CronOptions, CronsOptions } from '../../src/lib/type';
 import sleep from 'sleep-promise';
+
+function createCron(
+  options: CronOptions & CronsOptions & { command: string; crontab?: Cron[] },
+) {
+  const { crontab = [], ...rest } = options;
+  return new Cron({ ...rest, crontab });
+}
 
 test('时间', () => {
   expect(
-    new Cron({
+    createCron({
       time: '0 *   1-4 *   2',
       command: '',
       commanders: '',
@@ -12,7 +20,7 @@ test('时间', () => {
   ).toMatchInlineSnapshot(`"0 0 * 1-4 * 2"`);
 
   expect(
-    new Cron({
+    createCron({
       time: '*/2  0 *   1-4 *   2',
       command: '',
       commanders: '',
@@ -20,7 +28,7 @@ test('时间', () => {
   ).toMatchInlineSnapshot(`"*/2 0 * 1-4 * 2"`);
 
   expect(
-    new Cron({
+    createCron({
       second: '*/10',
       minute: 5,
       hour: 3,
@@ -33,7 +41,7 @@ test('时间', () => {
   ).toMatchInlineSnapshot(`"*/10 5 3 */2 10 2-5"`);
 
   expect(
-    new Cron({
+    createCron({
       minute: 5,
       command: '',
       commanders: '',
@@ -42,7 +50,7 @@ test('时间', () => {
 
   expect(
     () =>
-      new Cron({
+      createCron({
         time: '*/2',
         command: '',
         commanders: '',
@@ -51,7 +59,7 @@ test('时间', () => {
 
   expect(
     () =>
-      new Cron({
+      createCron({
         time: '* * * * * * *',
         command: '',
         commanders: '',
@@ -61,7 +69,7 @@ test('时间', () => {
 
 test('转换为字符串', async () => {
   expect(
-    new Cron({
+    createCron({
       time: '* * * * * *',
       command: 'schedule:command',
       commanders: '/path/to',
@@ -69,7 +77,7 @@ test('转换为字符串', async () => {
   ).toMatchInlineSnapshot(`"* * * * * * aomex schedule:command"`);
 
   expect(
-    new Cron({
+    createCron({
       time: '* * */2 * *',
       command: 'schedule:command',
       commanders: '/path/to',
@@ -82,7 +90,7 @@ test('转换为字符串', async () => {
 });
 
 test('转换为对象', async () => {
-  const parser = new Cron({
+  const parser = createCron({
     time: '* * */2 * *',
     command: 'schedule:command',
     commanders: '/path/to',
@@ -108,7 +116,7 @@ test('转换为对象', async () => {
 
 describe('执行', () => {
   test('start后可以通过stop退出', async () => {
-    const cron = new Cron({ commanders: '', command: '', time: '* * * * *' });
+    const cron = createCron({ commanders: '', command: '', time: '* * * * *' });
     const spy = vitest.fn();
     const promise = cron.start().finally(spy);
     await sleep(1000);
@@ -118,14 +126,14 @@ describe('执行', () => {
   });
 
   test('没有下一个任务时自动结束', async () => {
-    const cron = new Cron({ commanders: '', command: '', time: '* * * * *' });
+    const cron = createCron({ commanders: '', command: '', time: '* * * * *' });
     vitest.spyOn(cron.cronExpression, 'hasNext').mockImplementation(() => false);
     await cron.start();
   });
 });
 
 test('队列等待时间不能超过任务时间间隔', () => {
-  const cron = new Cron({ time: '* * * * *', command: '', commanders: '' });
+  const cron = createCron({ time: '* * * * *', command: '', commanders: '' });
 
   expect(cron.getWaitingTimeout(20_000)).toBe(10_000);
   expect(cron.getWaitingTimeout(10_000)).toBe(10_000);
@@ -133,7 +141,7 @@ test('队列等待时间不能超过任务时间间隔', () => {
   expect(cron.getWaitingTimeout(-30_000)).toBe(10_000);
 
   expect(
-    new Cron({
+    createCron({
       command: '',
       commanders: '',
       waitingTimeout: 40_000,
@@ -141,8 +149,29 @@ test('队列等待时间不能超过任务时间间隔', () => {
   ).toBe(40_000);
 });
 
+test('跨cron汇总全局运行与获胜层级', () => {
+  const crontab: Cron[] = [];
+  const cron1 = createCron({ commanders: '', command: 'a', crontab });
+  const cron2 = createCron({ commanders: '', command: 'b', crontab });
+  crontab.push(cron1, cron2);
+
+  expect(cron1.globalRunningLevel).toBe(0);
+  expect(cron1.globalWinnerLevel).toBe(0);
+
+  cron1.runningLevel = 2;
+  cron2.runningLevel = 3;
+  expect(cron1.globalRunningLevel).toBe(5);
+  expect(cron2.globalRunningLevel).toBe(5);
+
+  cron1['_tasks'].add({ pid: '1' } as never);
+  cron2['_tasks'].add({ pid: '2' } as never);
+  cron2['_tasks'].add({ pid: '3' } as never);
+  expect(cron1.globalWinnerLevel).toBe(3);
+  expect(cron2.globalWinnerLevel).toBe(3);
+});
+
 test('有两个cronParser', () => {
-  const cron = new Cron({ time: '* * * * *', command: '', commanders: '' });
+  const cron = createCron({ time: '* * * * *', command: '', commanders: '' });
 
   cron.cronExpression.next();
   expect(cron.cronExpression.next().getTime()).toBe(

@@ -19,10 +19,13 @@ export class Cron {
   protected _argv?: string[];
   protected _cache?: Caching;
   protected _tasks = new Set<Task>();
+  protected readonly _globalCrontab: Cron[];
 
   constructor(
-    protected readonly options: CronOptions & CronsOptions & { command: string },
+    protected readonly options: CronOptions &
+      CronsOptions & { command: string; crontab: Cron[] },
   ) {
+    this._globalCrontab = options.crontab;
     const scheduleTime =
       'time' in options
         ? options.time
@@ -50,6 +53,22 @@ export class Cron {
 
   public get command(): string {
     return this.options.command;
+  }
+
+  public get globalWinnerLevel() {
+    let level = 0;
+    for (const cron of this._globalCrontab) {
+      level += cron.getPIDs().length;
+    }
+    return level;
+  }
+
+  public get globalRunningLevel() {
+    let level = 0;
+    for (const cron of this._globalCrontab) {
+      level += cron.runningLevel;
+    }
+    return level;
   }
 
   public get concurrent(): number {
