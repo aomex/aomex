@@ -9,6 +9,11 @@ import type { ServerWriteData } from '../../src';
 import sleep from 'sleep-promise';
 import { getPort } from '../mock/get-port';
 
+// Windows 上 pidusage 依赖 wmic，查询不存在的 PID 会很慢甚至卡住，导致断言时 stdout 仍为空。
+vitest.mock('pidusage', () => ({
+  default: vitest.fn(async () => ({})),
+}));
+
 const testDir = dirname(import.meta.dirname);
 
 let port: number;
@@ -75,13 +80,20 @@ test('接收消息', { timeout: 9_000 }, async () => {
     outputs.push(str.toString());
     return true;
   });
-  app.run('cron:stats');
-  await sleep(2000);
+  const runPromise = app.run('cron:stats');
+  const expected =
+    '12345     foo:bar -t                * * * * *     0.00%     0B         00:00';
+  const startedAt = Date.now();
+  while (
+    !terminal.stripStyle(outputs.join('')).includes(expected) &&
+    Date.now() - startedAt < 5_000
+  ) {
+    await sleep(50);
+  }
   await new Promise((resolve) => server.close(resolve));
+  await runPromise;
 
-  expect(terminal.stripStyle(outputs.join(''))).toContain(
-    '12345     foo:bar -t                * * * * *     0.00%     0B         00:00',
-  );
+  expect(terminal.stripStyle(outputs.join(''))).toContain(expected);
 
   spy.mockRestore();
 });
