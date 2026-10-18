@@ -12,11 +12,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: pnpm/setup@v3
         with:
-          cache: 'pnpm'
-          node-version: ${{ matrix.node }}
+          runtime: node@${{ matrix.node }}
+          cache: true
+          install: false
       - run: pnpm install
       - run: pnpm test
       - if: github.ref == 'refs/heads/main' && strategy.job-index == 0

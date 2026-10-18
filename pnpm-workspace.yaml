@@ -1,16 +1,17 @@
 packages:
   - packages/*
 
-ignoredBuiltDependencies:
-  - '@prisma/client'
-  - '@prisma/engines'
-  - '@scarf/scarf'
-  - '@tree-sitter-grammars/tree-sitter-yaml'
-  - core-js-pure
-  - nx
-  - prisma
-  - tree-sitter
-  - tree-sitter-json
-
-onlyBuiltDependencies:
-  - esbuild
+allowBuilds:
+  '@prisma/client': false
+  '@prisma/engines': false
+  '@scarf/scarf': false
+  '@tree-sitter-grammars/tree-sitter-yaml': false
+  core-js: false
+  core-js-pure: false
+  esbuild: true
+  mongodb-memory-server: false
+  nx: false
+  prisma: false
+  redis-memory-server: false
+  tree-sitter: false
+  tree-sitter-json: false

@@ -1,3 +1,161 @@
+---
+lockfileVersion: '9.0'
+
+importers:
+
+  .:
+    configDependencies: {}
+    packageManagerDependencies:
+      pnpm:
+        specifier: 12.14.0
+        version: 12.14.0
+
+packages:
+
+  '@pnpm/exe.android-arm64@12.14.0':
+    resolution: {integrity: sha512-+iSh7x21C3A2hqc+Z0ZmbKTcn6YNlzrXM142PsnQH/dLj0DYxFzoBvc6XAnL/yfQ5nnH2ebBiRj/zVxr61fZbQ==}
+    cpu: [arm64]
+    os: [android]
+
+  '@pnpm/exe.android-x64@12.14.0':
+    resolution: {integrity: sha512-qT+0LqEr2wBVaxcG2T8cX/R8SSRz2Rvpp8nRR4fh8tnGUZRch87gFmsHUAoSQh7w6j1h0qTjrA384j4xi8frvw==}
+    cpu: [x64]
+    os: [android]
+
+  '@pnpm/exe.darwin-arm64@12.14.0':
+    resolution: {integrity: sha512-tnrdUB8ecJoehuKKqi1YHCBVl61xtJ9XVGcx5EviC6fWO4DeGI8GtXrjvJxDBM3nuVjJeWistgsUp/N142x4sw==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@pnpm/exe.darwin-x64@12.14.0':
+    resolution: {integrity: sha512-vlBfGkruqQRsEHTW43cPwpYd7QlbIJ//cvpAdb3bVXkI8SgTPoXhCnc05m+ZNiPrrEkBsX/t7KHw9aXpkzPm3Q==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@pnpm/exe.freebsd-x64@12.14.0':
+    resolution: {integrity: sha512-Qg5rxBrGYl6Tfso+EyygPf84fY1Fzy55E/0or+iuYKtnf0vc0MlHJfVIlT7pBukMRntQHRik7hUi0Z4s7AlJsw==}
+    cpu: [x64]
+    os: [freebsd]
+
+  '@pnpm/exe.linux-arm64-musl@12.14.0':
+    resolution: {integrity: sha512-DRIe4yQkXBGA/PhVJdzlbnllxBdAtnMMvTVLLcGpsK5FvJz9kxD2Hyxtn68ovmNkVX06f6p45cQwfm3wx2jn1A==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  '@pnpm/exe.linux-arm64@12.14.0':
+    resolution: {integrity: sha512-7joGShZ44Nk3WpNU+60JoOPjCXlgxhJAq11S2UiVtwCUDgTer1yTPPfxGW8pxaD6046actYLIYDbZNlubHWs0A==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@pnpm/exe.linux-ppc64@12.14.0':
+    resolution: {integrity: sha512-gSoryn7ySdXd//gjgf3MvvA8ZerJayaSbuMZMtAWq4vb2/wlVEgpl0Kvqt54y58TRj533Qjq2txKgnxd4JyoAQ==}
+    cpu: [ppc64]
+    os: [linux]
+    libc: [glibc]
+
+  '@pnpm/exe.linux-riscv64@12.14.0':
+    resolution: {integrity: sha512-EMjew1H9WqQ7pL+tYqCPwiuB+0PeCiJRV7fyWeuFw0wwYUajFBjcaPO3IGAVu9sdmJDU+e+HYv/Zey6aKae0Vw==}
+    cpu: [riscv64]
+    os: [linux]
+    libc: [glibc]
+
+  '@pnpm/exe.linux-s390x@12.14.0':
+    resolution: {integrity: sha512-shYOj/SFoXD35fHe0pWr2JofwSXulC0BnEIXLj2QokDi0EF//AfKsui35yKIkTEl+s2VJybc3PO4iJNhKIj5Qw==}
+    cpu: [s390x]
+    os: [linux]
+    libc: [glibc]
+
+  '@pnpm/exe.linux-x64-musl@12.14.0':
+    resolution: {integrity: sha512-btZiZ2Ot0llKK1ndSfA5i3IRX7/S0VrmzseNH/BJ4c+Cady+S81H6vvU1zByggHMyqQhC8OgxO5PiIY7D9bH0Q==}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@pnpm/exe.linux-x64@12.14.0':
+    resolution: {integrity: sha512-F6K8e/jWxiuEYJaQtRRUG9ynBSTEHa+t7Lf86MKuOO5UA7WVVMbi+oB8nY6iKW++ncWS2yG6T9faXZGxqNsfoQ==}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@pnpm/exe.win32-arm64@12.14.0':
+    resolution: {integrity: sha512-DOjlkVB6TtTKeAAe0hNZXn5S7YqESmo1Z6SGbR4BZNQ4isRg31XVHjX2RFTbY8gnZq68IwzyLmPqlEjMmYxofg==}
+    cpu: [arm64]
+    os: [win32]
+
+  '@pnpm/exe.win32-x64@12.14.0':
+    resolution: {integrity: sha512-/LSX6mew/sLf08XqcjemuklNKf1K/Ftpgj4//hK/HKzI2dKbmxDB27a/2OaQ5a0O3/3OFzlssXDziZsi+yVBwQ==}
+    cpu: [x64]
+    os: [win32]
+
+  pnpm@12.14.0:
+    resolution: {integrity: sha512-wYum2HmT09Fky16JSPMrLAbuhUSH4GzY2GeBNC+z5btGNDZwNHEehoArqpw3vqkGzhkprQjXCITJfYAd8TOJpg==}
+    engines: {node: '>=18.*'}
+    hasBin: true
+
+snapshots:
+
+  '@pnpm/exe.android-arm64@12.14.0':
+    optional: true
+
+  '@pnpm/exe.android-x64@12.14.0':
+    optional: true
+
+  '@pnpm/exe.darwin-arm64@12.14.0':
+    optional: true
+
+  '@pnpm/exe.darwin-x64@12.14.0':
+    optional: true
+
+  '@pnpm/exe.freebsd-x64@12.14.0':
+    optional: true
+
+  '@pnpm/exe.linux-arm64-musl@12.14.0':
+    optional: true
+
+  '@pnpm/exe.linux-arm64@12.14.0':
+    optional: true
+
+  '@pnpm/exe.linux-ppc64@12.14.0':
+    optional: true
+
+  '@pnpm/exe.linux-riscv64@12.14.0':
+    optional: true
+
+  '@pnpm/exe.linux-s390x@12.14.0':
+    optional: true
+
+  '@pnpm/exe.linux-x64-musl@12.14.0':
+    optional: true
+
+  '@pnpm/exe.linux-x64@12.14.0':
+    optional: true
+
+  '@pnpm/exe.win32-arm64@12.14.0':
+    optional: true
+
+  '@pnpm/exe.win32-x64@12.14.0':
+    optional: true
+
+  pnpm@12.14.0:
+    optionalDependencies:
+      '@pnpm/exe.android-arm64': 12.14.0
+      '@pnpm/exe.android-x64': 12.14.0
+      '@pnpm/exe.darwin-arm64': 12.14.0
+      '@pnpm/exe.darwin-x64': 12.14.0
+      '@pnpm/exe.freebsd-x64': 12.14.0
+      '@pnpm/exe.linux-arm64': 12.14.0
+      '@pnpm/exe.linux-arm64-musl': 12.14.0
+      '@pnpm/exe.linux-ppc64': 12.14.0
+      '@pnpm/exe.linux-riscv64': 12.14.0
+      '@pnpm/exe.linux-s390x': 12.14.0
+      '@pnpm/exe.linux-x64': 12.14.0
+      '@pnpm/exe.linux-x64-musl': 12.14.0
+      '@pnpm/exe.win32-arm64': 12.14.0
+      '@pnpm/exe.win32-x64': 12.14.0
+
+---
 lockfileVersion: '9.0'
 
 settings:
@@ -22,16 +180,13 @@ importers:
         version: 6.0.3
       '@vitest/coverage-v8':
         specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.4(@types/node@22.15.3))
+        version: 3.2.4(supports-color@7.2.0)(vitest@3.2.4(@types/node@22.15.3)(supports-color@7.2.0))
       husky:
         specifier: ^9.1.7
         version: 9.1.7
       lerna:
         specifier: ^8.2.3
-        version: 8.2.3(encoding@0.1.13)
-      only-allow:
-        specifier: ^1.2.1
-        version: 1.2.1
+        version: 8.2.3(debug@4.4.1(supports-color@7.2.0))(encoding@0.1.13)(supports-color@7.2.0)
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -40,19 +195,19 @@ importers:
         version: 12.0.0
       redis-memory-server:
         specifier: ^0.12.1
-        version: 0.12.1
+        version: 0.12.1(supports-color@7.2.0)
       sleep-promise:
         specifier: ^9.1.0
         version: 9.1.0
       supertest:
         specifier: ^7.1.3
-        version: 7.1.3
+        version: 7.1.3(supports-color@7.2.0)
       ts-expect:
         specifier: ^1.3.0
         version: 1.3.0
       tsup:
         specifier: ^8.5.0
-        version: 8.5.0(jiti@2.4.2)(postcss@8.4.49)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
+        version: 8.5.0(jiti@2.4.2)(postcss@8.4.49)(supports-color@7.2.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       tsx:
         specifier: ^4.20.3
         version: 4.20.3
@@ -61,7 +216,11 @@ importers:
         version: 5.8.3
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.15.3)
+        version: 3.2.4(@types/node@22.15.3)(supports-color@7.2.0)
+    devDependencies:
+      node:
+        specifier: runtime:^22.15.0
+        version: runtime:22.23.3
 
   packages/async-trace:
     devDependencies:
@@ -135,7 +294,7 @@ importers:
         version: link:../cache
       ioredis:
         specifier: ^5.4.1
-        version: 5.4.1
+        version: 5.4.1(supports-color@7.2.0)
 
   packages/common:
     dependencies:
@@ -388,10 +547,10 @@ importers:
         version: 4.1.9
       mongodb-memory-server:
         specifier: ^10.1.4
-        version: 10.1.4(socks@2.8.3)
+        version: 10.1.4(socks@2.8.3)(supports-color@7.2.0)
       mongoose:
         specifier: ^8.13.2
-        version: 8.13.2(socks@2.8.3)
+        version: 8.13.2(socks@2.8.3)(supports-color@7.2.0)
 
   packages/openapi:
     dependencies:
@@ -493,7 +652,7 @@ importers:
         version: link:../rate-limit
       ioredis:
         specifier: ^5.4.1
-        version: 5.4.1
+        version: 5.4.1(supports-color@7.2.0)
 
   packages/redoc-ui:
     dependencies:
@@ -502,7 +661,7 @@ importers:
         version: link:../serve-static
       redoc:
         specifier: ^2.5.0
-        version: 2.5.0(core-js@3.41.0)(encoding@0.1.13)(mobx@6.13.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+        version: 2.5.0(core-js@3.41.0)(encoding@0.1.13)(mobx@6.13.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(supports-color@7.2.0)
       yaml:
         specifier: ^2.8.0
         version: 2.8.0
@@ -539,7 +698,7 @@ importers:
         version: link:../serve-static
       swagger-ui:
         specifier: ^5.26.2
-        version: 5.26.2(@types/react@19.2.6)
+        version: 5.26.2(@types/react@19.2.6)(debug@4.4.1(supports-color@7.2.0))
       yaml:
         specifier: ^2.8.0
         version: 2.8.0
@@ -1179,6 +1338,7 @@ packages:
   '@lerna/create@8.2.3':
     resolution: {integrity: sha512-f+68+iojcQ0tZRMfCgQyJdsdz+YPu3/d+0Zo1RJz92bgBxTCiEU+dHACVq1n3sEjm/YWPnFGdag8U5EYYmP3WA==}
     engines: {node: '>=18.0.0'}
+    deprecated: This package is an implementation detail of Lerna and is no longer published separately.
 
   '@mongodb-js/saslprep@1.2.1':
     resolution: {integrity: sha512-1NCa8GsZ+OFLTw5KkKQS22wLS+Rs+y02sgkhr99Pm4OSXtSDHCJyq0uscPF0qA86ipGYH4PwtC2+a8Y4RKkCcg==}
@@ -4325,6 +4485,159 @@ packages:
   node-readfiles@0.2.0:
     resolution: {integrity: sha512-SU00ZarexNlE4Rjdm83vglt5Y9yiQ+XI1XpflWlb7q7UTN1JUItm69xMeiQCTxtTfnzt+83T8Cx+vI2ED++VDA==}
 
+  node@runtime:22.23.3:
+    resolution:
+      type: variations
+      variants:
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-uF3F8NepvoA4xOc0UNkSWyQceS7H7ElSKTRfhtHj9vo=
+            type: binary
+            url: https://nodejs.org/download/release/v22.23.3/node-v22.23.3-aix-ppc64.tar.gz
+          targets:
+            - cpu: ppc64
+              os: aix
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-I7JSRdz7mvcmL4/xQuni4K8CU2gRcynnp0WKUeWSL1M=
+            type: binary
+            url: https://nodejs.org/download/release/v22.23.3/node-v22.23.3-darwin-arm64.tar.gz
+          targets:
+            - cpu: arm64
+              os: darwin
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-imd7AhkXjv1usOR1RXxK+0UrUhqS9uZ4Rac72Fcn8qg=
+            type: binary
+            url: https://nodejs.org/download/release/v22.23.3/node-v22.23.3-darwin-x64.tar.gz
+          targets:
+            - cpu: x64
+              os: darwin
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-XO0tSNHXGYc5t/hoBN4Bca77aCO2hLEjQdMyGvw8sLI=
+            type: binary
+            url: https://nodejs.org/download/release/v22.23.3/node-v22.23.3-linux-arm64.tar.gz
+          targets:
+            - cpu: arm64
+              os: linux
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-i5kFjsb043K5iH+Oy1d6KSrbEy1Z5RBDVkKKdY/bEmw=
+            type: binary
+            url: https://nodejs.org/download/release/v22.23.3/node-v22.23.3-linux-armv7l.tar.gz
+          targets:
+            - cpu: armv7l
+              os: linux
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-I2cS3e9z9WwOBZCixJ9pyDk6LC2Cw9YsfBZWBbRys40=
+            type: binary
+            url: https://nodejs.org/download/release/v22.23.3/node-v22.23.3-linux-ppc64le.tar.gz
+          targets:
+            - cpu: ppc64le
+              os: linux
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-UfZHlPX2G9/ICqGGyCcwIUc5l2Bc+Q7THtFIvuZQpVQ=
+            type: binary
+            url: https://nodejs.org/download/release/v22.23.3/node-v22.23.3-linux-s390x.tar.gz
+          targets:
+            - cpu: s390x
+              os: linux
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-Yz9JpPOIxflWTVbZwPX/o5Q0bZLKAHb+Ic93bs4ZiLw=
+            type: binary
+            url: https://nodejs.org/download/release/v22.23.3/node-v22.23.3-linux-x64-musl.tar.gz
+          targets:
+            - cpu: x64
+              os: linux
+              libc: musl
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-EISqNhlrukw6Xmmh7jiKbk/3KdrQlEX7zUNLKP48JK8=
+            type: binary
+            url: https://nodejs.org/download/release/v22.23.3/node-v22.23.3-linux-x64.tar.gz
+          targets:
+            - cpu: x64
+              os: linux
+        - resolution:
+            archive: zip
+            bin:
+              node: node.exe
+            integrity: sha256-M9rSLkzvXuj5+7Gw0Df9rNDlbRKkWA8NY/aLiU3qtTU=
+            prefix: node-v22.23.3-win-arm64
+            type: binary
+            url: https://nodejs.org/download/release/v22.23.3/node-v22.23.3-win-arm64.zip
+          targets:
+            - cpu: arm64
+              os: win32
+        - resolution:
+            archive: zip
+            bin:
+              node: node.exe
+            integrity: sha256-Kw/1ewSc2hu86iJA7sIEZwGHE8Hv4fc2DCaBhZuQ7XE=
+            prefix: node-v22.23.3-win-x64
+            type: binary
+            url: https://nodejs.org/download/release/v22.23.3/node-v22.23.3-win-x64.zip
+          targets:
+            - cpu: x64
+              os: win32
+        - resolution:
+            archive: zip
+            bin:
+              node: node.exe
+            integrity: sha256-HgesAOYbQbfs8kLejjiIPSN9WtP9ytfBby3TqIZw4rY=
+            prefix: node-v22.23.3-win-x86
+            type: binary
+            url: https://nodejs.org/download/release/v22.23.3/node-v22.23.3-win-x86.zip
+          targets:
+            - cpu: x86
+              os: win32
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-jOwDpJjYg3OdHcm5JP2i+GlEcFtUrHB79IpjdIN3THA=
+            type: binary
+            url: https://unofficial-builds.nodejs.org/download/release/v22.23.3/node-v22.23.3-linux-arm64-musl.tar.gz
+          targets:
+            - cpu: arm64
+              os: linux
+              libc: musl
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-XqRolPwG4JNjhG2O1lqCK9AL6jXZdOQTICcqSK8wnjo=
+            type: binary
+            url: https://unofficial-builds.nodejs.org/download/release/v22.23.3/node-v22.23.3-linux-x64-musl.tar.gz
+          targets:
+            - cpu: x64
+              os: linux
+              libc: musl
+    version: 22.23.3
+    hasBin: true
+
   nopt@7.2.1:
     resolution: {integrity: sha512-taM24ViiimT/XntxbPyJQzCG+p4EKOpgD3mxFwW38mGjVUrfERQOeY4EDHjdnptttfHuHQXFx+lTP08Q+mLa/w==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
@@ -4438,10 +4751,6 @@ packages:
   onetime@7.0.0:
     resolution: {integrity: sha512-VXJjc87FScF88uafS3JllDgvAm+c/Slfz06lorj2uAY34rlUu0Nt+v8wreiImcrgAjjIHp1rXpTDlLOGw29WwQ==}
     engines: {node: '>=18'}
-
-  only-allow@1.2.1:
-    resolution: {integrity: sha512-M7CJbmv7UCopc0neRKdzfoGWaVZC+xC1925GitKH9EAqYFzX9//25Q7oX4+jw0tiCCj+t5l6VZh8UPH23NZkMA==}
-    hasBin: true
 
   open@8.4.2:
     resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
@@ -5918,10 +6227,6 @@ packages:
   which-boxed-primitive@1.0.2:
     resolution: {integrity: sha512-bwZdv0AKLpplFY2KZRX6TvyuN7ojjr7lwkg6ml0roIy9YeuSr7JS372qlNW18UQYzgYK9ziGcerWqZOmEn9VNg==}
 
-  which-pm-runs@1.1.0:
-    resolution: {integrity: sha512-n1brCuqClxfFfq/Rb0ICg9giSZqCS+pLtccdag6C2HyufBrh3fBOiy9nb6ggRMvWOVH5GrdJskj5iGTZNxd7SA==}
-    engines: {node: '>=4'}
-
   which-typed-array@1.1.15:
     resolution: {integrity: sha512-oV0jmFtUky6CXfkqehVvBP/LSWJ2sy4vWMioiENyJLePrBO/yKyV9OyJySfAKosh+RYkIl5zJCNZ8/4JncrpdA==}
     engines: {node: '>= 0.4'}
@@ -6455,12 +6760,12 @@ snapshots:
     dependencies:
       jsep: 1.3.8
 
-  '@lerna/create@8.2.3(encoding@0.1.13)(typescript@5.8.3)':
+  '@lerna/create@8.2.3(debug@4.4.1(supports-color@7.2.0))(encoding@0.1.13)(supports-color@7.2.0)(typescript@5.8.3)':
     dependencies:
-      '@npmcli/arborist': 7.5.4
+      '@npmcli/arborist': 7.5.4(supports-color@7.2.0)
       '@npmcli/package-json': 5.2.0
-      '@npmcli/run-script': 8.1.0
-      '@nx/devkit': 19.3.2(nx@19.3.2)
+      '@npmcli/run-script': 8.1.0(supports-color@7.2.0)
+      '@nx/devkit': 19.3.2(nx@19.3.2(debug@4.4.1(supports-color@7.2.0)))
       '@octokit/plugin-enterprise-rest': 6.0.1
       '@octokit/rest': 20.1.2
       aproba: 2.0.0
@@ -6488,7 +6793,7 @@ snapshots:
       is-ci: 3.0.1
       is-stream: 2.0.0
       js-yaml: 4.1.0
-      libnpmpublish: 9.0.9
+      libnpmpublish: 9.0.9(supports-color@7.2.0)
       load-json-file: 6.2.0
       lodash: 4.17.21
       make-dir: 4.0.0
@@ -6497,13 +6802,13 @@ snapshots:
       node-fetch: 2.6.7(encoding@0.1.13)
       npm-package-arg: 11.0.2
       npm-packlist: 8.0.2
-      npm-registry-fetch: 17.1.0
-      nx: 19.3.2
+      npm-registry-fetch: 17.1.0(supports-color@7.2.0)
+      nx: 19.3.2(debug@4.4.1(supports-color@7.2.0))
       p-map: 4.0.0
       p-map-series: 2.1.0
       p-queue: 6.6.2
       p-reduce: 2.1.0
-      pacote: 18.0.6
+      pacote: 18.0.6(supports-color@7.2.0)
       pify: 5.0.0
       read-cmd-shim: 4.0.0
       resolve-from: 5.0.0
@@ -6548,29 +6853,29 @@ snapshots:
 
   '@noble/hashes@1.8.0': {}
 
-  '@npmcli/agent@2.2.2':
+  '@npmcli/agent@2.2.2(supports-color@7.2.0)':
     dependencies:
       agent-base: 7.1.3
-      http-proxy-agent: 7.0.2
-      https-proxy-agent: 7.0.6
+      http-proxy-agent: 7.0.2(supports-color@7.2.0)
+      https-proxy-agent: 7.0.6(supports-color@7.2.0)
       lru-cache: 10.2.2
-      socks-proxy-agent: 8.0.3
+      socks-proxy-agent: 8.0.3(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
 
-  '@npmcli/arborist@7.5.4':
+  '@npmcli/arborist@7.5.4(supports-color@7.2.0)':
     dependencies:
       '@isaacs/string-locale-compare': 1.1.0
       '@npmcli/fs': 3.1.1
       '@npmcli/installed-package-contents': 2.1.0
       '@npmcli/map-workspaces': 3.0.6
-      '@npmcli/metavuln-calculator': 7.1.1
+      '@npmcli/metavuln-calculator': 7.1.1(supports-color@7.2.0)
       '@npmcli/name-from-folder': 2.0.0
       '@npmcli/node-gyp': 3.0.0
       '@npmcli/package-json': 5.2.0
       '@npmcli/query': 3.1.0
       '@npmcli/redact': 2.0.1
-      '@npmcli/run-script': 8.1.0
+      '@npmcli/run-script': 8.1.0(supports-color@7.2.0)
       bin-links: 4.0.4
       cacache: 18.0.3
       common-ancestor-path: 1.0.1
@@ -6583,8 +6888,8 @@ snapshots:
       npm-install-checks: 6.3.0
       npm-package-arg: 11.0.2
       npm-pick-manifest: 9.0.1
-      npm-registry-fetch: 17.1.0
-      pacote: 18.0.6
+      npm-registry-fetch: 17.1.0(supports-color@7.2.0)
+      pacote: 18.0.6(supports-color@7.2.0)
       parse-conflict-json: 3.0.1
       proc-log: 4.2.0
       proggy: 2.0.0
@@ -6628,11 +6933,11 @@ snapshots:
       minimatch: 9.0.5
       read-package-json-fast: 3.0.2
 
-  '@npmcli/metavuln-calculator@7.1.1':
+  '@npmcli/metavuln-calculator@7.1.1(supports-color@7.2.0)':
     dependencies:
       cacache: 18.0.3
       json-parse-even-better-errors: 3.0.2
-      pacote: 18.0.6
+      pacote: 18.0.6(supports-color@7.2.0)
       proc-log: 4.2.0
       semver: 7.7.1
     transitivePeerDependencies:
@@ -6665,41 +6970,41 @@ snapshots:
 
   '@npmcli/redact@2.0.1': {}
 
-  '@npmcli/run-script@8.1.0':
+  '@npmcli/run-script@8.1.0(supports-color@7.2.0)':
     dependencies:
       '@npmcli/node-gyp': 3.0.0
       '@npmcli/package-json': 5.2.0
       '@npmcli/promise-spawn': 7.0.2
-      node-gyp: 10.1.0
+      node-gyp: 10.1.0(supports-color@7.2.0)
       proc-log: 4.2.0
       which: 4.0.0
     transitivePeerDependencies:
       - bluebird
       - supports-color
 
-  '@nrwl/devkit@19.3.2(nx@19.3.2)':
+  '@nrwl/devkit@19.3.2(nx@19.3.2(debug@4.4.1(supports-color@7.2.0)))':
     dependencies:
-      '@nx/devkit': 19.3.2(nx@19.3.2)
+      '@nx/devkit': 19.3.2(nx@19.3.2(debug@4.4.1(supports-color@7.2.0)))
     transitivePeerDependencies:
       - nx
 
-  '@nrwl/tao@19.3.2':
+  '@nrwl/tao@19.3.2(debug@4.4.1(supports-color@7.2.0))':
     dependencies:
-      nx: 19.3.2
+      nx: 19.3.2(debug@4.4.1(supports-color@7.2.0))
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@swc-node/register'
       - '@swc/core'
       - debug
 
-  '@nx/devkit@19.3.2(nx@19.3.2)':
+  '@nx/devkit@19.3.2(nx@19.3.2(debug@4.4.1(supports-color@7.2.0)))':
     dependencies:
-      '@nrwl/devkit': 19.3.2(nx@19.3.2)
+      '@nrwl/devkit': 19.3.2(nx@19.3.2(debug@4.4.1(supports-color@7.2.0)))
       ejs: 3.1.10
       enquirer: 2.3.6
       ignore: 5.3.1
       minimatch: 9.0.3
-      nx: 19.3.2
+      nx: 19.3.2(debug@4.4.1(supports-color@7.2.0))
       semver: 7.7.1
       tmp: 0.2.3
       tslib: 2.8.1
@@ -6926,12 +7231,12 @@ snapshots:
 
   '@redocly/config@0.22.2': {}
 
-  '@redocly/openapi-core@1.34.2':
+  '@redocly/openapi-core@1.34.2(supports-color@7.2.0)':
     dependencies:
       '@redocly/ajv': 8.11.2
       '@redocly/config': 0.22.2
       colorette: 1.4.0
-      https-proxy-agent: 7.0.6
+      https-proxy-agent: 7.0.6(supports-color@7.2.0)
       js-levenshtein: 1.1.6
       js-yaml: 4.1.0
       minimatch: 5.1.6
@@ -7049,21 +7354,21 @@ snapshots:
 
   '@sigstore/protobuf-specs@0.3.2': {}
 
-  '@sigstore/sign@2.3.2':
+  '@sigstore/sign@2.3.2(supports-color@7.2.0)':
     dependencies:
       '@sigstore/bundle': 2.3.2
       '@sigstore/core': 1.1.0
       '@sigstore/protobuf-specs': 0.3.2
-      make-fetch-happen: 13.0.1
+      make-fetch-happen: 13.0.1(supports-color@7.2.0)
       proc-log: 4.2.0
       promise-retry: 2.0.1
     transitivePeerDependencies:
       - supports-color
 
-  '@sigstore/tuf@2.3.4':
+  '@sigstore/tuf@2.3.4(supports-color@7.2.0)':
     dependencies:
       '@sigstore/protobuf-specs': 0.3.2
-      tuf-js: 2.2.1
+      tuf-js: 2.2.1(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -7561,13 +7866,13 @@ snapshots:
       web-tree-sitter: 0.24.5
     optional: true
 
-  '@swagger-api/apidom-reference@1.0.0-beta.44':
+  '@swagger-api/apidom-reference@1.0.0-beta.44(debug@4.4.1(supports-color@7.2.0))':
     dependencies:
       '@babel/runtime-corejs3': 7.28.0
       '@swagger-api/apidom-core': 1.0.0-beta.44
       '@swagger-api/apidom-error': 1.0.0-beta.44
       '@types/ramda': 0.30.1
-      axios: 1.10.0
+      axios: 1.10.0(debug@4.4.1(supports-color@7.2.0))
       minimatch: 7.4.6
       process: 0.11.10
       ramda: 0.30.1
@@ -7781,22 +8086,22 @@ snapshots:
       '@types/node': 22.15.3
     optional: true
 
-  '@vitest/coverage-v8@3.2.4(vitest@3.2.4(@types/node@22.15.3))':
+  '@vitest/coverage-v8@3.2.4(supports-color@7.2.0)(vitest@3.2.4(@types/node@22.15.3)(supports-color@7.2.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
       ast-v8-to-istanbul: 0.3.3
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@7.2.0)
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
-      istanbul-lib-source-maps: 5.0.6
+      istanbul-lib-source-maps: 5.0.6(supports-color@7.2.0)
       istanbul-reports: 3.1.7
       magic-string: 0.30.17
       magicast: 0.3.5
       std-env: 3.9.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@22.15.3)
+      vitest: 3.2.4(@types/node@22.15.3)(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -8004,17 +8309,17 @@ snapshots:
 
   aws-ssl-profiles@1.1.2: {}
 
-  axios@1.10.0:
+  axios@1.10.0(debug@4.4.1(supports-color@7.2.0)):
     dependencies:
-      follow-redirects: 1.15.9(debug@4.4.0)
+      follow-redirects: 1.15.9(debug@4.4.1(supports-color@7.2.0))
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
 
-  axios@1.7.9:
+  axios@1.7.9(debug@4.4.1(supports-color@7.2.0)):
     dependencies:
-      follow-redirects: 1.15.6
+      follow-redirects: 1.15.6(debug@4.4.1(supports-color@7.2.0))
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -8460,17 +8765,23 @@ snapshots:
 
   dateformat@3.0.3: {}
 
-  debug@4.3.4:
+  debug@4.3.4(supports-color@7.2.0):
     dependencies:
       ms: 2.1.2
+    optionalDependencies:
+      supports-color: 7.2.0
 
-  debug@4.4.0:
+  debug@4.4.0(supports-color@7.2.0):
     dependencies:
       ms: 2.1.3
+    optionalDependencies:
+      supports-color: 7.2.0
 
-  debug@4.4.1:
+  debug@4.4.1(supports-color@7.2.0):
     dependencies:
       ms: 2.1.3
+    optionalDependencies:
+      supports-color: 7.2.0
 
   decamelize-keys@1.1.1:
     dependencies:
@@ -8791,9 +9102,9 @@ snapshots:
       iconv-lite: 0.4.24
       tmp: 0.0.33
 
-  extract-zip@2.0.1:
+  extract-zip@2.0.1(supports-color@7.2.0):
     dependencies:
-      debug: 4.4.0
+      debug: 4.4.0(supports-color@7.2.0)
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
@@ -8874,11 +9185,17 @@ snapshots:
 
   flat@5.0.2: {}
 
-  follow-redirects@1.15.6: {}
-
-  follow-redirects@1.15.9(debug@4.4.0):
+  follow-redirects@1.15.6(debug@4.4.1(supports-color@7.2.0)):
     optionalDependencies:
-      debug: 4.4.0
+      debug: 4.4.1(supports-color@7.2.0)
+
+  follow-redirects@1.15.9(debug@4.4.0(supports-color@7.2.0)):
+    optionalDependencies:
+      debug: 4.4.0(supports-color@7.2.0)
+
+  follow-redirects@1.15.9(debug@4.4.1(supports-color@7.2.0)):
+    optionalDependencies:
+      debug: 4.4.1(supports-color@7.2.0)
 
   for-each@0.3.3:
     dependencies:
@@ -9161,10 +9478,10 @@ snapshots:
       statuses: 2.0.1
       toidentifier: 1.0.1
 
-  http-proxy-agent@7.0.2:
+  http-proxy-agent@7.0.2(supports-color@7.2.0):
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -9172,10 +9489,10 @@ snapshots:
 
   http2-client@1.3.5: {}
 
-  https-proxy-agent@7.0.6:
+  https-proxy-agent@7.0.6(supports-color@7.2.0):
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.0
+      debug: 4.4.0(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -9274,11 +9591,11 @@ snapshots:
     dependencies:
       loose-envify: 1.4.0
 
-  ioredis@5.4.1:
+  ioredis@5.4.1(supports-color@7.2.0):
     dependencies:
       '@ioredis/commands': 1.2.0
       cluster-key-slot: 1.1.2
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@7.2.0)
       denque: 2.1.0
       lodash.defaults: 4.2.0
       lodash.isarguments: 3.1.0
@@ -9439,10 +9756,10 @@ snapshots:
       make-dir: 4.0.0
       supports-color: 7.2.0
 
-  istanbul-lib-source-maps@5.0.6:
+  istanbul-lib-source-maps@5.0.6(supports-color@7.2.0):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@7.2.0)
       istanbul-lib-coverage: 3.2.2
     transitivePeerDependencies:
       - supports-color
@@ -9570,13 +9887,13 @@ snapshots:
 
   kleur@3.0.3: {}
 
-  lerna@8.2.3(encoding@0.1.13):
+  lerna@8.2.3(debug@4.4.1(supports-color@7.2.0))(encoding@0.1.13)(supports-color@7.2.0):
     dependencies:
-      '@lerna/create': 8.2.3(encoding@0.1.13)(typescript@5.8.3)
-      '@npmcli/arborist': 7.5.4
+      '@lerna/create': 8.2.3(debug@4.4.1(supports-color@7.2.0))(encoding@0.1.13)(supports-color@7.2.0)(typescript@5.8.3)
+      '@npmcli/arborist': 7.5.4(supports-color@7.2.0)
       '@npmcli/package-json': 5.2.0
-      '@npmcli/run-script': 8.1.0
-      '@nx/devkit': 19.3.2(nx@19.3.2)
+      '@npmcli/run-script': 8.1.0(supports-color@7.2.0)
+      '@nx/devkit': 19.3.2(nx@19.3.2(debug@4.4.1(supports-color@7.2.0)))
       '@octokit/plugin-enterprise-rest': 6.0.1
       '@octokit/rest': 20.1.2
       aproba: 2.0.0
@@ -9609,8 +9926,8 @@ snapshots:
       is-stream: 2.0.0
       jest-diff: 29.7.0
       js-yaml: 4.1.0
-      libnpmaccess: 8.0.6
-      libnpmpublish: 9.0.9
+      libnpmaccess: 8.0.6(supports-color@7.2.0)
+      libnpmpublish: 9.0.9(supports-color@7.2.0)
       load-json-file: 6.2.0
       lodash: 4.17.21
       make-dir: 4.0.0
@@ -9619,15 +9936,15 @@ snapshots:
       node-fetch: 2.6.7(encoding@0.1.13)
       npm-package-arg: 11.0.2
       npm-packlist: 8.0.2
-      npm-registry-fetch: 17.1.0
-      nx: 19.3.2
+      npm-registry-fetch: 17.1.0(supports-color@7.2.0)
+      nx: 19.3.2(debug@4.4.1(supports-color@7.2.0))
       p-map: 4.0.0
       p-map-series: 2.1.0
       p-pipe: 3.1.0
       p-queue: 6.6.2
       p-reduce: 2.1.0
       p-waterfall: 2.1.1
-      pacote: 18.0.6
+      pacote: 18.0.6(supports-color@7.2.0)
       pify: 5.0.0
       read-cmd-shim: 4.0.0
       resolve-from: 5.0.0
@@ -9663,22 +9980,22 @@ snapshots:
 
   leven@3.1.0: {}
 
-  libnpmaccess@8.0.6:
+  libnpmaccess@8.0.6(supports-color@7.2.0):
     dependencies:
       npm-package-arg: 11.0.2
-      npm-registry-fetch: 17.1.0
+      npm-registry-fetch: 17.1.0(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
 
-  libnpmpublish@9.0.9:
+  libnpmpublish@9.0.9(supports-color@7.2.0):
     dependencies:
       ci-info: 4.0.0
       normalize-package-data: 6.0.2
       npm-package-arg: 11.0.2
-      npm-registry-fetch: 17.1.0
+      npm-registry-fetch: 17.1.0(supports-color@7.2.0)
       proc-log: 4.2.0
       semver: 7.7.1
-      sigstore: 2.3.1
+      sigstore: 2.3.1(supports-color@7.2.0)
       ssri: 10.0.6
     transitivePeerDependencies:
       - supports-color
@@ -9844,9 +10161,9 @@ snapshots:
     dependencies:
       semver: 7.6.0
 
-  make-fetch-happen@13.0.1:
+  make-fetch-happen@13.0.1(supports-color@7.2.0):
     dependencies:
-      '@npmcli/agent': 2.2.2
+      '@npmcli/agent': 2.2.2(supports-color@7.2.0)
       cacache: 18.0.3
       http-cache-semantics: 4.1.1
       is-lambda: 1.0.1
@@ -10028,16 +10345,16 @@ snapshots:
       '@types/whatwg-url': 11.0.5
       whatwg-url: 14.2.0
 
-  mongodb-memory-server-core@10.1.4(socks@2.8.3):
+  mongodb-memory-server-core@10.1.4(socks@2.8.3)(supports-color@7.2.0):
     dependencies:
       async-mutex: 0.5.0
       camelcase: 6.3.0
-      debug: 4.4.0
+      debug: 4.4.0(supports-color@7.2.0)
       find-cache-dir: 3.3.2
-      follow-redirects: 1.15.9(debug@4.4.0)
-      https-proxy-agent: 7.0.6
+      follow-redirects: 1.15.9(debug@4.4.0(supports-color@7.2.0))
+      https-proxy-agent: 7.0.6(supports-color@7.2.0)
       mongodb: 6.15.0(socks@2.8.3)
-      new-find-package-json: 2.0.0
+      new-find-package-json: 2.0.0(supports-color@7.2.0)
       semver: 7.7.1
       tar-stream: 3.1.7
       tslib: 2.8.1
@@ -10052,9 +10369,9 @@ snapshots:
       - socks
       - supports-color
 
-  mongodb-memory-server@10.1.4(socks@2.8.3):
+  mongodb-memory-server@10.1.4(socks@2.8.3)(supports-color@7.2.0):
     dependencies:
-      mongodb-memory-server-core: 10.1.4(socks@2.8.3)
+      mongodb-memory-server-core: 10.1.4(socks@2.8.3)(supports-color@7.2.0)
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
@@ -10074,13 +10391,13 @@ snapshots:
     optionalDependencies:
       socks: 2.8.3
 
-  mongoose@8.13.2(socks@2.8.3):
+  mongoose@8.13.2(socks@2.8.3)(supports-color@7.2.0):
     dependencies:
       bson: 6.10.3
       kareem: 2.6.3
       mongodb: 6.15.0(socks@2.8.3)
       mpath: 0.9.0
-      mquery: 5.0.0
+      mquery: 5.0.0(supports-color@7.2.0)
       ms: 2.1.3
       sift: 17.1.3
     transitivePeerDependencies:
@@ -10095,9 +10412,9 @@ snapshots:
 
   mpath@0.9.0: {}
 
-  mquery@5.0.0:
+  mquery@5.0.0(supports-color@7.2.0):
     dependencies:
-      debug: 4.4.0
+      debug: 4.4.0(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -10147,9 +10464,9 @@ snapshots:
 
   neotraverse@0.6.18: {}
 
-  new-find-package-json@2.0.0:
+  new-find-package-json@2.0.0(supports-color@7.2.0):
     dependencies:
-      debug: 4.4.0
+      debug: 4.4.0(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -10199,13 +10516,13 @@ snapshots:
   node-gyp-build@4.8.4:
     optional: true
 
-  node-gyp@10.1.0:
+  node-gyp@10.1.0(supports-color@7.2.0):
     dependencies:
       env-paths: 2.2.1
       exponential-backoff: 3.1.1
       glob: 10.4.5
       graceful-fs: 4.2.11
-      make-fetch-happen: 13.0.1
+      make-fetch-happen: 13.0.1(supports-color@7.2.0)
       nopt: 7.2.1
       proc-log: 3.0.0
       semver: 7.7.1
@@ -10219,6 +10536,8 @@ snapshots:
   node-readfiles@0.2.0:
     dependencies:
       es6-promise: 3.3.1
+
+  node@runtime:22.23.3: {}
 
   nopt@7.2.1:
     dependencies:
@@ -10278,11 +10597,11 @@ snapshots:
       npm-package-arg: 11.0.2
       semver: 7.7.1
 
-  npm-registry-fetch@17.1.0:
+  npm-registry-fetch@17.1.0(supports-color@7.2.0):
     dependencies:
       '@npmcli/redact': 2.0.1
       jsonparse: 1.3.1
-      make-fetch-happen: 13.0.1
+      make-fetch-happen: 13.0.1(supports-color@7.2.0)
       minipass: 7.1.2
       minipass-fetch: 3.0.5
       minizlib: 2.1.2
@@ -10295,13 +10614,13 @@ snapshots:
     dependencies:
       path-key: 3.1.1
 
-  nx@19.3.2:
+  nx@19.3.2(debug@4.4.1(supports-color@7.2.0)):
     dependencies:
-      '@nrwl/tao': 19.3.2
+      '@nrwl/tao': 19.3.2(debug@4.4.1(supports-color@7.2.0))
       '@yarnpkg/lockfile': 1.1.0
       '@yarnpkg/parsers': 3.0.0-rc.46
       '@zkochan/js-yaml': 0.0.7
-      axios: 1.7.9
+      axios: 1.7.9(debug@4.4.1(supports-color@7.2.0))
       chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
@@ -10411,10 +10730,6 @@ snapshots:
     dependencies:
       mimic-function: 5.0.1
 
-  only-allow@1.2.1:
-    dependencies:
-      which-pm-runs: 1.1.0
-
   open@8.4.2:
     dependencies:
       define-lazy-prop: 2.0.0
@@ -10517,23 +10832,23 @@ snapshots:
 
   package-json-from-dist@1.0.0: {}
 
-  pacote@18.0.6:
+  pacote@18.0.6(supports-color@7.2.0):
     dependencies:
       '@npmcli/git': 5.0.7
       '@npmcli/installed-package-contents': 2.1.0
       '@npmcli/package-json': 5.2.0
       '@npmcli/promise-spawn': 7.0.2
-      '@npmcli/run-script': 8.1.0
+      '@npmcli/run-script': 8.1.0(supports-color@7.2.0)
       cacache: 18.0.3
       fs-minipass: 3.0.3
       minipass: 7.1.2
       npm-package-arg: 11.0.2
       npm-packlist: 8.0.2
       npm-pick-manifest: 9.0.1
-      npm-registry-fetch: 17.1.0
+      npm-registry-fetch: 17.1.0(supports-color@7.2.0)
       proc-log: 4.2.0
       promise-retry: 2.0.1
-      sigstore: 2.3.1
+      sigstore: 2.3.1(supports-color@7.2.0)
       ssri: 10.0.6
       tar: 6.2.1
     transitivePeerDependencies:
@@ -10952,16 +11267,16 @@ snapshots:
 
   redis-errors@1.2.0: {}
 
-  redis-memory-server@0.12.1:
+  redis-memory-server@0.12.1(supports-color@7.2.0):
     dependencies:
       camelcase: 6.3.0
       cross-spawn: 7.0.3
-      debug: 4.4.0
-      extract-zip: 2.0.1
+      debug: 4.4.0(supports-color@7.2.0)
+      extract-zip: 2.0.1(supports-color@7.2.0)
       find-cache-dir: 3.3.2
       find-package-json: 1.2.0
       get-port: 5.1.1
-      https-proxy-agent: 7.0.6
+      https-proxy-agent: 7.0.6(supports-color@7.2.0)
       lockfile: 1.0.4
       lodash.defaultsdeep: 4.6.1
       rimraf: 5.0.5
@@ -10976,9 +11291,9 @@ snapshots:
     dependencies:
       redis-errors: 1.2.0
 
-  redoc@2.5.0(core-js@3.41.0)(encoding@0.1.13)(mobx@6.13.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)):
+  redoc@2.5.0(core-js@3.41.0)(encoding@0.1.13)(mobx@6.13.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(supports-color@7.2.0):
     dependencies:
-      '@redocly/openapi-core': 1.34.2
+      '@redocly/openapi-core': 1.34.2(supports-color@7.2.0)
       classnames: 2.5.1
       core-js: 3.41.0
       decko: 1.2.0
@@ -11265,13 +11580,13 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  sigstore@2.3.1:
+  sigstore@2.3.1(supports-color@7.2.0):
     dependencies:
       '@sigstore/bundle': 2.3.2
       '@sigstore/core': 1.1.0
       '@sigstore/protobuf-specs': 0.3.2
-      '@sigstore/sign': 2.3.2
-      '@sigstore/tuf': 2.3.4
+      '@sigstore/sign': 2.3.2(supports-color@7.2.0)
+      '@sigstore/tuf': 2.3.4(supports-color@7.2.0)
       '@sigstore/verify': 1.2.1
     transitivePeerDependencies:
       - supports-color
@@ -11301,10 +11616,10 @@ snapshots:
 
   smart-buffer@4.2.0: {}
 
-  socks-proxy-agent@8.0.3:
+  socks-proxy-agent@8.0.3(supports-color@7.2.0):
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@7.2.0)
       socks: 2.8.3
     transitivePeerDependencies:
       - supports-color
@@ -11487,11 +11802,11 @@ snapshots:
       pirates: 4.0.6
       ts-interface-checker: 0.1.13
 
-  superagent@10.2.2:
+  superagent@10.2.2(supports-color@7.2.0):
     dependencies:
       component-emitter: 1.3.1
       cookiejar: 2.1.4
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@7.2.0)
       fast-safe-stringify: 2.1.1
       form-data: 4.0.0
       formidable: 3.5.4
@@ -11501,10 +11816,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  supertest@7.1.3:
+  supertest@7.1.3(supports-color@7.2.0):
     dependencies:
       methods: 1.1.2
-      superagent: 10.2.2
+      superagent: 10.2.2(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -11518,7 +11833,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  swagger-client@3.35.6:
+  swagger-client@3.35.6(debug@4.4.1(supports-color@7.2.0)):
     dependencies:
       '@babel/runtime-corejs3': 7.28.0
       '@scarf/scarf': 1.4.0
@@ -11526,7 +11841,7 @@ snapshots:
       '@swagger-api/apidom-error': 1.0.0-beta.44
       '@swagger-api/apidom-json-pointer': 1.0.0-beta.44
       '@swagger-api/apidom-ns-openapi-3-1': 1.0.0-beta.44
-      '@swagger-api/apidom-reference': 1.0.0-beta.44
+      '@swagger-api/apidom-reference': 1.0.0-beta.44(debug@4.4.1(supports-color@7.2.0))
       '@swaggerexpert/cookie': 2.0.2
       deepmerge: 4.3.1
       fast-json-patch: 3.1.1
@@ -11541,7 +11856,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  swagger-ui@5.26.2(@types/react@19.2.6):
+  swagger-ui@5.26.2(@types/react@19.2.6)(debug@4.4.1(supports-color@7.2.0)):
     dependencies:
       '@babel/runtime-corejs3': 7.28.0
       '@scarf/scarf': 1.4.0
@@ -11573,7 +11888,7 @@ snapshots:
       reselect: 5.1.1
       serialize-error: 8.1.0
       sha.js: 2.4.11
-      swagger-client: 3.35.6
+      swagger-client: 3.35.6(debug@4.4.1(supports-color@7.2.0))
       url-parse: 1.5.10
       xml: 1.0.1
       xml-but-prettier: 1.0.1
@@ -11754,13 +12069,13 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsup@8.5.0(jiti@2.4.2)(postcss@8.4.49)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0):
+  tsup@8.5.0(jiti@2.4.2)(postcss@8.4.49)(supports-color@7.2.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.25.6)
       cac: 6.7.14
       chokidar: 4.0.3
       consola: 3.4.2
-      debug: 4.4.0
+      debug: 4.4.0(supports-color@7.2.0)
       esbuild: 0.25.6
       fix-dts-default-cjs-exports: 1.0.1
       joycon: 3.1.1
@@ -11789,11 +12104,11 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  tuf-js@2.2.1:
+  tuf-js@2.2.1(supports-color@7.2.0):
     dependencies:
       '@tufjs/models': 2.0.1
-      debug: 4.4.1
-      make-fetch-happen: 13.0.1
+      debug: 4.4.1(supports-color@7.2.0)
+      make-fetch-happen: 13.0.1(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -11942,10 +12257,10 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite-node@3.2.4(@types/node@22.15.3):
+  vite-node@3.2.4(@types/node@22.15.3)(supports-color@7.2.0):
     dependencies:
       cac: 6.7.14
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@7.2.0)
       es-module-lexer: 1.7.0
       pathe: 2.0.3
       vite: 5.3.3(@types/node@22.15.3)
@@ -11968,7 +12283,7 @@ snapshots:
       '@types/node': 22.15.3
       fsevents: 2.3.3
 
-  vitest@3.2.4(@types/node@22.15.3):
+  vitest@3.2.4(@types/node@22.15.3)(supports-color@7.2.0):
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.4
@@ -11979,7 +12294,7 @@ snapshots:
       '@vitest/spy': 3.2.4
       '@vitest/utils': 3.2.4
       chai: 5.2.1
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@7.2.0)
       expect-type: 1.2.2
       magic-string: 0.30.17
       pathe: 2.0.3
@@ -11991,7 +12306,7 @@ snapshots:
       tinypool: 1.1.1
       tinyrainbow: 2.0.0
       vite: 5.3.3(@types/node@22.15.3)
-      vite-node: 3.2.4(@types/node@22.15.3)
+      vite-node: 3.2.4(@types/node@22.15.3)(supports-color@7.2.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.15.3
@@ -12045,8 +12360,6 @@ snapshots:
       is-number-object: 1.0.7
       is-string: 1.0.7
       is-symbol: 1.0.4
-
-  which-pm-runs@1.1.0: {}
 
   which-typed-array@1.1.15:
     dependencies:

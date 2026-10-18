@@ -8,7 +8,6 @@
   "scripts": {
     "test": "vitest",
     "build": "node scripts/remove-dist.mjs && pnpm --recursive --workspace-concurrency 1 prepublishOnly",
-    "preinstall": "only-allow pnpm",
     "prepare": "husky",
     "deploy:main": "sh scripts/develop-deploy-main.sh",
     "sync:main": "sh scripts/develop-sync-main.sh"
@@ -16,11 +15,14 @@
   "engines": {
     "node": ">=22.15.0"
   },
-  "volta": {
-    "node": "22.15.0",
-    "pnpm": "10.10.0"
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "^22.15.0",
+      "onFail": "download"
+    }
   },
-  "packageManager": "pnpm@10.10.0",
+  "packageManager": "pnpm@12.14.0",
   "dependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
@@ -29,7 +31,6 @@
     "@vitest/coverage-v8": "^3.2.4",
     "husky": "^9.1.7",
     "lerna": "^8.2.3",
-    "only-allow": "^1.2.1",
     "prettier": "^3.6.2",
     "read-package-up": "^12.0.0",
     "redis-memory-server": "^0.12.1",
