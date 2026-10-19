@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.30.6](https://github.com/aomex/aomex/compare/v3.30.5...v3.30.6) (2026-10-19)
+
+
+### Bug Fixes
+
+* **cron:** 延迟任务竞争以均衡服务器负载 ([2ef1980](https://github.com/aomex/aomex/commit/2ef1980d09bb4a95ee9b9e575780c3a10b7cd1ba))
+* **cron:** 系统卡顿时可能造成启动的定时任务超过指定数量 ([251ed74](https://github.com/aomex/aomex/commit/251ed746813682c662319850ce185be06d786e31))
+
+
+
+
+
 ## [3.30.5](https://github.com/aomex/aomex/compare/v3.30.4...v3.30.5) (2026-06-16)
 
 
