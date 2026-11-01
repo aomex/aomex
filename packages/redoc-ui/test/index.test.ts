@@ -97,6 +97,26 @@ test('穿透中间件', async () => {
   await supertest(app.listen()).get('/redoc/not-found.js').expect(200, 'foo-bar');
 });
 
+test('不能通过路径穿越读取redoc目录外文件', async () => {
+  const app = new WebApp({
+    mount: [
+      redocUI({ openapi: openapiJson }),
+      middleware.web((ctx) => {
+        ctx.send(404, 'not-found');
+      }),
+    ],
+  });
+  await supertest(app.listen())
+    .get('/redoc..%2f..%2fserve-static%2fCHANGELOG.md')
+    .expect(404, 'not-found');
+  await supertest(app.listen())
+    .get('/redoc/..%2f..%2fserve-static%2fCHANGELOG.md')
+    .expect(404, 'not-found');
+  await supertest(app.listen())
+    .get('/redoc/..%2f..%2f..%2fpackage.json')
+    .expect(404, 'not-found');
+});
+
 test('只支持GET和HEAD', async () => {
   const app = new WebApp({
     mount: [

@@ -148,7 +148,8 @@ export const swaggerUI = (opts: SwaggerUIOptions): WebMiddleware => {
   return middleware.web(async (ctx, next) => {
     const { pathname, method } = ctx.request;
     if (method !== 'GET' && method !== 'HEAD') return next();
-    if (!pathname.startsWith(uriPrefix)) return next();
+    // 必须精确匹配前缀或前缀+/，避免 /swagger../ 这类路径穿越
+    if (pathname !== uriPrefix && !pathname.startsWith(uriPrefix + '/')) return next();
     if (enable && !(await enable(ctx))) return next();
 
     if (pathname === uriPrefix || pathname === htmlPath) {

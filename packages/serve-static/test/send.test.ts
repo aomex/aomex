@@ -163,6 +163,34 @@ test('不能通过..到root上一级获取', async () => {
   await request(app.listen()).get('/../send.test.ts').expect(404);
 });
 
+test('不能通过URL编码的..逃逸root', async () => {
+  const app = new WebApp({
+    mount: [middleware.web((ctx) => send(ctx, { root: fixturesDir }))],
+  });
+  await request(app.listen()).get('/..%2fsend.test.ts').expect(404);
+  await request(app.listen()).get('/%2e%2e%2fsend.test.ts').expect(404);
+});
+
+test('formatPath引入..后也不能逃逸root', async () => {
+  const app = new WebApp({
+    mount: [
+      middleware.web((ctx) =>
+        send(ctx, {
+          root: fixturesDir,
+          formatPath(pathname) {
+            return pathname.slice('/prefix'.length);
+          },
+        }),
+      ),
+      middleware.web((ctx) => {
+        ctx.throw(404);
+      }),
+    ],
+  });
+  await request(app.listen()).get('/prefix..%2fsend.test.ts').expect(404);
+  await request(app.listen()).get('/prefix/..%2f..%2fsend.test.ts').expect(404);
+});
+
 describe('压缩', () => {
   test('优先使用br', async () => {
     const app = new WebApp({

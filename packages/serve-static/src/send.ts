@@ -94,9 +94,18 @@ export const send = async (ctx: WebContext, options: SendOptions): Promise<boole
   } catch {
     return false;
   }
-  // 去掉 .. 路径再和根目录合并，防止非法访问
+  // 去掉绝对路径前缀后再和根目录合并；合并后必须仍落在 root 内，防止路径穿越
   staticPath = path.normalize(staticPath.slice(path.parse(staticPath).root.length));
+  if (staticPath.includes('\0')) return false;
   staticPath = path.join(root, staticPath);
+  const relativeToRoot = path.relative(root, staticPath);
+  if (
+    relativeToRoot.startsWith(`..${path.sep}`) ||
+    relativeToRoot === '..' ||
+    path.isAbsolute(relativeToRoot)
+  ) {
+    return false;
+  }
 
   if (DOT_FILE_PATTERN.test(staticPath.substring(root.length))) return false;
 
