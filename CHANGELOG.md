@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.30.7](https://github.com/aomex/aomex/compare/v3.30.6...v3.30.7) (2026-11-01)
+
+
+### Bug Fixes
+
+* **swagger:** 增强路径安全性，防止路径穿越访问目录外文件 ([806ba28](https://github.com/aomex/aomex/commit/806ba28708e14f3f93de9789b7cb32fac44ce84e))
+
+
+
+
+
 ## [3.30.6](https://github.com/aomex/aomex/compare/v3.30.5...v3.30.6) (2026-10-19)
 
 
