@@ -38,5 +38,5 @@ test('执行后面的中间件', async () => {
     mount: [helmet(), middleware.web(spy)],
   });
   await supertest(app.listen()).get('/');
-  expect(spy).toBeCalledTimes(1);
+  expect(spy).toHaveBeenCalledTimes(1);
 });

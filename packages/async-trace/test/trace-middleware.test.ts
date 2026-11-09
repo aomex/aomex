@@ -10,7 +10,7 @@ test('向后执行', async () => {
   const spy = vitest.fn();
   const fn = compose([traceMiddleware('label'), middleware.mixin(spy)]);
   await fn({});
-  expect(spy).toBeCalledTimes(1);
+  expect(spy).toHaveBeenCalledTimes(1);
 });
 
 test('获取记录', async () => {

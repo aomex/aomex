@@ -13,8 +13,8 @@ const testDir = dirname(import.meta.dirname);
 
 let port: number;
 
-beforeEach(() => {
-  port = getPort();
+beforeEach(async () => {
+  port = await getPort();
 });
 
 test('连接服务', async () => {
@@ -36,8 +36,8 @@ test('连接服务', async () => {
   const code = await app.run('cron:stop');
   await new Promise((resolve) => server.close(resolve));
   expect(code).toBe(0);
-  expect(spy).toBeCalledTimes(1);
-  expect(spy).toBeCalledWith('cron:stop');
+  expect(spy).toHaveBeenCalledTimes(1);
+  expect(spy).toHaveBeenCalledWith('cron:stop');
 });
 
 test('无效指令继续往后执行', { timeout: 9_000 }, async () => {

@@ -557,7 +557,7 @@ test('不支持的验证器', async () => {
         url: rule.url(),
       },
     }),
-  ).to.toThrowError();
+  ).toThrow();
 });
 
 test('时间戳', async () => {

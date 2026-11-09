@@ -75,13 +75,13 @@ test('组合不能再次修改', async () => {
   expect(() => {
     // @ts-expect-error
     services['a'] = 1;
-  }).toThrowError('object is not extensible');
+  }).toThrow('object is not extensible');
   expect(() => {
     // @ts-expect-error
     delete services.s1;
-  }).toThrowError('Cannot delete property');
+  }).toThrow('Cannot delete property');
   expect(() => {
     // @ts-expect-error
     services.s1 = 'x';
-  }).toThrowError('Cannot assign to read only property');
+  }).toThrow('Cannot assign to read only property');
 });

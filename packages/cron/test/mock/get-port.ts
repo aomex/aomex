@@ -1,7 +1,20 @@
-import { DEFAULT_PORT } from '../../src/lib/constant';
+import { createServer } from 'node:net';
 
-let counter = 100;
-
-export const getPort = () => {
-  return DEFAULT_PORT + ++counter;
+/** 申请系统空闲端口，避免 vitest 多 worker / retry 下固定偏移撞端口 */
+export const getPort = async (): Promise<number> => {
+  const server = createServer();
+  await new Promise<void>((resolve, reject) => {
+    server.once('error', reject);
+    server.listen(0, '127.0.0.1', () => resolve());
+  });
+  const address = server.address();
+  if (address == null || typeof address === 'string') {
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+    throw new Error('failed to allocate ephemeral port');
+  }
+  const { port } = address;
+  await new Promise<void>((resolve, reject) => {
+    server.close((err) => (err ? reject(err) : resolve()));
+  });
+  return port;
 };

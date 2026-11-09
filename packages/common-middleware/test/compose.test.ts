@@ -32,7 +32,7 @@ test('不可重复执行next函数', async () => {
       await next();
     }),
   ]);
-  await expect(fn({})).rejects.toThrowError('next()');
+  await expect(fn({})).rejects.toThrow('next()');
 });
 
 test('新函数允许传递额外的ctx上下文', async () => {

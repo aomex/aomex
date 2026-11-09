@@ -22,7 +22,7 @@ test('长度不符', async () => {
 
 test('错误的哈希算法', () => {
   // @ts-expect-error
-  expect(() => new HashValidator('md6')).toThrowError();
+  expect(() => new HashValidator('md6')).toThrow();
 });
 
 test('获取文档', () => {

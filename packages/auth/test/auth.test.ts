@@ -72,7 +72,6 @@ test('认证抛出异常', async () => {
   const strategy = new MockStrategy();
   const auth = new Auth({ strategies: { mock: strategy } });
   vitest
-    // @ts-expect-error
     .spyOn(strategy, 'authenticate')
     .mockImplementationOnce(() => {
       throw new Error('abcde');
@@ -100,7 +99,6 @@ test('授权返回true', async () => {
   vitest.spyOn(strategy, 'authenticate').mockImplementation(() => {
     return 'foo-bar';
   });
-  // @ts-expect-error
   vitest.spyOn(strategy, 'authorize').mockImplementation(() => true);
   const app = new WebApp({
     mount: [
@@ -121,7 +119,6 @@ test('授权返回false', async () => {
   vitest.spyOn(strategy, 'authenticate').mockImplementation(() => {
     return 'foo-bar';
   });
-  // @ts-expect-error
   vitest.spyOn(strategy, 'authorize').mockImplementation(() => false);
   const app = new WebApp({
     mount: [
@@ -144,7 +141,6 @@ test('授权抛出异常', async () => {
     return 'foo-bar';
   });
   vitest
-    // @ts-expect-error
     .spyOn(strategy, 'authorize')
     .mockImplementationOnce(() => {
       throw new Error('abcde');
@@ -198,9 +194,7 @@ test('认证加授权返回403', async () => {
     return 'foo-bar';
   });
   vitest
-    // @ts-expect-error
     .spyOn(auth, 'internalAuthorize')
-    // @ts-expect-error
     .mockImplementation(async (ctx) => void ctx.throw(403));
 
   const app = new WebApp({

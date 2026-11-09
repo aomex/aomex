@@ -87,7 +87,7 @@ describe('自增', async () => {
 
   test('字符串无法自增', async () => {
     await store.setValue('foo', '"30"');
-    await expect(() => store.increaseValue('foo')).rejects.toThrowError();
+    await expect(() => store.increaseValue('foo')).rejects.toThrow();
   });
 });
 
@@ -116,7 +116,7 @@ describe('自减', async () => {
 
   test('字符串无法自增', async () => {
     await store.setValue('foo', '"30"');
-    await expect(() => store.decreaseValue('foo')).rejects.toThrowError();
+    await expect(() => store.decreaseValue('foo')).rejects.toThrow();
   });
 });
 

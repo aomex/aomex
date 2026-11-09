@@ -28,7 +28,7 @@ test('数据不合法时抛出错误', async () => {
 
   const spy = vitest.spyOn(ctx, 'throw');
   const fn = compose([query({ test2: rule.number() })]);
-  await expect(fn(ctx)).rejects.toThrowError();
+  await expect(fn(ctx)).rejects.toThrow();
   expect(spy).toHaveBeenCalledOnce();
 
   res.flush();

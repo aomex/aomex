@@ -28,6 +28,6 @@ describe('send', () => {
 
 test('抛出异常', async () => {
   const { ctx, res } = await mockServer((agent) => agent.get('/'));
-  expect(() => ctx.throw(400, 'foo bar')).toThrowError('foo bar');
+  expect(() => ctx.throw(400, 'foo bar')).toThrow('foo bar');
   res.flush();
 });

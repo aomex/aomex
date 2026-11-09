@@ -120,7 +120,7 @@ describe('执行', () => {
     const spy = vitest.fn();
     const promise = cron.start().finally(spy);
     await sleep(1000);
-    expect(spy).toBeCalledTimes(0);
+    expect(spy).toHaveBeenCalledTimes(0);
     cron.stop();
     await promise;
   });

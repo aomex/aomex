@@ -33,7 +33,6 @@ test('路由实例只收集一次', async () => {
     mount: [routers(join(dir, 'fixture', 'routers'))],
   });
 
-  // @ts-expect-error
   const spy = vitest.spyOn(routerA, 'collect');
 
   const agent = supertest(app.listen());

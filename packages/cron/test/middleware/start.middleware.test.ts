@@ -14,8 +14,8 @@ const testDir = dirname(import.meta.dirname);
 
 let port: number;
 
-beforeEach(() => {
-  port = getPort();
+beforeEach(async () => {
+  port = await getPort();
 });
 
 test('无任务时自动结束', async () => {

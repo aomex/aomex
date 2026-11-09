@@ -136,16 +136,15 @@ test('异步消费', async () => {
     levels: ['foo', 'bar', 'baz'],
     transports: [{ transport: t, level: 'all' }],
   });
-  // @ts-expect-error
   const spy = vitest.spyOn(logger, 'consume');
   logger.foo('hello foo!');
 
-  expect(spy).toBeCalledTimes(0);
+  expect(spy).toHaveBeenCalledTimes(0);
   expect(logger['logs']).toHaveLength(1);
   expect(t.messages).toHaveLength(0);
 
   await logger.complete();
-  expect(spy).toBeCalledTimes(1);
+  expect(spy).toHaveBeenCalledTimes(1);
   expect(logger['logs']).toHaveLength(0);
   expect(t.messages).toHaveLength(1);
 });

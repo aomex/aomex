@@ -10,8 +10,8 @@ test('自定义输出函数', async () => {
     timestamp: new Date(1730296983321),
     level: 'foo',
   });
-  expect(spy).toBeCalledTimes(1);
-  expect(spy).toBeCalledWith({
+  expect(spy).toHaveBeenCalledTimes(1);
+  expect(spy).toHaveBeenCalledWith({
     content: 'hello world',
     timestamp: new Date(1730296983321),
     level: 'foo',

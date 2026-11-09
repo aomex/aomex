@@ -67,7 +67,7 @@ test('默认id为客户端IP', async () => {
     mount: [rateLimit({ store })],
   });
   await supertest(app.listen()).get('/');
-  expect(spy).toBeCalledWith({
+  expect(spy).toHaveBeenCalledWith({
     duration: 3600000,
     key: 'aomex-rate-limit:::ffff:127.0.0.1',
     maxRequest: 2500,

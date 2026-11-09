@@ -147,7 +147,7 @@ test('数组右边取出', async () => {
     .mockImplementation(async () => '"bar"');
 
   await expect(caching.rightPop('foo')).resolves.toBe('bar');
-  expect(spy).toBeCalledWith('foo');
+  expect(spy).toHaveBeenCalledWith('foo');
 
   spy.mockRestore();
 });
@@ -158,7 +158,7 @@ test('删除', async () => {
     .mockImplementation(async () => true);
 
   await expect(caching.delete('foo')).resolves.toBeTruthy();
-  expect(spy).toBeCalledWith('foo');
+  expect(spy).toHaveBeenCalledWith('foo');
 
   spy.mockRestore();
 });
@@ -169,7 +169,7 @@ test('删除全部', async () => {
     .mockImplementation(async () => true);
 
   await expect(caching.deleteAll()).resolves.toBeTruthy();
-  expect(spy).toBeCalledWith();
+  expect(spy).toHaveBeenCalledWith();
 
   spy.mockRestore();
 });
@@ -314,10 +314,10 @@ describe('装饰器', () => {
     const my = new MyClass();
     const result = await my.getData();
     expect(result).toBe('foo-bar');
-    expect(getSpy).toBeCalledTimes(1);
-    expect(getSpy).toBeCalledWith('key');
-    expect(setSpy).toBeCalledTimes(1);
-    expect(setSpy).toBeCalledWith('key', 'foo-bar', 1000);
+    expect(getSpy).toHaveBeenCalledTimes(1);
+    expect(getSpy).toHaveBeenCalledWith('key');
+    expect(setSpy).toHaveBeenCalledTimes(1);
+    expect(setSpy).toHaveBeenCalledWith('key', 'foo-bar', 1000);
 
     getSpy.mockRestore();
     setSpy.mockRestore();
@@ -339,10 +339,10 @@ describe('装饰器', () => {
     const my = new MyClass();
     const result = await my.getData();
     expect(result).toBe('foo');
-    expect(getSpy).toBeCalledTimes(1);
-    expect(getSpy).toBeCalledWith('key');
-    expect(setSpy).toBeCalledTimes(0);
-    expect(spy).toBeCalledTimes(0);
+    expect(getSpy).toHaveBeenCalledTimes(1);
+    expect(getSpy).toHaveBeenCalledWith('key');
+    expect(setSpy).toHaveBeenCalledTimes(0);
+    expect(spy).toHaveBeenCalledTimes(0);
 
     getSpy.mockRestore();
     setSpy.mockRestore();
@@ -369,8 +369,8 @@ describe('装饰器', () => {
 
     const result = await Promise.all([my.getData(), my.getData(), my.getData()]);
 
-    expect(spy).toBeCalledTimes(1);
-    expect(setSpy).toBeCalledTimes(1);
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(setSpy).toHaveBeenCalledTimes(1);
     expect(result).toMatchObject(['foo-bar', 'a-foo', 'a-foo']);
 
     getSpy.mockRestore();
@@ -411,9 +411,9 @@ describe('装饰器', () => {
       my.getData1(),
     ]);
 
-    expect(spy1).toBeCalledTimes(1);
-    expect(spy2).toBeCalledTimes(0);
-    expect(setSpy).toBeCalledTimes(1);
+    expect(spy1).toHaveBeenCalledTimes(1);
+    expect(spy2).toHaveBeenCalledTimes(0);
+    expect(setSpy).toHaveBeenCalledTimes(1);
     expect(result).toMatchObject(['foo-bar', 'a-foo', 'a-foo', 'a-foo']);
 
     getSpy.mockRestore();
@@ -435,11 +435,11 @@ describe('装饰器', () => {
     const my = new MyClass();
     await Promise.all([my.getData(1), my.getData(2), my.getData(3), my.getData('abc')]);
 
-    expect(spy).toBeCalledTimes(4);
-    expect(spy).toBeCalledWith(1);
-    expect(spy).toBeCalledWith(2);
-    expect(spy).toBeCalledWith(3);
-    expect(spy).toBeCalledWith('abc');
+    expect(spy).toHaveBeenCalledTimes(4);
+    expect(spy).toHaveBeenCalledWith(1);
+    expect(spy).toHaveBeenCalledWith(2);
+    expect(spy).toHaveBeenCalledWith(3);
+    expect(spy).toHaveBeenCalledWith('abc');
 
     getSpy.mockRestore();
     setSpy.mockRestore();
@@ -458,8 +458,8 @@ describe('装饰器', () => {
     const my = new MyClass();
     const result = await my.getData();
     expect(result).toBe('foo');
-    expect(getSpy).toBeCalledTimes(1);
-    expect(setSpy).toBeCalledTimes(0);
+    expect(getSpy).toHaveBeenCalledTimes(1);
+    expect(setSpy).toHaveBeenCalledTimes(0);
 
     getSpy.mockRestore();
     setSpy.mockRestore();

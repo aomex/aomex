@@ -3,7 +3,8 @@ import { mockServer } from '../fixture/mock-server';
 import { createReadStream } from 'fs';
 import { dirname } from 'node:path';
 import { join } from 'path';
-import stream, { Stream } from 'stream';
+import { Stream } from 'stream';
+import { finished } from 'node:stream/promises';
 import createHttpError from 'http-errors';
 
 const dir = dirname(import.meta.dirname);
@@ -78,9 +79,8 @@ describe('flush', () => {
     res.flush();
     expect(pipeSpy).toHaveBeenCalledWith(res);
     expect(resSpy).toHaveBeenCalledTimes(0);
-    stream.finished(reader, () => {
-      expect(resSpy).toHaveBeenCalledTimes(1);
-    });
+    await finished(reader);
+    expect(resSpy).toHaveBeenCalledTimes(1);
   });
 
   test('HEAD方法不返回内容', async () => {
@@ -253,7 +253,7 @@ describe('content-type', () => {
 
   test('无法识别的类型则报错', async () => {
     const { res } = await mockServer((agent) => agent.get('/'));
-    expect(() => (res.contentType = 'apppp')).toThrowError();
+    expect(() => (res.contentType = 'apppp')).toThrow();
     res.flush();
   });
 });
@@ -280,8 +280,8 @@ describe('状态码', async () => {
 
   test('状态码必须在100-999之间', async () => {
     const { res } = await mockServer((agent) => agent.get('/'));
-    expect(() => (res.statusCode = 10)).toThrowError();
-    expect(() => (res.statusCode = 6000)).toThrowError();
+    expect(() => (res.statusCode = 10)).toThrow();
+    expect(() => (res.statusCode = 6000)).toThrow();
     res.flush();
   });
 

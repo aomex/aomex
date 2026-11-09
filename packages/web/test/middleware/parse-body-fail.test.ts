@@ -29,7 +29,7 @@ vi.mock('formidable', async (importOriginal) => {
   return { default: create };
 });
 
-test('form.parse 拒绝后清理已落盘临时文件', async () => {
+test('form.parse 拒绝后清理已落盘临时文件', { timeout: 10_000 }, async () => {
   captured.length = 0;
 
   await new Promise<void>((resolve, reject) => {
@@ -47,6 +47,11 @@ test('form.parse 拒绝后清理已落盘临时文件', async () => {
           (err) => {
             expect(err).toBeTruthy();
             expect(captured.length).toBeGreaterThan(0);
+            // 结束连接以触发 parse-body catch 里的 request close 兜底清理
+            res.statusCode = 400;
+            res.end();
+            req.destroy();
+            server.close();
             resolve();
           },
         );
@@ -57,12 +62,10 @@ test('form.parse 拒绝后清理已落盘临时文件', async () => {
       .post('/')
       .attach('files', join(dir, 'fixture/upload-1.txt'))
       .attach('files', join(dir, 'fixture/upload-2.txt'))
-      .end(() => {
-        server.close();
-      });
+      .end(() => {});
   });
 
   for (const filepath of captured) {
-    await expect.poll(() => existsSync(filepath)).toBeFalsy();
+    await expect.poll(() => existsSync(filepath), { timeout: 5_000 }).toBeFalsy();
   }
 });

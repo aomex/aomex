@@ -62,7 +62,7 @@ test('逻辑异常时也记录报错信息', async () => {
       traceId = id;
       throw new Error('xx-yy-zz');
     }),
-  ).rejects.toThrowError('xx-yy-zz');
+  ).rejects.toThrow('xx-yy-zz');
   const record = asyncTrace.getRecord(traceId);
   expect(record).toMatchObject({
     id: traceId,

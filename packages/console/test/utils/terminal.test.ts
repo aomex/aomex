@@ -32,7 +32,7 @@ test('打印表格', () => {
     [2, '李四', '男'],
     [3, '翠花', '女'],
   ]);
-  expect(spy).toBeCalledWith(
+  expect(spy).toHaveBeenCalledWith(
     `╔══════╤══════╤══════╗
 ║ 编号 │ 姓名 │ 性别 ║
 ╟──────┼──────┼──────╢
@@ -49,7 +49,7 @@ test('打印表格', () => {
 test('警告', () => {
   const spy = vitest.spyOn(console, 'warn');
   terminal.printWarning('放学别跑');
-  expect(spy).toBeCalledTimes(1);
+  expect(spy).toHaveBeenCalledTimes(1);
   terminal.printWarning(1, true, {}, []);
   spy.mockRestore();
 });
@@ -57,7 +57,7 @@ test('警告', () => {
 test('日志', () => {
   const spy = vitest.spyOn(console, 'log');
   terminal.print('放学别跑');
-  expect(spy).toBeCalledTimes(1);
+  expect(spy).toHaveBeenCalledTimes(1);
   terminal.print(1, true, {}, []);
   spy.mockRestore();
 });
@@ -65,7 +65,7 @@ test('日志', () => {
 test('错误', () => {
   const spy = vitest.spyOn(console, 'error');
   terminal.printError('放学别跑');
-  expect(spy).toBeCalledTimes(1);
+  expect(spy).toHaveBeenCalledTimes(1);
   terminal.printError(1, true, {}, []);
   spy.mockRestore();
 });
@@ -73,7 +73,7 @@ test('错误', () => {
 test('成功', () => {
   const spy = vitest.spyOn(console, 'log');
   terminal.printSuccess('放学跑了');
-  expect(spy).toBeCalledTimes(1);
+  expect(spy).toHaveBeenCalledTimes(1);
   terminal.printSuccess(1, true, {}, []);
   spy.mockRestore();
 });

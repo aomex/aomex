@@ -59,7 +59,6 @@ test('缓存指令实例', async () => {
     mount: [commanders([commander])],
   });
 
-  // @ts-expect-error
   const spy = vitest.spyOn(commander, 'toMiddleware');
 
   await Promise.all([

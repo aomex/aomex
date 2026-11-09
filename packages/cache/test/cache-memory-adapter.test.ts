@@ -74,7 +74,7 @@ describe('自增', async () => {
     const store = memoryAdapter();
 
     await store.setValue('foo', '"30"');
-    await expect(() => store.increaseValue('foo')).rejects.toThrowError();
+    await expect(() => store.increaseValue('foo')).rejects.toThrow();
   });
 });
 
@@ -111,7 +111,7 @@ describe('自减', async () => {
     const store = memoryAdapter();
 
     await store.setValue('foo', '"30"');
-    await expect(() => store.decreaseValue('foo')).rejects.toThrowError();
+    await expect(() => store.decreaseValue('foo')).rejects.toThrow();
   });
 });
 

@@ -17,8 +17,8 @@ vitest.mock('pidusage', () => ({
 const testDir = dirname(import.meta.dirname);
 
 let port: number;
-beforeEach(() => {
-  port = getPort();
+beforeEach(async () => {
+  port = await getPort();
 });
 
 test('连接服务', async () => {
@@ -40,8 +40,8 @@ test('连接服务', async () => {
   const code = await app.run('cron:stats');
   await new Promise((resolve) => server.close(resolve));
   expect(code).toBe(0);
-  expect(spy).toBeCalledTimes(1);
-  expect(spy).toBeCalledWith('cron:stats');
+  expect(spy).toHaveBeenCalledTimes(1);
+  expect(spy).toHaveBeenCalledWith('cron:stats');
 });
 
 test('接收消息', { timeout: 9_000 }, async () => {

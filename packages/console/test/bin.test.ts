@@ -22,7 +22,7 @@ afterEach(() => {
 });
 
 test('找不到入口文件报错', async () => {
-  expect(() => execSync(`node ${bin}`, { cwd: dir, encoding: 'utf8' })).toThrowError(
+  expect(() => execSync(`node ${bin}`, { cwd: dir, encoding: 'utf8' })).toThrow(
     'CLI entry file is not found',
   );
 });

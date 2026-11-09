@@ -10,8 +10,8 @@ test('标准输出', async () => {
     timestamp: new Date(1730296983321),
     level: 'foo',
   });
-  expect(spy).toBeCalledTimes(1);
-  expect(spy).toBeCalledWith('[foo] 2024-10-30 22:03:03 hello world\n');
+  expect(spy).toHaveBeenCalledTimes(1);
+  expect(spy).toHaveBeenCalledWith('[foo] 2024-10-30 22:03:03 hello world\n');
   spy.mockRestore();
 });
 
@@ -23,7 +23,7 @@ test('标准错误', async () => {
     timestamp: new Date(1730296983321),
     level: 'foo',
   });
-  expect(spy).toBeCalledTimes(1);
+  expect(spy).toHaveBeenCalledTimes(1);
   expect(spy).toHaveBeenLastCalledWith('[foo] 2024-10-30 22:03:03 hello world\n');
   spy.mockRestore();
 });

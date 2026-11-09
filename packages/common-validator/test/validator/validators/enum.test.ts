@@ -71,7 +71,7 @@ test('严格模式下，布尔值不允许与字符串对比', async () => {
 });
 
 test('枚举值不能是空值', () => {
-  expect(() => new EnumValidator([''])).toThrowError();
+  expect(() => new EnumValidator([''])).toThrow();
 });
 
 test('枚举值包含字符串0时可以正确判断', async () => {
@@ -83,8 +83,8 @@ test('枚举值包含字符串0时可以正确判断', async () => {
 });
 
 test('枚举值只能是数字、字符串或者布尔值', () => {
-  expect(() => new EnumValidator([{}])).toThrowError();
-  expect(() => new EnumValidator([1n])).toThrowError();
+  expect(() => new EnumValidator([{}])).toThrow();
+  expect(() => new EnumValidator([1n])).toThrow();
 });
 
 test('获取文档', () => {

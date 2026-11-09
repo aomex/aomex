@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/common';
+import { middleware, sleep } from '@aomex/common';
 import type { WebMiddleware } from '../override';
 import formidable from 'formidable';
 import coBody from 'co-body';
@@ -45,7 +45,24 @@ export const parseBody = (): WebMiddleware => {
 
       const cleanupFiles = () => {
         for (const filepath of filepaths) {
-          void unlink(filepath).catch(() => {});
+          // formidable 可能仍握有写流，首次 unlink 会 EBUSY；短重试覆盖 close 前后窗口
+          void (async () => {
+            for (let i = 0; i < 5; i++) {
+              try {
+                await unlink(filepath);
+                return;
+              } catch (e) {
+                const code =
+                  e && typeof e === 'object' && 'code' in e
+                    ? (e as NodeJS.ErrnoException).code
+                    : undefined;
+                if (code === 'ENOENT') return;
+                // Windows 上文件占用常见为 EPERM
+                if (code !== 'EBUSY' && code !== 'EPERM') return;
+                await sleep(20 * (i + 1));
+              }
+            }
+          })();
         }
       };
 
