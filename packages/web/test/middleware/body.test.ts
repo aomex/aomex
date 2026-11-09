@@ -146,3 +146,112 @@ test('携带文件', async () => {
     }
   `);
 });
+
+test('顶层文件字段识别为 multipart', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+
+  const md = body({
+    avatar: rule.file(),
+  });
+  md['openapi']().onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  expect(doc['paths']).toMatchInlineSnapshot(`
+    {
+      "/": {
+        "get": {
+          "requestBody": {
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "avatar": {
+                      "format": "binary",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "avatar",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {},
+        },
+      },
+    }
+  `);
+});
+
+test('嵌套对象中的文件字段识别为 multipart', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+
+  const md = body({
+    meta: rule.object({
+      attachment: rule.file(),
+    }),
+  });
+  md['openapi']().onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  expect(doc['paths']).toMatchInlineSnapshot(`
+    {
+      "/": {
+        "get": {
+          "requestBody": {
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "meta": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "attachment": {
+                          "format": "binary",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "attachment",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "meta",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {},
+        },
+      },
+    }
+  `);
+});

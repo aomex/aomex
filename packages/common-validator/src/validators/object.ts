@@ -198,6 +198,15 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
 
   declare protected copy: () => ObjectValidator<T>;
 
+  protected override nested(): Validator[] {
+    const { properties, keepAdditional } = this.config;
+    const nested = properties ? Object.values(properties) : [];
+    if (keepAdditional && typeof keepAdditional === 'object' && keepAdditional.value) {
+      nested.push(keepAdditional.value);
+    }
+    return nested;
+  }
+
   protected override copyConfig(prev: ObjectValidator): this {
     super.copyConfig(prev);
     this.config.properties = prev.config.properties && {

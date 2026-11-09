@@ -58,6 +58,10 @@ export class AnyOfValidator<T = never> extends Validator<T> {
     return this;
   }
 
+  protected override nested(): Validator[] {
+    return this.config.validators;
+  }
+
   protected override toDocument(): OpenAPI.SchemaObject {
     const { validators } = this.config;
     return {

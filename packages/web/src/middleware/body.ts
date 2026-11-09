@@ -6,7 +6,7 @@ import {
   middleware,
   OpenAPI,
 } from '@aomex/common';
-import type { WebMiddleware } from '../override';
+import { FileValidator, type WebMiddleware } from '../override';
 
 /**
  * 验证请求实体
@@ -27,7 +27,7 @@ export const body = <T extends { [key: string]: P }, P extends Validator>(
       onMethod(methodItem) {
         const schema = Validator.toDocument(rule.object(fields))
           .schema as OpenAPI.SchemaObject;
-        const contentType = JSON.stringify(schema).includes('"format":"binary"')
+        const contentType = Validator.has(fields, FileValidator)
           ? 'multipart/form-data'
           : 'application/json';
 

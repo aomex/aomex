@@ -99,6 +99,21 @@ export abstract class Validator<T = unknown> {
     strict: false,
   };
 
+  /**
+   * 判断验证器（含嵌套）中是否包含指定类型
+   */
+  public static has(
+    source: Validator | Record<string, Validator>,
+    Type: abstract new (...args: any[]) => object,
+  ): boolean {
+    const roots = source instanceof Validator ? [source] : Object.values(source);
+    const walk = (validator: Validator): boolean => {
+      if (validator instanceof Type) return true;
+      return validator.nested().some(walk);
+    };
+    return roots.some(walk);
+  }
+
   public static toDocument(validator: Validator): OpenAPI.ParameterBaseObject {
     const {
       required,
@@ -258,6 +273,13 @@ export abstract class Validator<T = unknown> {
     // @ts-expect-error
     this.config = { ...prev.config };
     return this;
+  }
+
+  /**
+   * 直接嵌套的子验证器，供 `Validator.has` 递归探测
+   */
+  protected nested(): Validator[] {
+    return [];
   }
 
   protected toDocument(): OpenAPI.SchemaObject {

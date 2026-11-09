@@ -139,6 +139,11 @@ export class ArrayValidator<T = unknown[]> extends Validator<T> {
 
   declare protected copy: () => ArrayValidator<T>;
 
+  protected override nested(): Validator[] {
+    const { itemValidator } = this.config;
+    return itemValidator ? [itemValidator] : [];
+  }
+
   protected override toDocument(): OpenAPI.SchemaObject {
     const { itemValidator, lengthRange } = this.config;
 

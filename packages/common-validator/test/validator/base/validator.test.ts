@@ -1,6 +1,16 @@
 import { describe, expect, test } from 'vitest';
 import { MockValidator } from '../../mock/mock-validator';
-import { ValidateResult, Validator } from '../../../src';
+import {
+  AllOfValidator,
+  AnyOfValidator,
+  ArrayValidator,
+  NumberValidator,
+  ObjectValidator,
+  OneOfValidator,
+  StringValidator,
+  ValidateResult,
+  Validator,
+} from '../../../src';
 import sleep from 'sleep-promise';
 
 describe('链式调用返回新的实例', () => {
@@ -209,4 +219,110 @@ test('获取文档', () => {
       },
     }
   `);
+});
+
+describe('Validator.has', () => {
+  test('直接命中', () => {
+    expect(Validator.has(new StringValidator(), StringValidator)).toBeTruthy();
+    expect(Validator.has(new StringValidator(), NumberValidator)).toBeFalsy();
+  });
+
+  test('fields 对象', () => {
+    expect(
+      Validator.has(
+        { a: new NumberValidator(), b: new StringValidator() },
+        StringValidator,
+      ),
+    ).toBeTruthy();
+    expect(
+      Validator.has(
+        { a: new NumberValidator(), b: new NumberValidator() },
+        StringValidator,
+      ),
+    ).toBeFalsy();
+  });
+
+  test('optional / transform 后仍是同一类型', () => {
+    expect(
+      Validator.has(new StringValidator()['optional'](), StringValidator),
+    ).toBeTruthy();
+    expect(
+      Validator.has(
+        new StringValidator()['transform']((v) => v),
+        StringValidator,
+      ),
+    ).toBeTruthy();
+  });
+
+  test('嵌套 array', () => {
+    expect(
+      Validator.has(new ArrayValidator(new StringValidator()), StringValidator),
+    ).toBeTruthy();
+    expect(
+      Validator.has(new ArrayValidator(new NumberValidator()), StringValidator),
+    ).toBeFalsy();
+  });
+
+  test('嵌套 object', () => {
+    expect(
+      Validator.has(
+        new ObjectValidator({ name: new StringValidator() }),
+        StringValidator,
+      ),
+    ).toBeTruthy();
+    expect(
+      Validator.has(new ObjectValidator({ age: new NumberValidator() }), StringValidator),
+    ).toBeFalsy();
+  });
+
+  test('嵌套 object.additional', () => {
+    expect(
+      Validator.has(
+        new ObjectValidator().additional({ value: new StringValidator() }),
+        StringValidator,
+      ),
+    ).toBeTruthy();
+  });
+
+  test('嵌套 anyOf / oneOf / allOf', () => {
+    expect(
+      Validator.has(
+        new AnyOfValidator([new NumberValidator(), new StringValidator()]),
+        StringValidator,
+      ),
+    ).toBeTruthy();
+    expect(
+      Validator.has(
+        new OneOfValidator([new NumberValidator(), new StringValidator()]),
+        StringValidator,
+      ),
+    ).toBeTruthy();
+    expect(
+      Validator.has(
+        new AllOfValidator([new NumberValidator(), new StringValidator()]),
+        StringValidator,
+      ),
+    ).toBeTruthy();
+    expect(
+      Validator.has(
+        new AnyOfValidator([new NumberValidator(), new NumberValidator()]),
+        StringValidator,
+      ),
+    ).toBeFalsy();
+  });
+
+  test('多层嵌套', () => {
+    expect(
+      Validator.has(
+        {
+          list: new ArrayValidator(
+            new ObjectValidator({
+              tags: new AnyOfValidator([new NumberValidator(), new StringValidator()]),
+            }),
+          ),
+        },
+        StringValidator,
+      ),
+    ).toBeTruthy();
+  });
 });
