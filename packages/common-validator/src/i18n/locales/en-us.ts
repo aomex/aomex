@@ -8,6 +8,7 @@ export const en = I18n.satisfies(zh).define({
     array: {
       must_be_array: '{{label}} must be array',
       length_not_in_range: '{{label}} out of array length range',
+      not_unique: '{{label}} array items must be unique',
     },
     boolean: {
       must_be_boolean: '{{label}} must be boolean',

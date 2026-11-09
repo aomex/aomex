@@ -7,6 +7,7 @@ export const zh = I18n.define({
     array: {
       must_be_array: '{{label}}必须是数组类型',
       length_not_in_range: '{{label}}数组长度不在指定范围内',
+      not_unique: '{{label}}数组元素不能重复',
     },
     boolean: {
       must_be_boolean: '{{label}}必须是布尔类型',
