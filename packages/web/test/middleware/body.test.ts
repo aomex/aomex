@@ -1,7 +1,7 @@
 import { expect, test, vitest } from 'vitest';
 import { mockServer } from '../fixture/mock-server';
 import { body } from '../../src';
-import { OpenAPI, compose, rule } from '@aomex/common';
+import { OpenAPI, compose, rule, schema } from '@aomex/common';
 
 test('包含next', async () => {
   const { ctx, res } = await mockServer((agent) =>
@@ -35,6 +35,37 @@ test('数据不合法时抛出错误', async () => {
   await expect(fn(ctx)).rejects.toThrow();
   expect(spy).toHaveBeenCalledOnce();
 
+  res.flush();
+});
+
+test('接收 schema', async () => {
+  const { ctx, res } = await mockServer((agent) =>
+    agent.post('/').send({ name: 'tom', age: '18' }),
+  );
+
+  const userSchema = schema({
+    name: rule.string(),
+    age: rule.int().optional(),
+  });
+  await compose([body(userSchema)])(ctx);
+  // @ts-expect-error
+  expect(ctx['body']).toStrictEqual({ name: 'tom', age: 18 });
+  res.flush();
+});
+
+test('接收派生 schema', async () => {
+  const { ctx, res } = await mockServer((agent) => agent.post('/').send({ name: 'tom' }));
+
+  const createSchema = schema({
+    id: rule.int(),
+    name: rule.string(),
+    email: rule.email(),
+  })
+    .omit('id')
+    .partial('email');
+  await compose([body(createSchema)])(ctx);
+  // @ts-expect-error
+  expect(ctx['body']).toStrictEqual({ name: 'tom', email: undefined });
   res.flush();
 });
 
@@ -81,6 +112,60 @@ test('文档', () => {
                   "required": [
                     "foo",
                     "baz",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {},
+        },
+      },
+    }
+  `);
+});
+
+test('文档：schema', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+
+  const md = body(
+    schema({
+      foo: rule.string(),
+      bar: rule.number().optional(),
+    }),
+  );
+  md['openapi']().onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  expect(doc['paths']).toMatchInlineSnapshot(`
+    {
+      "/": {
+        "get": {
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "bar": {
+                      "type": "number",
+                    },
+                    "foo": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "foo",
                   ],
                   "type": "object",
                 },

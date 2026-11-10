@@ -1,7 +1,7 @@
 import { expect, test, vitest } from 'vitest';
 import { mockServer } from '../fixture/mock-server';
 import { query } from '../../src';
-import { OpenAPI, compose, rule } from '@aomex/common';
+import { OpenAPI, compose, rule, schema } from '@aomex/common';
 
 test('包含next', async () => {
   const { ctx, res } = await mockServer((agent) =>
@@ -31,6 +31,19 @@ test('数据不合法时抛出错误', async () => {
   await expect(fn(ctx)).rejects.toThrow();
   expect(spy).toHaveBeenCalledOnce();
 
+  res.flush();
+});
+
+test('接收 schema', async () => {
+  const { ctx, res } = await mockServer((agent) => agent.get('/?keyword=foo&page=2'));
+
+  const filterSchema = schema({
+    keyword: rule.string().optional(),
+    page: rule.int().default(1),
+  });
+  await compose([query(filterSchema)])(ctx);
+  // @ts-expect-error
+  expect(ctx['query']).toStrictEqual({ keyword: 'foo', page: 2 });
   res.flush();
 });
 
@@ -86,6 +99,62 @@ test('文档', () => {
                 "required": true,
                 "schema": {
                   "type": "boolean",
+                },
+              },
+            ],
+            "responses": {},
+          },
+        },
+      },
+    }
+  `);
+});
+
+test('文档：schema', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+
+  const md = query(
+    schema({
+      foo: rule.string(),
+      bar: rule.number().optional(),
+    }),
+  );
+  md['openapi']().onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  expect(doc).toMatchInlineSnapshot(`
+    {
+      "info": {
+        "title": "",
+        "version": "",
+      },
+      "openapi": "",
+      "paths": {
+        "/": {
+          "get": {
+            "parameters": [
+              {
+                "in": "query",
+                "name": "foo",
+                "required": true,
+                "schema": {
+                  "type": "string",
+                },
+              },
+              {
+                "in": "query",
+                "name": "bar",
+                "schema": {
+                  "type": "number",
                 },
               },
             ],

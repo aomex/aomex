@@ -1,7 +1,7 @@
 import { expect, test, vitest } from 'vitest';
 import { mockServer } from '../fixture/mock-server';
 import { params } from '../../src';
-import { OpenAPI, compose, rule } from '@aomex/common';
+import { OpenAPI, compose, rule, schema } from '@aomex/common';
 
 test('包含next', async () => {
   const { ctx, res } = await mockServer((agent) =>
@@ -35,6 +35,20 @@ test('数据不合法时抛出错误', async () => {
   await expect(fn(ctx)).rejects.toThrow();
   expect(spy).toHaveBeenCalledOnce();
 
+  res.flush();
+});
+
+test('接收 schema', async () => {
+  const { ctx, req, res } = await mockServer((agent) => agent.get('/'));
+
+  req.params = { id: '12', slug: 'hello' };
+  const idSchema = schema({
+    id: rule.int(),
+    slug: rule.string(),
+  });
+  await compose([params(idSchema)])(ctx);
+  // @ts-expect-error
+  expect(ctx['params']).toStrictEqual({ id: 12, slug: 'hello' });
   res.flush();
 });
 
@@ -91,6 +105,63 @@ test('文档', () => {
                 "required": true,
                 "schema": {
                   "type": "boolean",
+                },
+              },
+            ],
+            "responses": {},
+          },
+        },
+      },
+    }
+  `);
+});
+
+test('文档：schema', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+
+  const md = params(
+    schema({
+      id: rule.int(),
+      slug: rule.string(),
+    }),
+  );
+  md['openapi']().onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  expect(doc).toMatchInlineSnapshot(`
+    {
+      "info": {
+        "title": "",
+        "version": "",
+      },
+      "openapi": "",
+      "paths": {
+        "/": {
+          "get": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "id",
+                "required": true,
+                "schema": {
+                  "type": "integer",
+                },
+              },
+              {
+                "in": "path",
+                "name": "slug",
+                "required": true,
+                "schema": {
+                  "type": "string",
                 },
               },
             ],

@@ -5,13 +5,14 @@ import {
   ValidateDeniedError,
   middleware,
   OpenAPI,
+  ValidatorSchema,
 } from '@aomex/common';
 import { FileValidator, type WebMiddleware } from '../override';
 
 /**
  * 验证请求实体
  */
-export const body = <T extends { [key: string]: P }, P extends Validator>(
+export const body = <T extends { [key: string]: Validator } | ValidatorSchema<any>>(
   fields: T,
 ): WebMiddleware<{ readonly body: Validator.Infer<T> }> => {
   return middleware.web({
@@ -25,9 +26,12 @@ export const body = <T extends { [key: string]: P }, P extends Validator>(
     },
     openapi: {
       onMethod(methodItem) {
-        const schema = Validator.toDocument(rule.object(fields))
+        const source = (fields instanceof ValidatorSchema ? fields['rules'] : fields) as {
+          [key: string]: Validator;
+        };
+        const schema = Validator.toDocument(rule.object(source))
           .schema as OpenAPI.SchemaObject;
-        const contentType = Validator.has(fields, FileValidator)
+        const contentType = Validator.has(source, FileValidator)
           ? 'multipart/form-data'
           : 'application/json';
 
@@ -35,7 +39,7 @@ export const body = <T extends { [key: string]: P }, P extends Validator>(
           content: {
             [contentType]: { schema },
           },
-          required: Object.values(fields).some(
+          required: Object.values(source).some(
             (validator) => Validator.toDocument(validator).required,
           ),
         };

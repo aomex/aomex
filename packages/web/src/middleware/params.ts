@@ -1,10 +1,16 @@
-import { middleware, validate, Validator, ValidateDeniedError } from '@aomex/common';
+import {
+  middleware,
+  validate,
+  Validator,
+  ValidateDeniedError,
+  ValidatorSchema,
+} from '@aomex/common';
 import type { WebMiddleware } from '../override';
 
 /**
  * 验证请求路径参数
  */
-export const params = <T extends { [key: string]: P }, P extends Validator>(
+export const params = <T extends { [key: string]: Validator } | ValidatorSchema<any>>(
   fields: T,
 ): WebMiddleware<{ readonly params: Validator.Infer<T> }> => {
   return middleware.web({
@@ -19,7 +25,11 @@ export const params = <T extends { [key: string]: P }, P extends Validator>(
     openapi: {
       onMethod(methodItem) {
         methodItem.parameters ||= [];
-        Object.entries(fields).forEach(([name, validator]) => {
+        Object.entries(
+          (fields instanceof ValidatorSchema ? fields['rules'] : fields) as {
+            [key: string]: Validator;
+          },
+        ).forEach(([name, validator]) => {
           const validatorDocument = Validator.toDocument(validator);
           methodItem.parameters!.push({
             name,
