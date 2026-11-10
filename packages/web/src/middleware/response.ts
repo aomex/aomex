@@ -37,24 +37,9 @@ type ClientErrorStatus =
   | 431
   | 451;
 type ServerErrorStatus =
-  | 500
-  | 501
-  | 502
-  | 503
-  | 504
-  | 505
-  | 506
-  | 507
-  | 508
-  | 509
-  | 510
-  | 511;
+  500 | 501 | 502 | 503 | 504 | 505 | 506 | 507 | 508 | 509 | 510 | 511;
 type HttpStatus =
-  | OKStatus
-  | EmptyStatus
-  | RedirectStatus
-  | ClientErrorStatus
-  | ServerErrorStatus;
+  OKStatus | EmptyStatus | RedirectStatus | ClientErrorStatus | ServerErrorStatus;
 
 export interface WebResponseOptions<
   Code extends HttpStatus,

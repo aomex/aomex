@@ -5,10 +5,7 @@ export interface GlobPathFullOptions {
 }
 
 export type GlobPathOptions =
-  | string
-  | string[]
-  | GlobPathFullOptions
-  | GlobPathFullOptions[];
+  string | string[] | GlobPathFullOptions | GlobPathFullOptions[];
 
 export const normalizeGlobPath = (paths: GlobPathOptions): GlobPathFullOptions[] => {
   if (typeof paths === 'string') {

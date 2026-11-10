@@ -3,13 +3,7 @@ import { ValidateResult, type TransformedValidator, Validator } from '../base';
 
 export declare namespace AnyValidator {
   type Type =
-    | number
-    | string
-    | boolean
-    | any[]
-    | { [K: string]: unknown }
-    | bigint
-    | Buffer;
+    number | string | boolean | any[] | { [K: string]: unknown } | bigint | Buffer;
 }
 
 export class AnyValidator<T = AnyValidator.Type> extends Validator<T> {

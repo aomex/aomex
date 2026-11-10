@@ -9,12 +9,10 @@ export type ArrayHeaderKeys = LowerArrayHeaderKeys | UpperArrayHeaderKeys;
 export type StringHeaderKeys = LowerStringHeaderKeys | UpperStringHeaderKeys;
 
 export type LowerStringHeaderKeys =
-  | LowerExternalStringHeaderKeys
-  | LowerOfficialStringHeaderKeys;
+  LowerExternalStringHeaderKeys | LowerOfficialStringHeaderKeys;
 
 export type UpperStringHeaderKeys =
-  | UpperExternalStringHeaderKeys
-  | UpperOfficialStringHeaderKeys;
+  UpperExternalStringHeaderKeys | UpperOfficialStringHeaderKeys;
 
 export type LowerExternalStringHeaderKeys =
   | 'accept-encoding'

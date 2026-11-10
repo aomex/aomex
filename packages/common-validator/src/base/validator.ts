@@ -30,8 +30,7 @@ export declare namespace Validator {
   }
 
   export type ParameterOrFn<T> =
-    | ConvertOptionalTo<T, never>
-    | (() => ConvertOptionalTo<T, never>);
+    ConvertOptionalTo<T, never> | (() => ConvertOptionalTo<T, never>);
 
   export type Infer<T> =
     T extends ValidatorSchema<infer U>

@@ -31,7 +31,7 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
     /**
      * 可选名称，供 OpenAPI 等场景使用；派生操作不会继承
      */
-    readonly name?: string,
+    protected readonly name?: string,
   ) {}
 
   /**
@@ -104,25 +104,25 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
   /**
    * 合并字段对象，同名键以传入方为准
    */
-  extend<U extends Record<string, Validator>>(
+  extend<U extends { [K in keyof U]: Validator }>(
     fields: U,
-  ): ValidatorSchema<Omit<T, keyof U> & U> {
+  ): ValidatorSchema<Omit<T, keyof U> & { [K in keyof U]: U[K] }> {
     return new ValidatorSchema({
       ...this.rules,
       ...fields,
-    }) as unknown as ValidatorSchema<Omit<T, keyof U> & U>;
+    }) as unknown as ValidatorSchema<Omit<T, keyof U> & { [K in keyof U]: U[K] }>;
   }
 
   /**
    * 合并另一个 schema，同名键以传入方为准
    */
-  merge<U extends Record<string, Validator>>(
+  merge<U extends { [K in keyof U]: Validator }>(
     other: ValidatorSchema<U>,
-  ): ValidatorSchema<Omit<T, keyof U> & U> {
+  ): ValidatorSchema<Omit<T, keyof U> & { [K in keyof U]: U[K] }> {
     return new ValidatorSchema({
       ...this.rules,
       ...other.rules,
-    }) as unknown as ValidatorSchema<Omit<T, keyof U> & U>;
+    }) as unknown as ValidatorSchema<Omit<T, keyof U> & { [K in keyof U]: U[K] }>;
   }
 
   /**

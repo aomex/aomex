@@ -1,121 +1,43 @@
-# Installation
+# @aomex/prisma
 
-Create base models and validators from [prisma](https://github.com/prisma/prisma) schema
+从 Prisma schema 生成 aomex 校验用的 `schema`，经 `definePrismaSchema` 解包后使用。
+
+## 安装
 
 ```bash
 pnpm add @aomex/prisma
 ```
 
-# Tested engines
+## 配置
 
-- mysql
-- postgresql
-- mongodb
-- sqlite
-
-# Generator
-
-1. Inject to File `prisma/schema.prisma`
-
-```diff
-datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+```prisma
+generator aomex {
+  provider = "aomex-prisma"
+  // 默认输出：src/generated/aomex/prisma
 }
-
-generator client {
-  provider = "prisma-client-js"
-}
-
-+ generator aomex {
-+   provider = "aomex-prisma"
-+ }
-
-model user {
-  id    Int  @id @default(autoincrement())
-  name  String
-  age   Int?
-}
-
 ```
-
-2. Execute in terminal
 
 ```bash
 npx prisma generate
 ```
 
-3. See output
+## 业务入口
 
-```typescript
-// File: node_modules/@aomex/prisma/dist/index.js
-export class BaseModel {
-  constructor(db) {
-    this.db = db;
-  }
-}
-export class BaseUserModel extends BaseModel {
-  static fields = {
-    id: rule.int(),
-    name: rule.string(),
-    age: rule.int().nullable(),
-  };
+创建 `src/schemas/prisma.schema.ts`（不要直接用生成文件）：
 
-  name = 'user';
-  table = this.db.user;
-  fields = BaseUserModel.fields;
-}
+```ts
+import { definePrismaSchema } from '@aomex/prisma';
+import { rule } from '@aomex/common';
+import { generated } from '../generated/aomex/prisma';
 
-// File: node_modules/@aomex/prisma/dist/index.d.ts
-export declare abstract class BaseModel {
-  protected readonly db: PrismaClient;
-  constructor(db: PrismaClient);
-}
-export declare abstract class BaseUserModel extends BaseModel {
-  fields: {
-    id: IntValidator<number>;
-    name: StringValidator<string>;
-    age: IntValidator<number | null>;
-  };
-
-  readonly name = 'user';
-  readonly table: Prisma.userDelegate<
-    Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-  >;
-  readonly fields: BaseUserModel['fields'];
-}
-```
-
-# Combine models
-
-```typescript
-import { BaseUserModel, combineModels } from '@aomex/prisma';
-import { PrismaClient } from '@prisma/client';
-
-// File: models/user.model.ts
-class UserModel extends BaseUserModel {
-  async getList() {
-    return this.table.findMany({});
-  }
-  // ...Your own business
-}
-
-// FIle: models/index.ts
-export const db = new PrismaClient();
-export const models = combineModels(db, {
-  user: UserModel,
+export const { prismaInput, prismaOutput, prismaEnum } = definePrismaSchema(generated, {
+  user: {
+    input: (s) => s.extend({ password: rule.string() }),
+    output: (s) => s.omit('password'),
+  },
 });
 ```
 
-# Validators
+路由里使用 `prismaInput` / `prismaOutput` / `prismaEnum`。模型与 enum 的键名为 Prisma 原始名称。
 
-```typescript
-import { pick, omit } from 'lodash-es';
-
-// IntValidator<number>
-const ruleId = models.user.fields.id;
-// { id: IntValidator<number>; name: StringValidator<string> }
-const sub1 = pick(models.user.fields, 'id', 'name');
-// { id: IntValidator<number>; age: IntValidator<number | null>; }
-const sub2 = omit(models.user.fields, 'name');
-```
+已测引擎：mysql / postgresql / mongodb / sqlite。

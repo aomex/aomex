@@ -18,6 +18,8 @@ export { ValidatorSchema };
  * type User = Validator.Infer<typeof userSchema>;
  * ```
  */
-export const schema = <T extends Record<string, Validator<any>>>(rules: T) => {
+export const schema = <T extends { [K in keyof T]: Validator }>(
+  rules: T,
+): ValidatorSchema<{ [K in keyof T]: T[K] }> => {
   return new ValidatorSchema(rules);
 };

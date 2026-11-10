@@ -7,15 +7,17 @@ import {
 } from 'mongoose';
 
 export type MongoResult<T, Remove extends boolean> = {
-  [K in keyof T as K extends '__v'
-    ? never
-    : Remove extends true
-      ? K extends (typeof excludedFields)[number]
-        ? never
-        : K
-      : K extends '_id'
-        ? 'id'
-        : K]: T[K] extends mongo.Decimal128 | mongo.ObjectId ? string : T[K];
+  [
+    K in keyof T as K extends '__v'
+      ? never
+      : Remove extends true
+        ? K extends (typeof excludedFields)[number]
+          ? never
+          : K
+        : K extends '_id'
+          ? 'id'
+          : K
+  ]: T[K] extends mongo.Decimal128 | mongo.ObjectId ? string : T[K];
 };
 
 const excludedFields = <const>[

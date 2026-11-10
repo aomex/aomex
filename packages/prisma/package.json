@@ -42,15 +42,11 @@
   },
   "dependencies": {
     "@prisma/generator-helper": "^7.0.0",
-    "lodash.camelcase": "^4.3.0",
-    "lodash.upperfirst": "^4.3.1",
-    "prettier": "^3.6.2"
+    "prettier": "^3.9.10"
   },
   "devDependencies": {
     "@aomex/common": "workspace:^",
     "@prisma/internals": "^7.0.0",
-    "@types/lodash.camelcase": "^4.3.7",
-    "@types/lodash.upperfirst": "^4.3.7",
     "prisma": "^7.0.0"
   }
 }

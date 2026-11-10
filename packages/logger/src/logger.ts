@@ -4,12 +4,7 @@ import timers from 'node:timers/promises';
 
 export namespace Logger {
   export type Level<T extends string> =
-    | 'all'
-    | 'none'
-    | T[]
-    | { from: T; to?: T }
-    | { from?: T; to: T }
-    | { from: T; to: T };
+    'all' | 'none' | T[] | { from: T; to?: T } | { from?: T; to: T } | { from: T; to: T };
 
   export interface Options<T extends string> {
     levels: T[];

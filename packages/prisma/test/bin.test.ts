@@ -25,7 +25,6 @@ test.each(['mysql', 'postgresql', 'mongodb', 'sqlite'])(
   'generate %s',
   async (provider) => {
     const tsFile = path.join(fixtures, `temp.${provider}`, 'index.ts');
-    const helperFile = path.join(fixtures, `temp.${provider}`, 'helper.ts');
     try {
       rmSync(path.dirname(tsFile), { recursive: true });
     } catch {}
@@ -33,7 +32,7 @@ test.each(['mysql', 'postgresql', 'mongodb', 'sqlite'])(
       `${bin} generate --schema ${getSchemaPath(provider)} --generator aomex --config ${getConfigPath(provider)}`,
     );
     expect(existsSync(tsFile)).toBeTruthy();
-    expect(existsSync(helperFile)).toBeTruthy();
+    expect(existsSync(path.join(path.dirname(tsFile), 'helper.ts'))).toBeFalsy();
     try {
       rmSync(path.dirname(tsFile), { recursive: true });
     } catch {}

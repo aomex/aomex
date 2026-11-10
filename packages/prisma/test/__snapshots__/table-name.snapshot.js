@@ -1,333 +1,180 @@
 // @ts-nocheck
-import { rule } from '@aomex/common';
-import { overrideColumnsFactory } from '@aomex/prisma';
-// 如果想覆盖默认生成的类型，可以同目录下创建一个 index.override.ts 文件，然后重新执行 prisma generate 命令
-// import customColumns from './index.override';
-const customColumns = overrideColumnsFactory()({});
-function pick(obj, ...keys) {
-  const subObj = {};
-  for (const key of keys) {
-    if (Object.hasOwn(obj, key)) {
-      subObj[key] = obj[key];
-    }
-  }
-  return subObj;
-}
-function omit(obj, ...keys) {
-  const allKeys = Object.keys(obj);
-  return pick(obj, ...allKeys.filter((key) => !keys.includes(key)));
-}
+/**
+ * 由 aomex-prisma 自动生成，请勿修改。
+ *
+ * 请在业务侧创建 src/schemas/prisma.schema.ts，通过 definePrismaSchema() 解包后再使用：
+ *
+ * ```ts
+ * // src/schemas/prisma.schema.ts
+ * import { definePrismaSchema } from '@aomex/prisma';
+ * import { generated } from '../generated/aomex/prisma';
+ *
+ * export const { prismaInput, prismaOutput, prismaEnum } = definePrismaSchema(
+ *   generated,
+ *   {
+ *     user: {
+ *       input: (s) => s.extend({ password: rule.string() }),
+ *       output: (s) => s.omit('password'),
+ *     },
+ *   },
+ * );
+ * ```
+ *
+ * 本文件仅导出 generated；不要直接当路由 schema / enum 使用。
+ */
+import { rule, schema } from '@aomex/common';
+const prismaEnum = {};
 const lowercaseInputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.lowercase?.id?.input || rule.int().optional(),
+  id: rule.int().optional(),
 };
+const lowercaseInputSchema = schema(lowercaseInputColumns).asName('lowercaseInput');
 const lowercaseOutputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.lowercase?.id?.output || rule.int(),
+  id: rule.int(),
 };
-const uppercaseInputColumns = {
+const lowercaseOutputSchema = schema(lowercaseOutputColumns).asName('lowercaseOutput');
+const UPPERCASEInputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.uppercase?.id?.input || rule.int().optional(),
+  id: rule.int().optional(),
 };
-const uppercaseOutputColumns = {
+const UPPERCASEInputSchema = schema(UPPERCASEInputColumns).asName('UPPERCASEInput');
+const UPPERCASEOutputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.uppercase?.id?.output || rule.int(),
+  id: rule.int(),
 };
+const UPPERCASEOutputSchema = schema(UPPERCASEOutputColumns).asName('UPPERCASEOutput');
 const camelCaseInputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.camelCase?.id?.input || rule.int().optional(),
+  id: rule.int().optional(),
 };
+const camelCaseInputSchema = schema(camelCaseInputColumns).asName('camelCaseInput');
 const camelCaseOutputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.camelCase?.id?.output || rule.int(),
+  id: rule.int(),
 };
-const pascalCaseInputColumns = {
+const camelCaseOutputSchema = schema(camelCaseOutputColumns).asName('camelCaseOutput');
+const PascalCaseInputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.pascalCase?.id?.input || rule.int().optional(),
+  id: rule.int().optional(),
 };
-const pascalCaseOutputColumns = {
+const PascalCaseInputSchema = schema(PascalCaseInputColumns).asName('PascalCaseInput');
+const PascalCaseOutputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.pascalCase?.id?.output || rule.int(),
+  id: rule.int(),
 };
-const titlecaseInputColumns = {
+const PascalCaseOutputSchema = schema(PascalCaseOutputColumns).asName('PascalCaseOutput');
+const TitlecaseInputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.titlecase?.id?.input || rule.int().optional(),
+  id: rule.int().optional(),
 };
-const titlecaseOutputColumns = {
+const TitlecaseInputSchema = schema(TitlecaseInputColumns).asName('TitlecaseInput');
+const TitlecaseOutputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.titlecase?.id?.output || rule.int(),
+  id: rule.int(),
 };
-const snakeCaseInputColumns = {
+const TitlecaseOutputSchema = schema(TitlecaseOutputColumns).asName('TitlecaseOutput');
+const snake_caseInputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.snakeCase?.id?.input || rule.int().optional(),
+  id: rule.int().optional(),
 };
-const snakeCaseOutputColumns = {
+const snake_caseInputSchema = schema(snake_caseInputColumns).asName('snake_caseInput');
+const snake_caseOutputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.snakeCase?.id?.output || rule.int(),
+  id: rule.int(),
 };
-const completeCaseInputColumns = {
+const snake_caseOutputSchema = schema(snake_caseOutputColumns).asName('snake_caseOutput');
+const Complete_CaseInputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.completeCase?.id?.input || rule.int().optional(),
+  id: rule.int().optional(),
 };
-const completeCaseOutputColumns = {
+const Complete_CaseInputSchema = schema(Complete_CaseInputColumns).asName(
+  'Complete_CaseInput',
+);
+const Complete_CaseOutputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.completeCase?.id?.output || rule.int(),
+  id: rule.int(),
+};
+const Complete_CaseOutputSchema = schema(Complete_CaseOutputColumns).asName(
+  'Complete_CaseOutput',
+);
+const prismaInput = {
+  lowercase: lowercaseInputSchema,
+  UPPERCASE: UPPERCASEInputSchema,
+  camelCase: camelCaseInputSchema,
+  PascalCase: PascalCaseInputSchema,
+  Titlecase: TitlecaseInputSchema,
+  snake_case: snake_caseInputSchema,
+  Complete_Case: Complete_CaseInputSchema,
+};
+const prismaOutput = {
+  lowercase: lowercaseOutputSchema,
+  UPPERCASE: UPPERCASEOutputSchema,
+  camelCase: camelCaseOutputSchema,
+  PascalCase: PascalCaseOutputSchema,
+  Titlecase: TitlecaseOutputSchema,
+  snake_case: snake_caseOutputSchema,
+  Complete_Case: Complete_CaseOutputSchema,
 };
 
-export const prismaInput = {
-  lowercase: {
-    /** 所有字段对象 */
-    columns: lowercaseInputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(lowercaseInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(lowercaseInputColumns, ...keys);
-    },
-  },
-  uppercase: {
-    /** 所有字段对象 */
-    columns: uppercaseInputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(uppercaseInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(uppercaseInputColumns, ...keys);
-    },
-  },
-  camelCase: {
-    /** 所有字段对象 */
-    columns: camelCaseInputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(camelCaseInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(camelCaseInputColumns, ...keys);
-    },
-  },
-  pascalCase: {
-    /** 所有字段对象 */
-    columns: pascalCaseInputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(pascalCaseInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(pascalCaseInputColumns, ...keys);
-    },
-  },
-  titlecase: {
-    /** 所有字段对象 */
-    columns: titlecaseInputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(titlecaseInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(titlecaseInputColumns, ...keys);
-    },
-  },
-  snakeCase: {
-    /** 所有字段对象 */
-    columns: snakeCaseInputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(snakeCaseInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(snakeCaseInputColumns, ...keys);
-    },
-  },
-  completeCase: {
-    /** 所有字段对象 */
-    columns: completeCaseInputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(completeCaseInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(completeCaseInputColumns, ...keys);
-    },
-  },
-};
-
-export const prismaOutput = {
-  lowercase: {
-    /** 所有字段对象 */
-    columns: lowercaseOutputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(lowercaseOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(lowercaseOutputColumns, ...keys);
-    },
-  },
-  uppercase: {
-    /** 所有字段对象 */
-    columns: uppercaseOutputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(uppercaseOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(uppercaseOutputColumns, ...keys);
-    },
-  },
-  camelCase: {
-    /** 所有字段对象 */
-    columns: camelCaseOutputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(camelCaseOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(camelCaseOutputColumns, ...keys);
-    },
-  },
-  pascalCase: {
-    /** 所有字段对象 */
-    columns: pascalCaseOutputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(pascalCaseOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(pascalCaseOutputColumns, ...keys);
-    },
-  },
-  titlecase: {
-    /** 所有字段对象 */
-    columns: titlecaseOutputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(titlecaseOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(titlecaseOutputColumns, ...keys);
-    },
-  },
-  snakeCase: {
-    /** 所有字段对象 */
-    columns: snakeCaseOutputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(snakeCaseOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(snakeCaseOutputColumns, ...keys);
-    },
-  },
-  completeCase: {
-    /** 所有字段对象 */
-    columns: completeCaseOutputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(completeCaseOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(completeCaseOutputColumns, ...keys);
-    },
-  },
+export const generated = {
+  prismaInput,
+  prismaOutput,
+  prismaEnum,
 };

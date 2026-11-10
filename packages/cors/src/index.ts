@@ -7,8 +7,7 @@ export interface CorsOptions {
    * 设置报头 Access-Control-Allow-Origin，表示该响应的资源是否被允许与给定的来源（origin）共享。对于不包含凭据的请求，也可以设为星号(\*)，表示同意任意跨源请求
    */
   origin?:
-    | ((ctx: WebContext) => string | undefined | Promise<string | undefined>)
-    | string;
+    ((ctx: WebContext) => string | undefined | Promise<string | undefined>) | string;
 
   /**
    * 设置报头 Access-Control-Allow-Methods，表示客户端所要访问的资源允许使用的方法或方法列表。

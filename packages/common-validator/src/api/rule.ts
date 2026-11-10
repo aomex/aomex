@@ -233,8 +233,7 @@ export class Rule {
   ): UuidValidator<string>;
   uuid(
     versions?:
-      | UuidValidator.Version
-      | [UuidValidator.Version, ...UuidValidator.Version[]],
+      UuidValidator.Version | [UuidValidator.Version, ...UuidValidator.Version[]],
   ) {
     return new UuidValidator(toArray(versions || UuidValidator.versions));
   }

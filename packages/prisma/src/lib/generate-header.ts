@@ -1,37 +1,30 @@
-import { existsSync } from 'node:fs';
-import path from 'node:path';
-
-export const generateHeader = (output: string) => {
-  const overrideFileName = 'index.override';
-  const overrideFileFullPath = path.join(output, overrideFileName + '.ts');
-
+export const generateHeader = () => {
   return `
   // @ts-nocheck
-  import { rule } from "@aomex/common";
-  ${
-    existsSync(overrideFileFullPath)
-      ? `import customColumns from './${overrideFileName}';`
-      : `
-  import { overrideColumnsFactory } from '@aomex/prisma';
-  // 如果想覆盖默认生成的类型，可以同目录下创建一个 ${overrideFileName}.ts 文件，然后重新执行 prisma generate 命令
-  // import customColumns from './${overrideFileName}';
-  const customColumns = overrideColumnsFactory<PrismaSchemaMap>()({});
-  `
-  }
-  
-  function pick<T extends object, K extends keyof T>(obj: T, ...keys: K[]) {
-    const subObj: Partial<T> = {};
-    for (const key of keys) {
-      if (Object.hasOwn(obj, key)) {
-        subObj[key] = obj[key];
-      }
-    }
-    return subObj;
-  }
-
-  function omit<T extends object, K extends keyof T>(obj: T, ...keys: K[]) {
-    const allKeys = Object.keys(obj) as K[];
-    return pick(obj, ...allKeys.filter((key) => !keys.includes(key)));
-  }
+  /**
+   * 由 aomex-prisma 自动生成，请勿修改。
+   *
+   * 请在业务侧创建 src/schemas/prisma.schema.ts，通过 definePrismaSchema() 解包后再使用：
+   *
+   * \`\`\`ts
+   * // src/schemas/prisma.schema.ts
+   * import { definePrismaSchema } from '@aomex/prisma';
+   * import { generated } from '../generated/aomex/prisma';
+   *
+   * export const { prismaInput, prismaOutput, prismaEnum } = definePrismaSchema(
+   *   generated,
+   *   {
+   *     user: {
+   *       input: (s) => s.extend({ password: rule.string() }),
+   *       output: (s) => s.omit('password'),
+   *     },
+   *   },
+   * );
+   * \`\`\`
+   *
+   * 本文件仅导出 generated；不要直接当路由 schema / enum 使用。
+   */
+  import { rule, schema, type ValidatorSchema } from "@aomex/common";
+  import type { PrismaGeneratedSchemas } from "@aomex/prisma";
   `;
 };

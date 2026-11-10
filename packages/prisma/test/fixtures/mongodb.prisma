@@ -31,6 +31,7 @@ model user {
   flo_arr_de    Float[]   @default([100.1])
   uu            String    @default(uuid())
   /// I am the comments
+  /// line two of comments
   comme_ok      String
   // I am the comments
   comme_fail    String

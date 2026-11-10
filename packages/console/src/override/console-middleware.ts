@@ -4,8 +4,7 @@ import type { NonReadonly } from '@aomex/internal-tools';
 import type { ConsoleApp, ConsoleContext } from '../cli';
 
 export type ConsoleMiddlewareToken<P extends object = object> =
-  | ConsoleMiddleware<P>
-  | MixinMiddleware<P>;
+  ConsoleMiddleware<P> | MixinMiddleware<P>;
 
 declare module '@aomex/common' {
   export interface MiddlewarePlatform {

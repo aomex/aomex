@@ -1,14 +1,10 @@
 import type { DMMF } from '@prisma/generator-helper';
-import { pascalCase } from './pascal-case';
 import { generateComments } from './generate-comments';
 import { UuidValidator } from '@aomex/common';
 import { matchUUID } from './match-uuid';
+import { toIdent } from './to-ident';
 
-export const parseFields = (
-  fields: readonly DMMF.Field[],
-  modelName: string,
-  isInput: boolean,
-) => {
+export const parseFields = (fields: readonly DMMF.Field[], isInput: boolean) => {
   const modelFields: string[] = [];
 
   fields.forEach((field) => {
@@ -16,12 +12,11 @@ export const parseFields = (
 
     if (field.kind === 'object') {
       if (!field.relationName) {
-        const relatedName =
-          pascalCase(field.type) + (isInput ? 'Input' : 'Output') + 'Type';
-        validator = field.isList ? `${relatedName}` : `rule.object(${relatedName})`;
+        const relatedName = toIdent(field.type) + (isInput ? 'Input' : 'Output') + 'Type';
+        validator = `${relatedName}.object()`;
       }
     } else if (field.kind === 'enum') {
-      validator = `rule.enum(${pascalCase(field.type)}Enum)`;
+      validator = `rule.enum(${toIdent(field.type)}Enum)`;
     } else if (field.kind === 'scalar') {
       switch (field.type) {
         case 'Int':
@@ -89,13 +84,10 @@ export const parseFields = (
     }
 
     if (field.documentation) {
-      validator += `.docs({ description: "${field.documentation}" })`;
+      validator += `.docs({ description: ${JSON.stringify(field.documentation)} })`;
     }
 
-    modelFields.push(
-      generateComments(field, validator),
-      `${field.name}: customColumns.${modelName}?.${field.name}?.${isInput ? 'input' : 'output'} || ${validator},`,
-    );
+    modelFields.push(generateComments(field, validator), `${field.name}: ${validator},`);
   });
 
   return modelFields;

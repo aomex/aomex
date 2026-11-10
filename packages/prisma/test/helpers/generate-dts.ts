@@ -1,12 +1,15 @@
 // TypeScript 7 不再提供 Compiler API，测试辅助改用兼容包
 import ts from '@typescript/typescript6';
-import { pascalCase } from '../../src/lib/pascal-case';
 import path from 'path';
 import { formatContent } from '../../src/lib/format-content';
 
 const ruleMapping: Record<string, string> = {
   bigint: 'BigIntValidator',
 };
+
+const toValidatorName = (shortName: string) =>
+  ruleMapping[shortName] ||
+  shortName.charAt(0).toUpperCase() + shortName.slice(1) + 'Validator';
 
 export const generateDTS = (source: string) => {
   let content: string = '';
@@ -16,8 +19,7 @@ export const generateDTS = (source: string) => {
     const imports = new Set<string>(['Validator']);
     const matchImports = source.matchAll(/rule\.(.+?)\(/gm);
     for (const matched of matchImports) {
-      const shortName = matched[1]!;
-      imports.add(ruleMapping[shortName] || pascalCase(shortName) + 'Validator');
+      imports.add(toValidatorName(matched[1]!));
     }
     source += `\nimport type { ${Array.from(imports).sort().join(',')} } from "@aomex/common";`;
   }
@@ -58,5 +60,11 @@ export const generateDTS = (source: string) => {
     program.emit();
   }
 
-  return formatContent(content.replaceAll(/(export\sdeclare\s)/gm, '\n$1'));
+  return formatContent(
+    content
+      // schema() 的声明会落到定义包；生成物对外只依赖 @aomex/common
+      .replaceAll(`'@aomex/common-validator'`, `'@aomex/common'`)
+      .replaceAll(`"@aomex/common-validator"`, `"@aomex/common"`)
+      .replaceAll(/(export\sdeclare\s)/gm, '\n$1'),
+  );
 };

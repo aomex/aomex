@@ -1,451 +1,150 @@
-declare const lowercaseInputColumns: {
-  /**
-   * Prisma类型：`Int`
-   *
-   * 数据库默认值：`autoincrement()`
-   */
-  id: IntValidator<number | Validator.TOptional>;
+/**
+ * 由 aomex-prisma 自动生成，请勿修改。
+ *
+ * 请在业务侧创建 src/schemas/prisma.schema.ts，通过 definePrismaSchema() 解包后再使用：
+ *
+ * ```ts
+ * // src/schemas/prisma.schema.ts
+ * import { definePrismaSchema } from '@aomex/prisma';
+ * import { generated } from '../generated/aomex/prisma';
+ *
+ * export const { prismaInput, prismaOutput, prismaEnum } = definePrismaSchema(
+ *   generated,
+ *   {
+ *     user: {
+ *       input: (s) => s.extend({ password: rule.string() }),
+ *       output: (s) => s.omit('password'),
+ *     },
+ *   },
+ * );
+ * ```
+ *
+ * 本文件仅导出 generated；不要直接当路由 schema / enum 使用。
+ */
+import { type ValidatorSchema } from '@aomex/common';
+import type { PrismaGeneratedSchemas } from '@aomex/prisma';
+declare const prismaEnum: {};
+declare const prismaInput: {
+  lowercase: ValidatorSchema<{
+    /**
+     * Prisma类型：`Int`
+     *
+     * 数据库默认值：`autoincrement()`
+     */
+    id: IntValidator<number | Validator.TOptional>;
+  }>;
+  UPPERCASE: ValidatorSchema<{
+    /**
+     * Prisma类型：`Int`
+     *
+     * 数据库默认值：`autoincrement()`
+     */
+    id: IntValidator<number | Validator.TOptional>;
+  }>;
+  camelCase: ValidatorSchema<{
+    /**
+     * Prisma类型：`Int`
+     *
+     * 数据库默认值：`autoincrement()`
+     */
+    id: IntValidator<number | Validator.TOptional>;
+  }>;
+  PascalCase: ValidatorSchema<{
+    /**
+     * Prisma类型：`Int`
+     *
+     * 数据库默认值：`autoincrement()`
+     */
+    id: IntValidator<number | Validator.TOptional>;
+  }>;
+  Titlecase: ValidatorSchema<{
+    /**
+     * Prisma类型：`Int`
+     *
+     * 数据库默认值：`autoincrement()`
+     */
+    id: IntValidator<number | Validator.TOptional>;
+  }>;
+  snake_case: ValidatorSchema<{
+    /**
+     * Prisma类型：`Int`
+     *
+     * 数据库默认值：`autoincrement()`
+     */
+    id: IntValidator<number | Validator.TOptional>;
+  }>;
+  Complete_Case: ValidatorSchema<{
+    /**
+     * Prisma类型：`Int`
+     *
+     * 数据库默认值：`autoincrement()`
+     */
+    id: IntValidator<number | Validator.TOptional>;
+  }>;
 };
-declare const lowercaseOutputColumns: {
-  /**
-   * Prisma类型：`Int`
-   *
-   * 数据库默认值：`autoincrement()`
-   */
-  id: IntValidator<number>;
-};
-declare const uppercaseInputColumns: {
-  /**
-   * Prisma类型：`Int`
-   *
-   * 数据库默认值：`autoincrement()`
-   */
-  id: IntValidator<number | Validator.TOptional>;
-};
-declare const uppercaseOutputColumns: {
-  /**
-   * Prisma类型：`Int`
-   *
-   * 数据库默认值：`autoincrement()`
-   */
-  id: IntValidator<number>;
-};
-declare const camelCaseInputColumns: {
-  /**
-   * Prisma类型：`Int`
-   *
-   * 数据库默认值：`autoincrement()`
-   */
-  id: IntValidator<number | Validator.TOptional>;
-};
-declare const camelCaseOutputColumns: {
-  /**
-   * Prisma类型：`Int`
-   *
-   * 数据库默认值：`autoincrement()`
-   */
-  id: IntValidator<number>;
-};
-declare const pascalCaseInputColumns: {
-  /**
-   * Prisma类型：`Int`
-   *
-   * 数据库默认值：`autoincrement()`
-   */
-  id: IntValidator<number | Validator.TOptional>;
-};
-declare const pascalCaseOutputColumns: {
-  /**
-   * Prisma类型：`Int`
-   *
-   * 数据库默认值：`autoincrement()`
-   */
-  id: IntValidator<number>;
-};
-declare const titlecaseInputColumns: {
-  /**
-   * Prisma类型：`Int`
-   *
-   * 数据库默认值：`autoincrement()`
-   */
-  id: IntValidator<number | Validator.TOptional>;
-};
-declare const titlecaseOutputColumns: {
-  /**
-   * Prisma类型：`Int`
-   *
-   * 数据库默认值：`autoincrement()`
-   */
-  id: IntValidator<number>;
-};
-declare const snakeCaseInputColumns: {
-  /**
-   * Prisma类型：`Int`
-   *
-   * 数据库默认值：`autoincrement()`
-   */
-  id: IntValidator<number | Validator.TOptional>;
-};
-declare const snakeCaseOutputColumns: {
-  /**
-   * Prisma类型：`Int`
-   *
-   * 数据库默认值：`autoincrement()`
-   */
-  id: IntValidator<number>;
-};
-declare const completeCaseInputColumns: {
-  /**
-   * Prisma类型：`Int`
-   *
-   * 数据库默认值：`autoincrement()`
-   */
-  id: IntValidator<number | Validator.TOptional>;
-};
-declare const completeCaseOutputColumns: {
-  /**
-   * Prisma类型：`Int`
-   *
-   * 数据库默认值：`autoincrement()`
-   */
-  id: IntValidator<number>;
-};
-
-export declare const prismaInput: {
-  readonly lowercase: {
-    /** 所有字段对象 */
-    readonly columns: {
-      /**
-       * Prisma类型：`Int`
-       *
-       * 数据库默认值：`autoincrement()`
-       */
-      id: IntValidator<number | Validator.TOptional>;
-    };
-    /** 选择部分字段 */
-    readonly pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => { [K in Keys]: (typeof lowercaseInputColumns)[K] };
-    /** 去除部分字段 */
-    readonly omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => {
-      [K in keyof typeof lowercaseInputColumns as K extends Keys
-        ? never
-        : K]: (typeof lowercaseInputColumns)[K];
-    };
-  };
-  readonly uppercase: {
-    /** 所有字段对象 */
-    readonly columns: {
-      /**
-       * Prisma类型：`Int`
-       *
-       * 数据库默认值：`autoincrement()`
-       */
-      id: IntValidator<number | Validator.TOptional>;
-    };
-    /** 选择部分字段 */
-    readonly pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => { [K in Keys]: (typeof uppercaseInputColumns)[K] };
-    /** 去除部分字段 */
-    readonly omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => {
-      [K in keyof typeof uppercaseInputColumns as K extends Keys
-        ? never
-        : K]: (typeof uppercaseInputColumns)[K];
-    };
-  };
-  readonly camelCase: {
-    /** 所有字段对象 */
-    readonly columns: {
-      /**
-       * Prisma类型：`Int`
-       *
-       * 数据库默认值：`autoincrement()`
-       */
-      id: IntValidator<number | Validator.TOptional>;
-    };
-    /** 选择部分字段 */
-    readonly pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => { [K in Keys]: (typeof camelCaseInputColumns)[K] };
-    /** 去除部分字段 */
-    readonly omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => {
-      [K in keyof typeof camelCaseInputColumns as K extends Keys
-        ? never
-        : K]: (typeof camelCaseInputColumns)[K];
-    };
-  };
-  readonly pascalCase: {
-    /** 所有字段对象 */
-    readonly columns: {
-      /**
-       * Prisma类型：`Int`
-       *
-       * 数据库默认值：`autoincrement()`
-       */
-      id: IntValidator<number | Validator.TOptional>;
-    };
-    /** 选择部分字段 */
-    readonly pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => { [K in Keys]: (typeof pascalCaseInputColumns)[K] };
-    /** 去除部分字段 */
-    readonly omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => {
-      [K in keyof typeof pascalCaseInputColumns as K extends Keys
-        ? never
-        : K]: (typeof pascalCaseInputColumns)[K];
-    };
-  };
-  readonly titlecase: {
-    /** 所有字段对象 */
-    readonly columns: {
-      /**
-       * Prisma类型：`Int`
-       *
-       * 数据库默认值：`autoincrement()`
-       */
-      id: IntValidator<number | Validator.TOptional>;
-    };
-    /** 选择部分字段 */
-    readonly pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => { [K in Keys]: (typeof titlecaseInputColumns)[K] };
-    /** 去除部分字段 */
-    readonly omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => {
-      [K in keyof typeof titlecaseInputColumns as K extends Keys
-        ? never
-        : K]: (typeof titlecaseInputColumns)[K];
-    };
-  };
-  readonly snakeCase: {
-    /** 所有字段对象 */
-    readonly columns: {
-      /**
-       * Prisma类型：`Int`
-       *
-       * 数据库默认值：`autoincrement()`
-       */
-      id: IntValidator<number | Validator.TOptional>;
-    };
-    /** 选择部分字段 */
-    readonly pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => { [K in Keys]: (typeof snakeCaseInputColumns)[K] };
-    /** 去除部分字段 */
-    readonly omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => {
-      [K in keyof typeof snakeCaseInputColumns as K extends Keys
-        ? never
-        : K]: (typeof snakeCaseInputColumns)[K];
-    };
-  };
-  readonly completeCase: {
-    /** 所有字段对象 */
-    readonly columns: {
-      /**
-       * Prisma类型：`Int`
-       *
-       * 数据库默认值：`autoincrement()`
-       */
-      id: IntValidator<number | Validator.TOptional>;
-    };
-    /** 选择部分字段 */
-    readonly pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => { [K in Keys]: (typeof completeCaseInputColumns)[K] };
-    /** 去除部分字段 */
-    readonly omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => {
-      [K in keyof typeof completeCaseInputColumns as K extends Keys
-        ? never
-        : K]: (typeof completeCaseInputColumns)[K];
-    };
-  };
+declare const prismaOutput: {
+  lowercase: ValidatorSchema<{
+    /**
+     * Prisma类型：`Int`
+     *
+     * 数据库默认值：`autoincrement()`
+     */
+    id: IntValidator<number>;
+  }>;
+  UPPERCASE: ValidatorSchema<{
+    /**
+     * Prisma类型：`Int`
+     *
+     * 数据库默认值：`autoincrement()`
+     */
+    id: IntValidator<number>;
+  }>;
+  camelCase: ValidatorSchema<{
+    /**
+     * Prisma类型：`Int`
+     *
+     * 数据库默认值：`autoincrement()`
+     */
+    id: IntValidator<number>;
+  }>;
+  PascalCase: ValidatorSchema<{
+    /**
+     * Prisma类型：`Int`
+     *
+     * 数据库默认值：`autoincrement()`
+     */
+    id: IntValidator<number>;
+  }>;
+  Titlecase: ValidatorSchema<{
+    /**
+     * Prisma类型：`Int`
+     *
+     * 数据库默认值：`autoincrement()`
+     */
+    id: IntValidator<number>;
+  }>;
+  snake_case: ValidatorSchema<{
+    /**
+     * Prisma类型：`Int`
+     *
+     * 数据库默认值：`autoincrement()`
+     */
+    id: IntValidator<number>;
+  }>;
+  Complete_Case: ValidatorSchema<{
+    /**
+     * Prisma类型：`Int`
+     *
+     * 数据库默认值：`autoincrement()`
+     */
+    id: IntValidator<number>;
+  }>;
 };
 
-export declare const prismaOutput: {
-  readonly lowercase: {
-    /** 所有字段对象 */
-    readonly columns: {
-      /**
-       * Prisma类型：`Int`
-       *
-       * 数据库默认值：`autoincrement()`
-       */
-      id: IntValidator<number>;
-    };
-    /** 选择部分字段 */
-    readonly pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => { [K in Keys]: (typeof lowercaseOutputColumns)[K] };
-    /** 去除部分字段 */
-    readonly omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => {
-      [K in keyof typeof lowercaseOutputColumns as K extends Keys
-        ? never
-        : K]: (typeof lowercaseOutputColumns)[K];
-    };
-  };
-  readonly uppercase: {
-    /** 所有字段对象 */
-    readonly columns: {
-      /**
-       * Prisma类型：`Int`
-       *
-       * 数据库默认值：`autoincrement()`
-       */
-      id: IntValidator<number>;
-    };
-    /** 选择部分字段 */
-    readonly pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => { [K in Keys]: (typeof uppercaseOutputColumns)[K] };
-    /** 去除部分字段 */
-    readonly omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => {
-      [K in keyof typeof uppercaseOutputColumns as K extends Keys
-        ? never
-        : K]: (typeof uppercaseOutputColumns)[K];
-    };
-  };
-  readonly camelCase: {
-    /** 所有字段对象 */
-    readonly columns: {
-      /**
-       * Prisma类型：`Int`
-       *
-       * 数据库默认值：`autoincrement()`
-       */
-      id: IntValidator<number>;
-    };
-    /** 选择部分字段 */
-    readonly pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => { [K in Keys]: (typeof camelCaseOutputColumns)[K] };
-    /** 去除部分字段 */
-    readonly omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => {
-      [K in keyof typeof camelCaseOutputColumns as K extends Keys
-        ? never
-        : K]: (typeof camelCaseOutputColumns)[K];
-    };
-  };
-  readonly pascalCase: {
-    /** 所有字段对象 */
-    readonly columns: {
-      /**
-       * Prisma类型：`Int`
-       *
-       * 数据库默认值：`autoincrement()`
-       */
-      id: IntValidator<number>;
-    };
-    /** 选择部分字段 */
-    readonly pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => { [K in Keys]: (typeof pascalCaseOutputColumns)[K] };
-    /** 去除部分字段 */
-    readonly omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => {
-      [K in keyof typeof pascalCaseOutputColumns as K extends Keys
-        ? never
-        : K]: (typeof pascalCaseOutputColumns)[K];
-    };
-  };
-  readonly titlecase: {
-    /** 所有字段对象 */
-    readonly columns: {
-      /**
-       * Prisma类型：`Int`
-       *
-       * 数据库默认值：`autoincrement()`
-       */
-      id: IntValidator<number>;
-    };
-    /** 选择部分字段 */
-    readonly pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => { [K in Keys]: (typeof titlecaseOutputColumns)[K] };
-    /** 去除部分字段 */
-    readonly omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => {
-      [K in keyof typeof titlecaseOutputColumns as K extends Keys
-        ? never
-        : K]: (typeof titlecaseOutputColumns)[K];
-    };
-  };
-  readonly snakeCase: {
-    /** 所有字段对象 */
-    readonly columns: {
-      /**
-       * Prisma类型：`Int`
-       *
-       * 数据库默认值：`autoincrement()`
-       */
-      id: IntValidator<number>;
-    };
-    /** 选择部分字段 */
-    readonly pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => { [K in Keys]: (typeof snakeCaseOutputColumns)[K] };
-    /** 去除部分字段 */
-    readonly omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => {
-      [K in keyof typeof snakeCaseOutputColumns as K extends Keys
-        ? never
-        : K]: (typeof snakeCaseOutputColumns)[K];
-    };
-  };
-  readonly completeCase: {
-    /** 所有字段对象 */
-    readonly columns: {
-      /**
-       * Prisma类型：`Int`
-       *
-       * 数据库默认值：`autoincrement()`
-       */
-      id: IntValidator<number>;
-    };
-    /** 选择部分字段 */
-    readonly pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => { [K in Keys]: (typeof completeCaseOutputColumns)[K] };
-    /** 去除部分字段 */
-    readonly omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ) => {
-      [K in keyof typeof completeCaseOutputColumns as K extends Keys
-        ? never
-        : K]: (typeof completeCaseOutputColumns)[K];
-    };
-  };
-};
-export type PrismaSchemaMap = {
-  lowercase: ['id'];
-  uppercase: ['id'];
-  camelCase: ['id'];
-  pascalCase: ['id'];
-  titlecase: ['id'];
-  snakeCase: ['id'];
-  completeCase: ['id'];
-};
+export declare const generated: PrismaGeneratedSchemas<
+  typeof prismaInput,
+  typeof prismaOutput,
+  typeof prismaEnum
+>;
 import type { IntValidator, Validator } from '@aomex/common';
 export {};

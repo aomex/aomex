@@ -1,849 +1,761 @@
 // @ts-nocheck
-import { rule } from '@aomex/common';
-import { overrideColumnsFactory } from '@aomex/prisma';
-// 如果想覆盖默认生成的类型，可以同目录下创建一个 index.override.ts 文件，然后重新执行 prisma generate 命令
-// import customColumns from './index.override';
-const customColumns = overrideColumnsFactory()({});
-function pick(obj, ...keys) {
-  const subObj = {};
-  for (const key of keys) {
-    if (Object.hasOwn(obj, key)) {
-      subObj[key] = obj[key];
-    }
-  }
-  return subObj;
-}
-function omit(obj, ...keys) {
-  const allKeys = Object.keys(obj);
-  return pick(obj, ...allKeys.filter((key) => !keys.includes(key)));
-}
-
-export const LanguageEnum = ['Typescript', 'Javascript', 'Rust', 'Go', 'Python', 'Cpp'];
-
-export const YourTypeOutputType = {
+/**
+ * 由 aomex-prisma 自动生成，请勿修改。
+ *
+ * 请在业务侧创建 src/schemas/prisma.schema.ts，通过 definePrismaSchema() 解包后再使用：
+ *
+ * ```ts
+ * // src/schemas/prisma.schema.ts
+ * import { definePrismaSchema } from '@aomex/prisma';
+ * import { generated } from '../generated/aomex/prisma';
+ *
+ * export const { prismaInput, prismaOutput, prismaEnum } = definePrismaSchema(
+ *   generated,
+ *   {
+ *     user: {
+ *       input: (s) => s.extend({ password: rule.string() }),
+ *       output: (s) => s.omit('password'),
+ *     },
+ *   },
+ * );
+ * ```
+ *
+ * 本文件仅导出 generated；不要直接当路由 schema / enum 使用。
+ */
+import { rule, schema } from '@aomex/common';
+const LanguageEnum = ['Typescript', 'Javascript', 'Rust', 'Go', 'Python', 'Cpp'];
+const prismaEnum = {
+  Language: LanguageEnum,
+};
+const _YourTypeOutputType = {
   /**
    * Prisma类型：`String?`
    *
    * 数据库默认值：
    */
-  abc: customColumns.YourTypeType?.abc?.output || rule.string().nullable(),
+  abc: rule.string().nullable(),
   /**
    * Prisma类型：`Language`
    *
    * 数据库默认值：
    */
-  cde: customColumns.YourTypeType?.cde?.output || rule.enum(LanguageEnum),
+  cde: rule.enum(LanguageEnum),
 };
-
-export const YourTypeInputType = {
+const YourTypeOutputType = schema(_YourTypeOutputType).asName('YourTypeOutput');
+const _YourTypeInputType = {
   /**
    * Prisma类型：`String?`
    *
    * 数据库默认值：
    */
-  abc: customColumns.YourTypeType?.abc?.input || rule.string().optional().nullable(),
+  abc: rule.string().optional().nullable(),
   /**
    * Prisma类型：`Language`
    *
    * 数据库默认值：
    */
-  cde: customColumns.YourTypeType?.cde?.input || rule.enum(LanguageEnum),
+  cde: rule.enum(LanguageEnum),
 };
-
-export const MyTypeOutputType = {
+const YourTypeInputType = schema(_YourTypeInputType).asName('YourTypeInput');
+const _MyTypeOutputType = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：
    */
-  id: customColumns.MyTypeType?.id?.output || rule.int(),
+  id: rule.int(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  name: customColumns.MyTypeType?.name?.output || rule.string(),
+  name: rule.string(),
   /**
    * Prisma类型：`YourType`
    *
    * 数据库默认值：
    */
-  other: customColumns.MyTypeType?.other?.output || rule.object(YourTypeOutputType),
+  other: YourTypeOutputType.object(),
 };
-
-export const MyTypeInputType = {
+const MyTypeOutputType = schema(_MyTypeOutputType).asName('MyTypeOutput');
+const _MyTypeInputType = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：
    */
-  id: customColumns.MyTypeType?.id?.input || rule.int(),
+  id: rule.int(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  name: customColumns.MyTypeType?.name?.input || rule.string(),
+  name: rule.string(),
   /**
    * Prisma类型：`YourType`
    *
    * 数据库默认值：
    */
-  other: customColumns.MyTypeType?.other?.input || rule.object(YourTypeInputType),
+  other: YourTypeInputType.object(),
 };
-
-export const IAmAloseNotUsedOutputType = {
+const MyTypeInputType = schema(_MyTypeInputType).asName('MyTypeInput');
+const _IAmAloseNotUsedOutputType = {
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  id: customColumns.IAmAloseNotUsedType?.id?.output || rule.string(),
+  id: rule.string(),
 };
-
-export const IAmAloseNotUsedInputType = {
+const IAmAloseNotUsedOutputType = schema(_IAmAloseNotUsedOutputType).asName(
+  'IAmAloseNotUsedOutput',
+);
+const _IAmAloseNotUsedInputType = {
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  id: customColumns.IAmAloseNotUsedType?.id?.input || rule.string(),
+  id: rule.string(),
 };
-
-export const IAmNotUsedOutputType = {
+const IAmAloseNotUsedInputType = schema(_IAmAloseNotUsedInputType).asName(
+  'IAmAloseNotUsedInput',
+);
+const _IAmNotUsedOutputType = {
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  id: customColumns.IAmNotUsedType?.id?.output || rule.string(),
+  id: rule.string(),
 };
-
-export const IAmNotUsedInputType = {
+const IAmNotUsedOutputType = schema(_IAmNotUsedOutputType).asName('IAmNotUsedOutput');
+const _IAmNotUsedInputType = {
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  id: customColumns.IAmNotUsedType?.id?.input || rule.string(),
+  id: rule.string(),
 };
+const IAmNotUsedInputType = schema(_IAmNotUsedInputType).asName('IAmNotUsedInput');
 const userInputColumns = {
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
    */
-  id: customColumns.user?.id?.input || rule.string().optional(),
+  id: rule.string().optional(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  name: customColumns.user?.name?.input || rule.string(),
+  name: rule.string(),
   /**
    * Prisma类型：`String?`
    *
    * 数据库默认值：
    */
-  name_nu: customColumns.user?.name_nu?.input || rule.string().optional().nullable(),
+  name_nu: rule.string().optional().nullable(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`"abc"`
    */
-  name_de: customColumns.user?.name_de?.input || rule.string().optional(),
+  name_de: rule.string().optional(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`""`
    */
-  name_de_empty:
-    customColumns.user?.name_de_empty?.input ||
-    rule.string().allowEmptyString().optional(),
+  name_de_empty: rule.string().allowEmptyString().optional(),
   /**
    * Prisma类型：`String[]`
    *
    * 数据库默认值：
    */
-  str_arr: customColumns.user?.str_arr?.input || rule.array(rule.string()),
+  str_arr: rule.array(rule.string()),
   /**
    * Prisma类型：`String[]`
    *
    * 数据库默认值：`[]`
    */
-  str_arr_de:
-    customColumns.user?.str_arr_de?.input || rule.array(rule.string()).optional(),
+  str_arr_de: rule.array(rule.string()).optional(),
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：
    */
-  age: customColumns.user?.age?.input || rule.int(),
+  age: rule.int(),
   /**
    * Prisma类型：`Int?`
    *
    * 数据库默认值：
    */
-  age_nu: customColumns.user?.age_nu?.input || rule.int().optional().nullable(),
+  age_nu: rule.int().optional().nullable(),
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`100`
    */
-  age_de: customColumns.user?.age_de?.input || rule.int().optional(),
+  age_de: rule.int().optional(),
   /**
    * Prisma类型：`Int[]`
    *
    * 数据库默认值：
    */
-  int_arr: customColumns.user?.int_arr?.input || rule.array(rule.int()),
+  int_arr: rule.array(rule.int()),
   /**
    * Prisma类型：`Int[]`
    *
    * 数据库默认值：`[]`
    */
-  int_arr_de: customColumns.user?.int_arr_de?.input || rule.array(rule.int()).optional(),
+  int_arr_de: rule.array(rule.int()).optional(),
   /**
    * Prisma类型：`Json`
    *
    * 数据库默认值：
    */
-  obj: customColumns.user?.obj?.input || rule.anyOf([rule.object(), rule.array()]),
+  obj: rule.anyOf([rule.object(), rule.array()]),
   /**
    * Prisma类型：`Json`
    *
    * 数据库默认值：`"{}"`
    */
-  obj_de_obj:
-    customColumns.user?.obj_de_obj?.input ||
-    rule.anyOf([rule.object(), rule.array()]).optional(),
+  obj_de_obj: rule.anyOf([rule.object(), rule.array()]).optional(),
   /**
    * Prisma类型：`Json`
    *
    * 数据库默认值：`"[]"`
    */
-  obj_de_arr:
-    customColumns.user?.obj_de_arr?.input ||
-    rule.anyOf([rule.object(), rule.array()]).optional(),
+  obj_de_arr: rule.anyOf([rule.object(), rule.array()]).optional(),
   /**
    * Prisma类型：`Float`
    *
    * 数据库默认值：
    */
-  flo: customColumns.user?.flo?.input || rule.number(),
+  flo: rule.number(),
   /**
    * Prisma类型：`Float?`
    *
    * 数据库默认值：
    */
-  flo_nu: customColumns.user?.flo_nu?.input || rule.number().optional().nullable(),
+  flo_nu: rule.number().optional().nullable(),
   /**
    * Prisma类型：`Float`
    *
    * 数据库默认值：`100.10000000000001`
    */
-  flo_de: customColumns.user?.flo_de?.input || rule.number().optional(),
+  flo_de: rule.number().optional(),
   /**
    * Prisma类型：`Float[]`
    *
    * 数据库默认值：
    */
-  flo_arr: customColumns.user?.flo_arr?.input || rule.array(rule.number()),
+  flo_arr: rule.array(rule.number()),
   /**
    * Prisma类型：`Float[]`
    *
    * 数据库默认值：`[100.10000000000001]`
    */
-  flo_arr_de:
-    customColumns.user?.flo_arr_de?.input || rule.array(rule.number()).optional(),
+  flo_arr_de: rule.array(rule.number()).optional(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`uuid(4)`
    */
-  uu: customColumns.user?.uu?.input || rule.uuid(['v4']).optional(),
+  uu: rule.uuid(['v4']).optional(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    *
    * I am the comments
+   * line two of comments
    */
-  comme_ok:
-    customColumns.user?.comme_ok?.input ||
-    rule.string().docs({ description: 'I am the comments' }),
+  comme_ok: rule
+    .string()
+    .docs({ description: 'I am the comments\nline two of comments' }),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  comme_fail: customColumns.user?.comme_fail?.input || rule.string(),
+  comme_fail: rule.string(),
   /**
    * Prisma类型：`Language`
    *
    * 数据库默认值：
    */
-  lang: customColumns.user?.lang?.input || rule.enum(LanguageEnum),
+  lang: rule.enum(LanguageEnum),
   /**
    * Prisma类型：`Language?`
    *
    * 数据库默认值：
    */
-  lang_nu:
-    customColumns.user?.lang_nu?.input || rule.enum(LanguageEnum).optional().nullable(),
+  lang_nu: rule.enum(LanguageEnum).optional().nullable(),
   /**
    * Prisma类型：`Language`
    *
    * 数据库默认值：`"Typescript"`
    */
-  lang_de: customColumns.user?.lang_de?.input || rule.enum(LanguageEnum).optional(),
+  lang_de: rule.enum(LanguageEnum).optional(),
   /**
    * Prisma类型：`DateTime`
    *
    * 数据库默认值：
    */
-  time: customColumns.user?.time?.input || rule.date(),
+  time: rule.date(),
   /**
    * Prisma类型：`DateTime?`
    *
    * 数据库默认值：
    */
-  time_nu: customColumns.user?.time_nu?.input || rule.date().optional().nullable(),
+  time_nu: rule.date().optional().nullable(),
   /**
    * Prisma类型：`DateTime`
    *
    * 数据库默认值：`now()`
    */
-  time_de: customColumns.user?.time_de?.input || rule.date().optional(),
+  time_de: rule.date().optional(),
   /**
    * Prisma类型：`Boolean`
    *
    * 数据库默认值：
    */
-  boo: customColumns.user?.boo?.input || rule.boolean(),
+  boo: rule.boolean(),
   /**
    * Prisma类型：`Boolean?`
    *
    * 数据库默认值：
    */
-  boo_nu: customColumns.user?.boo_nu?.input || rule.boolean().optional().nullable(),
+  boo_nu: rule.boolean().optional().nullable(),
   /**
    * Prisma类型：`Boolean`
    *
    * 数据库默认值：`true`
    */
-  boo_de: customColumns.user?.boo_de?.input || rule.boolean().optional(),
+  boo_de: rule.boolean().optional(),
   /**
    * Prisma类型：`BigInt`
    *
    * 数据库默认值：
    */
-  big: customColumns.user?.big?.input || rule.bigint(),
+  big: rule.bigint(),
   /**
    * Prisma类型：`BigInt?`
    *
    * 数据库默认值：
    */
-  big_nu: customColumns.user?.big_nu?.input || rule.bigint().optional().nullable(),
+  big_nu: rule.bigint().optional().nullable(),
   /**
    * Prisma类型：`BigInt`
    *
    * 数据库默认值：`"30"`
    */
-  big_de: customColumns.user?.big_de?.input || rule.bigint().optional(),
+  big_de: rule.bigint().optional(),
   /**
    * Prisma类型：`Bytes`
    *
    * 数据库默认值：
    */
-  byt: customColumns.user?.byt?.input || rule.buffer(),
+  byt: rule.buffer(),
   /**
    * Prisma类型：`Bytes?`
    *
    * 数据库默认值：
    */
-  byt_nu: customColumns.user?.byt_nu?.input || rule.buffer().optional().nullable(),
+  byt_nu: rule.buffer().optional().nullable(),
   /**
    * Prisma类型：`Bytes`
    *
    * 数据库默认值：`""`
    */
-  byt_de: customColumns.user?.byt_de?.input || rule.buffer().optional(),
+  byt_de: rule.buffer().optional(),
   /**
    * Prisma类型：`MyType`
    *
    * 数据库默认值：
    */
-  custom: customColumns.user?.custom?.input || rule.object(MyTypeInputType),
+  custom: MyTypeInputType.object(),
   /**
    * Prisma类型：`MyType?`
    *
    * 数据库默认值：
    */
-  custom_nu:
-    customColumns.user?.custom_nu?.input ||
-    rule.object(MyTypeInputType).optional().nullable(),
+  custom_nu: MyTypeInputType.object().optional().nullable(),
   /**
    * Prisma类型：`MyType[]`
    *
    * 数据库默认值：
    */
-  custom_arr: customColumns.user?.custom_arr?.input || rule.array(MyTypeInputType),
+  custom_arr: rule.array(MyTypeInputType.object()),
 };
+const userInputSchema = schema(userInputColumns).asName('userInput');
 const userOutputColumns = {
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
    */
-  id: customColumns.user?.id?.output || rule.string(),
+  id: rule.string(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  name: customColumns.user?.name?.output || rule.string(),
+  name: rule.string(),
   /**
    * Prisma类型：`String?`
    *
    * 数据库默认值：
    */
-  name_nu: customColumns.user?.name_nu?.output || rule.string().nullable(),
+  name_nu: rule.string().nullable(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`"abc"`
    */
-  name_de: customColumns.user?.name_de?.output || rule.string(),
+  name_de: rule.string(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`""`
    */
-  name_de_empty: customColumns.user?.name_de_empty?.output || rule.string(),
+  name_de_empty: rule.string(),
   /**
    * Prisma类型：`String[]`
    *
    * 数据库默认值：
    */
-  str_arr: customColumns.user?.str_arr?.output || rule.array(rule.string()),
+  str_arr: rule.array(rule.string()),
   /**
    * Prisma类型：`String[]`
    *
    * 数据库默认值：`[]`
    */
-  str_arr_de: customColumns.user?.str_arr_de?.output || rule.array(rule.string()),
+  str_arr_de: rule.array(rule.string()),
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：
    */
-  age: customColumns.user?.age?.output || rule.int(),
+  age: rule.int(),
   /**
    * Prisma类型：`Int?`
    *
    * 数据库默认值：
    */
-  age_nu: customColumns.user?.age_nu?.output || rule.int().nullable(),
+  age_nu: rule.int().nullable(),
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`100`
    */
-  age_de: customColumns.user?.age_de?.output || rule.int(),
+  age_de: rule.int(),
   /**
    * Prisma类型：`Int[]`
    *
    * 数据库默认值：
    */
-  int_arr: customColumns.user?.int_arr?.output || rule.array(rule.int()),
+  int_arr: rule.array(rule.int()),
   /**
    * Prisma类型：`Int[]`
    *
    * 数据库默认值：`[]`
    */
-  int_arr_de: customColumns.user?.int_arr_de?.output || rule.array(rule.int()),
+  int_arr_de: rule.array(rule.int()),
   /**
    * Prisma类型：`Json`
    *
    * 数据库默认值：
    */
-  obj: customColumns.user?.obj?.output || rule.anyOf([rule.object(), rule.array()]),
+  obj: rule.anyOf([rule.object(), rule.array()]),
   /**
    * Prisma类型：`Json`
    *
    * 数据库默认值：`"{}"`
    */
-  obj_de_obj:
-    customColumns.user?.obj_de_obj?.output || rule.anyOf([rule.object(), rule.array()]),
+  obj_de_obj: rule.anyOf([rule.object(), rule.array()]),
   /**
    * Prisma类型：`Json`
    *
    * 数据库默认值：`"[]"`
    */
-  obj_de_arr:
-    customColumns.user?.obj_de_arr?.output || rule.anyOf([rule.object(), rule.array()]),
+  obj_de_arr: rule.anyOf([rule.object(), rule.array()]),
   /**
    * Prisma类型：`Float`
    *
    * 数据库默认值：
    */
-  flo: customColumns.user?.flo?.output || rule.number(),
+  flo: rule.number(),
   /**
    * Prisma类型：`Float?`
    *
    * 数据库默认值：
    */
-  flo_nu: customColumns.user?.flo_nu?.output || rule.number().nullable(),
+  flo_nu: rule.number().nullable(),
   /**
    * Prisma类型：`Float`
    *
    * 数据库默认值：`100.10000000000001`
    */
-  flo_de: customColumns.user?.flo_de?.output || rule.number(),
+  flo_de: rule.number(),
   /**
    * Prisma类型：`Float[]`
    *
    * 数据库默认值：
    */
-  flo_arr: customColumns.user?.flo_arr?.output || rule.array(rule.number()),
+  flo_arr: rule.array(rule.number()),
   /**
    * Prisma类型：`Float[]`
    *
    * 数据库默认值：`[100.10000000000001]`
    */
-  flo_arr_de: customColumns.user?.flo_arr_de?.output || rule.array(rule.number()),
+  flo_arr_de: rule.array(rule.number()),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`uuid(4)`
    */
-  uu: customColumns.user?.uu?.output || rule.uuid(['v4']),
+  uu: rule.uuid(['v4']),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    *
    * I am the comments
+   * line two of comments
    */
-  comme_ok:
-    customColumns.user?.comme_ok?.output ||
-    rule.string().docs({ description: 'I am the comments' }),
+  comme_ok: rule
+    .string()
+    .docs({ description: 'I am the comments\nline two of comments' }),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  comme_fail: customColumns.user?.comme_fail?.output || rule.string(),
+  comme_fail: rule.string(),
   /**
    * Prisma类型：`Language`
    *
    * 数据库默认值：
    */
-  lang: customColumns.user?.lang?.output || rule.enum(LanguageEnum),
+  lang: rule.enum(LanguageEnum),
   /**
    * Prisma类型：`Language?`
    *
    * 数据库默认值：
    */
-  lang_nu: customColumns.user?.lang_nu?.output || rule.enum(LanguageEnum).nullable(),
+  lang_nu: rule.enum(LanguageEnum).nullable(),
   /**
    * Prisma类型：`Language`
    *
    * 数据库默认值：`"Typescript"`
    */
-  lang_de: customColumns.user?.lang_de?.output || rule.enum(LanguageEnum),
+  lang_de: rule.enum(LanguageEnum),
   /**
    * Prisma类型：`DateTime`
    *
    * 数据库默认值：
    */
-  time: customColumns.user?.time?.output || rule.date(),
+  time: rule.date(),
   /**
    * Prisma类型：`DateTime?`
    *
    * 数据库默认值：
    */
-  time_nu: customColumns.user?.time_nu?.output || rule.date().nullable(),
+  time_nu: rule.date().nullable(),
   /**
    * Prisma类型：`DateTime`
    *
    * 数据库默认值：`now()`
    */
-  time_de: customColumns.user?.time_de?.output || rule.date(),
+  time_de: rule.date(),
   /**
    * Prisma类型：`Boolean`
    *
    * 数据库默认值：
    */
-  boo: customColumns.user?.boo?.output || rule.boolean(),
+  boo: rule.boolean(),
   /**
    * Prisma类型：`Boolean?`
    *
    * 数据库默认值：
    */
-  boo_nu: customColumns.user?.boo_nu?.output || rule.boolean().nullable(),
+  boo_nu: rule.boolean().nullable(),
   /**
    * Prisma类型：`Boolean`
    *
    * 数据库默认值：`true`
    */
-  boo_de: customColumns.user?.boo_de?.output || rule.boolean(),
+  boo_de: rule.boolean(),
   /**
    * Prisma类型：`BigInt`
    *
    * 数据库默认值：
    */
-  big: customColumns.user?.big?.output || rule.bigint(),
+  big: rule.bigint(),
   /**
    * Prisma类型：`BigInt?`
    *
    * 数据库默认值：
    */
-  big_nu: customColumns.user?.big_nu?.output || rule.bigint().nullable(),
+  big_nu: rule.bigint().nullable(),
   /**
    * Prisma类型：`BigInt`
    *
    * 数据库默认值：`"30"`
    */
-  big_de: customColumns.user?.big_de?.output || rule.bigint(),
+  big_de: rule.bigint(),
   /**
    * Prisma类型：`Bytes`
    *
    * 数据库默认值：
    */
-  byt: customColumns.user?.byt?.output || rule.buffer(),
+  byt: rule.buffer(),
   /**
    * Prisma类型：`Bytes?`
    *
    * 数据库默认值：
    */
-  byt_nu: customColumns.user?.byt_nu?.output || rule.buffer().nullable(),
+  byt_nu: rule.buffer().nullable(),
   /**
    * Prisma类型：`Bytes`
    *
    * 数据库默认值：`""`
    */
-  byt_de: customColumns.user?.byt_de?.output || rule.buffer(),
+  byt_de: rule.buffer(),
   /**
    * Prisma类型：`MyType`
    *
    * 数据库默认值：
    */
-  custom: customColumns.user?.custom?.output || rule.object(MyTypeOutputType),
+  custom: MyTypeOutputType.object(),
   /**
    * Prisma类型：`MyType?`
    *
    * 数据库默认值：
    */
-  custom_nu:
-    customColumns.user?.custom_nu?.output || rule.object(MyTypeOutputType).nullable(),
+  custom_nu: MyTypeOutputType.object().nullable(),
   /**
    * Prisma类型：`MyType[]`
    *
    * 数据库默认值：
    */
-  custom_arr: customColumns.user?.custom_arr?.output || rule.array(MyTypeOutputType),
+  custom_arr: rule.array(MyTypeOutputType.object()),
 };
+const userOutputSchema = schema(userOutputColumns).asName('userOutput');
 const profileInputColumns = {
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
    */
-  id: customColumns.profile?.id?.input || rule.string().optional(),
+  id: rule.string().optional(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  user_id: customColumns.profile?.user_id?.input || rule.string(),
+  user_id: rule.string(),
 };
+const profileInputSchema = schema(profileInputColumns).asName('profileInput');
 const profileOutputColumns = {
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
    */
-  id: customColumns.profile?.id?.output || rule.string(),
+  id: rule.string(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  user_id: customColumns.profile?.user_id?.output || rule.string(),
+  user_id: rule.string(),
 };
+const profileOutputSchema = schema(profileOutputColumns).asName('profileOutput');
 const postInputColumns = {
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
    */
-  id: customColumns.post?.id?.input || rule.string().optional(),
+  id: rule.string().optional(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  user_id: customColumns.post?.user_id?.input || rule.string(),
+  user_id: rule.string(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  name: customColumns.post?.name?.input || rule.string(),
+  name: rule.string(),
 };
+const postInputSchema = schema(postInputColumns).asName('postInput');
 const postOutputColumns = {
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
    */
-  id: customColumns.post?.id?.output || rule.string(),
+  id: rule.string(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  user_id: customColumns.post?.user_id?.output || rule.string(),
+  user_id: rule.string(),
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：
    */
-  name: customColumns.post?.name?.output || rule.string(),
+  name: rule.string(),
 };
-const aliasTableNameInputColumns = {
+const postOutputSchema = schema(postOutputColumns).asName('postOutput');
+const AliasTableNameInputColumns = {
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
    */
-  id: customColumns.aliasTableName?.id?.input || rule.string().optional(),
+  id: rule.string().optional(),
 };
-const aliasTableNameOutputColumns = {
+const AliasTableNameInputSchema = schema(AliasTableNameInputColumns).asName(
+  'AliasTableNameInput',
+);
+const AliasTableNameOutputColumns = {
   /**
    * Prisma类型：`String`
    *
    * 数据库默认值：`auto()`
    */
-  id: customColumns.aliasTableName?.id?.output || rule.string(),
+  id: rule.string(),
+};
+const AliasTableNameOutputSchema = schema(AliasTableNameOutputColumns).asName(
+  'AliasTableNameOutput',
+);
+const prismaInput = {
+  user: userInputSchema,
+  profile: profileInputSchema,
+  post: postInputSchema,
+  AliasTableName: AliasTableNameInputSchema,
+};
+const prismaOutput = {
+  user: userOutputSchema,
+  profile: profileOutputSchema,
+  post: postOutputSchema,
+  AliasTableName: AliasTableNameOutputSchema,
 };
 
-export const prismaInput = {
-  user: {
-    /** 所有字段对象 */
-    columns: userInputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(userInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(userInputColumns, ...keys);
-    },
-  },
-  profile: {
-    /** 所有字段对象 */
-    columns: profileInputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(profileInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(profileInputColumns, ...keys);
-    },
-  },
-  post: {
-    /** 所有字段对象 */
-    columns: postInputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(postInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(postInputColumns, ...keys);
-    },
-  },
-  aliasTableName: {
-    /** 所有字段对象 */
-    columns: aliasTableNameInputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(aliasTableNameInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(aliasTableNameInputColumns, ...keys);
-    },
-  },
-};
-
-export const prismaOutput = {
-  user: {
-    /** 所有字段对象 */
-    columns: userOutputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(userOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(userOutputColumns, ...keys);
-    },
-  },
-  profile: {
-    /** 所有字段对象 */
-    columns: profileOutputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(profileOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(profileOutputColumns, ...keys);
-    },
-  },
-  post: {
-    /** 所有字段对象 */
-    columns: postOutputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(postOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(postOutputColumns, ...keys);
-    },
-  },
-  aliasTableName: {
-    /** 所有字段对象 */
-    columns: aliasTableNameOutputColumns,
-    /** 选择部分字段 */
-    pick: (...keys) => {
-      // @ts-ignore
-      return pick(aliasTableNameOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: (...keys) => {
-      // @ts-ignore
-      return omit(aliasTableNameOutputColumns, ...keys);
-    },
-  },
+export const generated = {
+  prismaInput,
+  prismaOutput,
+  prismaEnum,
 };

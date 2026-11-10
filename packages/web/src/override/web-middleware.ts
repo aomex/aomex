@@ -3,8 +3,7 @@ import type { NonReadonly } from '@aomex/internal-tools';
 import type { WebContext, WebRequest } from '../http';
 
 export type WebMiddlewareToken<P extends object = object> =
-  | WebMiddleware<P>
-  | MixinMiddleware<P>;
+  WebMiddleware<P> | MixinMiddleware<P>;
 
 declare module '@aomex/common' {
   export interface MiddlewarePlatform {

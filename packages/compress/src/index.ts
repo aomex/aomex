@@ -6,13 +6,7 @@ import { bytes } from '@aomex/internal-tools';
 import { statuses, type WebMiddleware } from '@aomex/web';
 
 type AcceptEncodingMethods =
-  | 'zstd'
-  | 'gzip'
-  | 'br'
-  | 'deflate'
-  | 'identity'
-  | 'compress'
-  | '*';
+  'zstd' | 'gzip' | 'br' | 'deflate' | 'identity' | 'compress' | '*';
 
 export interface CompressOptions {
   /**
@@ -128,8 +122,7 @@ export const compress = (options: CompressOptions = {}): WebMiddleware<CompressP
     if (cacheControl && NO_TRANSFORM_REGEX.test(cacheControl)) return;
 
     const encoding = request.accept.encoding(preferredEncodings) as
-      | keyof typeof ENCODING_METHODS
-      | false;
+      keyof typeof ENCODING_METHODS | false;
     if (
       !encoding ||
       !Object.hasOwn(ENCODING_METHODS, encoding) ||

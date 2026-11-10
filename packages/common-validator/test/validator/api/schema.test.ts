@@ -17,15 +17,15 @@ const userSchema = schema({
 
 test('创建 ValidatorSchema', () => {
   expect(userSchema).toBeInstanceOf(ValidatorSchema);
-  expect(userSchema.name).toBeUndefined();
+  expect(userSchema['name']).toBeUndefined();
 });
 
 test('asName 设置名称，不改变字段', async () => {
   const named = userSchema.asName('User');
   expect(named).toBeInstanceOf(ValidatorSchema);
   expect(named).not.toBe(userSchema);
-  expect(named.name).toBe('User');
-  expect(userSchema.name).toBeUndefined();
+  expect(named['name']).toBe('User');
+  expect(userSchema['name']).toBeUndefined();
 
   await expect(
     validate({ id: '1', name: 'a', email: 'a@b.com' }, named),
@@ -39,12 +39,12 @@ test('asName 设置名称，不改变字段', async () => {
 
 test('派生操作不继承 name', () => {
   const named = userSchema.asName('User');
-  expect(named.pick('id').name).toBeUndefined();
-  expect(named.omit('id').name).toBeUndefined();
-  expect(named.extend({ tag: rule.string() }).name).toBeUndefined();
-  expect(named.merge(schema({ tag: rule.string() })).name).toBeUndefined();
-  expect(named.partial().name).toBeUndefined();
-  expect(named.partial('name').name).toBeUndefined();
+  expect(named.pick('id')['name']).toBeUndefined();
+  expect(named.omit('id')['name']).toBeUndefined();
+  expect(named.extend({ tag: rule.string() })['name']).toBeUndefined();
+  expect(named.merge(schema({ tag: rule.string() }))['name']).toBeUndefined();
+  expect(named.partial()['name']).toBeUndefined();
+  expect(named.partial('name')['name']).toBeUndefined();
 });
 
 test('object 转为 ObjectValidator 并可校验', async () => {

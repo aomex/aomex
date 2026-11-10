@@ -1,25 +1,31 @@
 // @ts-nocheck
-import { rule } from '@aomex/common';
+/**
+ * 由 aomex-prisma 自动生成，请勿修改。
+ *
+ * 请在业务侧创建 src/schemas/prisma.schema.ts，通过 definePrismaSchema() 解包后再使用：
+ *
+ * ```ts
+ * // src/schemas/prisma.schema.ts
+ * import { definePrismaSchema } from '@aomex/prisma';
+ * import { generated } from '../generated/aomex/prisma';
+ *
+ * export const { prismaInput, prismaOutput, prismaEnum } = definePrismaSchema(
+ *   generated,
+ *   {
+ *     user: {
+ *       input: (s) => s.extend({ password: rule.string() }),
+ *       output: (s) => s.omit('password'),
+ *     },
+ *   },
+ * );
+ * ```
+ *
+ * 本文件仅导出 generated；不要直接当路由 schema / enum 使用。
+ */
+import { rule, schema, type ValidatorSchema } from '@aomex/common';
+import type { PrismaGeneratedSchemas } from '@aomex/prisma';
 
-import { overrideColumnsFactory } from '@aomex/prisma';
-// 如果想覆盖默认生成的类型，可以同目录下创建一个 index.override.ts 文件，然后重新执行 prisma generate 命令
-// import customColumns from './index.override';
-const customColumns = overrideColumnsFactory<PrismaSchemaMap>()({});
-
-function pick<T extends object, K extends keyof T>(obj: T, ...keys: K[]) {
-  const subObj: Partial<T> = {};
-  for (const key of keys) {
-    if (Object.hasOwn(obj, key)) {
-      subObj[key] = obj[key];
-    }
-  }
-  return subObj;
-}
-
-function omit<T extends object, K extends keyof T>(obj: T, ...keys: K[]) {
-  const allKeys = Object.keys(obj) as K[];
-  return pick(obj, ...allKeys.filter((key) => !keys.includes(key)));
-}
+const prismaEnum = {};
 
 const lowercaseInputColumns = {
   /**
@@ -27,8 +33,10 @@ const lowercaseInputColumns = {
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.lowercase?.id?.input || rule.int().optional(),
+  id: rule.int().optional(),
 };
+const lowercaseInputSchema: ValidatorSchema<typeof lowercaseInputColumns> =
+  schema(lowercaseInputColumns).asName('lowercaseInput');
 
 const lowercaseOutputColumns = {
   /**
@@ -36,26 +44,32 @@ const lowercaseOutputColumns = {
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.lowercase?.id?.output || rule.int(),
+  id: rule.int(),
 };
+const lowercaseOutputSchema: ValidatorSchema<typeof lowercaseOutputColumns> =
+  schema(lowercaseOutputColumns).asName('lowercaseOutput');
 
-const uppercaseInputColumns = {
+const UPPERCASEInputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.uppercase?.id?.input || rule.int().optional(),
+  id: rule.int().optional(),
 };
+const UPPERCASEInputSchema: ValidatorSchema<typeof UPPERCASEInputColumns> =
+  schema(UPPERCASEInputColumns).asName('UPPERCASEInput');
 
-const uppercaseOutputColumns = {
+const UPPERCASEOutputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.uppercase?.id?.output || rule.int(),
+  id: rule.int(),
 };
+const UPPERCASEOutputSchema: ValidatorSchema<typeof UPPERCASEOutputColumns> =
+  schema(UPPERCASEOutputColumns).asName('UPPERCASEOutput');
 
 const camelCaseInputColumns = {
   /**
@@ -63,8 +77,10 @@ const camelCaseInputColumns = {
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.camelCase?.id?.input || rule.int().optional(),
+  id: rule.int().optional(),
 };
+const camelCaseInputSchema: ValidatorSchema<typeof camelCaseInputColumns> =
+  schema(camelCaseInputColumns).asName('camelCaseInput');
 
 const camelCaseOutputColumns = {
   /**
@@ -72,413 +88,127 @@ const camelCaseOutputColumns = {
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.camelCase?.id?.output || rule.int(),
+  id: rule.int(),
 };
+const camelCaseOutputSchema: ValidatorSchema<typeof camelCaseOutputColumns> =
+  schema(camelCaseOutputColumns).asName('camelCaseOutput');
 
-const pascalCaseInputColumns = {
+const PascalCaseInputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.pascalCase?.id?.input || rule.int().optional(),
+  id: rule.int().optional(),
 };
+const PascalCaseInputSchema: ValidatorSchema<typeof PascalCaseInputColumns> =
+  schema(PascalCaseInputColumns).asName('PascalCaseInput');
 
-const pascalCaseOutputColumns = {
+const PascalCaseOutputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.pascalCase?.id?.output || rule.int(),
+  id: rule.int(),
 };
+const PascalCaseOutputSchema: ValidatorSchema<typeof PascalCaseOutputColumns> = schema(
+  PascalCaseOutputColumns,
+).asName('PascalCaseOutput');
 
-const titlecaseInputColumns = {
+const TitlecaseInputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.titlecase?.id?.input || rule.int().optional(),
+  id: rule.int().optional(),
 };
+const TitlecaseInputSchema: ValidatorSchema<typeof TitlecaseInputColumns> =
+  schema(TitlecaseInputColumns).asName('TitlecaseInput');
 
-const titlecaseOutputColumns = {
+const TitlecaseOutputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.titlecase?.id?.output || rule.int(),
+  id: rule.int(),
 };
+const TitlecaseOutputSchema: ValidatorSchema<typeof TitlecaseOutputColumns> =
+  schema(TitlecaseOutputColumns).asName('TitlecaseOutput');
 
-const snakeCaseInputColumns = {
+const snake_caseInputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.snakeCase?.id?.input || rule.int().optional(),
+  id: rule.int().optional(),
 };
+const snake_caseInputSchema: ValidatorSchema<typeof snake_caseInputColumns> =
+  schema(snake_caseInputColumns).asName('snake_caseInput');
 
-const snakeCaseOutputColumns = {
+const snake_caseOutputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.snakeCase?.id?.output || rule.int(),
+  id: rule.int(),
 };
+const snake_caseOutputSchema: ValidatorSchema<typeof snake_caseOutputColumns> = schema(
+  snake_caseOutputColumns,
+).asName('snake_caseOutput');
 
-const completeCaseInputColumns = {
+const Complete_CaseInputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.completeCase?.id?.input || rule.int().optional(),
+  id: rule.int().optional(),
 };
+const Complete_CaseInputSchema: ValidatorSchema<typeof Complete_CaseInputColumns> =
+  schema(Complete_CaseInputColumns).asName('Complete_CaseInput');
 
-const completeCaseOutputColumns = {
+const Complete_CaseOutputColumns = {
   /**
    * Prisma类型：`Int`
    *
    * 数据库默认值：`autoincrement()`
    */
-  id: customColumns.completeCase?.id?.output || rule.int(),
+  id: rule.int(),
+};
+const Complete_CaseOutputSchema: ValidatorSchema<typeof Complete_CaseOutputColumns> =
+  schema(Complete_CaseOutputColumns).asName('Complete_CaseOutput');
+
+const prismaInput = {
+  lowercase: lowercaseInputSchema,
+  UPPERCASE: UPPERCASEInputSchema,
+  camelCase: camelCaseInputSchema,
+  PascalCase: PascalCaseInputSchema,
+  Titlecase: TitlecaseInputSchema,
+  snake_case: snake_caseInputSchema,
+  Complete_Case: Complete_CaseInputSchema,
 };
 
-export const prismaInput = <const>{
-  lowercase: {
-    /** 所有字段对象 */
-    columns: lowercaseInputColumns,
-    /** 选择部分字段 */
-    pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): { [K in Keys]: (typeof lowercaseInputColumns)[K] } => {
-      // @ts-ignore
-      return pick(lowercaseInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): {
-      [K in keyof typeof lowercaseInputColumns as K extends Keys
-        ? never
-        : K]: (typeof lowercaseInputColumns)[K];
-    } => {
-      // @ts-ignore
-      return omit(lowercaseInputColumns, ...keys);
-    },
-  },
-
-  uppercase: {
-    /** 所有字段对象 */
-    columns: uppercaseInputColumns,
-    /** 选择部分字段 */
-    pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): { [K in Keys]: (typeof uppercaseInputColumns)[K] } => {
-      // @ts-ignore
-      return pick(uppercaseInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): {
-      [K in keyof typeof uppercaseInputColumns as K extends Keys
-        ? never
-        : K]: (typeof uppercaseInputColumns)[K];
-    } => {
-      // @ts-ignore
-      return omit(uppercaseInputColumns, ...keys);
-    },
-  },
-
-  camelCase: {
-    /** 所有字段对象 */
-    columns: camelCaseInputColumns,
-    /** 选择部分字段 */
-    pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): { [K in Keys]: (typeof camelCaseInputColumns)[K] } => {
-      // @ts-ignore
-      return pick(camelCaseInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): {
-      [K in keyof typeof camelCaseInputColumns as K extends Keys
-        ? never
-        : K]: (typeof camelCaseInputColumns)[K];
-    } => {
-      // @ts-ignore
-      return omit(camelCaseInputColumns, ...keys);
-    },
-  },
-
-  pascalCase: {
-    /** 所有字段对象 */
-    columns: pascalCaseInputColumns,
-    /** 选择部分字段 */
-    pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): { [K in Keys]: (typeof pascalCaseInputColumns)[K] } => {
-      // @ts-ignore
-      return pick(pascalCaseInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): {
-      [K in keyof typeof pascalCaseInputColumns as K extends Keys
-        ? never
-        : K]: (typeof pascalCaseInputColumns)[K];
-    } => {
-      // @ts-ignore
-      return omit(pascalCaseInputColumns, ...keys);
-    },
-  },
-
-  titlecase: {
-    /** 所有字段对象 */
-    columns: titlecaseInputColumns,
-    /** 选择部分字段 */
-    pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): { [K in Keys]: (typeof titlecaseInputColumns)[K] } => {
-      // @ts-ignore
-      return pick(titlecaseInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): {
-      [K in keyof typeof titlecaseInputColumns as K extends Keys
-        ? never
-        : K]: (typeof titlecaseInputColumns)[K];
-    } => {
-      // @ts-ignore
-      return omit(titlecaseInputColumns, ...keys);
-    },
-  },
-
-  snakeCase: {
-    /** 所有字段对象 */
-    columns: snakeCaseInputColumns,
-    /** 选择部分字段 */
-    pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): { [K in Keys]: (typeof snakeCaseInputColumns)[K] } => {
-      // @ts-ignore
-      return pick(snakeCaseInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): {
-      [K in keyof typeof snakeCaseInputColumns as K extends Keys
-        ? never
-        : K]: (typeof snakeCaseInputColumns)[K];
-    } => {
-      // @ts-ignore
-      return omit(snakeCaseInputColumns, ...keys);
-    },
-  },
-
-  completeCase: {
-    /** 所有字段对象 */
-    columns: completeCaseInputColumns,
-    /** 选择部分字段 */
-    pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): { [K in Keys]: (typeof completeCaseInputColumns)[K] } => {
-      // @ts-ignore
-      return pick(completeCaseInputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): {
-      [K in keyof typeof completeCaseInputColumns as K extends Keys
-        ? never
-        : K]: (typeof completeCaseInputColumns)[K];
-    } => {
-      // @ts-ignore
-      return omit(completeCaseInputColumns, ...keys);
-    },
-  },
+const prismaOutput = {
+  lowercase: lowercaseOutputSchema,
+  UPPERCASE: UPPERCASEOutputSchema,
+  camelCase: camelCaseOutputSchema,
+  PascalCase: PascalCaseOutputSchema,
+  Titlecase: TitlecaseOutputSchema,
+  snake_case: snake_caseOutputSchema,
+  Complete_Case: Complete_CaseOutputSchema,
 };
 
-export const prismaOutput = <const>{
-  lowercase: {
-    /** 所有字段对象 */
-    columns: lowercaseOutputColumns,
-    /** 选择部分字段 */
-    pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): { [K in Keys]: (typeof lowercaseOutputColumns)[K] } => {
-      // @ts-ignore
-      return pick(lowercaseOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): {
-      [K in keyof typeof lowercaseOutputColumns as K extends Keys
-        ? never
-        : K]: (typeof lowercaseOutputColumns)[K];
-    } => {
-      // @ts-ignore
-      return omit(lowercaseOutputColumns, ...keys);
-    },
-  },
-
-  uppercase: {
-    /** 所有字段对象 */
-    columns: uppercaseOutputColumns,
-    /** 选择部分字段 */
-    pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): { [K in Keys]: (typeof uppercaseOutputColumns)[K] } => {
-      // @ts-ignore
-      return pick(uppercaseOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): {
-      [K in keyof typeof uppercaseOutputColumns as K extends Keys
-        ? never
-        : K]: (typeof uppercaseOutputColumns)[K];
-    } => {
-      // @ts-ignore
-      return omit(uppercaseOutputColumns, ...keys);
-    },
-  },
-
-  camelCase: {
-    /** 所有字段对象 */
-    columns: camelCaseOutputColumns,
-    /** 选择部分字段 */
-    pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): { [K in Keys]: (typeof camelCaseOutputColumns)[K] } => {
-      // @ts-ignore
-      return pick(camelCaseOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): {
-      [K in keyof typeof camelCaseOutputColumns as K extends Keys
-        ? never
-        : K]: (typeof camelCaseOutputColumns)[K];
-    } => {
-      // @ts-ignore
-      return omit(camelCaseOutputColumns, ...keys);
-    },
-  },
-
-  pascalCase: {
-    /** 所有字段对象 */
-    columns: pascalCaseOutputColumns,
-    /** 选择部分字段 */
-    pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): { [K in Keys]: (typeof pascalCaseOutputColumns)[K] } => {
-      // @ts-ignore
-      return pick(pascalCaseOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): {
-      [K in keyof typeof pascalCaseOutputColumns as K extends Keys
-        ? never
-        : K]: (typeof pascalCaseOutputColumns)[K];
-    } => {
-      // @ts-ignore
-      return omit(pascalCaseOutputColumns, ...keys);
-    },
-  },
-
-  titlecase: {
-    /** 所有字段对象 */
-    columns: titlecaseOutputColumns,
-    /** 选择部分字段 */
-    pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): { [K in Keys]: (typeof titlecaseOutputColumns)[K] } => {
-      // @ts-ignore
-      return pick(titlecaseOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): {
-      [K in keyof typeof titlecaseOutputColumns as K extends Keys
-        ? never
-        : K]: (typeof titlecaseOutputColumns)[K];
-    } => {
-      // @ts-ignore
-      return omit(titlecaseOutputColumns, ...keys);
-    },
-  },
-
-  snakeCase: {
-    /** 所有字段对象 */
-    columns: snakeCaseOutputColumns,
-    /** 选择部分字段 */
-    pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): { [K in Keys]: (typeof snakeCaseOutputColumns)[K] } => {
-      // @ts-ignore
-      return pick(snakeCaseOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): {
-      [K in keyof typeof snakeCaseOutputColumns as K extends Keys
-        ? never
-        : K]: (typeof snakeCaseOutputColumns)[K];
-    } => {
-      // @ts-ignore
-      return omit(snakeCaseOutputColumns, ...keys);
-    },
-  },
-
-  completeCase: {
-    /** 所有字段对象 */
-    columns: completeCaseOutputColumns,
-    /** 选择部分字段 */
-    pick: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): { [K in Keys]: (typeof completeCaseOutputColumns)[K] } => {
-      // @ts-ignore
-      return pick(completeCaseOutputColumns, ...keys);
-    },
-    /** 去除部分字段 */
-    omit: <Keys extends 'id'>(
-      ...keys: Keys[]
-    ): {
-      [K in keyof typeof completeCaseOutputColumns as K extends Keys
-        ? never
-        : K]: (typeof completeCaseOutputColumns)[K];
-    } => {
-      // @ts-ignore
-      return omit(completeCaseOutputColumns, ...keys);
-    },
-  },
-};
-
-export type PrismaSchemaMap = {
-  lowercase: ['id'];
-  uppercase: ['id'];
-  camelCase: ['id'];
-  pascalCase: ['id'];
-  titlecase: ['id'];
-  snakeCase: ['id'];
-  completeCase: ['id'];
-};
+export const generated = {
+  prismaInput,
+  prismaOutput,
+  prismaEnum,
+} as unknown as PrismaGeneratedSchemas<
+  typeof prismaInput,
+  typeof prismaOutput,
+  typeof prismaEnum
+>;

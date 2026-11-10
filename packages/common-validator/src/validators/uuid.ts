@@ -76,7 +76,7 @@ export class UuidValidator<T = string> extends BaseStringValidator<T> {
     if (uuidVersion.length === UuidValidator.versions.length) {
       valid = UuidValidator.patterns.all.test(uuid);
     } else {
-      for (let i = uuidVersion.length; i-- > 0; ) {
+      for (let i = uuidVersion.length; i-- > 0;) {
         if (UuidValidator.patterns[uuidVersion[i]!].test(uuid)) {
           valid = true;
           break;

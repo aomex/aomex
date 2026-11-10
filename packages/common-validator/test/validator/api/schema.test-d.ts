@@ -8,6 +8,7 @@ import {
   IntValidator,
   StringValidator,
   EmailValidator,
+  BufferValidator,
 } from '../../../src';
 
 const userSchema = schema({
@@ -37,10 +38,12 @@ const userSchema = schema({
   >(true);
 }
 
-// asName：不改变 Infer；name 参数类型为 string
+// asName：不改变 Infer；name 为 protected，对外用索引读取
 {
   const named = userSchema.asName('User');
-  expectType<TypeEqual<string | undefined, typeof named.name>>(true);
+  expectType<TypeEqual<string | undefined, (typeof named)['name']>>(true);
+  // @ts-expect-error name 为 protected，点访问不可用
+  named.name;
   expectType<
     TypeEqual<Validator.Infer<typeof named>, Validator.Infer<typeof userSchema>>
   >(true);
@@ -339,6 +342,43 @@ const userSchema = schema({
   const empty = schema({});
   expectType<TypeEqual<Validator.Infer<typeof empty>, {}>>(true);
   expectType<TypeEqual<ValidatorSchema<{}>, typeof empty>>(true);
+}
+
+// schema / extend 不得把带入参泛型的 validator 收成 any（如 rule.buffer）
+{
+  const withBuffer = schema({
+    byt: rule.buffer(),
+  });
+  type WithBufferRules = typeof withBuffer extends ValidatorSchema<infer R> ? R : never;
+  expectType<TypeEqual<BufferValidator<Buffer>, WithBufferRules['byt']>>(true);
+  expectType<TypeEqual<BufferValidator<any>, WithBufferRules['byt']>>(false);
+  expectType<TypeEqual<{ byt: Buffer }, Validator.Infer<typeof withBuffer>>>(true);
+
+  const extended = withBuffer.extend({
+    extra: rule.buffer(),
+  });
+  type ExtendedRules = typeof extended extends ValidatorSchema<infer R> ? R : never;
+  expectType<TypeEqual<BufferValidator<Buffer>, ExtendedRules['byt']>>(true);
+  expectType<TypeEqual<BufferValidator<Buffer>, ExtendedRules['extra']>>(true);
+  expectType<TypeEqual<BufferValidator<any>, ExtendedRules['byt']>>(false);
+  expectType<TypeEqual<BufferValidator<any>, ExtendedRules['extra']>>(false);
+  expectType<TypeEqual<{ byt: Buffer; extra: Buffer }, Validator.Infer<typeof extended>>>(
+    true,
+  );
+
+  const merged = withBuffer.merge(
+    schema({
+      extra: rule.buffer(),
+    }),
+  );
+  type MergedRules = typeof merged extends ValidatorSchema<infer R> ? R : never;
+  expectType<TypeEqual<BufferValidator<Buffer>, MergedRules['byt']>>(true);
+  expectType<TypeEqual<BufferValidator<Buffer>, MergedRules['extra']>>(true);
+  expectType<TypeEqual<BufferValidator<any>, MergedRules['byt']>>(false);
+  expectType<TypeEqual<BufferValidator<any>, MergedRules['extra']>>(false);
+  expectType<TypeEqual<{ byt: Buffer; extra: Buffer }, Validator.Infer<typeof merged>>>(
+    true,
+  );
 }
 
 // pick -> omit -> extend -> merge -> partial 串联后仍可 Infer

@@ -4,17 +4,17 @@ import type { Model, mongo, SchemaOptions } from 'mongoose';
 export type ModelInput<M extends Model<any, any, any, any, any, any>> =
   M extends Model<any, any, any, any, any, infer T extends Record<string, Validator>>
     ? {
-        -readonly [K in keyof T as true extends IsInputRequired<T[K]>
-          ? K
-          : never]: T[K] extends Validator<infer U>
+        -readonly [
+          K in keyof T as true extends IsInputRequired<T[K]> ? K : never
+        ]: T[K] extends Validator<infer U>
           ? U extends null | Validator.TDefault | Validator.TOptional
             ? never
             : U
           : never;
       } & {
-        -readonly [K in keyof T as true extends IsInputRequired<T[K]>
-          ? never
-          : K]?: T[K] extends Validator<infer U>
+        -readonly [
+          K in keyof T as true extends IsInputRequired<T[K]> ? never : K
+        ]?: T[K] extends Validator<infer U>
           ? U extends null
             ? null | undefined
             : U extends Validator.TDefault | Validator.TOptional

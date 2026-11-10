@@ -3,9 +3,7 @@ import { ValidatorSchema } from '../base/validator-schema';
 import { ObjectValidator } from '../validators';
 
 export type ValidatorToken =
-  | Validator
-  | ValidatorSchema<any>
-  | { [key: string]: Validator };
+  Validator | ValidatorSchema<any> | { [key: string]: Validator };
 
 export function toValidator(validator: ValidatorToken): Validator;
 export function toValidator(validator: undefined): undefined;

@@ -144,9 +144,7 @@ export class WebResponse extends ServerResponse {
   };
 
   declare getHeaderNames: () => (
-    | UpperStringHeaderKeys
-    | UpperArrayHeaderKeys
-    | (string & {})
+    UpperStringHeaderKeys | UpperArrayHeaderKeys | (string & {})
   )[];
 
   declare getHeaders: () => OutgoingHttpHeaders;

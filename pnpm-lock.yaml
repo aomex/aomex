@@ -191,8 +191,8 @@ importers:
         specifier: ^8.2.3
         version: 8.2.3(debug@4.4.1(supports-color@7.2.0))(encoding@0.1.13)(supports-color@7.2.0)
       prettier:
-        specifier: ^3.6.2
-        version: 3.6.2
+        specifier: ^3.9.10
+        version: 3.9.10
       read-package-up:
         specifier: ^12.0.0
         version: 12.0.0
@@ -616,15 +616,9 @@ importers:
       '@prisma/generator-helper':
         specifier: ^7.0.0
         version: 7.0.0
-      lodash.camelcase:
-        specifier: ^4.3.0
-        version: 4.3.0
-      lodash.upperfirst:
-        specifier: ^4.3.1
-        version: 4.3.1
       prettier:
-        specifier: ^3.6.2
-        version: 3.6.2
+        specifier: ^3.9.10
+        version: 3.9.10
     devDependencies:
       '@aomex/common':
         specifier: workspace:^
@@ -632,12 +626,6 @@ importers:
       '@prisma/internals':
         specifier: ^7.0.0
         version: 7.0.0(magicast@0.3.5)(typescript@7.0.2)
-      '@types/lodash.camelcase':
-        specifier: ^4.3.7
-        version: 4.3.9
-      '@types/lodash.upperfirst':
-        specifier: ^4.3.7
-        version: 4.3.9
       prisma:
         specifier: ^7.0.0
         version: 7.0.0(@types/react@19.2.6)(magicast@0.3.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@7.0.2)
@@ -2143,14 +2131,8 @@ packages:
   '@types/jsonwebtoken@9.0.6':
     resolution: {integrity: sha512-/5hndP5dCjloafCXns6SZyESp3Ldq7YjH3zwzwczYnjxIT0Fqzk5ROSYVGfFyczIue7IUEj8hkvLbPoLQ18vQw==}
 
-  '@types/lodash.camelcase@4.3.9':
-    resolution: {integrity: sha512-ys9/hGBfsKxzmFI8hckII40V0ASQ83UM2pxfQRghHAwekhH4/jWtjz/3/9YDy7ZpUd/H0k2STSqmPR28dnj7Zg==}
-
   '@types/lodash.snakecase@4.1.9':
     resolution: {integrity: sha512-emBZJUiNlo+QPXr1junMKXwzHJK9zbFvTVdyAoorFcm1YRsbzkZCYPTVMM9AW+dlnA6utG7vpfvOs8alxv/TMw==}
-
-  '@types/lodash.upperfirst@4.3.9':
-    resolution: {integrity: sha512-bYhT1QEsk9/ggrFjK86Pb5bnKJgTBbpVA77Ygbb1aW1oiWJNGRbVjSlQ9We/ihB9vVpX5WqDJvbISXlukGR+dQ==}
 
   '@types/lodash@4.17.5':
     resolution: {integrity: sha512-MBIOHVZqVqgfro1euRDWX7OO0fBVUUMrN6Pwm8LQsz8cWhEpihlvR70ENj3f40j58TNxZaWv2ndSkInykNBBJw==}
@@ -5355,8 +5337,8 @@ packages:
     resolution: {integrity: sha512-Jtc2612XINuBjIl/QTWsV5UvE8UHuNblcO3vVADSrKsrc6RqGX6lOW1cEo3CM2v0XG4Nat8nI+YM7/f26VxXLw==}
     engines: {node: '>=12'}
 
-  prettier@3.6.2:
-    resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
+  prettier@3.9.10:
+    resolution: {integrity: sha512-skGHTH1Yb9QvaTC4hWnRTzEYtCpApF0UMBPz+t/0ZPzP8ihefo/btKd+QA7pUE0fEwA1SbS/NmhyEcstdXOIdA==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -8416,15 +8398,7 @@ snapshots:
     dependencies:
       '@types/node': 22.15.3
 
-  '@types/lodash.camelcase@4.3.9':
-    dependencies:
-      '@types/lodash': 4.17.5
-
   '@types/lodash.snakecase@4.1.9':
-    dependencies:
-      '@types/lodash': 4.17.5
-
-  '@types/lodash.upperfirst@4.3.9':
     dependencies:
       '@types/lodash': 4.17.5
 
@@ -11559,7 +11533,7 @@ snapshots:
 
   postgres@3.4.7: {}
 
-  prettier@3.6.2: {}
+  prettier@3.9.10: {}
 
   pretty-format@29.7.0:
     dependencies:
