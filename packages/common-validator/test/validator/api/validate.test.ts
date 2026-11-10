@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { ValidateDeniedError, rule, validate } from '../../../src';
+import { ValidateDeniedError, rule, schema, validate } from '../../../src';
 import sleep from 'sleep-promise';
 
 test('保留验证过的数据', async () => {
@@ -63,6 +63,16 @@ test('支持传入单个验证器', async () => {
   const result = await validate(
     { test: '1', test1: '2' },
     rule.object({
+      test: rule.number(),
+    }),
+  );
+  expect(result).toStrictEqual({ test: 1 });
+});
+
+test('支持传入 schema', async () => {
+  const result = await validate(
+    { test: '1', test1: '2' },
+    schema({
       test: rule.number(),
     }),
   );

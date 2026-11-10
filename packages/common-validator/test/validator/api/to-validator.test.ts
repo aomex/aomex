@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { ObjectValidator, toValidator } from '../../../src';
+import { ObjectValidator, rule, schema, toValidator } from '../../../src';
 import { MockValidator } from '../../mock/mock-validator';
 
 test('传入验证器则不变', () => {
@@ -12,6 +12,16 @@ test('传入对象则返回对象验证器', () => {
     x: new MockValidator(),
   });
   expect(validator).toBeInstanceOf(ObjectValidator);
+});
+
+test('传入 schema 则返回对象验证器', () => {
+  const userSchema = schema({
+    id: rule.int(),
+    name: rule.string(),
+  });
+  const validator = toValidator(userSchema);
+  expect(validator).toBeInstanceOf(ObjectValidator);
+  expect(validator).not.toBe(userSchema);
 });
 
 test('传入空值则返回空值', () => {

@@ -1,5 +1,6 @@
 import { i18n } from '../i18n';
 import type { OpenAPI } from '@aomex/internal-tools';
+import type { ValidatorSchema } from './validator-schema';
 import { ValidateResult } from './validate-result';
 
 export declare namespace Validator {
@@ -33,20 +34,24 @@ export declare namespace Validator {
     | (() => ConvertOptionalTo<T, never>);
 
   export type Infer<T> =
-    T extends Validator<infer Type>
-      ? Validator.ConvertOptional<Type>
-      : T extends { [K: string]: Validator }
-        ? keyof T extends never
-          ? {}
-          : EmptyObjectToUnknown<{
-              [K in keyof T as true extends HasUndefined<T[K]> ? never : K]: Infer<T[K]>;
-            }> &
-              EmptyObjectToUnknown<{
-                [K in keyof T as true extends HasUndefined<T[K]> ? K : never]?: Infer<
+    T extends ValidatorSchema<infer U>
+      ? Infer<U>
+      : T extends Validator<infer Type>
+        ? Validator.ConvertOptional<Type>
+        : T extends { [K: string]: Validator }
+          ? keyof T extends never
+            ? {}
+            : EmptyObjectToUnknown<{
+                [K in keyof T as true extends HasUndefined<T[K]> ? never : K]: Infer<
                   T[K]
                 >;
-              }>
-        : never;
+              }> &
+                EmptyObjectToUnknown<{
+                  [K in keyof T as true extends HasUndefined<T[K]> ? K : never]?: Infer<
+                    T[K]
+                  >;
+                }>
+          : never;
 
   type EmptyObjectToUnknown<T extends object> = keyof T extends never ? unknown : T;
   type HasUndefined<T> =
