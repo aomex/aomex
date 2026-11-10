@@ -10,6 +10,7 @@ import type {
   UpperHeaderKeys,
 } from './header';
 import stream from 'node:stream';
+import { finished } from 'node:stream/promises';
 import destroy from 'destroy';
 import createHttpError, { type HttpError, isHttpError } from 'http-errors';
 import type { WebContext } from './context';
@@ -117,7 +118,8 @@ export class WebResponse extends ServerResponse {
   }
 
   /**
-   * 下载文件
+   * 下载文件。
+   * 返回的 Promise 在响应结束（发送完成或关闭）后 settled，便于清理临时文件。
    *
    * @param filePath 路径
    * @param type 附件类型。默认值：`attachment`
@@ -125,10 +127,14 @@ export class WebResponse extends ServerResponse {
    * @link https://developer.mozilla.org/zh_CN/docs/Web/HTTP/Headers/Content-Disposition
    *
    */
-  download(filePath: string, type: 'attachment' | 'inline' = 'attachment'): void {
+  download(
+    filePath: string,
+    type: 'attachment' | 'inline' = 'attachment',
+  ): Promise<void> {
     this.contentType = extname(filePath);
     this.setHeader('content-disposition', contentDisposition(filePath, { type }));
     this.body = createReadStream(filePath);
+    return finished(this);
   }
 
   declare getHeader: {

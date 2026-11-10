@@ -7,7 +7,7 @@ let res!: WebResponse;
 expectType<TypeEqual<Body, typeof res.body>>(true);
 expectType<number>(res.contentLength);
 expectType<string>(res.contentType);
-expectType<void>(res.download(''));
+expectType<Promise<void>>(res.download(''));
 expectType<boolean>(res.isJSON(''));
 expectType<string | null>(res.matchContentType(''));
 expectType<TypeEqual<ServerResponse, typeof res.res>>(true);

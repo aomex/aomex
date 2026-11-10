@@ -304,13 +304,18 @@ describe('状态码', async () => {
 
 test('下载', async () => {
   const { res } = await mockServer((agent) => agent.get('/'));
-  res.download(join(dir, 'fixture', 'upload-1.txt'));
+  const done = res.download(join(dir, 'fixture', 'upload-1.txt'));
   expect(res.body).toBeInstanceOf(Stream);
   expect(res.getHeader('Content-Disposition')).toBe(
     'attachment; filename="upload-1.txt"',
   );
   expect(res.contentType).toBe('text/plain');
+  const rm = vitest.fn();
+  const cleanup = done.finally(rm);
+  expect(rm).not.toHaveBeenCalled();
   res.flush();
+  await cleanup;
+  expect(rm).toHaveBeenCalledOnce();
 });
 
 test('vary', async () => {
