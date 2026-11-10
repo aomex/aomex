@@ -37,7 +37,9 @@ export const parseBody = (): WebMiddleware => {
         hashAlgorithm: 'md5',
         keepExtensions: true,
         maxFileSize: 100 * 1024 * 1024,
-        allowEmptyFiles: true,
+        maxFiles: 30,
+        // 禁止0字节空文件
+        allowEmptyFiles: false,
       });
       form.on('fileBegin', (_name, file) => {
         filepaths.push(file.filepath);
