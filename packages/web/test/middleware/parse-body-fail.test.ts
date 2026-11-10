@@ -47,12 +47,19 @@ test('form.parse 拒绝后清理已落盘临时文件', { timeout: 10_000 }, asy
           (err) => {
             expect(err).toBeTruthy();
             expect(captured.length).toBeGreaterThan(0);
-            // 结束连接以触发 parse-body catch 里的 request close 兜底清理
+            // 等 close 走完 parse-body catch 里的兜底清理；若已 closed 则不再等
+            let settled = false;
+            const finish = () => {
+              if (settled) return;
+              settled = true;
+              server.close();
+              resolve();
+            };
+            req.once('close', finish);
             res.statusCode = 400;
             res.end();
-            req.destroy();
-            server.close();
-            resolve();
+            if (!req.closed) req.destroy();
+            if (req.closed) finish();
           },
         );
       },

@@ -1,6 +1,7 @@
 import type { RedisOptions } from 'ioredis';
 import RedisMemoryServer from 'redis-memory-server';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
+import { getRedisBinary } from './helper/get-redis-binary';
 import { CacheRedisAdapter, redisAdapter } from '../src';
 import sleep from 'sleep-promise';
 
@@ -10,9 +11,7 @@ let store: CacheRedisAdapter;
 
 beforeAll(async () => {
   redisServer = await RedisMemoryServer.create({
-    binary: {
-      version: '7.4.2',
-    },
+    binary: getRedisBinary(),
   });
   await redisServer.ensureInstance();
   opts = {
@@ -20,7 +19,7 @@ beforeAll(async () => {
     port: await redisServer.getPort(),
   };
   store = redisAdapter({ ...opts });
-}, 180_000 /* download */);
+}, 60_000 /* start redis */);
 
 afterEach(async () => {
   await store.redis.flushall();

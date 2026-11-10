@@ -1,5 +1,6 @@
 import RedisMemoryServer from 'redis-memory-server';
 import { afterAll, afterEach, beforeAll, expect, test } from 'vitest';
+import { getRedisBinary } from '../../cache-redis-adapter/test/helper/get-redis-binary';
 import { RateLimitRedisStore } from '../src';
 import sleep from 'sleep-promise';
 import { Redis } from 'ioredis';
@@ -9,16 +10,14 @@ let store: RateLimitRedisStore;
 
 beforeAll(async () => {
   redisServer = await RedisMemoryServer.create({
-    binary: {
-      version: '7.4.2',
-    },
+    binary: getRedisBinary(),
   });
   await redisServer.ensureInstance();
   store = new RateLimitRedisStore({
     host: await redisServer.getHost(),
     port: await redisServer.getPort(),
   });
-}, 180_000 /* download */);
+}, 60_000 /* start redis */);
 
 afterEach(async () => {
   await store['redis'].flushall();

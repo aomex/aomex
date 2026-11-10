@@ -11,7 +11,7 @@ let mongod!: MongoMemoryServer;
 beforeEach(async () => {
   mongod = await MongoMemoryServer.create({ binary: getMongoBinary() });
   await mongoose.connect(mongod.getUri());
-}, 60_000 /* download */);
+}, 60_000 /* start mongod */);
 
 afterEach(async () => {
   Object.keys(mongoose.models).forEach((modelName) => {

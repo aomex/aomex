@@ -10,7 +10,7 @@ describe('单机', () => {
 
   beforeEach(async () => {
     mongod = await MongoMemoryServer.create({ binary: getMongoBinary() });
-  }, 60_000 /* download */);
+  }, 60_000 /* start mongod */);
 
   afterEach(async () => {
     Object.keys(mongoose.models).forEach((modelName) => {
@@ -95,7 +95,7 @@ describe('副本集', () => {
 
   beforeEach(async () => {
     mongod = await MongoMemoryReplSet.create({ binary: getMongoBinary() });
-  }, 60_000 /* download */);
+  }, 60_000 /* start mongod */);
 
   afterEach(async () => {
     Object.keys(mongoose.models).forEach((modelName) => {

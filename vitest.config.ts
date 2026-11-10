@@ -19,6 +19,8 @@ export default defineConfig({
     exclude: [...configDefaults.exclude, '**/dist/**'],
     maxConcurrency: 1,
     fileParallelism: false,
+    // projects 之间默认仍会并行；限 1 避免多 mongod/redis 抢资源导致偶发超时
+    maxWorkers: 1,
     // Vitest 5 默认 clearMocks=true；本仓库大量跨断言依赖调用记录，保持与 v3 一致
     clearMocks: false,
     logHeapUsage: true,

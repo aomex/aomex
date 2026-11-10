@@ -46,7 +46,7 @@ beforeEach(async () => {
       }),
     ],
   });
-}, 60_000 /* download */);
+}, 60_000 /* start mongod */);
 
 afterEach(async () => {
   await mongoose.disconnect();
