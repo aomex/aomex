@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     // https://github.com/tsconfig/bases#centralized-recommendations-for-tsconfig-bases
-    "target": "ES2022",
+    "target": "ES2024",
     "module": "ESNext",
     "lib": ["ESNext"],
     "strict": true,
@@ -27,7 +27,6 @@
     "rootDir": "./",
     "noEmit": true,
     "importHelpers": false,
-    "downlevelIteration": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "allowSyntheticDefaultImports": true,

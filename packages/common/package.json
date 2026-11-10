@@ -3,7 +3,7 @@
   "version": "3.30.7",
   "description": "aomex公共库",
   "scripts": {
-    "prepublishOnly": "tsup"
+    "prepublishOnly": "tsdown"
   },
   "type": "module",
   "types": "src/index.ts",
@@ -31,10 +31,10 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "engines": {
-    "node": ">=22.15.0"
+    "node": ">=24.0.0"
   },
   "peerDependencies": {
-    "typescript": ">=5.5"
+    "typescript": ">=7"
   },
   "dependencies": {
     "@aomex/common-middleware": "workspace:^",

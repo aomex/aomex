@@ -4,7 +4,7 @@
 
 ## 环境约束
 
-- 运行时：`node >= 22.15.0`（见根 `package.json` `engines`）
+- 运行时：`node >= 24.0.0`（见根 `package.json` `engines`）
 - 包管理：`pnpm`
 - 仓库为 monorepo，改动尽量落在对应 `packages/*`，避免无必要跨包耦合
 

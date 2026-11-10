@@ -55,30 +55,21 @@ import { Logger } from '../src';
       },
       {
         transport: new Logger.transports.Console(),
-        level: {
-          // @ts-expect-error
-          from: 'fooo',
-          to: 'bar',
-        },
+        // @ts-expect-error
+        level: { from: 'fooo', to: 'bar' },
       },
       {
         transport: new Logger.transports.Console(),
-        level: {
-          from: 'foo',
-          // @ts-expect-error
-          to: 'barz',
-        },
+        // @ts-expect-error
+        level: { from: 'foo', to: 'barz' },
       },
     ],
   });
 
   logger.transports.add({
     transport: new Logger.transports.Console(),
-    level: {
-      from: 'foo',
-      // @ts-expect-error
-      to: 'barz',
-    },
+    // @ts-expect-error
+    level: { from: 'foo', to: 'barz' },
   });
 
   logger.transports.add({

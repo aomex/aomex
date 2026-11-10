@@ -50,7 +50,7 @@ export class WebRequest extends IncomingMessage {
   /**
    * 返回从`headers['cookie']`解析后的cookie列表
    */
-  get cookies() {
+  get cookies(): { readonly [key: string]: string | undefined } {
     return (this._cookies ||= cookie.parse(this.headers['cookie'] || ''));
   }
 

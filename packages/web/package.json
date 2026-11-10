@@ -3,7 +3,7 @@
   "version": "3.30.7",
   "description": "aomex web层应用",
   "scripts": {
-    "prepublishOnly": "tsup && node ./scripts/patch-dist.mjs"
+    "prepublishOnly": "tsdown && node ./scripts/patch-dist.mjs"
   },
   "type": "module",
   "types": "src/index.ts",

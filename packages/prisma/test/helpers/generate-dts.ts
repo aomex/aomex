@@ -1,5 +1,5 @@
-// typescript 是核心包 `@aomex/common` 的 peerDependencies，因此用户一定会安装
-import ts from 'typescript';
+// TypeScript 7 不再提供 Compiler API，测试辅助改用兼容包
+import ts from '@typescript/typescript6';
 import { pascalCase } from '../../src/lib/pascal-case';
 import path from 'path';
 import { formatContent } from '../../src/lib/format-content';
@@ -34,6 +34,8 @@ export const generateDTS = (source: string) => {
       skipLibCheck: true, // speed up,
       skipDefaultLibCheck: true,
       moduleResolution: ts.ModuleResolutionKind.Bundler,
+      // Buffer 等 Node 全局类型依赖 @types/node；缺省时会塌成 any
+      types: ['node'],
     };
     const host = ts.createCompilerHost(options);
     const originReadFile = host.readFile.bind(host);
@@ -43,7 +45,17 @@ export const generateDTS = (source: string) => {
     host.writeFile = (_, c) => {
       content = c;
     };
-    ts.createProgram([tsFile], options, host).emit();
+    const program = ts.createProgram([tsFile], options, host);
+    const diagnostics = ts
+      .getPreEmitDiagnostics(program)
+      .filter((d) => d.category === ts.DiagnosticCategory.Error);
+    if (diagnostics.length) {
+      const message = diagnostics
+        .map((d) => ts.flattenDiagnosticMessageText(d.messageText, '\n'))
+        .join('\n');
+      throw new Error(`generateDTS failed:\n${message}`);
+    }
+    program.emit();
   }
 
   return formatContent(content.replaceAll(/(export\sdeclare\s)/gm, '\n$1'));
