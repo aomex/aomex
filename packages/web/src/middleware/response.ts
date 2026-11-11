@@ -1,4 +1,10 @@
-import { type ValidatorToken, toValidator, type OpenAPI, Validator } from '@aomex/common';
+import {
+  Validator,
+  type ValidatorToken,
+  toValidator,
+  type OpenAPI,
+  toDocument,
+} from '@aomex/common';
 import { WebMiddleware, type OpenApiInjector } from '../override';
 import { getMimeType } from '../utils';
 import type { Body, HttpErrorProperties } from '../http';
@@ -147,7 +153,7 @@ export class WebResponseMiddleware<
         if (content) {
           resItem.content = {
             [this.getContentType()]: {
-              schema: Validator.toDocument(toValidator(content)).schema,
+              schema: toDocument(content).schema,
               example,
             },
           };
@@ -155,10 +161,7 @@ export class WebResponseMiddleware<
 
         if (headers) {
           resItem.headers = Object.fromEntries(
-            Object.entries(headers).map(([key, header]) => [
-              key,
-              Validator.toDocument(header),
-            ]),
+            Object.entries(headers).map(([key, header]) => [key, toDocument(header)]),
           );
         }
       },

@@ -3,7 +3,8 @@ import {
   Validator,
   ValidateDeniedError,
   middleware,
-  OpenAPI,
+  type OpenAPI,
+  toDocument,
   toValidator,
   type ValidatorToken,
 } from '@aomex/common';
@@ -26,10 +27,9 @@ export const body = <T extends ValidatorToken>(
     },
     openapi: {
       onMethod(methodItem) {
-        const validator = toValidator(fields);
-        const docs = Validator.toDocument(validator);
+        const docs = toDocument(fields);
         const schema = docs.schema as OpenAPI.SchemaObject;
-        const contentType = Validator.has(validator, FileValidator)
+        const contentType = Validator.has(toValidator(fields), FileValidator)
           ? 'multipart/form-data'
           : 'application/json';
 

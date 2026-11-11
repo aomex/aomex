@@ -2,6 +2,7 @@ import { toArray } from '@aomex/internal-tools';
 import { i18n } from '../i18n';
 import type { OpenAPI } from '@aomex/internal-tools';
 import { ValidateResult, type TransformedValidator, Validator } from '../base';
+import { toDocument } from '../api/to-document';
 
 export declare namespace ObjectValidator {
   export type Property = Record<string, Validator>;
@@ -223,7 +224,7 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
     const requiredProperties: string[] = [];
     if (hasSpecificProperties) {
       Object.entries(properties).forEach(([key, validator]) => {
-        const docs = Validator.toDocument(validator);
+        const docs = toDocument(validator);
         schemas[key] = docs.schema!;
         docs.required && requiredProperties.push(key);
       });
@@ -237,7 +238,7 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
     } else if (!keepAdditional.value) {
       additionalProperties = true;
     } else {
-      additionalProperties = Validator.toDocument(keepAdditional.value).schema;
+      additionalProperties = toDocument(keepAdditional.value).schema;
     }
 
     return {

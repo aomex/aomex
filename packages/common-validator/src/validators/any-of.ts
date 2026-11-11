@@ -1,6 +1,7 @@
 import { i18n } from '../i18n';
 import type { OpenAPI } from '@aomex/internal-tools';
 import { ValidateResult, type TransformedValidator, Validator } from '../base';
+import { toDocument } from '../api/to-document';
 
 export declare namespace AnyOfValidator {
   export interface Options<T> extends Validator.Options<T> {
@@ -65,7 +66,7 @@ export class AnyOfValidator<T = never> extends Validator<T> {
   protected override toDocument(): OpenAPI.SchemaObject {
     const { validators } = this.config;
     return {
-      anyOf: validators.map((validator) => Validator.toDocument(validator).schema!),
+      anyOf: validators.map((validator) => toDocument(validator).schema!),
     };
   }
 }

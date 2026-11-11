@@ -4,6 +4,7 @@ import {
   Validator,
   ValidateDeniedError,
   ValidatorSchema,
+  toDocument,
 } from '@aomex/common';
 import type { WebMiddleware } from '../override';
 
@@ -33,7 +34,7 @@ export const query = <T extends { [key: string]: Validator } | ValidatorSchema<a
           methodItem.parameters!.push({
             name,
             in: 'query',
-            ...Validator.toDocument(validator),
+            ...toDocument(validator),
           });
         });
       },

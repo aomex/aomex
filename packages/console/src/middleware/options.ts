@@ -1,4 +1,4 @@
-import { validate, Validator, OpenAPI, middleware } from '@aomex/common';
+import { validate, Validator, OpenAPI, middleware, toDocument } from '@aomex/common';
 import { ConsoleMiddleware, type ConsoleDocument } from '../override';
 import { toArray } from '@aomex/internal-tools';
 
@@ -46,7 +46,7 @@ export const options = <
     help: {
       onCommandItem(commandItem) {
         for (const [key, validator] of Object.entries(fields)) {
-          const docs = Validator.toDocument(validator);
+          const docs = toDocument(validator);
           const schema = docs.schema as OpenAPI.SchemaObject | undefined;
           let dateType: ConsoleDocument.ParameterItem['type'];
 

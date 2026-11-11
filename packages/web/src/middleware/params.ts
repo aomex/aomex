@@ -4,6 +4,7 @@ import {
   Validator,
   ValidateDeniedError,
   ValidatorSchema,
+  toDocument,
 } from '@aomex/common';
 import type { WebMiddleware } from '../override';
 
@@ -30,7 +31,7 @@ export const params = <T extends { [key: string]: Validator } | ValidatorSchema<
             [key: string]: Validator;
           },
         ).forEach(([name, validator]) => {
-          const validatorDocument = Validator.toDocument(validator);
+          const validatorDocument = toDocument(validator);
           methodItem.parameters!.push({
             name,
             in: 'path',

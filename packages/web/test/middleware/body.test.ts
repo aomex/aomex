@@ -179,6 +179,7 @@ test('文档', () => {
                     "baz",
                   ],
                   "type": "object",
+                  "x-ref": "685c292f88de25db6455234e88096bf1",
                 },
               },
             },
@@ -212,37 +213,61 @@ test('文档：schema', () => {
     pathItem: doc.paths['/']!,
     methodName: 'get',
   });
-  expect(doc['paths']).toMatchInlineSnapshot(`
-    {
-      "/": {
-        "get": {
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "additionalProperties": false,
-                  "properties": {
-                    "bar": {
-                      "type": "number",
-                    },
-                    "foo": {
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "foo",
-                  ],
-                  "type": "object",
-                },
-              },
-            },
-            "required": true,
+  expect(doc.paths['/']!.get!.requestBody).toMatchObject({
+    content: {
+      'application/json': {
+        schema: {
+          'type': 'object',
+          'x-ref': expect.any(String),
+          'properties': {
+            foo: { type: 'string' },
+            bar: { type: 'number' },
           },
-          "responses": {},
+          'required': ['foo'],
         },
       },
-    }
-  `);
+    },
+    required: true,
+  });
+});
+
+test('文档：schema.asName 打上具名 x-ref', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+
+  const md = body(
+    schema({
+      foo: rule.string(),
+      bar: rule.number().optional(),
+    }).asName('CreateUser'),
+  );
+  md['openapi']().onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  expect(doc.paths['/']!.get!.requestBody).toMatchObject({
+    content: {
+      'application/json': {
+        schema: {
+          'type': 'object',
+          'x-ref': 'CreateUser',
+          'properties': {
+            foo: { type: 'string' },
+            bar: { type: 'number' },
+          },
+          'required': ['foo'],
+        },
+      },
+    },
+    required: true,
+  });
 });
 
 test('携带文件', async () => {
@@ -285,6 +310,7 @@ test('携带文件', async () => {
                     "foo",
                   ],
                   "type": "object",
+                  "x-ref": "e0ad2e04820c9c77c7532b265baeae56",
                 },
               },
             },
@@ -334,6 +360,7 @@ test('顶层文件字段识别为 multipart', () => {
                     "avatar",
                   ],
                   "type": "object",
+                  "x-ref": "cf2a2163f2c6bb93d594e705ec4f1e07",
                 },
               },
             },
@@ -372,6 +399,7 @@ test('文档：空字段表 requestBody.required=false', () => {
                 "schema": {
                   "additionalProperties": true,
                   "type": "object",
+                  "x-ref": "2f9c313de3f7bfd4586bcc096b11a634",
                 },
               },
             },
@@ -421,6 +449,7 @@ test('文档：全 optional 字段表 requestBody.required=false', () => {
                     },
                   },
                   "type": "object",
+                  "x-ref": "0198c428730186937a216e5cfa9e7046",
                 },
               },
             },
@@ -660,6 +689,7 @@ test('文档：裸 object 含文件字段识别为 multipart', () => {
                     "avatar",
                   ],
                   "type": "object",
+                  "x-ref": "cf2a2163f2c6bb93d594e705ec4f1e07",
                 },
               },
             },
@@ -714,12 +744,14 @@ test('嵌套对象中的文件字段识别为 multipart', () => {
                         "attachment",
                       ],
                       "type": "object",
+                      "x-ref": "503feddd3ca09eb31c3717368788794c",
                     },
                   },
                   "required": [
                     "meta",
                   ],
                   "type": "object",
+                  "x-ref": "fe348704244f7b1224e4d70aa87053ad",
                 },
               },
             },

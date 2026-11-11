@@ -1,6 +1,7 @@
 import { i18n } from '../i18n';
 import type { OpenAPI } from '@aomex/internal-tools';
 import { ValidateResult, type TransformedValidator, Validator } from '../base';
+import { toDocument } from '../api/to-document';
 
 export declare namespace ArrayValidator {
   export type ItemOf<T> = Validator.ConvertOptional<T> extends (infer U)[] ? U : never;
@@ -197,7 +198,7 @@ export class ArrayValidator<T = unknown[]> extends Validator<T> {
 
     return {
       type: 'array',
-      items: (itemValidator && Validator.toDocument(itemValidator).schema) || {},
+      items: (itemValidator && toDocument(itemValidator).schema) || {},
       minItems: lengthRange.min,
       maxItems: lengthRange.max,
       uniqueItems: uniqueBy === true || undefined,

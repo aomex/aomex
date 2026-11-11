@@ -118,31 +118,6 @@ export abstract class Validator<T = unknown> {
     return roots.some(walk);
   }
 
-  public static toDocument(validator: Validator): OpenAPI.ParameterBaseObject {
-    const {
-      required,
-      nullable,
-      docs: { description, deprecated, example, ...schemaProperties } = {},
-      defaultValue,
-    } = validator.config;
-    const bothProperties = { description, deprecated, example };
-    const schema: OpenAPI.SchemaObject = {
-      ...schemaProperties,
-      ...bothProperties,
-      default: validator.getDefaultValue(defaultValue),
-      nullable: nullable || undefined,
-      ...validator.toDocument(),
-    };
-
-    const result: OpenAPI.ParameterBaseObject = {
-      ...bothProperties,
-      required: required || undefined,
-      schema: schema,
-    };
-
-    return JSON.parse(JSON.stringify(result));
-  }
-
   /**
    * @param is 是否开启，默认值：`true`
    */

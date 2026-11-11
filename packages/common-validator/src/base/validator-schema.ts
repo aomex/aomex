@@ -1,4 +1,4 @@
-import { Validator } from '.';
+import type { Validator } from './validator';
 import { ObjectValidator } from '../validators/object';
 
 type HasPublicOptional = { optional: () => any };
@@ -35,7 +35,8 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
   ) {}
 
   /**
-   * 设置名称，不改变字段。主要用于生成openapi文档
+   * 设置名称，不改变字段。
+   * `toDocument(schema)` 时写入 `x-ref`；未设置则为内容 MD5
    */
   asName(name: string): ValidatorSchema<T> {
     return new ValidatorSchema(this.rules, name);
