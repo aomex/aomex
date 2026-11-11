@@ -9,6 +9,7 @@ import {
   type OpenapiValidateResultItem,
 } from './validate-openapi';
 import { methodParameterToPathParameter } from './hoist-parameter';
+import { hoistSchemaRef } from './hoist-schema-ref';
 import { saveToFile } from './save-to-file';
 import { initializeDocument } from './initialize-document';
 import { parseFiles } from './parse-files';
@@ -92,6 +93,7 @@ export const generateOpenapiWithSpinner = async (
     {
       title: i18n.t('optimize_parameter'),
       task: async (ctx) => {
+        hoistSchemaRef(ctx.document);
         methodParameterToPathParameter(ctx.document);
         await sleep(500);
       },

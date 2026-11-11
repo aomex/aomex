@@ -1,6 +1,7 @@
 import { OpenAPI } from '@aomex/common';
 import { pathToFiles, type GlobPathOptions } from '@aomex/internal-file-import';
 import { methodParameterToPathParameter } from './hoist-parameter';
+import { hoistSchemaRef } from './hoist-schema-ref';
 import { initializeDocument } from './initialize-document';
 import { parseFiles } from './parse-files';
 import { appendTag } from './append-tag';
@@ -34,6 +35,7 @@ export const generateOpenapi = async (
   const usedTags = await parseFiles(document, files);
   appendTag(document, usedTags);
   await config.fix?.(document);
+  hoistSchemaRef(document);
   methodParameterToPathParameter(document);
 
   return JSON.parse(JSON.stringify(document));
