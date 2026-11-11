@@ -2,6 +2,37 @@ import { i18n } from '../i18n';
 import type { OpenAPI } from '@aomex/internal-tools';
 import { ValidateResult, type TransformedValidator, Validator } from '../base';
 
+/**
+ * TS enum / 枚举风格对象（值仅为 string | number）
+ * ```typescript
+ * enum Color { Red = 'red', Blue = 'blue' }
+ * const Status = { On: 1, Off: 0 } as const;
+ * ```
+ */
+export type EnumLike = {
+  readonly [key: string]: string | number;
+};
+
+/** 去掉 string/number 索引签名后的具名键，避免 `T[keyof T]` 被冲成 `string | number` */
+type EnumLikeKnownKeys<T> = keyof {
+  [K in keyof T as string extends K ? never : number extends K ? never : K]: true;
+};
+
+/**
+ * `EnumLike` 的取值联合（OpenAPI `enum` 可选项）。
+ * 传入 TS `enum` 时通常保留枚举品牌类型（如 `Color`），而非裸字面量联合。
+ */
+export type EnumLikeValues<T extends EnumLike> = T[EnumLikeKnownKeys<T>];
+
+/**
+ * 从 TS enum / 枚举对象抽出可选值；数字 enum 会丢掉反向映射键（`"0"` / `"1"`）
+ */
+export function enumLikeToRanges(source: EnumLike): Array<string | number> {
+  return Object.keys(source)
+    .filter((key) => Number.isNaN(Number(key)))
+    .map((key) => source[key]!);
+}
+
 export declare namespace EnumValidator {
   export interface Options<T> extends Validator.Options<T> {
     ranges: T[];

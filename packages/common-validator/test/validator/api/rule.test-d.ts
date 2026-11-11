@@ -356,7 +356,7 @@ import { expectType, type TypeEqual } from 'ts-expect';
   expectType<TypeEqual<EmailValidator<string>, typeof v>>(true);
 }
 
-// enum：字面量联合，不能宽化成 string
+// enum：字面量联合，不能宽化成 string；支持 TS enum / 枚举对象
 {
   const mixed = rule.enum(['a', 'b', 1]);
   expectType<TypeEqual<EnumValidator<'a' | 'b' | 1>, typeof mixed>>(true);
@@ -367,6 +367,42 @@ import { expectType, type TypeEqual } from 'ts-expect';
 
   const numbers = rule.enum([1, 2, 3]);
   expectType<TypeEqual<EnumValidator<1 | 2 | 3>, typeof numbers>>(true);
+
+  enum Color {
+    Red = 'red',
+    Blue = 'blue',
+  }
+  const fromStringEnum = rule.enum(Color);
+  type ColorInf = Validator.Infer<typeof fromStringEnum>;
+  // TypeEqual 对 enum 品牌过严，用双向赋值断言
+  const colorInf: ColorInf = Color.Red;
+  const colorBack: Color = colorInf;
+  expectType<ColorInf>(Color.Blue);
+  expectType<Color>(colorBack);
+  // @ts-expect-error 裸字符串不能赋给字符串 enum Infer
+  const _colorWrong: ColorInf = 'red';
+  expectType<TypeEqual<EnumValidator<string>, typeof fromStringEnum>>(false);
+
+  enum Status {
+    Off = 0,
+    On = 1,
+  }
+  const fromNumberEnum = rule.enum(Status);
+  type StatusInf = Validator.Infer<typeof fromNumberEnum>;
+  const statusInf: StatusInf = Status.Off;
+  const statusBack: Status = statusInf;
+  expectType<StatusInf>(Status.On);
+  expectType<Status>(statusBack);
+
+  const Role = { Admin: 'admin', User: 'user' } as const;
+  const fromObject = rule.enum(Role);
+  expectType<TypeEqual<EnumValidator<'admin' | 'user'>, typeof fromObject>>(true);
+  expectType<TypeEqual<'admin' | 'user', Validator.Infer<typeof fromObject>>>(true);
+
+  // @ts-expect-error 不接受 boolean 值的枚举对象
+  rule.enum({ ok: true });
+  // @ts-expect-error
+  rule.enum({ nested: { a: 1 } });
 }
 
 // hash：算法字面量约束

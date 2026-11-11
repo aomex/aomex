@@ -10,6 +10,9 @@ import {
   DateValidator,
   EmailValidator,
   EnumValidator,
+  enumLikeToRanges,
+  type EnumLike,
+  type EnumLikeValues,
   HashValidator,
   IntValidator,
   IpValidator,
@@ -134,12 +137,22 @@ export class Rule {
     return new EmailValidator();
   }
 
+  /**
+   * ```typescript
+   * rule.enum(['a', 'b', 1]);
+   * rule.enum(Color); // TS enum / 枚举对象
+   * ```
+   */
   enum<const T extends string | number | boolean>(ranges: T[]): EnumValidator<T>;
   enum<const T extends readonly (string | number | boolean)[]>(
     ranges: T,
   ): EnumValidator<T[number]>;
-  enum(ranges: any[]) {
-    return new EnumValidator(toArray(ranges, true));
+  enum<T extends EnumLike>(enumeration: T): EnumValidator<EnumLikeValues<T>>;
+  enum(rangesOrEnum: Array<string | number | boolean> | EnumLike) {
+    if (Array.isArray(rangesOrEnum)) {
+      return new EnumValidator(toArray(rangesOrEnum, true));
+    }
+    return new EnumValidator(enumLikeToRanges(rangesOrEnum));
   }
 
   hash(algorithm: HashValidator.Algorithm) {

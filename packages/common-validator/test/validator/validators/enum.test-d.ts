@@ -3,6 +3,8 @@ import {
   EnumValidator as TargetValidator,
   Validator,
   type TransformedValidator,
+  type EnumLikeValues,
+  enumLikeToRanges,
 } from '../../../src';
 
 type DefaultType = 'a' | 1 | 2 | true | false;
@@ -62,4 +64,34 @@ const validator = new TargetValidator(['a', 1, 2, true, false]);
 {
   const v = validator.docs({ title: '' });
   expectType<TargetValidator<DefaultType>>(v);
+}
+
+// EnumLikeValues：TS enum 与枚举成员双向兼容；普通对象为字面量联合
+{
+  enum Color {
+    Red = 'red',
+    Blue = 'blue',
+  }
+  type ColorVals = EnumLikeValues<typeof Color>;
+  const colorVal: ColorVals = Color.Red;
+  const colorBack: Color = colorVal;
+  expectType<ColorVals>(Color.Blue);
+  expectType<Color>(colorBack);
+  // @ts-expect-error
+  const _colorWrong: ColorVals = 'red';
+
+  enum Status {
+    Off = 0,
+    On = 1,
+  }
+  type StatusVals = EnumLikeValues<typeof Status>;
+  const statusVal: StatusVals = Status.On;
+  const statusBack: Status = statusVal;
+  expectType<StatusVals>(Status.Off);
+  expectType<Status>(statusBack);
+
+  const Role = { Admin: 'admin', User: 'user' } as const;
+  expectType<TypeEqual<'admin' | 'user', EnumLikeValues<typeof Role>>>(true);
+
+  expectType<TypeEqual<(string | number)[], ReturnType<typeof enumLikeToRanges>>>(true);
 }
