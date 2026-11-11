@@ -403,6 +403,15 @@ import { expectType, type TypeEqual } from 'ts-expect';
   rule.enum({ ok: true });
   // @ts-expect-error
   rule.enum({ nested: { a: 1 } });
+
+  const picked = rule.enum(['a', 'b', 'c']).pick('a', 'b');
+  expectType<TypeEqual<EnumValidator<'a' | 'b'>, typeof picked>>(true);
+  const omitted = rule.enum(['a', 'b', 'c']).omit('c');
+  expectType<TypeEqual<EnumValidator<'a' | 'b'>, typeof omitted>>(true);
+  // @ts-expect-error
+  rule.enum(['a', 'b']).pick('c');
+  // @ts-expect-error
+  rule.enum(['a', 'b']).omit('c');
 }
 
 // hash：算法字面量约束

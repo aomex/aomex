@@ -46,7 +46,9 @@ export const en = I18n.satisfies(zh).define({
       not_in_range: '{{label}} is not enum value',
       only_support_string_number_boolean:
         'enum values can be only string, number and boolean',
-      can_not_be_empty: 'enum values can not be empty: "{{item}}"',
+      value_can_not_be_empty: 'enum values can not be empty: "{{item}}"',
+      ranges_can_not_be_empty: 'enum ranges can not be empty',
+      default_not_in_range: 'default value "{{item}}" is not in enum ranges',
     },
     one_of: {
       not_match_rule: '{{label}} does not match rule',

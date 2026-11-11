@@ -5,6 +5,7 @@ import {
   type TransformedValidator,
   type EnumLikeValues,
   enumLikeToRanges,
+  rule,
 } from '../../../src';
 
 type DefaultType = 'a' | 1 | 2 | true | false;
@@ -94,4 +95,61 @@ const validator = new TargetValidator(['a', 1, 2, true, false]);
   expectType<TypeEqual<'admin' | 'user', EnumLikeValues<typeof Role>>>(true);
 
   expectType<TypeEqual<(string | number)[], ReturnType<typeof enumLikeToRanges>>>(true);
+}
+
+// pick：白名单收窄（rest / 数组）；非法值应报错；保留 optional / nullable
+{
+  const base = new TargetValidator(['a', 'b', 'c', 1]);
+  const byRest = base.pick('a', 1);
+  expectType<TypeEqual<TargetValidator<'a' | 1>, typeof byRest>>(true);
+  expectType<TypeEqual<'a' | 1, Validator.Infer<typeof byRest>>>(true);
+
+  const byArr = base.pick(['b', 'c']);
+  expectType<TypeEqual<TargetValidator<'b' | 'c'>, typeof byArr>>(true);
+
+  // @ts-expect-error 不在枚举内
+  base.pick('z');
+  // @ts-expect-error
+  base.pick(true);
+  // @ts-expect-error
+  base.pick(['z']);
+
+  const optionalPicked = base.optional().pick('a');
+  expectType<TypeEqual<'a' | undefined, Validator.Infer<typeof optionalPicked>>>(true);
+
+  const nullablePicked = base.nullable().pick('b', 'c');
+  expectType<TypeEqual<'b' | 'c' | null, Validator.Infer<typeof nullablePicked>>>(true);
+}
+
+// omit：黑名单收窄（rest / 数组）；非法值应报错；保留 optional / nullable
+{
+  const base = new TargetValidator(['a', 'b', 'c', 1]);
+  const byRest = base.omit('c', 1);
+  expectType<TypeEqual<TargetValidator<'a' | 'b'>, typeof byRest>>(true);
+  expectType<TypeEqual<'a' | 'b', Validator.Infer<typeof byRest>>>(true);
+
+  const byArr = base.omit(['a']);
+  expectType<TypeEqual<TargetValidator<'b' | 'c' | 1>, typeof byArr>>(true);
+
+  // @ts-expect-error 不在枚举内
+  base.omit('z');
+  // @ts-expect-error
+  base.omit(['z']);
+
+  const optionalOmitted = base.optional().omit('c');
+  expectType<
+    TypeEqual<'a' | 'b' | 1 | undefined, Validator.Infer<typeof optionalOmitted>>
+  >(true);
+
+  const nullableOmitted = base.nullable().omit('a', 'b');
+  expectType<TypeEqual<'c' | 1 | null, Validator.Infer<typeof nullableOmitted>>>(true);
+}
+
+// pick/omit：枚举风格对象（as const）经 rule.enum 再收窄
+{
+  const Role = { Admin: 'admin', User: 'user', Guest: 'guest' } as const;
+  const picked = rule.enum(Role).pick(Role.Admin, Role.User);
+  expectType<TypeEqual<'admin' | 'user', Validator.Infer<typeof picked>>>(true);
+  const omitted = rule.enum(Role).omit(Role.Guest);
+  expectType<TypeEqual<'admin' | 'user', Validator.Infer<typeof omitted>>>(true);
 }

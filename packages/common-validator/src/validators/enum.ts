@@ -37,6 +37,11 @@ export declare namespace EnumValidator {
   export interface Options<T> extends Validator.Options<T> {
     ranges: T[];
   }
+
+  /** optional / nullable / default 等标志位，pick/omit 时需保留 */
+  export type FlagsOf<T> = Extract<T, null | Validator.TOptional | Validator.TDefault>;
+  /** 真正的枚举取值（去掉标志位） */
+  export type ValueOf<T> = Exclude<T, null | Validator.TOptional | Validator.TDefault>;
 }
 
 export class EnumValidator<const T = never> extends Validator<T> {
@@ -47,7 +52,7 @@ export class EnumValidator<const T = never> extends Validator<T> {
     this.config.ranges = ranges;
     ranges.forEach((item) => {
       if (this.isEmpty(item)) {
-        throw new Error(i18n.t('validator.enum.can_not_be_empty', { item }));
+        throw new Error(i18n.t('validator.enum.value_can_not_be_empty', { item }));
       }
       if (
         typeof item !== 'string' &&
@@ -77,6 +82,72 @@ export class EnumValidator<const T = never> extends Validator<T> {
   declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
+
+  /**
+   * 只保留指定枚举值，得到新的枚举验证器（保留 optional / nullable / default）。
+   *
+   * ```typescript
+   * rule.enum(['a', 'b', 'c']).pick('a', 'b');
+   * rule.enum(['a', 'b', 'c']).pick(['a', 'b']);
+   * ```
+   */
+  public pick<K extends EnumValidator.ValueOf<T>>(
+    values: readonly K[],
+  ): EnumValidator<K | EnumValidator.FlagsOf<T>>;
+  public pick<K extends EnumValidator.ValueOf<T>[]>(
+    ...values: [...K]
+  ): EnumValidator<K[number] | EnumValidator.FlagsOf<T>>;
+  public pick(...values: unknown[]): EnumValidator<any> {
+    const list = values.length === 1 && Array.isArray(values[0]) ? values[0] : values;
+    const set = new Set(list);
+    const validator = this.copy();
+    validator.config.ranges = this.config.ranges.filter((item) => set.has(item));
+    validator.assertConfigHealthy();
+    return validator;
+  }
+
+  /**
+   * 去掉指定枚举值，得到新的枚举验证器（保留 optional / nullable / default）。
+   *
+   * ```typescript
+   * rule.enum(['a', 'b', 'c']).omit('c');
+   * rule.enum(['a', 'b', 'c']).omit(['c']);
+   * ```
+   */
+  public omit<K extends EnumValidator.ValueOf<T>>(
+    values: readonly K[],
+  ): EnumValidator<Exclude<EnumValidator.ValueOf<T>, K> | EnumValidator.FlagsOf<T>>;
+  public omit<K extends EnumValidator.ValueOf<T>[]>(
+    ...values: [...K]
+  ): EnumValidator<
+    Exclude<EnumValidator.ValueOf<T>, K[number]> | EnumValidator.FlagsOf<T>
+  >;
+  public omit(...values: unknown[]): EnumValidator<any> {
+    const list = values.length === 1 && Array.isArray(values[0]) ? values[0] : values;
+    const set = new Set(list);
+    const validator = this.copy();
+    validator.config.ranges = this.config.ranges.filter((item) => !set.has(item));
+    validator.assertConfigHealthy();
+    return validator;
+  }
+
+  declare protected copy: () => EnumValidator<T>;
+
+  /** ranges 为空，或 default 不在 ranges 内时抛错 */
+  protected assertConfigHealthy(): void {
+    const { ranges, defaultValue } = this.config;
+    if (ranges.length === 0) {
+      throw new Error(i18n.t('validator.enum.ranges_can_not_be_empty'));
+    }
+    if (defaultValue !== undefined) {
+      const resolved = this.getDefaultValue(defaultValue);
+      if (!ranges.includes(resolved as T)) {
+        throw new Error(
+          i18n.t('validator.enum.default_not_in_range', { item: String(resolved) }),
+        );
+      }
+    }
+  }
 
   protected validateValue(
     value: any,

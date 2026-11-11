@@ -147,7 +147,7 @@ export class Rule {
   enum<const T extends readonly (string | number | boolean)[]>(
     ranges: T,
   ): EnumValidator<T[number]>;
-  enum<T extends EnumLike>(enumeration: T): EnumValidator<EnumLikeValues<T>>;
+  enum<const T extends EnumLike>(enumeration: T): EnumValidator<EnumLikeValues<T>>;
   enum(rangesOrEnum: Array<string | number | boolean> | EnumLike) {
     if (Array.isArray(rangesOrEnum)) {
       return new EnumValidator(toArray(rangesOrEnum, true));
