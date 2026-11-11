@@ -563,6 +563,36 @@ import { expectType, type TypeEqual } from 'ts-expect';
   rule.object(rule.number().optional());
 }
 
+// record：等价 object().additional({ value })；值可以是 ValidatorToken
+{
+  const viaRecord = rule.record(rule.number());
+  const viaAdditional = rule.object().additional({ value: rule.number() });
+  expectType<
+    TypeEqual<Validator.Infer<typeof viaRecord>, Validator.Infer<typeof viaAdditional>>
+  >(true);
+  expectType<TypeEqual<ObjectValidator<{ [K: string]: number }>, typeof viaRecord>>(true);
+  expectType<TypeEqual<{ [K: string]: number }, Validator.Infer<typeof viaRecord>>>(true);
+
+  const nested = rule.record({ id: rule.int(), name: rule.string().optional() });
+  expectType<
+    TypeEqual<
+      { [K: string]: { id: number } & { name?: string | undefined } },
+      Validator.Infer<typeof nested>
+    >
+  >(true);
+  expectType<
+    TypeEqual<
+      { [K: string]: { id: number; name: string | undefined } },
+      Validator.Infer<typeof nested>
+    >
+  >(false);
+
+  // @ts-expect-error 必须提供 value schema
+  rule.record();
+  // @ts-expect-error
+  rule.record(1);
+}
+
 // oneOf：联合推断；同类型收窄；Token 混合；至少两分支
 {
   const v1 = rule.oneOf([rule.string(), rule.number()]);

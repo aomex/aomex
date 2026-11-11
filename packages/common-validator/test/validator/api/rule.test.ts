@@ -116,6 +116,22 @@ test('object', () => {
   expect(rule.object()).toBeInstanceOf(ObjectValidator);
 });
 
+test('record 等价 object().additional({ value })', async () => {
+  const viaRecord = rule.record(rule.number());
+  const viaAdditional = rule.object().additional({ value: rule.number() });
+  expect(viaRecord).toBeInstanceOf(ObjectValidator);
+  expect(viaRecord['config'].keepAdditional).toEqual(
+    viaAdditional['config'].keepAdditional,
+  );
+  await expect(validate({ a: '1', b: 2 }, viaRecord)).resolves.toEqual({ a: 1, b: 2 });
+  await expect(validate({ a: 'x' }, viaRecord)).resolves.toEqual({});
+
+  const nested = rule.record({ id: rule.int() });
+  await expect(validate({ u1: { id: '1' } }, nested)).resolves.toEqual({
+    u1: { id: 1 },
+  });
+});
+
 test('object 支持 schema', async () => {
   const user = schema({ id: rule.int(), name: rule.string().optional() });
   const validator = rule.object(user);

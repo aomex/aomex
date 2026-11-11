@@ -199,6 +199,19 @@ export class Rule {
   }
 
   /**
+   * 动态键对象（`Record<string, V>`），等价于 `rule.object().additional({ value })`
+   * ```typescript
+   * rule.record(rule.number());
+   * rule.record({ id: rule.int() });
+   * ```
+   */
+  record<V extends ValidatorToken>(
+    value: V,
+  ): ObjectValidator<{ [K: string]: Validator.Infer<V> }> {
+    return new ObjectValidator().additional({ value });
+  }
+
+  /**
    * 必须且只能匹配其中一个规则，如果匹配上多个则失败
    * ```typescript
    * rule.oneOf([rule.number(), rule.string()]);
