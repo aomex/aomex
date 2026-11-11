@@ -13,7 +13,7 @@ export const parseFields = (fields: readonly DMMF.Field[], isInput: boolean) => 
     if (field.kind === 'object') {
       if (!field.relationName) {
         const relatedName = toIdent(field.type) + (isInput ? 'Input' : 'Output') + 'Type';
-        validator = `${relatedName}.object()`;
+        validator = `rule.object(${relatedName})`;
       }
     } else if (field.kind === 'enum') {
       validator = `rule.enum(${toIdent(field.type)}Enum)`;

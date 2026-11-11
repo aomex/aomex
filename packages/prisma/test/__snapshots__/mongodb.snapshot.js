@@ -75,7 +75,7 @@ const _MyTypeOutputType = {
    *
    * 数据库默认值：
    */
-  other: YourTypeOutputType.object(),
+  other: rule.object(YourTypeOutputType),
 };
 const MyTypeOutputType = schema(_MyTypeOutputType).asName('MyTypeOutput');
 const _MyTypeInputType = {
@@ -96,7 +96,7 @@ const _MyTypeInputType = {
    *
    * 数据库默认值：
    */
-  other: YourTypeInputType.object(),
+  other: rule.object(YourTypeInputType),
 };
 const MyTypeInputType = schema(_MyTypeInputType).asName('MyTypeInput');
 const _IAmAloseNotUsedOutputType = {
@@ -378,19 +378,19 @@ const userInputColumns = {
    *
    * 数据库默认值：
    */
-  custom: MyTypeInputType.object(),
+  custom: rule.object(MyTypeInputType),
   /**
    * Prisma类型：`MyType?`
    *
    * 数据库默认值：
    */
-  custom_nu: MyTypeInputType.object().optional().nullable(),
+  custom_nu: rule.object(MyTypeInputType).optional().nullable(),
   /**
    * Prisma类型：`MyType[]`
    *
    * 数据库默认值：
    */
-  custom_arr: rule.array(MyTypeInputType.object()),
+  custom_arr: rule.array(rule.object(MyTypeInputType)),
 };
 const userInputSchema = schema(userInputColumns).asName('userInput');
 const userOutputColumns = {
@@ -632,19 +632,19 @@ const userOutputColumns = {
    *
    * 数据库默认值：
    */
-  custom: MyTypeOutputType.object(),
+  custom: rule.object(MyTypeOutputType),
   /**
    * Prisma类型：`MyType?`
    *
    * 数据库默认值：
    */
-  custom_nu: MyTypeOutputType.object().nullable(),
+  custom_nu: rule.object(MyTypeOutputType).nullable(),
   /**
    * Prisma类型：`MyType[]`
    *
    * 数据库默认值：
    */
-  custom_arr: rule.array(MyTypeOutputType.object()),
+  custom_arr: rule.array(rule.object(MyTypeOutputType)),
 };
 const userOutputSchema = schema(userOutputColumns).asName('userOutput');
 const profileInputColumns = {

@@ -23,6 +23,7 @@ import {
   UuidValidator,
 } from '../validators';
 import { Validator } from '../base';
+import type { ValidatorSchema } from '../base/validator-schema';
 import { type ValidatorToken, toValidator } from './to-validator';
 
 export class Rule {
@@ -40,14 +41,14 @@ export class Rule {
    * rule.allOf([rule.number(), rule.string()]);
    * ```
    */
-  allOf<T extends Validator[], A extends Validator, B extends Validator>(
+  allOf<T extends ValidatorToken[], A extends ValidatorToken, B extends ValidatorToken>(
     rules: [rule1: A, rule2: B, ...others: T],
   ): AllOfValidator<
     Validator.Infer<A> &
       Validator.Infer<B> &
       Union2Intersection<{ [K in keyof T]: Validator.Infer<T[K]> }[number]>
   > {
-    return new AllOfValidator(rules);
+    return new AllOfValidator(rules.map(toValidator) as [Validator, ...Validator[]]);
   }
   /**
    * 允许任何类型：
@@ -68,22 +69,23 @@ export class Rule {
    * rule.anyOf([rule.number(), rule.string()]);
    * ```
    */
-  anyOf<T extends Validator[], A extends Validator, B extends Validator>(
+  anyOf<T extends ValidatorToken[], A extends ValidatorToken, B extends ValidatorToken>(
     rules: [rule1: A, rule2: B, ...others: T],
   ): AnyOfValidator<
     | Validator.Infer<A>
     | Validator.Infer<B>
     | { [K in keyof T]: Validator.Infer<T[K]> }[number]
   > {
-    return new AnyOfValidator(rules);
+    return new AnyOfValidator(rules.map(toValidator) as [Validator, ...Validator[]]);
   }
 
   array(): ArrayValidator<unknown[]>;
   array<T extends Validator>(item: T): ArrayValidator<Validator.Infer<T>[]>;
+  array<T extends ValidatorSchema<any>>(item: T): ArrayValidator<Validator.Infer<T>[]>;
   /**
-   * 对象验证规则的快捷操作，等价于 `rule.array(rule.object({}))`
+   * 对象验证规则的快捷操作，等价于 `rule.array(rule.object({...}))`
    */
-  array<T extends { [key: string]: P }, P extends Validator>(
+  array<T extends { [key: string]: Validator }>(
     ruleObject: T,
   ): ArrayValidator<Validator.Infer<T>[]>;
   array(values?: ValidatorToken) {
@@ -177,12 +179,21 @@ export class Rule {
    *     sex: rule.enum(['unknown', 'male', 'female']),
    *   }),
    * });
+   * rule.object(userSchema);
    * ```
    */
-  object<T extends { [key: string]: Validator } | undefined>(
-    properties?: T,
-  ): ObjectValidator<keyof T extends undefined ? Validator.TObject : Validator.Infer<T>> {
-    return new ObjectValidator(properties);
+  object(): ObjectValidator<Validator.TObject>;
+  object<T extends ValidatorSchema<any>>(
+    properties: T,
+  ): ObjectValidator<Validator.Infer<T>>;
+  object<T extends { [key: string]: Validator }>(
+    properties: T,
+  ): ObjectValidator<Validator.Infer<T>>;
+  object(
+    properties?: { [key: string]: Validator } | ValidatorSchema<any>,
+  ): ObjectValidator<any> {
+    if (!properties) return new ObjectValidator();
+    return toValidator(properties) as ObjectValidator<any>;
   }
 
   /**
@@ -191,14 +202,14 @@ export class Rule {
    * rule.oneOf([rule.number(), rule.string()]);
    * ```
    */
-  oneOf<T extends Validator[], A extends Validator, B extends Validator>(
+  oneOf<T extends ValidatorToken[], A extends ValidatorToken, B extends ValidatorToken>(
     rules: [rule1: A, rule2: B, ...others: T],
   ): OneOfValidator<
     | Validator.Infer<A>
     | Validator.Infer<B>
     | { [K in keyof T]: Validator.Infer<T[K]> }[number]
   > {
-    return new OneOfValidator(rules);
+    return new OneOfValidator(rules.map(toValidator) as [Validator, ...Validator[]]);
   }
 
   /**

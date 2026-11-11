@@ -1,4 +1,3 @@
-import assert from 'assert';
 import {
   AllOfValidator,
   AnyOfValidator,
@@ -22,141 +21,254 @@ import {
   UuidValidator,
   Validator,
   rule,
+  schema,
 } from '../../../src';
 import { expectType, type TypeEqual } from 'ts-expect';
 
-// any
+// any：宽联合 Infer
 {
   const v = rule.any();
-  expectType<AnyValidator<AnyValidator.Type>>(v);
-  type Infer = Validator.Infer<typeof v>;
+  expectType<TypeEqual<AnyValidator<AnyValidator.Type>, typeof v>>(true);
   expectType<
     TypeEqual<
-      Infer,
-      number | string | boolean | any[] | { [K: string]: unknown } | bigint | Buffer
+      number | string | boolean | any[] | { [K: string]: unknown } | bigint | Buffer,
+      Validator.Infer<typeof v>
     >
   >(true);
 }
 
-// allof
+// allOf：交叉推断；nullable 在字段级 / 验证器级的差异
 {
-  expectType<AllOfValidator<{ foo: string } & { bar: number }>>(
-    rule.allOf([
-      rule.object({ foo: rule.string() }),
-      rule.object({ bar: rule.number() }),
-    ]),
+  const v1 = rule.allOf([
+    rule.object({ foo: rule.string() }),
+    rule.object({ bar: rule.number() }),
+  ]);
+  expectType<TypeEqual<AllOfValidator<{ foo: string } & { bar: number }>, typeof v1>>(
+    true,
   );
 
-  expectType<AllOfValidator<{ foo: string } & { bar: number | null }>>(
-    rule.allOf([
-      rule.object({ foo: rule.string() }),
-      rule.object({ bar: rule.number().nullable() }),
-    ]),
+  // 字段 nullable → 交叉结果带 null
+  const v2 = rule.allOf([
+    rule.object({ foo: rule.string() }),
+    rule.object({ bar: rule.number().nullable() }),
+  ]);
+  expectType<
+    TypeEqual<AllOfValidator<{ foo: string } & { bar: number | null }>, typeof v2>
+  >(true);
+
+  // 仅一侧验证器 nullable，交叉对象本身仍非 null（ConvertOptional 行为）
+  const v3 = rule.allOf([
+    rule.object({ foo: rule.string() }),
+    rule.object({ bar: rule.number() }).nullable(),
+  ]);
+  expectType<TypeEqual<AllOfValidator<{ foo: string } & { bar: number }>, typeof v3>>(
+    true,
   );
 
-  expectType<AllOfValidator<{ foo: string } & { bar: number }>>(
-    rule.allOf([
-      rule.object({ foo: rule.string() }),
-      rule.object({ bar: rule.number() }).nullable(),
-    ]),
-  );
+  // 两侧验证器都 nullable → 整体可为 null
+  const v4 = rule.allOf([
+    rule.object({ foo: rule.string() }).nullable(),
+    rule.object({ bar: rule.number() }).nullable(),
+  ]);
+  expectType<
+    TypeEqual<AllOfValidator<({ foo: string } & { bar: number }) | null>, typeof v4>
+  >(true);
 
-  expectType<AllOfValidator<({ foo: string } & { bar: number }) | null>>(
-    rule.allOf([
-      rule.object({ foo: rule.string() }).nullable(),
-      rule.object({ bar: rule.number() }).nullable(),
-    ]),
-  );
+  // Token：schema + 字段表，Infer 为交叉
+  {
+    const user = schema({ id: rule.int(), name: rule.string() });
+    const v = rule.allOf([user, { active: rule.boolean() }]);
+    expectType<
+      TypeEqual<
+        AllOfValidator<{ id: number; name: string } & { active: boolean }>,
+        typeof v
+      >
+    >(true);
+    expectType<
+      TypeEqual<
+        { id: number; name: string } & { active: boolean },
+        Validator.Infer<typeof v>
+      >
+    >(true);
+  }
+
+  // Token：两侧都是字段表
+  {
+    const v = rule.allOf([{ foo: rule.string() }, { bar: rule.number() }]);
+    expectType<TypeEqual<AllOfValidator<{ foo: string } & { bar: number }>, typeof v>>(
+      true,
+    );
+  }
+
+  // 非法：至少两个分支
+  // @ts-expect-error 至少两个规则
+  rule.allOf([rule.string()]);
+  // @ts-expect-error
+  rule.allOf([]);
 }
 
-// anyof
+// anyOf：联合推断；nullable / Token 混合
 {
-  expectType<AnyOfValidator<{ foo: string } | { bar: number }>>(
-    rule.anyOf([
-      rule.object({ foo: rule.string() }),
-      rule.object({ bar: rule.number() }),
-    ]),
+  const v1 = rule.anyOf([
+    rule.object({ foo: rule.string() }),
+    rule.object({ bar: rule.number() }),
+  ]);
+  expectType<TypeEqual<AnyOfValidator<{ foo: string } | { bar: number }>, typeof v1>>(
+    true,
   );
 
-  expectType<AnyOfValidator<{ foo: string } | { bar: number } | null>>(
-    rule.anyOf([
-      rule.object({ foo: rule.string() }),
-      rule.object({ bar: rule.number() }).nullable(),
-    ]),
-  );
+  const v2 = rule.anyOf([
+    rule.object({ foo: rule.string() }),
+    rule.object({ bar: rule.number() }).nullable(),
+  ]);
+  expectType<
+    TypeEqual<AnyOfValidator<{ foo: string } | { bar: number } | null>, typeof v2>
+  >(true);
+
+  // Token：schema + Validator + 字段表 → 三元联合
+  {
+    const user = schema({ id: rule.int() });
+    const v = rule.anyOf([user, rule.string(), { code: rule.int() }]);
+    expectType<
+      TypeEqual<AnyOfValidator<{ id: number } | string | { code: number }>, typeof v>
+    >(true);
+    expectType<
+      TypeEqual<{ id: number } | string | { code: number }, Validator.Infer<typeof v>>
+    >(true);
+  }
+
+  // Token：字段表里 optional 保持可选
+  {
+    const v = rule.anyOf([{ foo: rule.string() }, { bar: rule.number().optional() }]);
+    expectType<
+      TypeEqual<AnyOfValidator<{ foo: string } | { bar?: number | undefined }>, typeof v>
+    >(true);
+  }
+
+  // 非法：至少两个分支
+  // @ts-expect-error 至少两个规则
+  rule.anyOf([rule.string()]);
+  // @ts-expect-error
+  rule.anyOf([]);
 }
 
-// array
+// array：无参 / 嵌套 / optional 元素；字段表与 schema Token
 {
-  expectType<ArrayValidator<unknown[]>>(rule.array());
-  expectType<ArrayValidator<string[][]>>(rule.array(rule.array(rule.string())));
-  expectType<ArrayValidator<(string | undefined)[]>>(
-    rule.array(rule.string().optional()),
-  );
-  expectType<ArrayValidator<string[]>>(
-    // @ts-expect-error
-    rule.array(rule.string().optional()),
-  );
+  const empty = rule.array();
+  expectType<TypeEqual<ArrayValidator<unknown[]>, typeof empty>>(true);
 
+  const nested = rule.array(rule.array(rule.string()));
+  expectType<TypeEqual<ArrayValidator<string[][]>, typeof nested>>(true);
+
+  // 元素 optional → 元素类型含 undefined
+  const optionalItem = rule.array(rule.string().optional());
+  expectType<TypeEqual<ArrayValidator<(string | undefined)[]>, typeof optionalItem>>(
+    true,
+  );
+  expectType<TypeEqual<ArrayValidator<string[]>, typeof optionalItem>>(false);
+
+  // Token：字段表快捷写法，等价 object 元素；可选键不能写成必填
   {
     const v = rule.array({
       foo: rule.string(),
       bar: rule.string().optional(),
     });
-    expectType<ArrayValidator<{ foo: string; bar?: string | undefined }[]>>(v);
-    // @ts-expect-error
-    expectType<ArrayValidator<{ foo: string; bar: string | undefined }[]>>(v);
-    const foo: Validator.Infer<typeof v> = [
-      { foo: '' },
-      { foo: '', bar: '' },
-      // @ts-expect-error
-      { bar: '' },
-    ];
-    assert(foo);
+    expectType<
+      TypeEqual<
+        ArrayValidator<({ foo: string } & { bar?: string | undefined })[]>,
+        typeof v
+      >
+    >(true);
+    expectType<
+      TypeEqual<ArrayValidator<{ foo: string; bar: string | undefined }[]>, typeof v>
+    >(false);
+    expectType<
+      TypeEqual<
+        ({ foo: string } & { bar?: string | undefined })[],
+        Validator.Infer<typeof v>
+      >
+    >(true);
+  }
+
+  // Token：schema；与 array(rule.object(schema)) Infer 一致；可选字段交叉形态
+  {
+    const user = schema({
+      id: rule.int(),
+      name: rule.string().optional(),
+    });
+    const v = rule.array(user);
+    const viaObject = rule.array(rule.object(user));
+    expectType<TypeEqual<Validator.Infer<typeof v>, Validator.Infer<typeof viaObject>>>(
+      true,
+    );
+    expectType<
+      TypeEqual<
+        ({ id: number } & { name?: string | undefined })[],
+        Validator.Infer<typeof v>
+      >
+    >(true);
+    expectType<TypeEqual<ArrayValidator<{ id: number; name: string }[]>, typeof v>>(
+      false,
+    );
+  }
+
+  // 空字段表 → {}[]
+  {
+    const v = rule.array({});
+    expectType<TypeEqual<ArrayValidator<{}[]>, typeof v>>(true);
   }
 }
 
 // bigint
 {
-  expectType<BigIntValidator<bigint>>(rule.bigint());
+  const v = rule.bigint();
+  expectType<TypeEqual<BigIntValidator<bigint>, typeof v>>(true);
 }
 
 // boolean
 {
-  expectType<BooleanValidator<boolean>>(rule.boolean());
+  const v = rule.boolean();
+  expectType<TypeEqual<BooleanValidator<boolean>, typeof v>>(true);
 }
 
 // buffer
 {
-  expectType<BufferValidator<Buffer>>(rule.buffer());
+  const v = rule.buffer();
+  expectType<TypeEqual<BufferValidator<Buffer>, typeof v>>(true);
 }
 
-// date
+// date：格式参数宽松；返回类型固定 Date
 {
   rule.date('yy-mm-dd');
   rule.date('abc', 'yyy-mm-dd');
-  expectType<DateValidator<Date>>(rule.date());
-  // @ts-expect-error
-  expectType<DateValidator<object>>(rule.date());
+  const v = rule.date();
+  expectType<TypeEqual<DateValidator<Date>, typeof v>>(true);
+  expectType<TypeEqual<DateValidator<object>, typeof v>>(false);
 }
 
 // email
 {
-  expectType<EmailValidator<string>>(rule.email());
+  const v = rule.email();
+  expectType<TypeEqual<EmailValidator<string>, typeof v>>(true);
 }
 
-// enum
+// enum：字面量联合，不能宽化成 string
 {
-  expectType<EnumValidator<'a' | 'b' | 1>>(rule.enum(['a', 'b', 1]));
-  expectType<EnumValidator<'a' | 'b' | 'c'>>(rule.enum(['a', 'b', 'c']));
-  expectType<EnumValidator<1 | 2 | 3>>(rule.enum([1, 2, 3]));
-  // @ts-expect-error
-  expectType<EnumValidator<string>>(rule.enum(['a', 'b', 'c']));
+  const mixed = rule.enum(['a', 'b', 1]);
+  expectType<TypeEqual<EnumValidator<'a' | 'b' | 1>, typeof mixed>>(true);
+
+  const strings = rule.enum(['a', 'b', 'c']);
+  expectType<TypeEqual<EnumValidator<'a' | 'b' | 'c'>, typeof strings>>(true);
+  expectType<TypeEqual<EnumValidator<string>, typeof strings>>(false);
+
+  const numbers = rule.enum([1, 2, 3]);
+  expectType<TypeEqual<EnumValidator<1 | 2 | 3>, typeof numbers>>(true);
 }
 
-// hash
+// hash：算法字面量约束
 {
-  expectType<HashValidator<string>>(rule.hash('md5'));
+  const v = rule.hash('md5');
+  expectType<TypeEqual<HashValidator<string>, typeof v>>(true);
   rule.hash('sha1');
   rule.hash('sha256');
   // @ts-expect-error
@@ -165,12 +277,14 @@ import { expectType, type TypeEqual } from 'ts-expect';
 
 // int
 {
-  expectType<IntValidator<number>>(rule.int());
+  const v = rule.int();
+  expectType<TypeEqual<IntValidator<number>, typeof v>>(true);
 }
 
-// ip
+// ip：版本用单值或数组，禁止多参数 / 非法版本
 {
-  expectType<IpValidator<string>>(rule.ip('v4'));
+  const v = rule.ip('v4');
+  expectType<TypeEqual<IpValidator<string>, typeof v>>(true);
   rule.ip('v4');
   rule.ip('v6');
   rule.ip(['v4', 'v6']);
@@ -182,61 +296,127 @@ import { expectType, type TypeEqual } from 'ts-expect';
 
 // number
 {
-  expectType<NumberValidator<number>>(rule.number());
+  const v = rule.number();
+  expectType<TypeEqual<NumberValidator<number>, typeof v>>(true);
 }
 
-// object
+// object：无参 TObject；字段表必填/可选；schema Token；拒绝裸 Validator
 {
-  // @ts-expect-error
-  expectType<ObjectValidator<object>>(rule.object());
-  expectType<ObjectValidator<Validator.TObject>>(rule.object());
+  const bare = rule.object();
+  expectType<TypeEqual<ObjectValidator<object>, typeof bare>>(false);
+  expectType<TypeEqual<ObjectValidator<Validator.TObject>, typeof bare>>(true);
+
   {
     const v = rule.object({ test: rule.string() });
-    expectType<ObjectValidator<{ test: string }>>(v);
-    // @ts-expect-error
-    expectType<ObjectValidator<{ test?: string }>>(v);
+    expectType<TypeEqual<ObjectValidator<{ test: string }>, typeof v>>(true);
+    expectType<TypeEqual<ObjectValidator<{ test?: string }>, typeof v>>(false);
   }
   {
     const v = rule.object({ test: rule.string().optional(), test1: rule.number() });
-    expectType<ObjectValidator<{ test?: string | undefined; test1: number }>>(v);
-    // @ts-expect-error
-    expectType<ObjectValidator<{ test: string; test1: number }>>(v);
-    // @ts-expect-error
-    expectType<ObjectValidator<{ test: string | undefined; test1: number }>>(v);
+    expectType<
+      TypeEqual<
+        ObjectValidator<{ test1: number } & { test?: string | undefined }>,
+        typeof v
+      >
+    >(true);
+    expectType<TypeEqual<ObjectValidator<{ test: string; test1: number }>, typeof v>>(
+      false,
+    );
+    expectType<
+      TypeEqual<ObjectValidator<{ test: string | undefined; test1: number }>, typeof v>
+    >(false);
   }
+  // Token：schema；Infer 与字段交叉形态一致
+  {
+    const user = schema({
+      id: rule.int(),
+      name: rule.string().optional(),
+    });
+    const v = rule.object(user);
+    expectType<TypeEqual<Validator.Infer<typeof v>, Validator.Infer<typeof user>>>(true);
+    expectType<
+      TypeEqual<{ id: number } & { name?: string | undefined }, Validator.Infer<typeof v>>
+    >(true);
+    expectType<TypeEqual<ObjectValidator<string>, typeof v>>(false);
+  }
+  // 空字段表 → {}
+  {
+    const v = rule.object({});
+    expectType<TypeEqual<ObjectValidator<{}>, typeof v>>(true);
+  }
+  // 非法：不接受裸 Validator（应用 schema / 字段表）
+  // @ts-expect-error 不接受裸 Validator
+  rule.object(rule.string());
+  // @ts-expect-error
+  rule.object(rule.array());
+  // @ts-expect-error
+  rule.object(rule.number().optional());
 }
 
-// oneOf
+// oneOf：联合推断；同类型收窄；Token 混合；至少两分支
 {
-  expectType<OneOfValidator<number | string>>(rule.oneOf([rule.string(), rule.number()]));
-  expectType<OneOfValidator<number | string | undefined>>(
-    rule.oneOf([rule.string(), rule.number().optional()]),
-  );
-  expectType<OneOfValidator<string>>(rule.oneOf([rule.string(), rule.string()]));
-  expectType<OneOfValidator<string>>(
-    // @ts-expect-error
-    rule.oneOf([rule.string(), rule.number()]),
-  );
+  const v1 = rule.oneOf([rule.string(), rule.number()]);
+  expectType<TypeEqual<OneOfValidator<number | string>, typeof v1>>(true);
+
+  const v2 = rule.oneOf([rule.string(), rule.number().optional()]);
+  expectType<TypeEqual<OneOfValidator<number | string | undefined>, typeof v2>>(true);
+
+  // 两分支同为 string → 收窄为 string
+  const v3 = rule.oneOf([rule.string(), rule.string()]);
+  expectType<TypeEqual<OneOfValidator<string>, typeof v3>>(true);
+
+  const v4 = rule.oneOf([rule.string(), rule.number()]);
+  expectType<TypeEqual<OneOfValidator<string>, typeof v4>>(false);
+
+  // Token：schema + Validator + 字段表
+  {
+    const user = schema({ id: rule.int() });
+    const v = rule.oneOf([user, rule.string(), { code: rule.number() }]);
+    expectType<
+      TypeEqual<OneOfValidator<{ id: number } | string | { code: number }>, typeof v>
+    >(true);
+    expectType<
+      TypeEqual<{ id: number } | string | { code: number }, Validator.Infer<typeof v>>
+    >(true);
+  }
+
+  // Token：两侧字段表
+  {
+    const v = rule.oneOf([{ foo: rule.string() }, { bar: rule.boolean() }]);
+    expectType<TypeEqual<OneOfValidator<{ foo: string } | { bar: boolean }>, typeof v>>(
+      true,
+    );
+  }
+
+  // 非法：至少两个分支
+  // @ts-expect-error 至少两个规则
+  rule.oneOf([rule.string()]);
+  // @ts-expect-error
+  rule.oneOf([]);
 }
 
 // string
 {
-  expectType<StringValidator<string>>(rule.string());
+  const v = rule.string();
+  expectType<TypeEqual<StringValidator<string>, typeof v>>(true);
 }
 
 // ulid
 {
-  expectType<UlidValidator<string>>(rule.ulid());
+  const v = rule.ulid();
+  expectType<TypeEqual<UlidValidator<string>, typeof v>>(true);
 }
 
 // url
 {
-  expectType<UrlValidator<string>>(rule.url());
+  const v = rule.url();
+  expectType<TypeEqual<UrlValidator<string>, typeof v>>(true);
 }
 
-// uuid
+// uuid：单版本 / 数组版本；禁止多参数与非法版本字面量
 {
-  expectType<UuidValidator<string>>(rule.uuid('v4'));
+  const v = rule.uuid('v4');
+  expectType<TypeEqual<UuidValidator<string>, typeof v>>(true);
   rule.uuid();
   rule.uuid('v1');
   rule.uuid('v2');

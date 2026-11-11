@@ -140,13 +140,13 @@ import { Validator, rule, schema, type ValidatorToken } from '@aomex/common';
   >(true);
 }
 
-// schema.object() 嵌套进字段表
+// rule.object(schema) 嵌套进字段表
 {
   const profileSchema = schema({
     bio: rule.string(),
   });
   const mdw = body({
-    profile: profileSchema.object(),
+    profile: rule.object(profileSchema),
   });
   expectType<
     TypeEqual<WebMiddleware<{ readonly body: { profile: { bio: string } } }>, typeof mdw>

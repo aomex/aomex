@@ -69,7 +69,7 @@ declare const prismaInput: {
      *
      * 数据库默认值：`[]`
      */
-    str_arr_de: ArrayValidator<Validator.TOptional | string[]>;
+    str_arr_de: ArrayValidator<string[] | Validator.TOptional>;
     /**
      * Prisma类型：`Int`
      *

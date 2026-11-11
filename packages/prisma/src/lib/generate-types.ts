@@ -29,7 +29,7 @@ export const generateTypes = (types: readonly DMMF.Model[]) => {
     })
     .flat()
     .sort((a, b) => {
-      return a.value.includes(`${b.key}.object()`) ? 1 : -1;
+      return a.value.includes(`rule.object(${b.key})`) ? 1 : -1;
     })
     .map(({ value }) => value);
 };

@@ -38,12 +38,14 @@ const userSchema = schema({
   >(true);
 }
 
-// asName：不改变 Infer；name 为 protected，对外用索引读取
+// asName：不改变 Infer；name 为 protected，对外用索引读取；仅支持具名 string
 {
   const named = userSchema.asName('User');
   expectType<TypeEqual<string | undefined, (typeof named)['name']>>(true);
   // @ts-expect-error name 为 protected，点访问不可用
   named.name;
+  // @ts-expect-error schema 不支持 asName(true)
+  userSchema.asName(true);
   expectType<
     TypeEqual<Validator.Infer<typeof named>, Validator.Infer<typeof userSchema>>
   >(true);
@@ -285,9 +287,9 @@ const userSchema = schema({
   >(true);
 }
 
-// object()：必须是带 Infer 泛型的 ObjectValidator
+// rule.object(schema)：必须是带 Infer 泛型的 ObjectValidator
 {
-  const obj = userSchema.object();
+  const obj = rule.object(userSchema);
   expectType<TypeEqual<ObjectValidator<Validator.Infer<typeof userSchema>>, typeof obj>>(
     true,
   );
@@ -313,13 +315,13 @@ const userSchema = schema({
   );
 
   const nested = rule.object({
-    user: userSchema.pick('id', 'name').object(),
+    user: rule.object(userSchema.pick('id', 'name')),
   });
   expectType<
     TypeEqual<Validator.Infer<typeof nested>, { user: { id: number; name: string } }>
   >(true);
 
-  const list = rule.array(userSchema.pick('id').object());
+  const list = rule.array(userSchema.pick('id'));
   expectType<TypeEqual<Validator.Infer<typeof list>, { id: number }[]>>(true);
 }
 

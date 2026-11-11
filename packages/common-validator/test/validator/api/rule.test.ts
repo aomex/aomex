@@ -21,10 +21,23 @@ import {
   UrlValidator,
   UuidValidator,
   rule,
+  schema,
+  validate,
 } from '../../../src';
 
 test('allOf', () => {
   expect(rule.allOf([rule.stream(), rule.number()])).toBeInstanceOf(AllOfValidator);
+});
+
+test('allOf 支持 schema 与字段表', async () => {
+  const user = schema({ id: rule.int(), name: rule.string() });
+  const validator = rule.allOf([user, { id: rule.int(), name: rule.string() }]);
+  expect(validator).toBeInstanceOf(AllOfValidator);
+  await expect(validate({ id: 1, name: 'a' }, validator)).resolves.toEqual({
+    id: 1,
+    name: 'a',
+  });
+  await expect(validate({ id: 1 }, validator)).rejects.toThrow();
 });
 
 test('any', () => {
@@ -35,8 +48,28 @@ test('anyOf', () => {
   expect(rule.anyOf([rule.stream(), rule.number()])).toBeInstanceOf(AnyOfValidator);
 });
 
+test('anyOf 支持 schema 与字段表', async () => {
+  const user = schema({ id: rule.int() });
+  const validator = rule.anyOf([user, rule.string(), { code: rule.int() }]);
+  expect(validator).toBeInstanceOf(AnyOfValidator);
+  await expect(validate({ id: 1 }, validator)).resolves.toEqual({ id: 1 });
+  await expect(validate('x', validator)).resolves.toBe('x');
+  await expect(validate({ code: 2 }, validator)).resolves.toEqual({ code: 2 });
+  await expect(validate(true, validator)).rejects.toThrow();
+});
+
 test('array', () => {
   expect(rule.array()).toBeInstanceOf(ArrayValidator);
+});
+
+test('array 支持 schema', async () => {
+  const user = schema({ id: rule.int(), name: rule.string() });
+  const validator = rule.array(user);
+  expect(validator).toBeInstanceOf(ArrayValidator);
+  await expect(validate([{ id: 1, name: 'a' }], validator)).resolves.toEqual([
+    { id: 1, name: 'a' },
+  ]);
+  await expect(validate([{ id: 1 }], validator)).rejects.toThrow();
 });
 
 test('bigint', () => {
@@ -83,8 +116,32 @@ test('object', () => {
   expect(rule.object()).toBeInstanceOf(ObjectValidator);
 });
 
+test('object 支持 schema', async () => {
+  const user = schema({ id: rule.int(), name: rule.string().optional() });
+  const validator = rule.object(user);
+  expect(validator).toBeInstanceOf(ObjectValidator);
+  await expect(validate({ id: 1 }, validator)).resolves.toEqual({ id: 1 });
+  await expect(validate({ id: 1, name: 'a' }, validator)).resolves.toEqual({
+    id: 1,
+    name: 'a',
+  });
+  await expect(validate({}, validator)).rejects.toThrow();
+});
+
 test('oneOf', () => {
   expect(rule.oneOf([rule.string(), rule.number()])).toBeInstanceOf(OneOfValidator);
+});
+
+test('oneOf 支持 schema 与字段表', async () => {
+  const user = schema({ id: rule.int() });
+  const validator = rule.oneOf([user, rule.string()]);
+  expect(validator).toBeInstanceOf(OneOfValidator);
+  await expect(validate({ id: 1 }, validator)).resolves.toEqual({ id: 1 });
+  await expect(validate('x', validator)).resolves.toBe('x');
+  await expect(validate(true, validator)).rejects.toThrow();
+  await expect(
+    validate({ id: 1 }, rule.oneOf([user, { id: rule.int() }])),
+  ).rejects.toThrow();
 });
 
 test('string', () => {

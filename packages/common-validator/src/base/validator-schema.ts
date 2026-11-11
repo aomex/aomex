@@ -1,5 +1,4 @@
 import type { Validator } from './validator';
-import { ObjectValidator } from '../validators/object';
 
 type HasPublicOptional = { optional: () => any };
 
@@ -29,33 +28,26 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
   constructor(
     protected readonly rules: T,
     /**
-     * 可选名称，供 OpenAPI 等场景使用；派生操作不会继承
+     * 可选的 OpenAPI 具名组件名；`pick` / `omit` / `extend` / `merge` / `partial` 不会带上该名称
      */
     protected readonly name?: string,
   ) {}
 
   /**
-   * 设置名称，不改变字段。
-   * `toDocument(schema)` 时写入 `x-ref`；未设置则为内容 MD5
+   * 为 schema 指定 OpenAPI 文档中的具名组件名，字段定义不变。
+   * 生成文档时会按该名称引用；未指定则不单独抽成组件。
+   * 名称不会传到 `pick` / `omit` 等派生结果；经 `rule.object(schema)` / `toValidator` 转换后写入 `refName`。
+   *
+   * ```typescript
+   * const userSchema = schema({ id: rule.int(), name: rule.string() }).asName('User');
+   * ```
    */
   asName(name: string): ValidatorSchema<T> {
     return new ValidatorSchema(this.rules, name);
   }
 
   /**
-   * 转为 object 验证器，便于嵌套或交给 `validate` / `rule.array` 等使用
-   *
-   * ```typescript
-   * rule.array(userSchema.object());
-   * rule.object({ user: userSchema.object() });
-   * ```
-   */
-  object(): ObjectValidator<Validator.Infer<T>> {
-    return new ObjectValidator(this.rules);
-  }
-
-  /**
-   * 只保留指定字段
+   * 只保留指定字段，得到新的 schema。
    *
    * ```typescript
    * schema.pick('id', 'name');
@@ -78,7 +70,7 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
   }
 
   /**
-   * 排除指定字段
+   * 去掉指定字段，得到新的 schema。
    *
    * ```typescript
    * schema.omit('id', 'name');
@@ -103,7 +95,7 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
   }
 
   /**
-   * 合并字段对象，同名键以传入方为准
+   * 追加或覆盖字段（传入普通字段表），同名以传入的为准。
    */
   extend<U extends { [K in keyof U]: Validator }>(
     fields: U,
@@ -115,7 +107,7 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
   }
 
   /**
-   * 合并另一个 schema，同名键以传入方为准
+   * 与另一个 schema 合并，同名以传入的为准。
    */
   merge<U extends { [K in keyof U]: Validator }>(
     other: ValidatorSchema<U>,
@@ -127,8 +119,8 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
   }
 
   /**
-   * 所有字段变为 optional。
-   * 若存在带 `transform` 的字段则无法调用，可改为 `partial('字段名')` 只处理不含 transform 的字段
+   * 把全部字段变成可选。
+   * 若有字段使用了 `transform`，不能无参调用；可改成 `partial('字段名')` 只处理没有 `transform` 的字段。
    */
   partial(
     this: [T] extends [{ [K in keyof T]: T[K] extends HasPublicOptional ? T[K] : never }]
@@ -136,7 +128,7 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
       : PartialBlockedByTransform,
   ): ValidatorSchema<PartialRules<T>>;
   /**
-   * 指定字段变为 optional。只能选择不含 `transform` 的字段
+   * 把指定字段变成可选，只能选没有 `transform` 的字段。
    *
    * ```typescript
    * schema.partial('name', 'email');

@@ -13,6 +13,12 @@ export function toValidator(
 ): Validator | undefined {
   if (!validator) return;
   if (validator instanceof Validator) return validator;
-  if (validator instanceof ValidatorSchema) return validator.object();
+  if (validator instanceof ValidatorSchema) {
+    const objectValidator = new ObjectValidator(validator['rules']);
+    if (validator['name'] !== undefined) {
+      objectValidator['config'].refName = validator['name'];
+    }
+    return objectValidator;
+  }
   return new ObjectValidator(validator);
 }

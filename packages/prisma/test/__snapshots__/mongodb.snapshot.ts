@@ -87,7 +87,7 @@ const _MyTypeOutputType = {
    *
    * 数据库默认值：
    */
-  other: YourTypeOutputType.object(),
+  other: rule.object(YourTypeOutputType),
 };
 const MyTypeOutputType: ValidatorSchema<typeof _MyTypeOutputType> =
   schema(_MyTypeOutputType).asName('MyTypeOutput');
@@ -112,7 +112,7 @@ const _MyTypeInputType = {
    *
    * 数据库默认值：
    */
-  other: YourTypeInputType.object(),
+  other: rule.object(YourTypeInputType),
 };
 const MyTypeInputType: ValidatorSchema<typeof _MyTypeInputType> =
   schema(_MyTypeInputType).asName('MyTypeInput');
@@ -438,21 +438,21 @@ const userInputColumns = {
    *
    * 数据库默认值：
    */
-  custom: MyTypeInputType.object(),
+  custom: rule.object(MyTypeInputType),
 
   /**
    * Prisma类型：`MyType?`
    *
    * 数据库默认值：
    */
-  custom_nu: MyTypeInputType.object().optional().nullable(),
+  custom_nu: rule.object(MyTypeInputType).optional().nullable(),
 
   /**
    * Prisma类型：`MyType[]`
    *
    * 数据库默认值：
    */
-  custom_arr: rule.array(MyTypeInputType.object()),
+  custom_arr: rule.array(rule.object(MyTypeInputType)),
 };
 const userInputSchema: ValidatorSchema<typeof userInputColumns> =
   schema(userInputColumns).asName('userInput');
@@ -734,21 +734,21 @@ const userOutputColumns = {
    *
    * 数据库默认值：
    */
-  custom: MyTypeOutputType.object(),
+  custom: rule.object(MyTypeOutputType),
 
   /**
    * Prisma类型：`MyType?`
    *
    * 数据库默认值：
    */
-  custom_nu: MyTypeOutputType.object().nullable(),
+  custom_nu: rule.object(MyTypeOutputType).nullable(),
 
   /**
    * Prisma类型：`MyType[]`
    *
    * 数据库默认值：
    */
-  custom_arr: rule.array(MyTypeOutputType.object()),
+  custom_arr: rule.array(rule.object(MyTypeOutputType)),
 };
 const userOutputSchema: ValidatorSchema<typeof userOutputColumns> =
   schema(userOutputColumns).asName('userOutput');

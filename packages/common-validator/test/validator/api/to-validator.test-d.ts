@@ -41,7 +41,7 @@ import { MockValidator } from '../../mock/mock-validator';
   >(false);
 }
 
-// schema：返回类型放宽为 Validator；精确 ObjectValidator 请用 schema.object()
+// schema：toValidator 返回类型放宽为 Validator；精确 ObjectValidator 请用 rule.object(schema)
 {
   const userSchema = schema({
     id: rule.int(),
@@ -53,7 +53,7 @@ import { MockValidator } from '../../mock/mock-validator';
     false,
   );
 
-  const precise = userSchema.object();
+  const precise = rule.object(userSchema);
   expectType<TypeEqual<ObjectValidator<{ id: number; name: string }>, typeof precise>>(
     true,
   );

@@ -47,8 +47,8 @@ test('派生操作不继承 name', () => {
   expect(named.partial('name')['name']).toBeUndefined();
 });
 
-test('object 转为 ObjectValidator 并可校验', async () => {
-  const validator = userSchema.object();
+test('rule.object(schema) 转为 ObjectValidator 并可校验', async () => {
+  const validator = rule.object(userSchema);
   expect(validator).toBeInstanceOf(ObjectValidator);
   await expect(
     validate({ id: '1', name: 'a', email: 'a@b.com', age: '18' }, validator),
@@ -183,8 +183,8 @@ test('partial：指定字段，剩余参数与数组形式等价', async () => {
 
 test('嵌套 object 与 array', async () => {
   const nested = schema({
-    user: userSchema.pick('id', 'name').object(),
-    list: rule.array(userSchema.pick('id').object()),
+    user: rule.object(userSchema.pick('id', 'name')),
+    list: rule.array(userSchema.pick('id')),
   });
 
   await expect(

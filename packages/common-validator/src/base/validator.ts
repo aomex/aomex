@@ -84,6 +84,12 @@ export declare namespace Validator {
     transform?: (value: any) => Promise<any> | any;
     docs?: PartialOpenAPISchema;
     strict: boolean;
+    /**
+     * - `string`：具名组件
+     * - `true`：按内容 MD5 命名
+     * - `undefined`：不生成 `x-ref`
+     */
+    refName?: string | true;
   }
 }
 
@@ -251,6 +257,8 @@ export abstract class Validator<T = unknown> {
   protected copyConfig(prev: Validator): this {
     // @ts-expect-error
     this.config = { ...prev.config };
+    // 形态已变，旧引用名不再适用
+    delete this.config.refName;
     return this;
   }
 

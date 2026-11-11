@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { describe, expect, test } from 'vitest';
-import { ObjectValidator, toDocument, rule, schema } from '../../../src';
+import { ObjectValidator, toDocument, toValidator, rule, schema } from '../../../src';
 import { MockValidator } from '../../mock/mock-validator';
 
 describe('补充文档', () => {
@@ -105,7 +105,7 @@ test('asName 的 schema 直接 toDocument 写入 x-ref', () => {
   });
 });
 
-test('字段表 toDocument 时 x-ref 为内容 MD5', () => {
+test('未设置 refName 时 object 不打 x-ref', () => {
   const docs = toDocument({
     foo: rule.string(),
   });
@@ -113,18 +113,23 @@ test('字段表 toDocument 时 x-ref 为内容 MD5', () => {
     type: 'object',
     properties: { foo: { type: 'string' } },
   });
+  expect(docs.schema).not.toHaveProperty('x-ref');
+  expect(
+    toDocument(
+      new ObjectValidator({
+        foo: rule.string(),
+      }),
+    ).schema,
+  ).not.toHaveProperty('x-ref');
+});
+
+test('refName=true 时 x-ref 为内容 MD5', () => {
+  const validator = new ObjectValidator({ foo: rule.string() });
+  validator['config'].refName = true;
+  const docs = toDocument(validator);
   expect((docs.schema as Record<string, unknown>)['x-ref']).toMatch(/^[a-f0-9]{32}$/);
   const { 'x-ref': ref, ...rest } = docs.schema as Record<string, unknown>;
   expect(ref).toBe(createHash('md5').update(JSON.stringify(rest)).digest('hex'));
-});
-
-test('ObjectValidator toDocument 时 x-ref 为 MD5', () => {
-  const docs = toDocument(
-    new ObjectValidator({
-      foo: rule.string(),
-    }),
-  );
-  expect((docs.schema as Record<string, unknown>)['x-ref']).toMatch(/^[a-f0-9]{32}$/);
 });
 
 test('asName 含特殊字符时 encodeURIComponent', () => {
@@ -134,25 +139,86 @@ test('asName 含特殊字符时 encodeURIComponent', () => {
   });
 });
 
-test('嵌套 object 各自带 x-ref（经 .object() 后为 MD5）', () => {
+test('嵌套 rule.object(schema) 后仍保留 asName 的 x-ref', () => {
   const profile = schema({ bio: rule.string() }).asName('Profile');
   const docs = toDocument(
     schema({
-      profile: profile.object(),
+      profile: rule.object(profile),
     }).asName('User'),
   );
   expect(docs.schema).toMatchObject({
     'x-ref': 'User',
     'properties': {
       profile: {
-        type: 'object',
+        'type': 'object',
+        'x-ref': 'Profile',
       },
     },
   });
-  expect(
-    (docs.schema as { properties: { profile: Record<string, unknown> } }).properties
-      .profile['x-ref'],
-  ).toMatch(/^[a-f0-9]{32}$/);
+});
+
+test('rule.array(namedSchema) 的 items 带具名 x-ref', () => {
+  const user = schema({ id: rule.int(), name: rule.string() }).asName('User');
+  const docs = toDocument(rule.array(user));
+  expect(docs.schema).toMatchObject({
+    type: 'array',
+    items: {
+      'type': 'object',
+      'x-ref': 'User',
+      'properties': {
+        id: { type: 'integer' },
+        name: { type: 'string' },
+      },
+      'required': ['id', 'name'],
+    },
+  });
+});
+
+test('refName=true 时相同内容得到同一 MD5', () => {
+  const make = () => {
+    const validator = new ObjectValidator({
+      foo: rule.string(),
+      bar: rule.int().optional(),
+    });
+    validator['config'].refName = true;
+    return validator;
+  };
+  const a = toDocument(make()).schema as Record<string, unknown>;
+  const b = toDocument(make()).schema as Record<string, unknown>;
+  expect(a['x-ref']).toMatch(/^[a-f0-9]{32}$/);
+  expect(a['x-ref']).toBe(b['x-ref']);
+});
+
+test('rule.object(schema) / toValidator(schema) 继承 asName 到 refName', () => {
+  const user = schema({ id: rule.int() }).asName('User');
+  expect(rule.object(user)['config'].refName).toBe('User');
+  expect(toValidator(user)['config'].refName).toBe('User');
+  expect(toDocument(rule.object(user)).schema).toMatchObject({
+    'type': 'object',
+    'x-ref': 'User',
+  });
+  expect(toDocument(user).schema).toMatchObject({
+    'type': 'object',
+    'x-ref': 'User',
+  });
+});
+
+test('链式改动后 refName 被清除，toDocument 不带 x-ref', () => {
+  const validator = toValidator(schema({ id: rule.int() }).asName('User'))
+    ['optional']()
+    ['docs']({ description: 'user' });
+  expect(validator['config'].refName).toBeUndefined();
+  expect(toDocument(validator).schema).toMatchObject({
+    type: 'object',
+    description: 'user',
+  });
+  expect(toDocument(validator).schema).not.toHaveProperty('x-ref');
+});
+
+test('未 asName 的 rule.object(schema) 无 refName，也不打 x-ref', () => {
+  const validator = rule.object(schema({ id: rule.int() }));
+  expect(validator['config'].refName).toBeUndefined();
+  expect(toDocument(validator).schema).not.toHaveProperty('x-ref');
 });
 
 test('非 object 不打 x-ref', () => {

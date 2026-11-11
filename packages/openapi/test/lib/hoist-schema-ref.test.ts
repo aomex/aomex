@@ -1,4 +1,5 @@
-import { type OpenAPI } from '@aomex/common';
+import { type OpenAPI, ObjectValidator, rule, schema, toDocument } from '@aomex/common';
+import { body } from '@aomex/web';
 import { test, expect, vitest } from 'vitest';
 import { hoistSchemaRef } from '../../src';
 
@@ -171,4 +172,144 @@ test('相同 x-ref 复用组件', () => {
 
   hoistSchemaRef(document);
   expect(Object.keys(document.components!.schemas!)).toEqual(['Shared']);
+});
+
+test('refName=true 相同内容 MD5 一致，hoist 只保留一个组件', () => {
+  const make = () => {
+    const validator = new ObjectValidator({
+      foo: rule.string(),
+      count: rule.int().optional(),
+    });
+    validator['config'].refName = true;
+    return validator;
+  };
+  const schemaA = toDocument(make()).schema as OpenAPI.SchemaObject & {
+    'x-ref': string;
+  };
+  const schemaB = toDocument(make()).schema as OpenAPI.SchemaObject & {
+    'x-ref': string;
+  };
+  expect(schemaA['x-ref']).toMatch(/^[a-f0-9]{32}$/);
+  expect(schemaA['x-ref']).toBe(schemaB['x-ref']);
+
+  const document = emptyDoc();
+  document.paths['/a'] = {
+    get: {
+      responses: {},
+      requestBody: {
+        content: { 'application/json': { schema: { ...schemaA } } },
+      },
+    },
+  };
+  document.paths['/b'] = {
+    get: {
+      responses: {},
+      requestBody: {
+        content: { 'application/json': { schema: { ...schemaB } } },
+      },
+    },
+  };
+
+  hoistSchemaRef(document);
+
+  const refName = schemaA['x-ref'];
+  expect(Object.keys(document.components!.schemas!)).toEqual([refName]);
+  expect(document.paths['/a']!.get!.requestBody).toMatchObject({
+    content: {
+      'application/json': {
+        schema: { $ref: `#/components/schemas/${refName}` },
+      },
+    },
+  });
+  expect(document.paths['/b']!.get!.requestBody).toMatchObject({
+    content: {
+      'application/json': {
+        schema: { $ref: `#/components/schemas/${refName}` },
+      },
+    },
+  });
+  expect(document.components!.schemas![refName]).toMatchObject({
+    type: 'object',
+    properties: {
+      foo: { type: 'string' },
+      count: { type: 'integer' },
+    },
+  });
+  expect(document.components!.schemas![refName]).not.toHaveProperty('x-ref');
+});
+
+test('body(schema.asName) 提升为具名 components；$ref；无名 schema 不进 components', () => {
+  const namedDoc: OpenAPI.Document = {
+    openapi: '3.0.3',
+    info: { title: '', version: '' },
+    paths: { '/': { post: { responses: {} } } },
+  };
+  const namedBody = body(
+    schema({
+      foo: rule.string(),
+      bar: rule.number().optional(),
+    }).asName('CreateUser'),
+  );
+  namedBody['openapi']().onMethod?.(namedDoc.paths['/']!.post!, {
+    document: namedDoc,
+    pathName: '/',
+    pathItem: namedDoc.paths['/']!,
+    methodName: 'post',
+  });
+  hoistSchemaRef(namedDoc);
+
+  expect(namedDoc.paths['/']!.post!.requestBody).toMatchObject({
+    content: {
+      'application/json': {
+        schema: { $ref: '#/components/schemas/CreateUser' },
+      },
+    },
+  });
+  expect(namedDoc.components?.schemas?.['CreateUser']).toMatchObject({
+    type: 'object',
+    properties: {
+      foo: { type: 'string' },
+      bar: { type: 'number' },
+    },
+    required: ['foo'],
+  });
+  expect(namedDoc.components?.schemas?.['CreateUser']).not.toHaveProperty('x-ref');
+
+  const anonymousDoc: OpenAPI.Document = {
+    openapi: '3.0.3',
+    info: { title: '', version: '' },
+    paths: { '/': { post: { responses: {} } } },
+  };
+  const anonymousBody = body(
+    schema({
+      foo: rule.string(),
+    }),
+  );
+  anonymousBody['openapi']().onMethod?.(anonymousDoc.paths['/']!.post!, {
+    document: anonymousDoc,
+    pathName: '/',
+    pathItem: anonymousDoc.paths['/']!,
+    methodName: 'post',
+  });
+  hoistSchemaRef(anonymousDoc);
+
+  expect(
+    (anonymousDoc.paths['/']!.post!.requestBody as OpenAPI.RequestBodyObject).content![
+      'application/json'
+    ]!.schema,
+  ).toMatchObject({
+    type: 'object',
+    properties: { foo: { type: 'string' } },
+  });
+  expect(
+    (anonymousDoc.paths['/']!.post!.requestBody as OpenAPI.RequestBodyObject).content![
+      'application/json'
+    ]!.schema,
+  ).not.toHaveProperty('$ref');
+  expect(
+    (anonymousDoc.paths['/']!.post!.requestBody as OpenAPI.RequestBodyObject).content![
+      'application/json'
+    ]!.schema,
+  ).not.toHaveProperty('x-ref');
+  expect(anonymousDoc.components?.schemas).toBeUndefined();
 });

@@ -182,12 +182,10 @@ test('获取文档', () => {
         "my_key1": {
           "additionalProperties": true,
           "type": "object",
-          "x-ref": "2f9c313de3f7bfd4586bcc096b11a634",
         },
         "my_key2": {
           "additionalProperties": true,
           "type": "object",
-          "x-ref": "2f9c313de3f7bfd4586bcc096b11a634",
         },
       },
       "required": [
@@ -214,7 +212,6 @@ test('获取文档', () => {
         "my_key1": {
           "additionalProperties": true,
           "type": "object",
-          "x-ref": "2f9c313de3f7bfd4586bcc096b11a634",
         },
       },
       "required": [
