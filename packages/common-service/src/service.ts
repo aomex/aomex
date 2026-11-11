@@ -1,5 +1,3 @@
-import type { CombinedServices } from './combine-services';
-
 export abstract class Service {
   protected get displayName() {
     const className = this.constructor.name;
@@ -9,19 +7,17 @@ export abstract class Service {
     return className;
   }
 
-  constructor(private readonly _services: Record<string, Service>) {}
-
-  protected get services(): CombinedServices {
-    return this._services as CombinedServices;
-  }
+  /**
+   * 懒加载后、首次对外调用前自动触发。同一次 combine 内对单个服务只执行一次。
+   *
+   * 请保持 `protected`；即便误写成 public，也不会出现在 `services.xxx` 的类型上。
+   */
+  protected async onInit(): Promise<void> {}
 
   /**
-   * 会自动触发的初始化方法。主进程会等待Promise结束才算初始化完成
+   * 进程/应用关停时由 WebApp、ConsoleApp 自动触发。
+   *
+   * 请保持 `protected`；即便误写成 public，也不会出现在 `services.xxx` 的类型上。
    */
-  protected async init(): Promise<void> {}
-
-  /**
-   * 实例销毁方法，调用函数`destroyServices`后触发
-   */
-  protected async destroy(): Promise<void> {}
+  protected async onDestroy(): Promise<void> {}
 }

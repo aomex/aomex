@@ -1,12 +1,46 @@
-import type { Service } from './service';
+import type { CombinedServices } from './types';
+import { serviceRegistries } from './combine-services';
+
+const destroyed = new WeakSet<object>();
+const destroying = new WeakMap<object, Promise<void>>();
 
 /**
- * 销毁所有服务，执行每个服务中的方法`destroy()`
+ * 销毁已加载实例（触发 `onDestroy`）。仅接受数组；幂等。
+ *
+ * 业务代码不要调用：把 `combineServices` 结果交给 `WebApp` / `ConsoleApp` 的 `services`，由框架在关停时调用。
+ *
+ * 触发时机：
+ * - `WebApp`：`SIGINT` / `SIGTERM` → `server.close()` 后再销毁；手动 `server.close()` 时也会销毁
+ * - `ConsoleApp`：进程 `beforeExit`，以及 `SIGINT` / `SIGTERM`
  */
-export const destroyServices = async (services: Record<string, Service>) => {
+export const internalDestroyServices = async (
+  services: CombinedServices[],
+): Promise<void> => {
   await Promise.all(
-    Object.values(services).map((service) => {
-      return service['destroy']();
+    services.map(async (item) => {
+      if (destroyed.has(item)) return;
+
+      const pending = destroying.get(item);
+      if (pending) return pending;
+
+      const task = (async () => {
+        try {
+          const registry = serviceRegistries.get(item);
+          if (!registry) return;
+
+          await Promise.all(
+            [...registry.instances.values()].map((service) => service['onDestroy']()),
+          );
+          registry.instances.clear();
+          registry.pending.clear();
+        } finally {
+          destroyed.add(item);
+          destroying.delete(item);
+        }
+      })();
+
+      destroying.set(item, task);
+      return task;
     }),
   );
 };

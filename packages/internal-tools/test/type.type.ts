@@ -1,5 +1,12 @@
 import { expectType, type TypeEqual } from 'ts-expect';
-import type { NonReadonly, Prettify, Union2Intersection } from '../src';
+import type {
+  CallSignatures,
+  IsUnion,
+  NonReadonly,
+  Prettify,
+  PromisifyFunction,
+  Union2Intersection,
+} from '../src';
 
 // NonReadonly
 {
@@ -27,4 +34,51 @@ import type { NonReadonly, Prettify, Union2Intersection } from '../src';
   expectType<
     TypeEqual<{ test1: 'a'; test2: 'b'; test3: 'c'; test4: 'd' }, Prettify<A & B>>
   >(true);
+}
+
+// IsUnion
+{
+  expectType<TypeEqual<false, IsUnion<'a'>>>(true);
+  expectType<TypeEqual<true, IsUnion<'a' | 'b'>>>(true);
+  expectType<TypeEqual<false, IsUnion<string>>>(true);
+}
+
+// CallSignatures / PromisifyFunction（重载保留）
+{
+  type Overloaded = {
+    (x: string): string;
+    (x: number): number;
+    (x: boolean): boolean;
+  };
+
+  type Sig = CallSignatures<Overloaded>;
+  expectType<
+    TypeEqual<
+      true,
+      Sig extends
+        ((x: string) => string) | ((x: number) => number) | ((x: boolean) => boolean)
+        ? true
+        : false
+    >
+  >(true);
+
+  type PF = PromisifyFunction<Overloaded>;
+  expectType<
+    TypeEqual<
+      true,
+      PF extends {
+        (x: string): Promise<string>;
+        (x: number): Promise<number>;
+        (x: boolean): Promise<boolean>;
+      }
+        ? true
+        : false
+    >
+  >(true);
+
+  expectType<
+    TypeEqual<(a: number) => Promise<string>, PromisifyFunction<(a: number) => string>>
+  >(true);
+  expectType<TypeEqual<() => Promise<'x'>, PromisifyFunction<() => Promise<'x'>>>>(true);
+  expectType<TypeEqual<number, PromisifyFunction<number>>>(true);
 }

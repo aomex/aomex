@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/common';
+import { combineServices, middleware, Service } from '@aomex/common';
 import { WebApp, WebContext } from '../../src';
 import { expectType } from 'ts-expect';
 import { HttpError } from 'http-errors';
@@ -10,6 +10,22 @@ import http from 'http';
   new WebApp({});
   new WebApp({ debug: true });
   new WebApp({ debug: false });
+}
+
+// services
+{
+  class Demo extends Service {
+    ping() {
+      return 1;
+    }
+  }
+  const services = await combineServices({ demo: async () => Demo });
+  new WebApp({ services });
+  new WebApp({ services: [services, services] });
+  // @ts-expect-error
+  new WebApp({ services: 1 });
+  // @ts-expect-error
+  new WebApp({ services: 'x' });
 }
 
 // 监听http

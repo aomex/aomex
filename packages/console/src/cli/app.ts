@@ -2,12 +2,19 @@ import EventEmitter from 'node:events';
 import { EOL } from 'node:os';
 import { styleText } from 'node:util';
 import { hideBin } from 'yargs/helpers';
-import { I18n, Middleware, compose, middleware } from '@aomex/common';
+import {
+  I18n,
+  Middleware,
+  compose,
+  internalDestroyServices,
+  middleware,
+  type CombinedServices,
+} from '@aomex/common';
 import { ConsoleInput } from './input';
 import { ConsoleContext } from './context';
 import { helpLogger } from '../middleware/help-logger';
 import type { ConsoleMiddlewareToken } from '../override';
-import type { Union2Intersection } from '@aomex/internal-tools';
+import { toArray, type Union2Intersection } from '@aomex/internal-tools';
 
 export namespace ConsoleApp {
   export interface Option<T extends ConsoleMiddlewareToken[] | []> {
@@ -26,6 +33,10 @@ export namespace ConsoleApp {
      * ```
      */
     mount?: T;
+    /**
+     * `combineServices` 的返回值（单个或数组）。传入后在进程 beforeExit/SIGINT/SIGTERM 时自动销毁。
+     */
+    services?: CombinedServices | readonly CombinedServices[];
     language?: 'zh_CN' | 'en_US' | (string & {});
   }
 
@@ -51,6 +62,24 @@ export class ConsoleApp<
   constructor(protected readonly options: ConsoleApp.Option<T> = {}) {
     super();
     this.middlewareList = options.mount || [];
+    this.bindServicesShutdown(options.services ? toArray(options.services) : []);
+  }
+
+  protected bindServicesShutdown(services: CombinedServices[]) {
+    if (!services.length) return;
+    // beforeExit：异步 onDestroy 会拖住事件循环直至结束
+    process.once('beforeExit', () => {
+      void internalDestroyServices(services);
+    });
+
+    // 信号：必须等销毁完成再 exit，否则默认退出行为已被监听器接管
+    const onSignal = () => {
+      void internalDestroyServices(services).finally(() => {
+        process.exit(0);
+      });
+    };
+    process.once('SIGTERM', onSignal);
+    process.once('SIGINT', onSignal);
   }
 
   /**

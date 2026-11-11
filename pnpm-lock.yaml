@@ -326,7 +326,11 @@ importers:
         specifier: workspace:^
         version: link:../internal-tools
 
-  packages/common-service: {}
+  packages/common-service:
+    dependencies:
+      '@aomex/internal-tools':
+        specifier: workspace:^
+        version: link:../internal-tools
 
   packages/common-validator:
     dependencies:

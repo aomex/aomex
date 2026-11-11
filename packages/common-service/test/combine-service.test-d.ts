@@ -1,31 +1,105 @@
 import { expectType, type TypeEqual } from 'ts-expect';
-import { Service, combineServices } from '../src';
+import { Service, combineServices, type PromisifiedService } from '../src';
 
-class MyService1 extends Service {}
-class MyService2 extends Service {}
+class MyService1 extends Service {
+  data = '';
+
+  action1() {
+    return 'action1' as const;
+  }
+
+  async actionAsync() {
+    return 1 as const;
+  }
+}
+
+class MyService2 extends Service {
+  action2(name: string) {
+    return name;
+  }
+}
 
 const services = await combineServices({
-  s1: MyService1,
-  s2: MyService2,
+  s1: async () => MyService1,
+  s2: async () => MyService2,
 });
 
-// 所有属性变成只读
 expectType<
   TypeEqual<
     {
-      readonly s1: MyService1;
-      readonly s2: MyService2;
+      readonly s1: PromisifiedService<MyService1>;
+      readonly s2: PromisifiedService<MyService2>;
     },
     typeof services
   >
 >(true);
 
+// 同步方法 → Promise
+expectType<TypeEqual<() => Promise<'action1'>, typeof services.s1.action1>>(true);
+// 已是 async → 仍是一层 Promise
+expectType<TypeEqual<() => Promise<1>, typeof services.s1.actionAsync>>(true);
+// 参数保留
+expectType<TypeEqual<(name: string) => Promise<string>, typeof services.s2.action2>>(
+  true,
+);
+
+// 字段禁用
+expectType<TypeEqual<never, keyof typeof services.s1 & 'data'>>(true);
+// @ts-expect-error 字段不存在
+services.s1.data;
+// @ts-expect-error 生命周期钩子不暴露
+services.s1.onInit;
+// @ts-expect-error
+services.s1.onDestroy;
+
+class PublicLifecycle extends Service {
+  // 故意不加 protected
+  override async onInit() {}
+  override async onDestroy() {}
+  ping() {
+    return 'ok' as const;
+  }
+}
+
+const withPublicHooks = await combineServices({
+  p: async () => PublicLifecycle,
+});
+expectType<TypeEqual<() => Promise<'ok'>, typeof withPublicHooks.p.ping>>(true);
+// @ts-expect-error 即便 public override 也不暴露
+withPublicHooks.p.onInit;
+// @ts-expect-error
+withPublicHooks.p.onDestroy;
+
+// @ts-expect-error 不允许直接传 Class
+await combineServices({ bad: MyService1 });
+
+// @ts-expect-error loader 必须返回 Promise，同步工厂不行
+await combineServices({ bad: () => MyService1 });
+
+// 属性只读
 expectType<
   TypeEqual<
     {
-      s1: MyService1;
-      s2: MyService2;
+      s1: PromisifiedService<MyService1>;
+      s2: PromisifiedService<MyService2>;
     },
     typeof services
   >
 >(false);
+
+const fromImport = await combineServices({
+  named: () => import('./fixture/named-only.service.js'),
+  withDefault: () => import('./fixture/with-default.service.js'),
+  picked: () =>
+    import('./fixture/with-default.service.js').then((m) => m.WithDefaultService),
+});
+
+expectType<TypeEqual<() => Promise<string>, typeof fromImport.named.ping>>(true);
+expectType<TypeEqual<() => Promise<string>, typeof fromImport.withDefault.ping>>(true);
+expectType<TypeEqual<() => Promise<string>, typeof fromImport.picked.ping>>(true);
+
+const multi = await combineServices({
+  // 多个 Service：实例推断为 never，无方法
+  bad: () => import('./fixture/multi.service.js'),
+});
+expectType<TypeEqual<{}, typeof multi.bad>>(true);

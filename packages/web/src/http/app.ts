@@ -3,13 +3,20 @@ import https from 'node:https';
 import stream from 'node:stream';
 import { WebRequest } from './request';
 import { WebResponse } from './response';
-import { I18n, Middleware, compose, middleware } from '@aomex/common';
+import {
+  I18n,
+  Middleware,
+  compose,
+  internalDestroyServices,
+  middleware,
+  type CombinedServices,
+} from '@aomex/common';
 import { WebContext } from './context';
 import type { HttpError } from 'http-errors';
 import { EOL } from 'node:os';
 import type { WebMiddlewareToken } from '../override';
 import { styleText } from 'node:util';
-import type { Union2Intersection } from '@aomex/internal-tools';
+import { toArray, type Union2Intersection } from '@aomex/internal-tools';
 import { parseBody } from '../middleware/parse-body';
 
 export namespace WebApp {
@@ -37,6 +44,11 @@ export namespace WebApp {
      * ```
      */
     mount?: T;
+    /**
+     * `combineServices` 的返回值（单个或数组）。传入后在 HTTP(S) 关停时自动 `onDestroy`：
+     * SIGINT/SIGTERM → `server.close()` → 再 await 销毁已加载服务。
+     */
+    services?: CombinedServices | readonly CombinedServices[];
     language?: 'zh_CN' | 'en_US' | (string & {});
   }
 
@@ -62,6 +74,29 @@ export class WebApp<
     super();
     this.middlewareList = [];
     this.middlewareList = options.mount || [];
+  }
+
+  protected bindServerLifecycle(server: http.Server | https.Server): void {
+    const services = this.options.services ? toArray(this.options.services) : [];
+    if (!services.length) return;
+
+    // 手动 close：尽量跑完 onDestroy（不 exit）
+    server.once('close', () => {
+      void internalDestroyServices(services);
+    });
+
+    // 信号：先关 server，再 await 销毁，最后 exit，避免异步 onDestroy 被掐断
+    const stop = () => {
+      void (async () => {
+        await new Promise<void>((resolve) => {
+          server.close(() => resolve());
+        });
+        await internalDestroyServices(services);
+        process.exit(0);
+      })();
+    };
+    process.once('SIGTERM', stop);
+    process.once('SIGINT', stop);
   }
 
   get debug(): boolean {
@@ -116,7 +151,7 @@ export class WebApp<
       },
       this.callback(),
     );
-
+    this.bindServerLifecycle(server);
     return { listen: server.listen.bind(server) };
   }
 
@@ -135,7 +170,7 @@ export class WebApp<
       },
       this.callback(),
     );
-
+    this.bindServerLifecycle(server);
     return { listen: server.listen.bind(server) };
   }
 

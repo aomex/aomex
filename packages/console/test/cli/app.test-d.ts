@@ -1,6 +1,6 @@
 import { type TypeEqual, expectType } from 'ts-expect';
 import { ConsoleApp, ConsoleContext } from '../../src';
-import { middleware } from '@aomex/common';
+import { combineServices, middleware, Service } from '@aomex/common';
 
 const app = new ConsoleApp();
 
@@ -11,6 +11,20 @@ const app = new ConsoleApp();
   new ConsoleApp({ mount: [middleware.console(() => {}), middleware.mixin(() => {})] });
   // @ts-expect-error
   new ConsoleApp({ mount: {} });
+}
+
+// services
+{
+  class Demo extends Service {
+    ping() {
+      return 1;
+    }
+  }
+  const services = await combineServices({ demo: async () => Demo });
+  new ConsoleApp({ services });
+  new ConsoleApp({ services: [services] });
+  // @ts-expect-error
+  new ConsoleApp({ services: 1 });
 }
 
 // 事件

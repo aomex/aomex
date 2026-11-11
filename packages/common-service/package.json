@@ -28,5 +28,8 @@
   ],
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@aomex/internal-tools": "workspace:^"
+  }
 }

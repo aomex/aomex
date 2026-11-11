@@ -1,6 +1,6 @@
 import { describe, expect, test, vitest } from 'vitest';
 import { WebApp } from '../../src';
-import { middleware } from '@aomex/common';
+import { combineServices, middleware, Service } from '@aomex/common';
 import supertest from 'supertest';
 import { Server } from 'http';
 import fs from 'node:fs';
@@ -195,4 +195,93 @@ test('https', async () => {
     .listen();
 
   await supertest(server).get('/').expect(200, 'protocol-https');
+});
+
+test('services：server close 时自动等 onDestroy 跑完', async () => {
+  let destroyed = 0;
+  class Demo extends Service {
+    ping() {
+      return 1;
+    }
+    protected override async onDestroy() {
+      await new Promise((r) => setTimeout(r, 40));
+      destroyed += 1;
+    }
+  }
+  const services = await combineServices({ demo: async () => Demo });
+  await services.demo.ping();
+
+  const app = new WebApp({ services });
+  const server = app.listen(0);
+  await new Promise<void>((resolve, reject) => {
+    server.on('listening', () => resolve());
+    server.on('error', reject);
+  });
+  await new Promise<void>((resolve) => server.close(() => resolve()));
+  // close 回调返回时 destroy 可能仍在飞，需等到完成
+  await vitest.waitFor(() => expect(destroyed).toBe(1));
+});
+
+test('services：支持数组', async () => {
+  let destroyed = 0;
+  class Demo extends Service {
+    ping() {
+      return 1;
+    }
+    protected override async onDestroy() {
+      destroyed += 1;
+    }
+  }
+  const s1 = await combineServices({ a: async () => Demo });
+  const s2 = await combineServices({ b: async () => Demo });
+  await s1.a.ping();
+  await s2.b.ping();
+
+  const app = new WebApp({ services: [s1, s2] });
+  const server = app.listen(0);
+  await new Promise<void>((resolve, reject) => {
+    server.on('listening', () => resolve());
+    server.on('error', reject);
+  });
+  await new Promise<void>((resolve) => server.close(() => resolve()));
+  await vitest.waitFor(() => expect(destroyed).toBe(2));
+});
+
+test('services：SIGTERM 先关 server 再等 onDestroy 后 exit', async () => {
+  let destroyed = 0;
+  const handlers = new Map<string | symbol, (...args: any[]) => void>();
+  const once = vitest.spyOn(process, 'once').mockImplementation((event, fn) => {
+    handlers.set(event, fn as (...args: any[]) => void);
+    return process;
+  });
+  const exit = vitest.spyOn(process, 'exit').mockImplementation((() => {}) as never);
+
+  class Demo extends Service {
+    ping() {
+      return 1;
+    }
+    protected override async onDestroy() {
+      await new Promise((r) => setTimeout(r, 40));
+      destroyed += 1;
+    }
+  }
+
+  const services = await combineServices({ demo: async () => Demo });
+  await services.demo.ping();
+  const app = new WebApp({ services });
+  const server = app.listen(0);
+  await new Promise<void>((resolve, reject) => {
+    server.on('listening', () => resolve());
+    server.on('error', reject);
+  });
+
+  expect(handlers.has('SIGTERM')).toBe(true);
+  handlers.get('SIGTERM')!();
+  expect(destroyed).toBe(0);
+  await vitest.waitFor(() => expect(destroyed).toBe(1));
+  expect(exit).toHaveBeenCalledWith(0);
+  expect(server.listening).toBeFalsy();
+
+  once.mockRestore();
+  exit.mockRestore();
 });

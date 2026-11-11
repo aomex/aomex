@@ -1,3 +1,11 @@
 export * from './service';
-export * from './combine-services';
-export * from './destroy-services';
+export * from './types';
+export {
+  combineServices,
+  type CombinedServices,
+  type CombinedServicesOf,
+  type EnsureServiceLoaders,
+  type PromisifiedService,
+  type ServiceLoader,
+} from './combine-services';
+export { internalDestroyServices } from './destroy-services';
