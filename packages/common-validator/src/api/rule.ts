@@ -16,6 +16,7 @@ import {
   HashValidator,
   IntValidator,
   IpValidator,
+  LiteralValidator,
   NumberValidator,
   ObjectValidator,
   OneOfValidator,
@@ -24,6 +25,7 @@ import {
   UlidValidator,
   UrlValidator,
   UuidValidator,
+  type LiteralValue,
 } from '../validators';
 import { Validator } from '../base';
 import type { ValidatorSchema } from '../base/validator-schema';
@@ -175,6 +177,19 @@ export class Rule {
    */
   ip(version: IpValidator.Version | [IpValidator.Version, ...IpValidator.Version[]]) {
     return new IpValidator(toArray(version));
+  }
+
+  /**
+   * 精确匹配单个字面量（不做类型转换）
+   * ```typescript
+   * rule.literal('ok');
+   * rule.literal(1);
+   * rule.literal(true);
+   * rule.literal(null);
+   * ```
+   */
+  literal<const T extends LiteralValue>(value: T): LiteralValidator<T> {
+    return new LiteralValidator(value);
   }
 
   /**

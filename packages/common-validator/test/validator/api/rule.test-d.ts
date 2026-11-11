@@ -12,6 +12,7 @@ import {
   HashValidator,
   IntValidator,
   IpValidator,
+  LiteralValidator,
   NumberValidator,
   ObjectValidator,
   OneOfValidator,
@@ -441,6 +442,30 @@ import { expectType, type TypeEqual } from 'ts-expect';
   rule.ip('v4', 'v6');
   // @ts-expect-error
   rule.ip('v5');
+}
+
+// literal：单值字面量收窄；拒绝非法类型
+{
+  const s = rule.literal('ok');
+  expectType<TypeEqual<LiteralValidator<'ok'>, typeof s>>(true);
+  expectType<TypeEqual<'ok', Validator.Infer<typeof s>>>(true);
+
+  const n = rule.literal(0);
+  expectType<TypeEqual<LiteralValidator<0>, typeof n>>(true);
+
+  const b = rule.literal(false);
+  expectType<TypeEqual<LiteralValidator<false>, typeof b>>(true);
+
+  const nul = rule.literal(null);
+  expectType<TypeEqual<LiteralValidator<null>, typeof nul>>(true);
+  expectType<TypeEqual<null, Validator.Infer<typeof nul>>>(true);
+
+  // @ts-expect-error
+  rule.literal(undefined);
+  // @ts-expect-error
+  rule.literal({});
+  // @ts-expect-error
+  rule.literal(1n);
 }
 
 // number

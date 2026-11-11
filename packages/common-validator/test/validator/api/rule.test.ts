@@ -13,6 +13,7 @@ import {
   HashValidator,
   IntValidator,
   IpValidator,
+  LiteralValidator,
   NumberValidator,
   ObjectValidator,
   OneOfValidator,
@@ -106,6 +107,11 @@ test('int', () => {
 
 test('ip', () => {
   expect(rule.ip('v4')).toBeInstanceOf(IpValidator);
+});
+
+test('literal', () => {
+  expect(rule.literal('ok')).toBeInstanceOf(LiteralValidator);
+  expect(rule.literal(null)).toBeInstanceOf(LiteralValidator);
 });
 
 test('number', () => {

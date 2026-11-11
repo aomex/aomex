@@ -48,6 +48,10 @@ export const zh = I18n.define({
       ranges_can_not_be_empty: '枚举范围不能为空',
       default_not_in_range: '默认值"{{item}}"不在枚举范围',
     },
+    literal: {
+      not_match: '{{label}}不是指定字面量',
+      unsupported_value: '字面量只支持字符串、数字、布尔值和null',
+    },
     one_of: {
       not_match_rule: '{{label}}未匹配规则',
       match_multiple_rule: '{{label}}匹配超过1个规则',

@@ -11,6 +11,7 @@ export * from './enum';
 export * from './hash';
 export * from './int';
 export * from './ip';
+export * from './literal';
 export * from './number';
 export * from './object';
 export * from './one-of';
