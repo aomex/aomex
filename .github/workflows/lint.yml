@@ -6,7 +6,7 @@ jobs:
   git-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - uses: pnpm/setup@v3
@@ -26,7 +26,7 @@ jobs:
         node-dts: [24.x]
         ts: [7.0.x]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/setup@v3
         with:
           cache: true
@@ -39,7 +39,7 @@ jobs:
   code-format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/setup@v3
         with:
           cache: true
@@ -55,7 +55,7 @@ jobs:
         node: ['24.11.0', 24.x]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/setup@v3
         with:
           runtime: node@${{ matrix.node }}
