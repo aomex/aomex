@@ -201,6 +201,64 @@ test('嵌套 object 与 array', async () => {
   });
 });
 
+test('嵌套裸对象入库前转为 ObjectValidator', async () => {
+  const nested = schema({
+    profile: {
+      bio: rule.string(),
+      meta: {
+        level: rule.int(),
+      },
+    },
+  });
+  expect(nested['rules'].profile).toBeInstanceOf(ObjectValidator);
+  expect(
+    (nested['rules'].profile as unknown as ObjectValidator)['config'].properties!['meta'],
+  ).toBeInstanceOf(ObjectValidator);
+
+  await expect(
+    validate({ profile: { bio: 'hi', meta: { level: '2' } } }, nested),
+  ).resolves.toStrictEqual({
+    profile: { bio: 'hi', meta: { level: 2 } },
+  });
+});
+
+test('schema 对象→数组→对象', async () => {
+  const nested = schema({
+    list: rule.array({
+      profile: {
+        bio: rule.string(),
+      },
+    }),
+  });
+  await expect(
+    validate({ list: [{ profile: { bio: 'x' } }] }, nested),
+  ).resolves.toStrictEqual({
+    list: [{ profile: { bio: 'x' } }],
+  });
+});
+
+test('extend 嵌套裸对象同样规范化', async () => {
+  const extended = userSchema.extend({
+    address: {
+      city: rule.string(),
+    },
+  });
+  expect(extended['rules'].address).toBeInstanceOf(ObjectValidator);
+  await expect(
+    validate(
+      {
+        id: 1,
+        name: 'a',
+        email: 'a@b.com',
+        address: { city: 'SH' },
+      },
+      extended,
+    ),
+  ).resolves.toMatchObject({
+    address: { city: 'SH' },
+  });
+});
+
 test('链式派生后仍可校验', async () => {
   const createUser = userSchema
     .omit('id')

@@ -38,6 +38,111 @@ const userSchema = schema({
   >(true);
 }
 
+// 嵌套裸对象入库后 Infer / 实例类型与 rule.object 一致
+{
+  const viaLiteral = schema({
+    profile: {
+      bio: rule.string(),
+      age: rule.int().optional(),
+    },
+  });
+  const viaObject = schema({
+    profile: rule.object({
+      bio: rule.string(),
+      age: rule.int().optional(),
+    }),
+  });
+  expectType<
+    TypeEqual<Validator.Infer<typeof viaLiteral>, Validator.Infer<typeof viaObject>>
+  >(true);
+  expectType<
+    TypeEqual<
+      { profile: { bio: string } & { age?: number | undefined } },
+      Validator.Infer<typeof viaLiteral>
+    >
+  >(true);
+  expectType<
+    TypeEqual<
+      { profile: { bio: string; age: number | undefined } },
+      Validator.Infer<typeof viaLiteral>
+    >
+  >(false);
+  expectType<
+    TypeEqual<
+      ValidatorSchema<{
+        profile: ObjectValidator<{ bio: string } & { age?: number | undefined }>;
+      }>,
+      typeof viaLiteral
+    >
+  >(true);
+}
+
+// 外层交叉 + 嵌套交叉；extend 追加嵌套裸对象仍保持交叉
+{
+  const base = schema({
+    id: rule.int(),
+    name: rule.string().optional(),
+    profile: {
+      bio: rule.string(),
+      age: rule.int().optional(),
+    },
+  });
+  expectType<
+    TypeEqual<
+      { id: number; profile: { bio: string } & { age?: number | undefined } } & {
+        name?: string | undefined;
+      },
+      Validator.Infer<typeof base>
+    >
+  >(true);
+
+  const extended = base.extend({
+    address: {
+      city: rule.string(),
+      zip: rule.string().optional(),
+    },
+  });
+  expectType<
+    TypeEqual<
+      {
+        id: number;
+        profile: { bio: string } & { age?: number | undefined };
+        address: { city: string } & { zip?: string | undefined };
+      } & { name?: string | undefined },
+      Validator.Infer<typeof extended>
+    >
+  >(true);
+  expectType<
+    TypeEqual<
+      {
+        id: number;
+        name?: string;
+        profile: { bio: string; age?: number };
+        address: { city: string; zip?: string };
+      },
+      Validator.Infer<typeof extended>
+    >
+  >(false);
+}
+
+// schema 内对象→数组→对象（元素含交叉）
+{
+  const s = schema({
+    list: rule.array({
+      profile: {
+        bio: rule.string(),
+        age: rule.int().optional(),
+      },
+    }),
+  });
+  expectType<
+    TypeEqual<
+      { list: { profile: { bio: string } & { age?: number | undefined } }[] },
+      Validator.Infer<typeof s>
+    >
+  >(true);
+}
+
 // asName：不改变 Infer；name 为 protected，对外用索引读取；仅支持具名 string
 {
   const named = userSchema.asName('User');

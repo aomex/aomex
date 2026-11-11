@@ -37,7 +37,8 @@ export declare namespace Validator {
       ? Infer<U>
       : T extends Validator<infer Type>
         ? Validator.ConvertOptional<Type>
-        : T extends { [K: string]: Validator }
+        : // 字段表（可递归嵌套裸对象）；须排在 Validator / ValidatorSchema 之后
+          T extends object
           ? keyof T extends never
             ? {}
             : EmptyObjectToUnknown<{

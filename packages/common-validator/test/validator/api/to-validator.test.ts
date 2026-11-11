@@ -46,3 +46,28 @@ test('链式改动经 copyConfig 清除 refName', () => {
 test('传入空值则返回空值', () => {
   expect(toValidator(undefined)).toBeUndefined();
 });
+
+test('嵌套裸对象递归转为 ObjectValidator', () => {
+  const validator = toValidator({
+    profile: {
+      bio: rule.string(),
+      nested: {
+        count: rule.int(),
+      },
+    },
+  }) as ObjectValidator;
+  expect(validator).toBeInstanceOf(ObjectValidator);
+  const profile = validator['config'].properties!['profile'] as ObjectValidator;
+  expect(profile).toBeInstanceOf(ObjectValidator);
+  const nested = profile['config'].properties!['nested'];
+  expect(nested).toBeInstanceOf(ObjectValidator);
+});
+
+test('嵌套 schema 转为 ObjectValidator', () => {
+  const profile = schema({ bio: rule.string() });
+  const validator = toValidator({
+    profile,
+  }) as ObjectValidator;
+  const profileValidator = validator['config'].properties!['profile'];
+  expect(profileValidator).toBeInstanceOf(ObjectValidator);
+});

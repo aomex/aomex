@@ -128,6 +128,60 @@ test('object 支持 schema', async () => {
   await expect(validate({}, validator)).rejects.toThrow();
 });
 
+test('object 嵌套裸对象等价 rule.object', async () => {
+  const viaLiteral = rule.object({
+    profile: {
+      bio: rule.string(),
+      age: rule.int().optional(),
+    },
+  });
+  const viaObject = rule.object({
+    profile: rule.object({
+      bio: rule.string(),
+      age: rule.int().optional(),
+    }),
+  });
+  expect(viaLiteral['config'].properties!['profile']).toBeInstanceOf(ObjectValidator);
+  const data = { profile: { bio: 'x', age: '1' } };
+  await expect(validate(data, viaLiteral)).resolves.toEqual({
+    profile: { bio: 'x', age: 1 },
+  });
+  await expect(validate(data, viaObject)).resolves.toEqual({
+    profile: { bio: 'x', age: 1 },
+  });
+});
+
+test('对象→数组→对象→数组→对象 深层嵌套', async () => {
+  const validator = rule.object({
+    groups: rule.array({
+      members: rule.array({
+        tag: { name: rule.string() },
+      }),
+    }),
+  });
+  await expect(
+    validate(
+      {
+        groups: [
+          {
+            members: [{ tag: { name: 'a' } }, { tag: { name: 'b' } }],
+          },
+        ],
+      },
+      validator,
+    ),
+  ).resolves.toEqual({
+    groups: [
+      {
+        members: [{ tag: { name: 'a' } }, { tag: { name: 'b' } }],
+      },
+    ],
+  });
+  await expect(
+    validate({ groups: [{ members: [{ tag: { name: 1 } }] }] }, validator),
+  ).rejects.toThrow();
+});
+
 test('oneOf', () => {
   expect(rule.oneOf([rule.string(), rule.number()])).toBeInstanceOf(OneOfValidator);
 });

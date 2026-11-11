@@ -91,12 +91,38 @@ import { Validator, rule, schema } from '@aomex/common';
   );
 }
 
+// 嵌套裸对象：内层交叉
+{
+  const mdw = params({
+    nested: {
+      id: rule.int(),
+      slug: rule.string().optional(),
+    },
+  });
+  expectType<
+    TypeEqual<
+      WebMiddleware<{
+        readonly params: {
+          nested: { id: number } & { slug?: string | undefined };
+        };
+      }>,
+      typeof mdw
+    >
+  >(true);
+  expectType<
+    TypeEqual<
+      WebMiddleware<{
+        readonly params: { nested: { id: number; slug: string | undefined } };
+      }>,
+      typeof mdw
+    >
+  >(false);
+}
+
 // 非法
 {
   // @ts-expect-error
   params({ id: 1 });
-  // @ts-expect-error
-  params({ nested: { id: rule.int() } });
   // @ts-expect-error 裸校验器
   params(rule.int());
   // @ts-expect-error

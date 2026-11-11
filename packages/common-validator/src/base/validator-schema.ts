@@ -1,4 +1,9 @@
 import type { Validator } from './validator';
+import {
+  normalizeFieldTable,
+  type NormalizeFieldTable,
+  type ValidatorToken,
+} from '../api/to-validator';
 
 type HasPublicOptional = { optional: () => any };
 
@@ -103,23 +108,23 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
    * userSchema.extend(extraSchema);
    * ```
    */
-  extend<U extends { [K in keyof U]: Validator }>(
+  extend<U extends { [K in keyof U]: ValidatorToken }>(
     fields: U,
-  ): ValidatorSchema<Omit<T, keyof U> & { [K in keyof U]: U[K] }>;
+  ): ValidatorSchema<Omit<T, keyof U> & NormalizeFieldTable<U>>;
   extend<U extends { [K in keyof U]: Validator }>(
     other: ValidatorSchema<U>,
   ): ValidatorSchema<Omit<T, keyof U> & { [K in keyof U]: U[K] }>;
-  extend<U extends { [K in keyof U]: Validator }>(
-    fieldsOrSchema: U | ValidatorSchema<U>,
-  ): ValidatorSchema<Omit<T, keyof U> & { [K in keyof U]: U[K] }> {
+  extend<U extends { [K in keyof U]: ValidatorToken }>(
+    fieldsOrSchema: U | ValidatorSchema<any>,
+  ): ValidatorSchema<any> {
     const fields =
       fieldsOrSchema instanceof ValidatorSchema
         ? fieldsOrSchema['rules']
-        : fieldsOrSchema;
+        : normalizeFieldTable(fieldsOrSchema);
     return new ValidatorSchema({
       ...this.rules,
       ...fields,
-    }) as unknown as ValidatorSchema<Omit<T, keyof U> & { [K in keyof U]: U[K] }>;
+    });
   }
 
   /**

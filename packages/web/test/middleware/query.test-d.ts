@@ -104,12 +104,38 @@ import { Validator, rule, schema } from '@aomex/common';
   );
 }
 
+// 嵌套裸对象：内层交叉
+{
+  const mdw = query({
+    filter: {
+      keyword: rule.string(),
+      page: rule.int().optional(),
+    },
+  });
+  expectType<
+    TypeEqual<
+      WebMiddleware<{
+        readonly query: {
+          filter: { keyword: string } & { page?: number | undefined };
+        };
+      }>,
+      typeof mdw
+    >
+  >(true);
+  expectType<
+    TypeEqual<
+      WebMiddleware<{
+        readonly query: { filter: { keyword: string; page: number | undefined } };
+      }>,
+      typeof mdw
+    >
+  >(false);
+}
+
 // 非法
 {
   // @ts-expect-error
   query({ id: 1 });
-  // @ts-expect-error
-  query({ profile: { bio: rule.string() } });
   // @ts-expect-error 裸校验器
   query(rule.string());
   // @ts-expect-error

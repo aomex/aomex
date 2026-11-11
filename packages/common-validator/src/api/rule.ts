@@ -83,9 +83,10 @@ export class Rule {
   array<T extends Validator>(item: T): ArrayValidator<Validator.Infer<T>[]>;
   array<T extends ValidatorSchema<any>>(item: T): ArrayValidator<Validator.Infer<T>[]>;
   /**
-   * 对象验证规则的快捷操作，等价于 `rule.array(rule.object({...}))`
+   * 对象验证规则的快捷操作，等价于 `rule.array(rule.object({...}))`；
+   * 嵌套裸对象同样会转为 `rule.object`
    */
-  array<T extends { [key: string]: Validator }>(
+  array<T extends { [key: string]: ValidatorToken }>(
     ruleObject: T,
   ): ArrayValidator<Validator.Infer<T>[]>;
   array(values?: ValidatorToken) {
@@ -186,12 +187,13 @@ export class Rule {
   object<T extends ValidatorSchema<any>>(
     properties: T,
   ): ObjectValidator<Validator.Infer<T>>;
-  object<T extends { [key: string]: Validator }>(
+  /**
+   * 字段表可嵌套裸对象，等价于内层再包一层 `rule.object`
+   */
+  object<T extends { [key: string]: ValidatorToken }>(
     properties: T,
   ): ObjectValidator<Validator.Infer<T>>;
-  object(
-    properties?: { [key: string]: Validator } | ValidatorSchema<any>,
-  ): ObjectValidator<any> {
+  object(properties?: ValidatorToken): ObjectValidator<any> {
     if (!properties) return new ObjectValidator();
     return toValidator(properties) as ObjectValidator<any>;
   }

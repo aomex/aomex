@@ -100,6 +100,44 @@ import { expectType, type TypeEqual } from 'ts-expect';
     );
   }
 
+  // Token：嵌套裸对象字段表；同键交叉 + 内层可选交叉
+  {
+    const v = rule.allOf([
+      { profile: { bio: rule.string() } },
+      { profile: { age: rule.int() } },
+    ]);
+    expectType<
+      TypeEqual<
+        AllOfValidator<{ profile: { bio: string } } & { profile: { age: number } }>,
+        typeof v
+      >
+    >(true);
+
+    const withOptional = rule.allOf([
+      {
+        user: {
+          id: rule.int(),
+          name: rule.string().optional(),
+        },
+      },
+      { active: rule.boolean() },
+    ]);
+    expectType<
+      TypeEqual<
+        AllOfValidator<
+          { user: { id: number } & { name?: string | undefined } } & { active: boolean }
+        >,
+        typeof withOptional
+      >
+    >(true);
+    expectType<
+      TypeEqual<
+        { user: { id: number; name: string | undefined }; active: boolean },
+        Validator.Infer<typeof withOptional>
+      >
+    >(false);
+  }
+
   // 非法：至少两个分支
   // @ts-expect-error 至少两个规则
   rule.allOf([rule.string()]);
@@ -216,6 +254,72 @@ import { expectType, type TypeEqual } from 'ts-expect';
   {
     const v = rule.array({});
     expectType<TypeEqual<ArrayValidator<{}[]>, typeof v>>(true);
+  }
+
+  // 嵌套裸对象元素字段
+  {
+    const v = rule.array({
+      profile: {
+        bio: rule.string(),
+      },
+    });
+    expectType<TypeEqual<ArrayValidator<{ profile: { bio: string } }[]>, typeof v>>(true);
+  }
+
+  // 数组元素：嵌套交叉，不能收成扁平必填
+  {
+    const v = rule.array({
+      bio: rule.string(),
+      age: rule.int().optional(),
+    });
+    expectType<
+      TypeEqual<
+        ArrayValidator<({ bio: string } & { age?: number | undefined })[]>,
+        typeof v
+      >
+    >(true);
+    expectType<
+      TypeEqual<ArrayValidator<{ bio: string; age: number | undefined }[]>, typeof v>
+    >(false);
+  }
+
+  // 对象→数组→对象；以及再套一层数组→对象
+  {
+    const v = rule.object({
+      list: rule.array({
+        profile: {
+          bio: rule.string(),
+          meta: { level: rule.int().optional() },
+        },
+      }),
+    });
+    expectType<
+      TypeEqual<
+        {
+          list: {
+            profile: {
+              bio: string;
+              meta: { level?: number | undefined };
+            };
+          }[];
+        },
+        Validator.Infer<typeof v>
+      >
+    >(true);
+
+    const deep = rule.object({
+      groups: rule.array({
+        members: rule.array({
+          tag: { name: rule.string() },
+        }),
+      }),
+    });
+    expectType<
+      TypeEqual<
+        { groups: { members: { tag: { name: string } }[] }[] },
+        Validator.Infer<typeof deep>
+      >
+    >(true);
   }
 }
 
@@ -343,6 +447,112 @@ import { expectType, type TypeEqual } from 'ts-expect';
   {
     const v = rule.object({});
     expectType<TypeEqual<ObjectValidator<{}>, typeof v>>(true);
+  }
+  // 嵌套裸对象 → 等价内层 rule.object；内层必填/可选为交叉，不能收成扁平必填
+  {
+    const v = rule.object({
+      profile: {
+        bio: rule.string(),
+        age: rule.int().optional(),
+      },
+    });
+    const viaObject = rule.object({
+      profile: rule.object({
+        bio: rule.string(),
+        age: rule.int().optional(),
+      }),
+    });
+    expectType<TypeEqual<Validator.Infer<typeof v>, Validator.Infer<typeof viaObject>>>(
+      true,
+    );
+    expectType<
+      TypeEqual<
+        { profile: { bio: string } & { age?: number | undefined } },
+        Validator.Infer<typeof v>
+      >
+    >(true);
+    expectType<
+      TypeEqual<
+        { profile: { bio: string; age: number | undefined } },
+        Validator.Infer<typeof v>
+      >
+    >(false);
+    expectType<
+      TypeEqual<{ profile: { bio: string; age?: number } }, Validator.Infer<typeof v>>
+    >(false);
+  }
+
+  // 外层交叉 + 内层交叉
+  {
+    const v = rule.object({
+      id: rule.int(),
+      tag: rule.string().optional(),
+      profile: {
+        bio: rule.string(),
+        age: rule.int().optional(),
+      },
+    });
+    expectType<
+      TypeEqual<
+        { id: number; profile: { bio: string } & { age?: number | undefined } } & {
+          tag?: string | undefined;
+        },
+        Validator.Infer<typeof v>
+      >
+    >(true);
+    expectType<
+      TypeEqual<
+        {
+          id: number;
+          tag?: string | undefined;
+          profile: { bio: string; age?: number | undefined };
+        },
+        Validator.Infer<typeof v>
+      >
+    >(false);
+  }
+
+  // 双层嵌套均含可选 → 每层独立交叉
+  {
+    const v = rule.object({
+      user: {
+        name: rule.string(),
+        profile: {
+          bio: rule.string(),
+          level: rule.int().optional(),
+        },
+        nickname: rule.string().optional(),
+      },
+    });
+    expectType<
+      TypeEqual<
+        {
+          user: {
+            name: string;
+            profile: { bio: string } & { level?: number | undefined };
+          } & { nickname?: string | undefined };
+        },
+        Validator.Infer<typeof v>
+      >
+    >(true);
+  }
+
+  // 嵌套全 optional：可选侧交叉（无必填键）
+  {
+    const v = rule.object({
+      profile: {
+        bio: rule.string().optional(),
+        age: rule.int().optional(),
+      },
+    });
+    expectType<
+      TypeEqual<
+        {
+          profile: { bio?: string | undefined; age?: number | undefined };
+        },
+        Validator.Infer<typeof v>
+      >
+    >(true);
   }
   // 非法：不接受裸 Validator（应用 schema / 字段表）
   // @ts-expect-error 不接受裸 Validator

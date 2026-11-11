@@ -72,7 +72,7 @@ export interface WebResponseOptions<
   /**
    * 报文结构
    */
-  headers?: { [key: string]: Validator };
+  headers?: { [key: string]: ValidatorToken };
   description?: string;
 }
 

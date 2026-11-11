@@ -138,6 +138,19 @@ describe('保留属性', () => {
     expect(result).toStrictEqual(ValidateResult.accept({ baz: true, test: '456' }));
   });
 
+  test('additional.value 支持嵌套裸对象字段表', async () => {
+    const validator = new ObjectValidator().additional({
+      value: {
+        id: rule.int(),
+      },
+    });
+    const result = await validator['validate']({
+      a: { id: '1' },
+      b: 'x',
+    });
+    expect(result).toStrictEqual(ValidateResult.accept({ a: { id: 1 } }));
+  });
+
   test('满足key规则', async () => {
     const validator = new ObjectValidator().additional({
       key: /^ba/,

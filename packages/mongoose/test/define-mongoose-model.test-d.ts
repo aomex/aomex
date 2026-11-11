@@ -220,6 +220,48 @@ import type { ModelInput } from '../src/type-d';
   }
 }
 
+// 顶层嵌套裸对象：Infer 与 rule.object 一致
+{
+  const profileFields = {
+    bio: rule.string(),
+    age: rule.number().optional(),
+  };
+  const viaLiteral = defineMongooseModel('foo_literal', {
+    schemas: {
+      profile: profileFields,
+    },
+    versionKey: false,
+  });
+  const viaObject = defineMongooseModel('foo_object', {
+    schemas: {
+      profile: rule.object(profileFields),
+    },
+    versionKey: false,
+  });
+  expectType<
+    TypeEqual<
+      ModelOutput<typeof viaLiteral>['profile'],
+      ModelOutput<typeof viaObject>['profile']
+    >
+  >(true);
+  expectType<
+    TypeEqual<
+      ModelOutput<typeof viaLiteral>['profile'],
+      { bio: string } & { age?: number | undefined }
+    >
+  >(true);
+  expectType<TypeEqual<ModelOutput<typeof viaLiteral>['_id'], mongo.ObjectId>>(true);
+
+  defineMongooseModel('foo_bad', {
+    schemas: {
+      profile: {
+        // @ts-expect-error 嵌套仍不可用，非 mongoose 白名单 validator
+        email: rule.email(),
+      },
+    },
+  });
+}
+
 // 索引
 {
   defineMongooseModel('foo', {

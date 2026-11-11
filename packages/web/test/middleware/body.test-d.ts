@@ -140,6 +140,59 @@ import { Validator, rule, schema, type ValidatorToken } from '@aomex/common';
   >(true);
 }
 
+// 嵌套裸对象：等价 rule.object；内外交叉，拒绝扁平必填形态
+{
+  const mdw = body({
+    profile: {
+      bio: rule.string(),
+      age: rule.int().optional(),
+    },
+  });
+  expectType<
+    TypeEqual<
+      WebMiddleware<{
+        readonly body: {
+          profile: { bio: string } & { age?: number | undefined };
+        };
+      }>,
+      typeof mdw
+    >
+  >(true);
+  expectType<
+    TypeEqual<
+      WebMiddleware<{
+        readonly body: { profile: { bio: string; age: number | undefined } };
+      }>,
+      typeof mdw
+    >
+  >(false);
+}
+
+// 外层交叉 + 嵌套交叉
+{
+  const mdw = body({
+    id: rule.int(),
+    remark: rule.string().optional(),
+    profile: {
+      bio: rule.string(),
+      age: rule.int().optional(),
+    },
+  });
+  expectType<
+    TypeEqual<
+      WebMiddleware<{
+        readonly body: {
+          id: number;
+          profile: { bio: string } & { age?: number | undefined };
+        } & {
+          remark?: string | undefined;
+        };
+      }>,
+      typeof mdw
+    >
+  >(true);
+}
+
 // rule.object(schema) 嵌套进字段表
 {
   const profileSchema = schema({
@@ -175,8 +228,6 @@ import { Validator, rule, schema, type ValidatorToken } from '@aomex/common';
   body({ name: 'x' });
   // @ts-expect-error
   body({ ok: true });
-  // @ts-expect-error 嵌套裸对象，不是 rule.object
-  body({ profile: { bio: rule.string() } });
   // @ts-expect-error
   body({ fn: () => 1 });
 }

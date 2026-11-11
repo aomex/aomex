@@ -92,6 +92,16 @@ const validator = new TargetValidator();
     TypeEqual<{ foo: string } & { [K: string]: number[] }, Validator.Infer<typeof v5>>
   >(true);
 
+  // additional.value 嵌套裸对象
+  {
+    const v = new TargetValidator().additional({
+      value: { id: rule.int() },
+    });
+    expectType<TypeEqual<{ [K: string]: { id: number } }, Validator.Infer<typeof v>>>(
+      true,
+    );
+  }
+
   const v6 = new TargetValidator<{ foo: string }>({ foo: rule.string() })
     .optional()
     .additional({ value: rule.boolean() });

@@ -3,6 +3,7 @@ import { i18n } from '../i18n';
 import type { OpenAPI } from '@aomex/internal-tools';
 import { ValidateResult, type TransformedValidator, Validator } from '../base';
 import { toDocument } from '../api/to-document';
+import { toValidator, type ValidatorToken } from '../api/to-validator';
 
 export declare namespace ObjectValidator {
   export type Property = Record<string, Validator>;
@@ -91,7 +92,7 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
   }): ObjectValidator<
     (T extends Validator.TObject ? unknown : T) & { [K: string]: unknown }
   >;
-  public additional<Additional extends Validator>(opts: {
+  public additional<Additional extends ValidatorToken>(opts: {
     key?: RegExp | RegExp[];
     value: Additional;
   }): ObjectValidator<
@@ -104,13 +105,13 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
   public additional(
     opts: {
       key?: RegExp | RegExp[];
-      value?: Validator;
+      value?: ValidatorToken;
     } = {},
   ): ObjectValidator<any> {
     const validator = this.copy();
     const keys = opts.key ? toArray(opts.key) : [];
     const key = keys.length ? keys : undefined;
-    const value = opts.value;
+    const value = opts.value === undefined ? undefined : toValidator(opts.value);
     validator.config.keepAdditional = !value && !key ? true : { key, value };
     return validator;
   }

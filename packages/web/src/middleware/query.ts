@@ -5,13 +5,15 @@ import {
   ValidateDeniedError,
   ValidatorSchema,
   toDocument,
+  type ValidatorFieldTable,
+  type ValidatorToken,
 } from '@aomex/common';
 import type { WebMiddleware } from '../override';
 
 /**
  * 验证请求查询字符串
  */
-export const query = <T extends { [key: string]: Validator } | ValidatorSchema<any>>(
+export const query = <T extends ValidatorFieldTable | ValidatorSchema<any>>(
   fields: T,
 ): WebMiddleware<{ readonly query: Validator.Infer<T> }> => {
   return middleware.web({
@@ -28,7 +30,7 @@ export const query = <T extends { [key: string]: Validator } | ValidatorSchema<a
         methodItem.parameters ||= [];
         Object.entries(
           (fields instanceof ValidatorSchema ? fields['rules'] : fields) as {
-            [key: string]: Validator;
+            [key: string]: ValidatorToken;
           },
         ).forEach(([name, validator]) => {
           methodItem.parameters!.push({

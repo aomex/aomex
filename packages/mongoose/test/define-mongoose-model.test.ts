@@ -490,6 +490,39 @@ test('对象', async () => {
   await expect(() => model.create({ obj: { hello: 'foo' } })).rejects.toThrow(Error);
 });
 
+test('顶层嵌套裸对象等价 rule.object', async () => {
+  const viaLiteral = defineMongooseModel('foo_nested_literal', {
+    schemas: {
+      obj: {
+        hello: rule.string(),
+        world: rule.string(),
+      },
+    },
+    versionKey: false,
+  });
+  const viaObject = defineMongooseModel('foo_nested_object', {
+    schemas: {
+      obj: rule.object({ hello: rule.string(), world: rule.string() }),
+    },
+    versionKey: false,
+  });
+
+  {
+    const result = await viaLiteral.create({ obj: { hello: 'foo', world: 'bar' } });
+    const json = result.toJSON();
+    Reflect.deleteProperty(json, '_id');
+    expect(json).toEqual({ obj: { hello: 'foo', world: 'bar' } });
+  }
+  {
+    const result = await viaObject.create({ obj: { hello: 'foo', world: 'bar' } });
+    const json = result.toJSON();
+    Reflect.deleteProperty(json, '_id');
+    expect(json).toEqual({ obj: { hello: 'foo', world: 'bar' } });
+  }
+
+  await expect(() => viaLiteral.create({ obj: { hello: 'foo' } })).rejects.toThrow(Error);
+});
+
 test('任意类型', async () => {
   const model = defineMongooseModel('foo', {
     schemas: {
