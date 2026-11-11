@@ -28,7 +28,7 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
   constructor(
     protected readonly rules: T,
     /**
-     * 可选的 OpenAPI 具名组件名；`pick` / `omit` / `extend` / `merge` / `partial` 不会带上该名称
+     * 可选的 OpenAPI 具名组件名；`pick` / `omit` / `extend` / `partial` 不会带上该名称
      */
     protected readonly name?: string,
   ) {}
@@ -95,26 +95,30 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
   }
 
   /**
-   * 追加或覆盖字段（传入普通字段表），同名以传入的为准。
+   * 追加或覆盖字段，同名以传入的为准。
+   * 可传入普通字段表，或另一个 schema。
+   *
+   * ```typescript
+   * userSchema.extend({ phone: rule.string() });
+   * userSchema.extend(extraSchema);
+   * ```
    */
   extend<U extends { [K in keyof U]: Validator }>(
     fields: U,
+  ): ValidatorSchema<Omit<T, keyof U> & { [K in keyof U]: U[K] }>;
+  extend<U extends { [K in keyof U]: Validator }>(
+    other: ValidatorSchema<U>,
+  ): ValidatorSchema<Omit<T, keyof U> & { [K in keyof U]: U[K] }>;
+  extend<U extends { [K in keyof U]: Validator }>(
+    fieldsOrSchema: U | ValidatorSchema<U>,
   ): ValidatorSchema<Omit<T, keyof U> & { [K in keyof U]: U[K] }> {
+    const fields =
+      fieldsOrSchema instanceof ValidatorSchema
+        ? fieldsOrSchema['rules']
+        : fieldsOrSchema;
     return new ValidatorSchema({
       ...this.rules,
       ...fields,
-    }) as unknown as ValidatorSchema<Omit<T, keyof U> & { [K in keyof U]: U[K] }>;
-  }
-
-  /**
-   * 与另一个 schema 合并，同名以传入的为准。
-   */
-  merge<U extends { [K in keyof U]: Validator }>(
-    other: ValidatorSchema<U>,
-  ): ValidatorSchema<Omit<T, keyof U> & { [K in keyof U]: U[K] }> {
-    return new ValidatorSchema({
-      ...this.rules,
-      ...other.rules,
     }) as unknown as ValidatorSchema<Omit<T, keyof U> & { [K in keyof U]: U[K] }>;
   }
 

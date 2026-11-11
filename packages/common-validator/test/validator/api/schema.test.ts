@@ -42,7 +42,7 @@ test('派生操作不继承 name', () => {
   expect(named.pick('id')['name']).toBeUndefined();
   expect(named.omit('id')['name']).toBeUndefined();
   expect(named.extend({ tag: rule.string() })['name']).toBeUndefined();
-  expect(named.merge(schema({ tag: rule.string() }))['name']).toBeUndefined();
+  expect(named.extend(schema({ tag: rule.string() }))['name']).toBeUndefined();
   expect(named.partial()['name']).toBeUndefined();
   expect(named.partial('name')['name']).toBeUndefined();
 });
@@ -126,8 +126,8 @@ test('extend：追加与同名覆盖', async () => {
   });
 });
 
-test('merge：同名键以传入 schema 为准', async () => {
-  const merged = userSchema.merge(
+test('extend(schema)：同名键以传入 schema 为准', async () => {
+  const extended = userSchema.extend(
     schema({
       name: rule.string().optional(),
       role: rule.enum(['admin', 'user']),
@@ -135,7 +135,7 @@ test('merge：同名键以传入 schema 为准', async () => {
   );
 
   await expect(
-    validate({ id: '1', email: 'a@b.com', role: 'admin' }, merged),
+    validate({ id: '1', email: 'a@b.com', role: 'admin' }, extended),
   ).resolves.toStrictEqual({
     id: 1,
     email: 'a@b.com',

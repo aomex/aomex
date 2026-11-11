@@ -146,13 +146,17 @@ const userSchema = schema({
   >(true);
 }
 
-// merge
+// extend(schema)：与字段表形态 Infer 一致
 {
   const extraSchema = schema({
     role: rule.enum(['admin', 'user']),
     name: rule.string().optional(),
   });
-  const merged = userSchema.merge(extraSchema);
+  const extended = userSchema.extend(extraSchema);
+  const extendedByFields = userSchema.extend({
+    role: rule.enum(['admin', 'user']),
+    name: rule.string().optional(),
+  });
   expectType<
     TypeEqual<
       {
@@ -164,8 +168,11 @@ const userSchema = schema({
         age?: number | undefined;
         name?: string | undefined;
       },
-      Validator.Infer<typeof merged>
+      Validator.Infer<typeof extended>
     >
+  >(true);
+  expectType<
+    TypeEqual<Validator.Infer<typeof extended>, Validator.Infer<typeof extendedByFields>>
   >(true);
 }
 
@@ -368,28 +375,29 @@ const userSchema = schema({
     true,
   );
 
-  const merged = withBuffer.merge(
+  const extendedBySchema = withBuffer.extend(
     schema({
       extra: rule.buffer(),
     }),
   );
-  type MergedRules = typeof merged extends ValidatorSchema<infer R> ? R : never;
-  expectType<TypeEqual<BufferValidator<Buffer>, MergedRules['byt']>>(true);
-  expectType<TypeEqual<BufferValidator<Buffer>, MergedRules['extra']>>(true);
-  expectType<TypeEqual<BufferValidator<any>, MergedRules['byt']>>(false);
-  expectType<TypeEqual<BufferValidator<any>, MergedRules['extra']>>(false);
-  expectType<TypeEqual<{ byt: Buffer; extra: Buffer }, Validator.Infer<typeof merged>>>(
-    true,
-  );
+  type ExtendedBySchemaRules =
+    typeof extendedBySchema extends ValidatorSchema<infer R> ? R : never;
+  expectType<TypeEqual<BufferValidator<Buffer>, ExtendedBySchemaRules['byt']>>(true);
+  expectType<TypeEqual<BufferValidator<Buffer>, ExtendedBySchemaRules['extra']>>(true);
+  expectType<TypeEqual<BufferValidator<any>, ExtendedBySchemaRules['byt']>>(false);
+  expectType<TypeEqual<BufferValidator<any>, ExtendedBySchemaRules['extra']>>(false);
+  expectType<
+    TypeEqual<{ byt: Buffer; extra: Buffer }, Validator.Infer<typeof extendedBySchema>>
+  >(true);
 }
 
-// pick -> omit -> extend -> merge -> partial 串联后仍可 Infer
+// pick -> omit -> extend(字段表) -> extend(schema) -> partial 串联后仍可 Infer
 {
   const pipeline = userSchema
     .pick('id', 'name', 'email', 'age')
     .omit('id')
     .extend({ tag: rule.string() })
-    .merge(schema({ active: rule.boolean() }))
+    .extend(schema({ active: rule.boolean() }))
     .partial('name', 'tag');
 
   expectType<
