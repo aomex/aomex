@@ -69,6 +69,71 @@ test('接收派生 schema', async () => {
   res.flush();
 });
 
+test('接收裸 object 校验器', async () => {
+  const { ctx, res } = await mockServer((agent) =>
+    agent.post('/').send({ id: '7', name: 'tom' }),
+  );
+
+  await compose([body(rule.object({ id: rule.int(), name: rule.string() }))])(ctx);
+  // @ts-expect-error
+  expect(ctx['body']).toStrictEqual({ id: 7, name: 'tom' });
+  res.flush();
+});
+
+test('接收裸 array 校验器', async () => {
+  const { ctx, res } = await mockServer((agent) => agent.post('/').send([1, '2', 3]));
+
+  await compose([body(rule.array(rule.int()))])(ctx);
+  // @ts-expect-error
+  expect(ctx['body']).toStrictEqual([1, 2, 3]);
+  res.flush();
+});
+
+test('接收裸 string 校验器', async () => {
+  // 真实 JSON 字符串体是带引号的 "hello"，不是裸文本 hello
+  const { ctx, res } = await mockServer((agent) =>
+    agent.post('/').type('json').send('"hello"'),
+  );
+
+  await compose([body(rule.string())])(ctx);
+  // @ts-expect-error
+  expect(ctx['body']).toBe('hello');
+  res.flush();
+});
+
+test('接收裸 number 校验器', async () => {
+  const { ctx, res } = await mockServer((agent) =>
+    agent.post('/').type('json').send('0'),
+  );
+
+  await compose([body(rule.number())])(ctx);
+  // @ts-expect-error
+  expect(ctx['body']).toBe(0);
+  res.flush();
+});
+
+test('接收裸 boolean 校验器', async () => {
+  const { ctx, res } = await mockServer((agent) =>
+    agent.post('/').type('json').send('false'),
+  );
+
+  await compose([body(rule.boolean())])(ctx);
+  // @ts-expect-error
+  expect(ctx['body']).toBe(false);
+  res.flush();
+});
+
+test('裸标量类型不匹配时抛出错误', async () => {
+  const { ctx, res } = await mockServer((agent) =>
+    agent.post('/').type('json').send('1'),
+  );
+
+  const spy = vitest.spyOn(ctx, 'throw');
+  await expect(compose([body(rule.string())])(ctx)).rejects.toThrow();
+  expect(spy).toHaveBeenCalledOnce();
+  res.flush();
+});
+
 test('文档', () => {
   const doc: OpenAPI.Document = {
     openapi: '',
@@ -244,6 +309,332 @@ test('顶层文件字段识别为 multipart', () => {
   const md = body({
     avatar: rule.file(),
   });
+  md['openapi']().onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  expect(doc['paths']).toMatchInlineSnapshot(`
+    {
+      "/": {
+        "get": {
+          "requestBody": {
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "avatar": {
+                      "format": "binary",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "avatar",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {},
+        },
+      },
+    }
+  `);
+});
+
+test('文档：空字段表 requestBody.required=false', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+
+  const md = body({});
+  md['openapi']().onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  expect(doc['paths']).toMatchInlineSnapshot(`
+    {
+      "/": {
+        "get": {
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                },
+              },
+            },
+            "required": false,
+          },
+          "responses": {},
+        },
+      },
+    }
+  `);
+});
+
+test('文档：全 optional 字段表 requestBody.required=false', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+
+  const md = body({
+    foo: rule.string().optional(),
+    bar: rule.number().optional(),
+  });
+  md['openapi']().onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  expect(doc['paths']).toMatchInlineSnapshot(`
+    {
+      "/": {
+        "get": {
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "bar": {
+                      "type": "number",
+                    },
+                    "foo": {
+                      "type": "string",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "required": false,
+          },
+          "responses": {},
+        },
+      },
+    }
+  `);
+});
+
+test('文档：裸 array', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+
+  const md = body(rule.array(rule.string()));
+  md['openapi']().onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  expect(doc['paths']).toMatchInlineSnapshot(`
+    {
+      "/": {
+        "get": {
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "string",
+                  },
+                  "type": "array",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {},
+        },
+      },
+    }
+  `);
+});
+
+test('文档：裸 string', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+
+  const md = body(rule.string());
+  md['openapi']().onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  expect(doc['paths']).toMatchInlineSnapshot(`
+    {
+      "/": {
+        "get": {
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {},
+        },
+      },
+    }
+  `);
+});
+
+test('文档：裸 number', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+
+  const md = body(rule.number());
+  md['openapi']().onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  expect(doc['paths']).toMatchInlineSnapshot(`
+    {
+      "/": {
+        "get": {
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {},
+        },
+      },
+    }
+  `);
+});
+
+test('文档：裸 boolean', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+
+  const md = body(rule.boolean());
+  md['openapi']().onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  expect(doc['paths']).toMatchInlineSnapshot(`
+    {
+      "/": {
+        "get": {
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {},
+        },
+      },
+    }
+  `);
+});
+
+test('文档：裸 optional string requestBody.required=false', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+
+  const md = body(rule.string().optional());
+  md['openapi']().onMethod?.(doc.paths['/']!.get!, {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get',
+  });
+  expect(doc['paths']).toMatchInlineSnapshot(`
+    {
+      "/": {
+        "get": {
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                },
+              },
+            },
+            "required": false,
+          },
+          "responses": {},
+        },
+      },
+    }
+  `);
+});
+
+test('文档：裸 object 含文件字段识别为 multipart', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: {
+      '/': { get: { responses: {} } },
+    },
+  };
+
+  const md = body(
+    rule.object({
+      avatar: rule.file(),
+    }),
+  );
   md['openapi']().onMethod?.(doc.paths['/']!.get!, {
     document: doc,
     pathName: '/',

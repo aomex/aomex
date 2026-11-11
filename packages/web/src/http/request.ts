@@ -54,8 +54,11 @@ export class WebRequest extends IncomingMessage {
     return (this._cookies ||= cookie.parse(this.headers['cookie'] || ''));
   }
 
-  get body(): Record<string, unknown> {
-    return this._body || {};
+  /**
+   * 解析后的请求体。若需要原始报文请用 `rawBody`
+   */
+  get body(): unknown {
+    return this._body === undefined ? {} : this._body;
   }
 
   get fresh(): boolean {
@@ -116,6 +119,9 @@ export class WebRequest extends IncomingMessage {
     return this.URL.search.slice(1);
   }
 
+  /**
+   * 原始请求体字符串。解析后的结构化数据请用 `body`
+   */
   get rawBody(): string {
     return this._rawBody || '';
   }

@@ -1,18 +1,18 @@
 import {
   validate,
   Validator,
-  rule,
   ValidateDeniedError,
   middleware,
   OpenAPI,
-  ValidatorSchema,
+  toValidator,
+  type ValidatorToken,
 } from '@aomex/common';
 import { FileValidator, type WebMiddleware } from '../override';
 
 /**
  * 验证请求实体
  */
-export const body = <T extends { [key: string]: Validator } | ValidatorSchema<any>>(
+export const body = <T extends ValidatorToken>(
   fields: T,
 ): WebMiddleware<{ readonly body: Validator.Infer<T> }> => {
   return middleware.web({
@@ -26,12 +26,10 @@ export const body = <T extends { [key: string]: Validator } | ValidatorSchema<an
     },
     openapi: {
       onMethod(methodItem) {
-        const source = (fields instanceof ValidatorSchema ? fields['rules'] : fields) as {
-          [key: string]: Validator;
-        };
-        const schema = Validator.toDocument(rule.object(source))
-          .schema as OpenAPI.SchemaObject;
-        const contentType = Validator.has(source, FileValidator)
+        const validator = toValidator(fields);
+        const docs = Validator.toDocument(validator);
+        const schema = docs.schema as OpenAPI.SchemaObject;
+        const contentType = Validator.has(validator, FileValidator)
           ? 'multipart/form-data'
           : 'application/json';
 
@@ -39,9 +37,8 @@ export const body = <T extends { [key: string]: Validator } | ValidatorSchema<an
           content: {
             [contentType]: { schema },
           },
-          required: Object.values(source).some(
-            (validator) => Validator.toDocument(validator).required,
-          ),
+          required:
+            schema.type === 'object' ? !!schema.required?.length : !!docs.required,
         };
       },
     },

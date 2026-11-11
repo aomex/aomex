@@ -138,3 +138,71 @@ test('不同请求的文件在各自响应结束时才删除', async () => {
   req2.res.flush();
   await waitDeleted(filepath2);
 });
+
+test('payload string：json 解析为 string，text 保留原文', async () => {
+  const jsonReq = await mockServer((agent) =>
+    agent.post('/').type('json').send('"hello"'),
+  );
+  expect(jsonReq.req.body).toBe('hello');
+  jsonReq.res.flush();
+
+  const textReq = await mockServer((agent) => agent.post('/').type('text').send('hello'));
+  expect(textReq.req.body).toBe('hello');
+  textReq.res.flush();
+});
+
+test('payload number：json 解析为 number，text 保留原文', async () => {
+  const jsonReq = await mockServer((agent) => agent.post('/').type('json').send('0'));
+  expect(jsonReq.req.body).toBe(0);
+  jsonReq.res.flush();
+
+  const textReq = await mockServer((agent) => agent.post('/').type('text').send('0'));
+  expect(textReq.req.body).toBe('0');
+  textReq.res.flush();
+});
+
+test('payload boolean：json 解析为 boolean，text 保留原文', async () => {
+  const jsonReq = await mockServer((agent) => agent.post('/').type('json').send('false'));
+  expect(jsonReq.req.body).toBe(false);
+  jsonReq.res.flush();
+
+  const textReq = await mockServer((agent) => agent.post('/').type('text').send('false'));
+  expect(textReq.req.body).toBe('false');
+  textReq.res.flush();
+});
+
+test('payload null：json 解析为 null，text 保留原文', async () => {
+  const jsonReq = await mockServer((agent) => agent.post('/').type('json').send('null'));
+  expect(jsonReq.req.body).toBeNull();
+  jsonReq.res.flush();
+
+  const textReq = await mockServer((agent) => agent.post('/').type('text').send('null'));
+  expect(textReq.req.body).toBe('null');
+  textReq.res.flush();
+});
+
+test('payload 空字符串：json 解析为 ""，text 保留原文', async () => {
+  const jsonReq = await mockServer((agent) => agent.post('/').type('json').send('""'));
+  expect(jsonReq.req.body).toBe('');
+  jsonReq.res.flush();
+
+  const textReq = await mockServer((agent) => agent.post('/').type('text').send(''));
+  expect(textReq.req.body).toBe('');
+  textReq.res.flush();
+});
+
+test('空 JSON 报文仍解析为对象', async () => {
+  const { req, res } = await mockServer((agent) =>
+    agent.post('/').set('Content-Type', 'application/json').send(''),
+  );
+  expect(req.body).toStrictEqual({});
+  res.flush();
+});
+
+test('urlencoded 不是顶层标量语义', async () => {
+  const { req, res } = await mockServer((agent) =>
+    agent.post('/').type('form').send({ flag: 'false', count: '0' }),
+  );
+  expect(req.body).toStrictEqual({ flag: 'false', count: '0' });
+  res.flush();
+});

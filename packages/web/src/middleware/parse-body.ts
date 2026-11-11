@@ -26,10 +26,15 @@ export const parseBody = (): WebMiddleware => {
         // 默认值：1mb for json and 56kb for form-urlencoded
         limit: '32mb',
         returnRawBody: true,
+        // 允许 JSON 顶层 string/number/boolean
+        ...(methodName === 'json' ? { strict: false } : null),
         // @ts-expect-error
         onProtoPoisoning: 'remove',
       });
-      request['_body'] = parsed;
+      // 空报文（无内容或仅空白）仍归一成 {}，避免破坏既有 object 字段表语义
+      const isEmptyPayload =
+        methodName === 'json' && typeof raw === 'string' && raw.trim() === '';
+      request['_body'] = isEmptyPayload ? {} : parsed;
       request['_rawBody'] = raw;
     } else if (request.matchContentType('multipart/*')) {
       const filepaths: string[] = [];

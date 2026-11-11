@@ -78,7 +78,9 @@ export abstract class BaseBearerStrategy<
 
   protected loadFromBody(ctx: WebContext, key: string): string | false {
     if (!key) return false;
-    const token = ctx.request.body[key];
+    const body = ctx.request.body;
+    if (!body || typeof body !== 'object' || Array.isArray(body)) return false;
+    const token = Reflect.get(body, key);
     return typeof token === 'string' && token;
   }
 

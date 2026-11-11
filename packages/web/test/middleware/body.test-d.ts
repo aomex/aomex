@@ -179,17 +179,40 @@ import { Validator, rule, schema, type ValidatorToken } from '@aomex/common';
   body({ profile: { bio: rule.string() } });
   // @ts-expect-error
   body({ fn: () => 1 });
-  // @ts-expect-error 裸校验器不是字段表/schema
-  body(rule.string());
-  // @ts-expect-error
-  body(rule.object({ id: rule.int() }));
 }
 
-// ValidatorToken 比 body 更宽（含裸 Validator），不能直接塞
+// 裸 Validator（与 response content 对齐）
+{
+  const mdw = body(rule.string());
+  expectType<TypeEqual<WebMiddleware<{ readonly body: string }>, typeof mdw>>(true);
+}
+
+{
+  const mdw = body(rule.number());
+  expectType<TypeEqual<WebMiddleware<{ readonly body: number }>, typeof mdw>>(true);
+}
+
+{
+  const mdw = body(rule.boolean());
+  expectType<TypeEqual<WebMiddleware<{ readonly body: boolean }>, typeof mdw>>(true);
+}
+
+{
+  const mdw = body(rule.array(rule.int()));
+  expectType<TypeEqual<WebMiddleware<{ readonly body: number[] }>, typeof mdw>>(true);
+}
+
+{
+  const mdw = body(rule.object({ id: rule.int() }));
+  expectType<TypeEqual<WebMiddleware<{ readonly body: { id: number } }>, typeof mdw>>(
+    true,
+  );
+}
+
 {
   const token: ValidatorToken = rule.string();
-  // @ts-expect-error
-  body(token);
+  const mdw = body(token);
+  expectType<TypeEqual<WebMiddleware<{ readonly body: unknown }>, typeof mdw>>(true);
 }
 
 // 文件字段（web 扩展）
