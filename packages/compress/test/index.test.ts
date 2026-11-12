@@ -233,6 +233,53 @@ test('图片不压缩', () => {
     });
 });
 
+test('SSE(text/event-stream)不压缩', async () => {
+  const body = 'data: ' + bufferString + '\n\n';
+  const app = new WebApp({
+    mount: [
+      compress(),
+      middleware.web((ctx) => {
+        ctx.response.contentType = 'text/event-stream';
+        ctx.send(body);
+      }),
+    ],
+  });
+
+  await request(app.listen())
+    .get('/')
+    .expect(200)
+    .expect(body)
+    .expect('vary', 'Accept-Encoding')
+    .expect((res) => {
+      expect(res.headers).not.toHaveProperty('content-encoding');
+      expect(res.headers).not.toHaveProperty('transfer-encoding');
+    });
+});
+
+test('SSE 即使 needCompress=true 也不压缩', async () => {
+  const body = 'data: ' + bufferString + '\n\n';
+  const app = new WebApp({
+    mount: [
+      compress(),
+      middleware.web<CompressProps>((ctx) => {
+        ctx.needCompress = true;
+        ctx.response.contentType = 'text/event-stream';
+        ctx.send(body);
+      }),
+    ],
+  });
+
+  await request(app.listen())
+    .get('/')
+    .expect(200)
+    .expect(body)
+    .expect('vary', 'Accept-Encoding')
+    .expect((res) => {
+      expect(res.headers).not.toHaveProperty('content-encoding');
+      expect(res.headers).not.toHaveProperty('transfer-encoding');
+    });
+});
+
 test('已经设置了Content-Encoding则不压缩', () => {
   const app = new WebApp({
     mount: [

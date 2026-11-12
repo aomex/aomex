@@ -24,6 +24,7 @@ import type { OutgoingHttpHeaders } from 'node:http';
 import cookie, { type SerializeOptions as CookieSerializeOptions } from 'cookie';
 import { MIMEType } from 'node:util';
 import { i18n } from '../i18n';
+import { ServerSentEvents } from './sse';
 
 export type Body = string | object | Stream | Buffer | null;
 export type BodyType = 'string' | 'json' | 'stream' | 'buffer' | 'null';
@@ -135,6 +136,19 @@ export class WebResponse extends ServerResponse {
     this.setHeader('content-disposition', contentDisposition(filePath, { type }));
     this.body = createReadStream(filePath);
     return finished(this);
+  }
+
+  /**
+   * 打开 SSE（Server-Sent Events）连接。
+   *
+   * ```typescript
+   * const sse = ctx.response.sse();
+   * // 或 ctx.sse()
+   * sse.send({ event: 'ready', data: { ok: true } });
+   * ```
+   */
+  sse(options?: ServerSentEvents.Options): ServerSentEvents {
+    return new ServerSentEvents(this.ctx, options);
   }
 
   declare getHeader: {

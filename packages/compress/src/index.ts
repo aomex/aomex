@@ -108,6 +108,8 @@ export const compress = (options: CompressOptions = {}): WebMiddleware<CompressP
 
     if (!body) return;
     if (ctx.needCompress === false) return;
+    // SSE 是长连接分帧推送，压缩缓冲会破坏实时性；compressible 仍会把它判为可压
+    if (response.contentType === 'text/event-stream') return;
     if (response.headersSent || !response.writable) return;
     if (request.method === 'HEAD') return;
     if (response.hasHeader('Content-Encoding')) return;

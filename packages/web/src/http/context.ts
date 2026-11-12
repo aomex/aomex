@@ -6,6 +6,7 @@ import type { Body, WebResponse } from './response';
 export class WebContext {
   readonly redirect: WebResponse['redirect'];
   readonly download: WebResponse['download'];
+  readonly sse: WebResponse['sse'];
 
   constructor(
     readonly app: WebApp,
@@ -19,6 +20,7 @@ export class WebContext {
 
     this.redirect = response.redirect.bind(response);
     this.download = response.download.bind(response);
+    this.sse = response.sse.bind(response);
   }
 
   /**
