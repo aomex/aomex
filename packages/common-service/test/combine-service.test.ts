@@ -57,6 +57,80 @@ test('懒加载后执行 onInit', async () => {
   expect(await services.s1.getData()).toBe('123');
 });
 
+test('eager 在返回前预先 onInit', async () => {
+  let inits = 0;
+  class EagerService extends Service {
+    protected override async onInit() {
+      inits += 1;
+    }
+    ping() {
+      return inits;
+    }
+  }
+
+  expect(inits).toBe(0);
+  const services = await combineServices(
+    { e: async () => EagerService, lazy: async () => MyService2 },
+    { eager: ['e'] },
+  );
+  expect(inits).toBe(1);
+  expect(await services.e.ping()).toBe(1);
+  expect(inits).toBe(1);
+});
+
+test('未列入 eager 的服务仍懒加载', async () => {
+  let eagerInits = 0;
+  let lazyInits = 0;
+  class EagerService extends Service {
+    protected override async onInit() {
+      eagerInits += 1;
+    }
+    ping() {
+      return 'e';
+    }
+  }
+  class LazyService extends Service {
+    protected override async onInit() {
+      lazyInits += 1;
+    }
+    ping() {
+      return 'l';
+    }
+  }
+
+  const services = await combineServices(
+    { e: async () => EagerService, l: async () => LazyService },
+    { eager: ['e'] },
+  );
+  expect(eagerInits).toBe(1);
+  expect(lazyInits).toBe(0);
+  await expect(services.l.ping()).resolves.toBe('l');
+  expect(lazyInits).toBe(1);
+});
+
+test('eager 按数组顺序依次初始化', async () => {
+  const order: string[] = [];
+  class A extends Service {
+    protected override async onInit() {
+      order.push('a');
+    }
+    ping() {
+      return 'a';
+    }
+  }
+  class B extends Service {
+    protected override async onInit() {
+      order.push('b');
+    }
+    ping() {
+      return 'b';
+    }
+  }
+
+  await combineServices({ a: async () => A, b: async () => B }, { eager: ['b', 'a'] });
+  expect(order).toEqual(['b', 'a']);
+});
+
 test('同一服务单例', async () => {
   let inits = 0;
   class CounterService extends Service {

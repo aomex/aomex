@@ -2,6 +2,7 @@ export * from './service';
 export * from './types';
 export {
   combineServices,
+  type CombineServicesOptions,
   type CombinedServices,
   type CombinedServicesOf,
   type EnsureServiceLoaders,

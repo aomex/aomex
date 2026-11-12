@@ -89,24 +89,37 @@ const createServiceProxy = (key: string, registry: ServiceRegistry): object => {
   );
 };
 
+export type CombineServicesOptions<T> = {
+  /**
+   * 在 `combineServices` 返回前预先完成 `onInit` 的服务 key（如 cache）。
+   * 未列出的服务仍保持首次方法调用时懒加载。
+   */
+  eager?: NoInfer<keyof T & string>[];
+};
+
 /**
  * 组合服务并返回懒加载代理。
  *
  * - loader 一律为异步工厂：`() => import('./xxx.service.js')`（不允许直接传 Class）
  * - 工厂返回值解析：整体是 Class → `default` → 恰好一个 Service 导出
  * - 对外仅方法，且一律返回 Promise；类内部 `this.xxx()` 仍为真实同步/异步语义
+ * - `options.eager`：启动时预先 `onInit` 指定服务（基础设施如 cache）
  * - 生命周期销毁：把返回值交给 `WebApp` / `ConsoleApp` 的 `services`，勿手调销毁 API
  *
  * @example
  * ```ts
- * export const services = await combineServices({
- *   article: () => import('./article.service.js'),
- *   user: () => import('./user.service.js'),
- * });
+ * export const services = await combineServices(
+ *   {
+ *     cache: () => import('./cache.service.js'),
+ *     article: () => import('./article.service.js'),
+ *   },
+ *   { eager: ['cache'] },
+ * );
  * ```
  */
 export const combineServices = async <T extends EnsureServiceLoaders<T>>(
   loaders: T,
+  options?: CombineServicesOptions<T>,
 ): Promise<CombinedServicesOf<T>> => {
   const services: CombinedServices = {};
   const registry: ServiceRegistry = {
@@ -121,6 +134,10 @@ export const combineServices = async <T extends EnsureServiceLoaders<T>>(
 
   Object.freeze(services);
   serviceRegistries.set(services, registry);
+
+  for (const key of options?.eager ?? []) {
+    await ensureInstance(key, registry);
+  }
 
   return services as CombinedServicesOf<T>;
 };

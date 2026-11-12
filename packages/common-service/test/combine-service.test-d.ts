@@ -76,6 +76,37 @@ await combineServices({ bad: MyService1 });
 // @ts-expect-error loader 必须返回 Promise，同步工厂不行
 await combineServices({ bad: () => MyService1 });
 
+{
+  const withEager = await combineServices(
+    {
+      s1: async () => MyService1,
+      s2: async () => MyService2,
+    },
+    { eager: ['s1'] },
+  );
+  expectType<TypeEqual<() => Promise<'action1'>, typeof withEager.s1.action1>>(true);
+  expectType<TypeEqual<(name: string) => Promise<string>, typeof withEager.s2.action2>>(
+    true,
+  );
+
+  await combineServices(
+    {
+      s1: async () => MyService1,
+      s2: async () => MyService2,
+    },
+    // @ts-expect-error eager 只能写已有服务 key
+    { eager: ['missing'] },
+  );
+
+  await combineServices(
+    {
+      s1: async () => MyService1,
+    },
+    // @ts-expect-error eager 元素类型必须是服务 key
+    { eager: [1] },
+  );
+}
+
 // 属性只读
 expectType<
   TypeEqual<
