@@ -253,12 +253,233 @@ describe('body', () => {
   });
 });
 
-test('ip', async () => {
-  const { req, res } = await mockServer((agent) =>
-    agent.get('/test/api').set('x-client-id', '1.2.3.4'),
-  );
-  expect(req.ip).toBe('::ffff:127.0.0.1');
-  res.end();
+describe('ip', () => {
+  test('未配置 proxyIP 时盲猜：XFF 取第一个合法 IP', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent.get('/test/api').set('x-forwarded-for', 'unknown, 5.6.7.8:1234, 9.9.9.9'),
+    );
+    expect(req.ip).toBe('5.6.7.8');
+    res.end();
+  });
+
+  test('未配置 proxyIP 时盲猜：x-real-ip', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent.get('/test/api').set('x-real-ip', '10.0.0.2'),
+    );
+    expect(req.ip).toBe('10.0.0.2');
+    res.end();
+  });
+
+  test('未配置 proxyIP 时盲猜：cf-connecting-ip', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent.get('/test/api').set('cf-connecting-ip', '8.8.8.8'),
+    );
+    expect(req.ip).toBe('8.8.8.8');
+    res.end();
+  });
+
+  test('未配置 proxyIP 时 XFF 优先于 x-real-ip', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent
+        .get('/test/api')
+        .set('x-real-ip', '172.31.41.116')
+        .set('x-forwarded-for', '107.77.213.113, 172.31.41.116'),
+    );
+    expect(req.ip).toBe('107.77.213.113');
+    res.end();
+  });
+
+  test('未配置 proxyIP 时不信任弱头，回退 socket', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent
+        .get('/test/api')
+        .set('x-client-ip', '1.2.3.4')
+        .set('x-forwarded', '5.6.7.8')
+        .set('forwarded-for', '9.9.9.9')
+        .set('cf-pseudo-ipv4', '8.8.8.8'),
+    );
+    expect(req.ip).toBe('::ffff:127.0.0.1');
+    res.end();
+  });
+
+  test('未配置 proxyIP 时非法头回退 socket', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent.get('/test/api').set('x-real-ip', 'not-an-ip'),
+    );
+    expect(req.ip).toBe('::ffff:127.0.0.1');
+    res.end();
+  });
+
+  test('未配置 proxyIP 时支持 IPv6', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent
+        .get('/test/api')
+        .set('x-forwarded-for', 'FE80:0000:0000:0000:0202:B3FF:FE1E:8329'),
+    );
+    expect(req.ip).toBe('FE80:0000:0000:0000:0202:B3FF:FE1E:8329');
+    res.end();
+  });
+
+  test('hops:1 取 XFF 最右合法 IP', async () => {
+    const { req, res } = await mockServer(
+      (agent) =>
+        agent
+          .get('/test/api')
+          .set('x-forwarded-for', '1.1.1.1, 129.78.138.66, 129.78.64.103'),
+      { proxyIP: { header: 'x-forwarded-for', hops: 1 } },
+    );
+    expect(req.ip).toBe('129.78.64.103');
+    res.end();
+  });
+
+  test('hops:1 丢弃左侧伪造段', async () => {
+    const { req, res } = await mockServer(
+      (agent) => agent.get('/test/api').set('x-forwarded-for', '8.8.8.8, 93.186.30.120'),
+      { proxyIP: { header: 'x-forwarded-for', hops: 1 } },
+    );
+    expect(req.ip).toBe('93.186.30.120');
+    res.end();
+  });
+
+  test('hops:2 保留右侧两段再取最左合法 IP', async () => {
+    const { req, res } = await mockServer(
+      (agent) =>
+        agent
+          .get('/test/api')
+          .set('x-forwarded-for', 'forged, 107.77.213.113, 172.31.41.116'),
+      { proxyIP: { header: 'x-forwarded-for', hops: 2 } },
+    );
+    expect(req.ip).toBe('107.77.213.113');
+    res.end();
+  });
+
+  test('配置 proxyIP 后 XFF 支持 ipv4:port', async () => {
+    const { req, res } = await mockServer(
+      (agent) => agent.get('/test/api').set('x-forwarded-for', '93.186.30.120:12345'),
+      { proxyIP: { header: 'x-forwarded-for', hops: 1 } },
+    );
+    expect(req.ip).toBe('93.186.30.120');
+    res.end();
+  });
+
+  test('配置 proxyIP 后窗口内全非法则回退 socket', async () => {
+    const { req, res } = await mockServer(
+      (agent) => agent.get('/test/api').set('x-forwarded-for', 'unknown, not-an-ip'),
+      { proxyIP: { header: 'x-forwarded-for', hops: 2 } },
+    );
+    expect(req.ip).toBe('::ffff:127.0.0.1');
+    res.end();
+  });
+
+  test('自定义 header: x-real-ip', async () => {
+    const { req, res } = await mockServer(
+      (agent) =>
+        agent
+          .get('/test/api')
+          .set('x-forwarded-for', '1.2.3.4')
+          .set('x-real-ip', '129.78.138.66'),
+      { proxyIP: { hops: 1, header: 'x-real-ip' } },
+    );
+    expect(req.ip).toBe('129.78.138.66');
+    res.end();
+  });
+
+  test('自定义 header: cf-connecting-ip', async () => {
+    const { req, res } = await mockServer(
+      (agent) => agent.get('/test/api').set('cf-connecting-ip', '8.8.8.8'),
+      { proxyIP: { hops: 1, header: 'cf-connecting-ip' } },
+    );
+    expect(req.ip).toBe('8.8.8.8');
+    res.end();
+  });
+
+  test('允许已知列表外的自定义 header 名', async () => {
+    const { req, res } = await mockServer(
+      (agent) =>
+        agent
+          .get('/test/api')
+          .set('x-forwarded-for', '1.2.3.4')
+          .set('x-custom-client-ip', '203.0.113.50'),
+      { proxyIP: { header: 'x-custom-client-ip', hops: 1 } },
+    );
+    expect(req.ip).toBe('203.0.113.50');
+    res.end();
+  });
+
+  test('非法自定义头回退 socket', async () => {
+    const { req, res } = await mockServer(
+      (agent) => agent.get('/test/api').set('x-real-ip', 'not-an-ip'),
+      { proxyIP: { hops: 1, header: 'x-real-ip' } },
+    );
+    expect(req.ip).toBe('::ffff:127.0.0.1');
+    res.end();
+  });
+
+  test('结果会缓存，后续改头不影响', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent.get('/test/api').set('x-real-ip', '10.0.0.2'),
+    );
+    expect(req.ip).toBe('10.0.0.2');
+    req.headers['x-real-ip'] = '1.2.3.4';
+    expect(req.ip).toBe('10.0.0.2');
+    res.end();
+  });
+
+  test('hops:0 强制只用 socket', async () => {
+    const { req, res } = await mockServer(
+      (agent) => agent.get('/test/api').set('x-forwarded-for', '1.2.3.4'),
+      { proxyIP: { header: 'x-forwarded-for', hops: 0 } },
+    );
+    expect(req.ip).toBe('::ffff:127.0.0.1');
+    res.end();
+  });
+
+  test('hops 大于列表长度时使用全部段', async () => {
+    const { req, res } = await mockServer(
+      (agent) => agent.get('/test/api').set('x-forwarded-for', '10.0.0.1, 10.0.0.2'),
+      { proxyIP: { header: 'x-forwarded-for', hops: 5 } },
+    );
+    expect(req.ip).toBe('10.0.0.1');
+    res.end();
+  });
+
+  test('窗口内最右非法则取更左的合法 IP', async () => {
+    const { req, res } = await mockServer(
+      (agent) =>
+        agent.get('/test/api').set('x-forwarded-for', '9.9.9.9, 1.2.3.4, unknown'),
+      { proxyIP: { header: 'x-forwarded-for', hops: 2 } },
+    );
+    expect(req.ip).toBe('1.2.3.4');
+    res.end();
+  });
+
+  test('header 配置大小写不敏感', async () => {
+    const { req, res } = await mockServer(
+      (agent) => agent.get('/test/api').set('x-real-ip', '203.0.113.10'),
+      { proxyIP: { hops: 1, header: 'X-Real-IP' } },
+    );
+    expect(req.ip).toBe('203.0.113.10');
+    res.end();
+  });
+
+  test('重复代理头以数组形式出现时可解析', async () => {
+    const { req, res } = await mockServer((agent) => agent.get('/test/api'), {
+      proxyIP: { header: 'x-forwarded-for', hops: 1 },
+    });
+    // @ts-expect-error Node 重复头运行时可为 string[]
+    req.headers['x-forwarded-for'] = ['1.1.1.1', '2.2.2.2'];
+    expect(req.ip).toBe('2.2.2.2');
+    res.end();
+  });
+
+  test('空代理头回退 socket', async () => {
+    const { req, res } = await mockServer(
+      (agent) => agent.get('/test/api').set('x-forwarded-for', ''),
+      { proxyIP: { header: 'x-forwarded-for', hops: 1 } },
+    );
+    expect(req.ip).toBe('::ffff:127.0.0.1');
+    res.end();
+  });
 });
 
 describe('fresh', () => {

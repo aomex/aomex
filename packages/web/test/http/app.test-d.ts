@@ -10,6 +10,20 @@ import http from 'http';
   new WebApp({});
   new WebApp({ debug: true });
   new WebApp({ debug: false });
+  new WebApp({ proxyIP: { header: 'x-forwarded-for', hops: 1 } });
+  new WebApp({ proxyIP: { header: 'x-real-ip', hops: 1 } });
+  new WebApp({ proxyIP: { header: 'cf-connecting-ip', hops: 0 } });
+  // (string & {})：允许已知联合外的任意头名
+  new WebApp({ proxyIP: { header: 'x-custom-client-ip', hops: 1 } });
+  new WebApp({ proxyIP: { header: 'X-My-Real-IP', hops: 2 } });
+  // @ts-expect-error
+  new WebApp({ proxyIP: { hops: 1 } });
+  // @ts-expect-error
+  new WebApp({ proxyIP: { header: 'x-forwarded-for' } });
+  // @ts-expect-error
+  new WebApp({ proxyIP: { header: 'x-forwarded-for', hops: '1' } });
+  // @ts-expect-error
+  new WebApp({ proxyIP: true });
 }
 
 // services

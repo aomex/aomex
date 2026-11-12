@@ -50,6 +50,48 @@ export namespace WebApp {
      */
     services?: CombinedServices | readonly CombinedServices[];
     language?: 'zh_CN' | 'en_US' | (string & {});
+    /**
+     * 客户端 IP 解析（`ctx.request.ip`）。
+     *
+     * 未配置时会探测 `X-Forwarded-For` / `X-Real-IP` / `CF-Connecting-IP` 等常见头
+     * （可被伪造）。生产环境建议显式配置，按反向代理层数严格取值：
+     *
+     * ```ts
+     * new WebApp({ proxyIP: { header: 'x-forwarded-for', hops: 1 } });
+     * new WebApp({ proxyIP: { header: 'x-real-ip', hops: 1 } });
+     * ```
+     */
+    proxyIP?: {
+      /**
+       * 自定义读取的代理 IP 头。
+       */
+      header:
+        | 'x-forwarded-for'
+        | 'x-real-ip'
+        | 'forwarded'
+        | 'cf-connecting-ip'
+        | 'fastly-client-ip'
+        | 'true-client-ip'
+        | 'x-cluster-client-ip'
+        | 'x-appengine-user-ip'
+        | (string & {});
+      /**
+       * 前置反向代理层数。
+       * - `=0`：忽略代理头，`request.ip` 等于 `socket.remoteAddress`
+       *   （直连客户端；若经反向代理则多为代理本机 IP）
+       * - `>0`：从代理头右侧截取 n 段，再取其中最左的合法 IP（防 `X-Forwarded-For` 左侧伪造）
+       *
+       * 场景举例：
+       * - `0`：本机直连 / 强制不信代理头
+       * - `1`：单层 Nginx/Caddy（`proxy_add_x_forwarded_for` 追加）
+       * - `2`：Cloudflare + Nginx 两层追加（CF 先写，Nginx 再 `proxy_add_x_forwarded_for`）
+       * - `1` + `header: 'cf-connecting-ip'`：Cloudflare + Nginx，且 Nginx 透传
+       *   `CF-Connecting-IP`（只信任该头，避免读到节点 IP）
+       * - `1` + `header: 'x-real-ip'`：反向代理覆盖写入
+       *   （如 `proxy_set_header X-Real-IP $remote_addr`）
+       */
+      hops: number;
+    };
   }
 
   export type Infer<T> =

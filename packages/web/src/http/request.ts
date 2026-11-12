@@ -1,12 +1,11 @@
-import { IncomingMessage } from 'node:http';
+import { IncomingMessage, type ServerResponse } from 'node:http';
 import type { TLSSocket } from 'node:tls';
+import { isIP } from 'node:net';
 import type { LowerExternalStringHeaderKeys } from './header';
 import qs from 'qs';
 import type { WebApp } from './app';
 import typeIs from 'type-is';
-import requestIP from 'request-ip';
 import fresh from 'fresh';
-import type { ServerResponse } from 'node:http';
 import accepts, { type Accepts } from 'accepts';
 import type { WebContext } from './context';
 import cookie from 'cookie';
@@ -31,6 +30,7 @@ export class WebRequest extends IncomingMessage {
   private _rawBody?: any;
   private _parsedUrl: URL | null = null;
   private _query?: any;
+  private _ip?: string;
 
   get accept(): Accepts {
     return this._accept || (this._accept = accepts(this));
@@ -87,8 +87,71 @@ export class WebRequest extends IncomingMessage {
     return this.origin + this.url;
   }
 
+  /**
+   * 客户端 IP。
+   * - 未配置 `proxyIP`：探测常见代理头（可被伪造，开箱即用）
+   * - 已配置 `proxyIP`：按 `hops` / `header` 严格解析
+   */
   get ip(): string {
-    return requestIP.getClientIp(this) || '';
+    if (this._ip !== undefined) return this._ip;
+
+    // 拆分代理头中的 IP 列表；`a.b.c.d:port` 去端口，IPv6 整段保留
+    const splitProxyIps = (value: string): string[] => {
+      return value.split(',').map((part) => {
+        let ip = part.trim();
+        if (ip.includes(':')) {
+          const splitted = ip.split(':');
+          if (splitted.length === 2) ip = splitted[0]!;
+        }
+        return ip;
+      });
+    };
+
+    const proxyIP = this.app['options'].proxyIP;
+    if (proxyIP) {
+      const { hops, header } = proxyIP;
+      if (hops > 0) {
+        const raw = this.headers[header.toLowerCase()];
+        const value = Array.isArray(raw) ? raw.join(',') : raw;
+        if (typeof value === 'string') {
+          // 从右截取 hops 段，再从左取第一个合法 IP
+          for (const ip of splitProxyIps(value).slice(-hops)) {
+            if (isIP(ip) !== 0) return (this._ip = ip);
+          }
+        }
+      }
+    } else {
+      const { headers } = this;
+      // X-Forwarded-For: 取第一个合法 IP；`a.b.c.d:port` 去端口，IPv6 整段校验
+      const forwardedFor = headers['x-forwarded-for'];
+      if (typeof forwardedFor === 'string') {
+        for (const ip of splitProxyIps(forwardedFor)) {
+          if (isIP(ip) !== 0) return (this._ip = ip);
+        }
+      }
+
+      // 未校验代理可信度；无对应前置时客户端可伪造
+      for (const key of [
+        'x-real-ip', // Nginx 等反向代理常用，单 IP
+        'forwarded', // RFC 7239；此处仅当整段值为裸 IP 时命中
+        'cf-connecting-ip', // Cloudflare
+        'fastly-client-ip', // Fastly
+        'true-client-ip', // Akamai；部分 Cloudflare 企业配置也会用
+        'x-cluster-client-ip', // 部分集群 / 负载均衡
+        'x-appengine-user-ip', // Google App Engine
+      ] as const) {
+        const value = headers[key];
+        if (typeof value === 'string' && isIP(value) !== 0) return (this._ip = value);
+      }
+    }
+
+    // 无可用代理头时回退到直连地址（常见为反向代理本机 IP，如 ::ffff:127.0.0.1）
+    const { remoteAddress } = this.socket;
+    if (typeof remoteAddress === 'string' && isIP(remoteAddress) !== 0) {
+      return (this._ip = remoteAddress);
+    }
+
+    return (this._ip = '');
   }
 
   get origin(): string {

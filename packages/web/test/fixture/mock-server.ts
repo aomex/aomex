@@ -7,6 +7,7 @@ import { parseBody } from '../../src/middleware/parse-body';
 
 export const mockServer = async (
   agent: (agent: ReturnType<typeof supertest>) => Test,
+  appOptions?: WebApp.Option<[]>,
 ) => {
   return new Promise<{
     req: WebRequest;
@@ -21,7 +22,7 @@ export const mockServer = async (
         ServerResponse: WebResponse,
       },
       (req: WebRequest, res: WebResponse) => {
-        const app = new WebApp();
+        const app = new WebApp(appOptions);
         const ctx = new WebContext(app, req, res);
         compose([parseBody()])(ctx).then(() => {
           resolve({ req, res, ctx, app });
