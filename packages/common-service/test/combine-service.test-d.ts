@@ -105,6 +105,22 @@ await combineServices({ bad: () => MyService1 });
     // @ts-expect-error eager 元素类型必须是服务 key
     { eager: [1] },
   );
+
+  await combineServices(
+    {
+      s1: async () => MyService1,
+      s2: async () => MyService2,
+    },
+    { eager: [] },
+  );
+
+  await combineServices(
+    {
+      s1: async () => MyService1,
+      s2: async () => MyService2,
+    },
+    { eager: ['s1', 's1'] },
+  );
 }
 
 // 属性只读

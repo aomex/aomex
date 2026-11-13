@@ -1,6 +1,4 @@
-import { traceBlock } from '@aomex/async-trace';
 import { CacheAdapter } from './cache-adapter';
-import { sleep } from '@aomex/common';
 
 export namespace Caching {
   export type Types =
@@ -165,87 +163,6 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   async deleteAll(): Promise<boolean> {
     await this.adapter.connect();
     return this.adapter.deleteAllValues();
-  }
-
-  /**
-   * 方法装饰器，自动获取数据，如果不存在则请求原始数据并自动保存。在请求原始数据期间，任意相同请求都会被截流，并共享第一个请求
-   * ```typescript
-   * const cache = new Caching(memoryAdapter());
-   *
-   * class MyClass {
-   *  \@cache.decorate({ key: (id) => `key_${id}`, duration: 60_000 })
-   *   async getData(id: number) {
-   *     const result = await queryDB({ id: id });
-   *     return result;
-   *   }
-   * }
-   * ```
-   */
-  decorate<
-    T extends Caching.Types | null,
-    P extends (...args: any[]) => Promise<T>,
-    Q extends NonNullable<T>,
-  >(opts: {
-    key?: string | ((...args: Parameters<P>) => string);
-    duration: number;
-    /**
-     * 当数据源返回null或者undefined时，则返回默认值
-     */
-    defaultValue?: Q;
-  }) {
-    const instance = this;
-    const { key: getKey, duration, defaultValue = null } = opts;
-
-    return (originalMethod: P, context: ClassMethodDecoratorContext) => {
-      return async function (this: object, ...args: Parameters<P>): Promise<any> {
-        const dataKey =
-          getKey === undefined
-            ? `${
-                'displayName' in this && typeof this.displayName === 'string'
-                  ? this.displayName
-                  : this.constructor.name
-              }-${String(context.name)}-${JSON.stringify(args)}`
-            : typeof getKey === 'string'
-              ? getKey
-              : getKey.apply(this, args);
-        const waitingKey = dataKey + ':$#_waiting_#$';
-
-        const value = await traceBlock('Cache.get', () => instance.get<Q>(dataKey));
-        if (value !== null) return value;
-
-        const win = await instance.setNX(waitingKey, 1, 10_000);
-        if (win) {
-          const timer = setInterval(() => {
-            instance.expire(waitingKey, 10_000);
-          }, 5_000);
-          try {
-            const result = await traceBlock('Cache.exec', async () => {
-              return originalMethod.apply(this, args);
-            });
-            if (result !== null) {
-              await traceBlock('Cache.set', async () => {
-                await instance.set(dataKey, result!, duration);
-              });
-            }
-            return result === null ? defaultValue : result;
-          } finally {
-            clearInterval(timer);
-            await instance.delete(waitingKey);
-          }
-        } else {
-          return traceBlock('Cache.wait', async () => {
-            while (true) {
-              const waiting = await instance.exists(waitingKey);
-              if (waiting) {
-                await sleep(100);
-                continue;
-              }
-              return instance.get<Q>(dataKey, defaultValue);
-            }
-          });
-        }
-      };
-    };
   }
 
   protected encodeValue(value: Caching.Types) {

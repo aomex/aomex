@@ -131,6 +131,20 @@ test('eager 按数组顺序依次初始化', async () => {
   expect(order).toEqual(['b', 'a']);
 });
 
+test('eager 中 onInit 失败则 combineServices 失败', async () => {
+  class Bad extends Service {
+    protected override async onInit() {
+      throw new Error('init-fail');
+    }
+    ping() {
+      return 'x';
+    }
+  }
+  await expect(
+    combineServices({ bad: async () => Bad }, { eager: ['bad'] }),
+  ).rejects.toThrow('init-fail');
+});
+
 test('同一服务单例', async () => {
   let inits = 0;
   class CounterService extends Service {

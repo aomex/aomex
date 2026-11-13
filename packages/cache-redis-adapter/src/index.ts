@@ -99,6 +99,12 @@ end
     const result = await this.redis.rpop(key);
     return result;
   }
+
+  override async disconnect(): Promise<void> {
+    const { status } = this.redis;
+    if (status === 'end' || status === 'close') return;
+    this.redis.disconnect();
+  }
 }
 
 export const redisAdapter = (config: RedisOptions) => new CacheRedisAdapter(config);

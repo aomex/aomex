@@ -1,6 +1,6 @@
 import type { RedisOptions } from 'ioredis';
 import RedisMemoryServer from 'redis-memory-server';
-import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, test, vitest } from 'vitest';
 import { getRedisBinary } from './helper/get-redis-binary';
 import { CacheRedisAdapter, redisAdapter } from '../src';
 import sleep from 'sleep-promise';
@@ -233,4 +233,17 @@ test('删除全部指定前缀缓存', async () => {
 
   cache1.redis.disconnect();
   cache2.redis.disconnect();
+});
+
+test('disconnect 关闭连接且可重复调用', async () => {
+  const adapter = redisAdapter({ ...opts, db: 1 });
+  await adapter.connect();
+  const spy = vitest.spyOn(adapter.redis, 'disconnect');
+  await adapter.disconnect();
+  expect(spy).toHaveBeenCalledOnce();
+  expect(['end', 'close']).toContain(adapter.redis.status);
+  await expect(adapter.disconnect()).resolves.toBeUndefined();
+  // 已关闭后不再重复 disconnect
+  expect(spy).toHaveBeenCalledOnce();
+  spy.mockRestore();
 });

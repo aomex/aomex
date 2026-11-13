@@ -1,6 +1,8 @@
 export abstract class CacheAdapter {
   async connect() {}
 
+  async disconnect() {}
+
   abstract existsKey(key: string): Promise<boolean>;
   abstract getValue(key: string): Promise<string | null>;
   abstract setValue(key: string, value: string, durationMS?: number): Promise<boolean>;
