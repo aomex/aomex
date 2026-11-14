@@ -24,19 +24,25 @@ const defaultLanguage = {
   language: 'zh-CN',
 } as const satisfies WebApp.LanguageOption;
 
+/** 测试默认：探测常见代理头 */
+const defaultProxyIP = {
+  mode: 'detect',
+} as const satisfies WebApp.ProxyIPOption;
+
 export namespace TestWebApp {
   export type Option<T extends WebMiddlewareToken[] | [] = []> = Omit<
     WebApp.Option<T>,
-    'services' | 'logger' | 'language'
+    'services' | 'logger' | 'language' | 'proxyIP'
   > & {
     services?: CombinedServices | readonly CombinedServices[];
     logger?: WebApp.Logger;
     language?: WebApp.LanguageOption;
+    proxyIP?: WebApp.ProxyIPOption;
   };
 }
 
 /**
- * 测试专用 WebApp：`services` / `logger` / `language` 选填并带默认值。
+ * 测试专用 WebApp：`services` / `logger` / `language` / `proxyIP` 选填并带默认值。
  *
  * ```ts
  * new TestWebApp({ mount: [md] });
@@ -50,6 +56,7 @@ export class TestWebApp<T extends WebMiddlewareToken[] | [] = any[]> extends Web
       services: toArray(options.services ?? []).concat(defaultLoggerServices),
       logger: options.logger ?? defaultLoggerServices.logger,
       language: options.language ?? defaultLanguage,
+      proxyIP: options.proxyIP ?? defaultProxyIP,
     });
   }
 }

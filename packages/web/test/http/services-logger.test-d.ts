@@ -22,6 +22,7 @@ new WebApp({
   services,
   logger: services.logger,
   language: { mode: 'fixed', language: 'zh-CN' },
+  proxyIP: { mode: 'detect' },
 });
 
 declare const ctx: WebContext;

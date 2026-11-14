@@ -111,6 +111,7 @@ describe('日志', () => {
       services,
       logger: services.logger,
       language: { mode: 'fixed', language: 'zh-CN' },
+      proxyIP: { mode: 'detect' },
       mount: [
         middleware.mixin(() => {
           throw new Error('foo bar');
@@ -143,6 +144,7 @@ describe('日志', () => {
       services,
       logger: services.logger,
       language: { mode: 'fixed', language: 'zh-CN' },
+      proxyIP: { mode: 'detect' },
       mount: [
         middleware.mixin(() => {
           throw new Error('foo bar');
@@ -175,6 +177,7 @@ describe('日志', () => {
       services,
       logger: services.logger,
       language: { mode: 'fixed', language: 'zh-CN' },
+      proxyIP: { mode: 'detect' },
       mount: [
         middleware.web((ctx) => {
           ctx.throw(404, 'foo bar');
@@ -206,6 +209,7 @@ describe('日志', () => {
       services,
       logger: services.logger,
       language: { mode: 'fixed', language: 'zh-CN' },
+      proxyIP: { mode: 'detect' },
       mount: [
         middleware.web((ctx) => {
           ctx.throw(500, 'foo bar', {
@@ -328,6 +332,7 @@ test('services：server close 时自动等 onDestroy 跑完', async () => {
     services,
     logger: services.logger,
     language: { mode: 'fixed', language: 'zh-CN' },
+    proxyIP: { mode: 'detect' },
   });
   const server = app.listen(0);
   await new Promise<void>((resolve, reject) => {
@@ -363,6 +368,7 @@ test('services：支持数组', async () => {
     services: [s1, s2],
     logger: s1.logger,
     language: { mode: 'fixed', language: 'zh-CN' },
+    proxyIP: { mode: 'detect' },
   });
   const server = app.listen(0);
   await new Promise<void>((resolve, reject) => {
@@ -401,6 +407,7 @@ test('services：SIGTERM 先关 server 再等 onDestroy 后 exit', async () => {
     services,
     logger: services.logger,
     language: { mode: 'fixed', language: 'zh-CN' },
+    proxyIP: { mode: 'detect' },
   });
   const server = app.listen(0);
   await new Promise<void>((resolve, reject) => {

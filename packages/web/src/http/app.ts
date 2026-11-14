@@ -34,6 +34,7 @@ export namespace WebApp {
      *   services,
      *   logger: services.logger,
      *   language: { mode: 'fixed', language: 'zh-CN' },
+     *   proxyIP: { mode: 'detect' },
      *   mount: [md1, md2],
      * });
      *
@@ -64,6 +65,7 @@ export namespace WebApp {
      *   services,
      *   logger: services.logger,
      *   language: { mode: 'fixed', language: 'zh-CN' },
+     *   proxyIP: { mode: 'detect' },
      * });
      * ```
      */
@@ -84,44 +86,16 @@ export namespace WebApp {
     /**
      * 客户端 IP 解析（`ctx.request.ip`）。
      *
-     * 未配置时会探测 `X-Forwarded-For` / `X-Real-IP` / `CF-Connecting-IP` 等常见头
-     * （可被伪造）。生产环境建议显式配置，按反向代理层数严格取值：
+     * - `mode: 'detect'`：探测 `X-Forwarded-For` / `X-Real-IP` / `CF-Connecting-IP` 等常见头
+     *   （可被伪造，适合本地/测试）。
+     * - `mode: 'specify'`：按 `header` / `hops` 严格取值（生产推荐）。
      *
      * ```ts
-     * proxyIP: { header: 'x-forwarded-for', hops: 1 }
+     * proxyIP: { mode: 'detect' }
+     * proxyIP: { mode: 'specify', header: 'x-forwarded-for', hops: 1 }
      * ```
      */
-    proxyIP?: {
-      /**
-       * 自定义读取的代理 IP 头。
-       */
-      header:
-        | 'x-forwarded-for'
-        | 'x-real-ip'
-        | 'forwarded'
-        | 'cf-connecting-ip'
-        | 'fastly-client-ip'
-        | 'true-client-ip'
-        | 'x-cluster-client-ip'
-        | 'x-appengine-user-ip'
-        | (string & {});
-      /**
-       * 前置反向代理层数。
-       * - `=0`：忽略代理头，`request.ip` 等于 `socket.remoteAddress`
-       *   （直连客户端；若经反向代理则多为代理本机 IP）
-       * - `>0`：从代理头右侧截取 n 段，再取其中最左的合法 IP（防 `X-Forwarded-For` 左侧伪造）
-       *
-       * 场景举例：
-       * - `0`：本机直连 / 强制不信代理头
-       * - `1`：单层 Nginx/Caddy（`proxy_add_x_forwarded_for` 追加）
-       * - `2`：Cloudflare + Nginx 两层追加（CF 先写，Nginx 再 `proxy_add_x_forwarded_for`）
-       * - `1` + `header: 'cf-connecting-ip'`：Cloudflare + Nginx，且 Nginx 透传
-       *   `CF-Connecting-IP`（只信任该头，避免读到节点 IP）
-       * - `1` + `header: 'x-real-ip'`：反向代理覆盖写入
-       *   （如 `proxy_set_header X-Real-IP $remote_addr`）
-       */
-      hops: number;
-    };
+    proxyIP: ProxyIPOption;
   }
 
   export type LanguageOption =
@@ -139,6 +113,45 @@ export namespace WebApp {
         header?: string;
         /** 请求头缺失或无法匹配时的语言。 */
         fallback: I18nLanguage;
+      };
+
+  export type ProxyIPOption =
+    | {
+        /** 探测常见代理头（可被伪造）。 */
+        mode: 'detect';
+      }
+    | {
+        /** 按指定头与代理层数严格解析。 */
+        mode: 'specify';
+        /**
+         * 读取的代理 IP 头。
+         */
+        header:
+          | 'x-forwarded-for'
+          | 'x-real-ip'
+          | 'forwarded'
+          | 'cf-connecting-ip'
+          | 'fastly-client-ip'
+          | 'true-client-ip'
+          | 'x-cluster-client-ip'
+          | 'x-appengine-user-ip'
+          | (string & {});
+        /**
+         * 前置反向代理层数。
+         * - `=0`：忽略代理头，`request.ip` 等于 `socket.remoteAddress`
+         *   （直连客户端；若经反向代理则多为代理本机 IP）
+         * - `>0`：从代理头右侧截取 n 段，再取其中最左的合法 IP（防 `X-Forwarded-For` 左侧伪造）
+         *
+         * 场景举例：
+         * - `0`：本机直连 / 强制不信代理头
+         * - `1`：单层 Nginx/Caddy（`proxy_add_x_forwarded_for` 追加）
+         * - `2`：Cloudflare + Nginx 两层追加（CF 先写，Nginx 再 `proxy_add_x_forwarded_for`）
+         * - `1` + `header: 'cf-connecting-ip'`：Cloudflare + Nginx，且 Nginx 透传
+         *   `CF-Connecting-IP`（只信任该头，避免读到节点 IP）
+         * - `1` + `header: 'x-real-ip'`：反向代理覆盖写入
+         *   （如 `proxy_set_header X-Real-IP $remote_addr`）
+         */
+        hops: number;
       };
 
   export type Infer<T> =

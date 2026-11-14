@@ -89,8 +89,8 @@ export class WebRequest extends IncomingMessage {
 
   /**
    * 客户端 IP。
-   * - 未配置 `proxyIP`：探测常见代理头（可被伪造，开箱即用）
-   * - 已配置 `proxyIP`：按 `hops` / `header` 严格解析
+   * - `proxyIP.mode: 'detect'`：探测常见代理头（可被伪造）
+   * - `proxyIP.mode: 'specify'`：按 `hops` / `header` 严格解析
    */
   get ip(): string {
     if (this._ip !== undefined) return this._ip;
@@ -108,7 +108,7 @@ export class WebRequest extends IncomingMessage {
     };
 
     const proxyIP = this.app['options'].proxyIP;
-    if (proxyIP) {
+    if (proxyIP.mode === 'specify') {
       const { hops, header } = proxyIP;
       if (hops > 0) {
         const raw = this.headers[header.toLowerCase()];
