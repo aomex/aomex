@@ -15,6 +15,7 @@ import { ConsoleContext } from './context';
 import { helpLogger } from '../middleware/help-logger';
 import type { ConsoleMiddlewareToken } from '../override';
 import { toArray, type Union2Intersection } from '@aomex/internal-tools';
+import { ConsoleError } from '../utils/console-error';
 
 export namespace ConsoleApp {
   export type Logger = PromisifiedService<BaseLoggerService>;
@@ -73,7 +74,7 @@ export namespace ConsoleApp {
 export class ConsoleApp<
   T extends ConsoleMiddlewareToken[] | [] = any[],
 > extends EventEmitter<{
-  error: [err: Error, ctx: ConsoleContext & ConsoleApp.Props, level: number];
+  error: [err: ConsoleError, ctx: ConsoleContext & ConsoleApp.Props, level: number];
 }> {
   level: number = 0;
   protected readonly middlewareList: Middleware[];
@@ -136,8 +137,8 @@ export class ConsoleApp<
       ])(ctx);
       return 0;
     } catch (e) {
-      // @ts-ignore
-      this.emit('error', e as Error, ctx, currentLevel);
+      const err = ConsoleError.from(e);
+      this.emit('error', err, ctx as ConsoleContext & ConsoleApp.Props, currentLevel);
       return 1;
     } finally {
       --this.level;

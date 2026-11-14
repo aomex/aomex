@@ -1,5 +1,5 @@
 import { type TypeEqual, expectType } from 'ts-expect';
-import { ConsoleApp, ConsoleContext } from '../../src';
+import { ConsoleApp, ConsoleContext, ConsoleError } from '../../src';
 import { TestConsoleApp, TestConsoleLoggerService } from '../../src/testing';
 import { combineServices, middleware, Service } from '@aomex/common';
 
@@ -60,7 +60,7 @@ new ConsoleApp({});
   // 事件
   {
     app.on('error', (err, ctx, level) => {
-      expectType<TypeEqual<Error, typeof err>>(true);
+      expectType<TypeEqual<ConsoleError, typeof err>>(true);
       expectType<TypeEqual<ConsoleContext & ConsoleApp.Props, typeof ctx>>(true);
       expectType<TypeEqual<number, typeof level>>(true);
     });

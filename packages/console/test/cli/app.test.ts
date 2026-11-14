@@ -1,5 +1,5 @@
 import { afterAll, expect, test, vitest } from 'vitest';
-import { ConsoleApp } from '../../src';
+import { ConsoleApp, ConsoleError } from '../../src';
 import { TestConsoleApp, TestConsoleLoggerService } from '../../src/testing';
 import { combineServices, middleware, Service } from '@aomex/common';
 import { BaseLoggerService } from '@aomex/logger';
@@ -97,6 +97,35 @@ test('自定义报错回调', async () => {
   });
   await app.run('foo');
   expect(msg).toMatchInlineSnapshot(`"指令 "foo" 不存在"`);
+});
+
+test('on(error) 收到 ConsoleError，含业务 code', async () => {
+  const app = new TestConsoleApp();
+  let received: unknown;
+  app.on('error', (err) => {
+    received = err;
+  });
+  const code = await app.run('foo');
+  expect(code).toBe(1);
+  expect(received).toBeInstanceOf(ConsoleError);
+  expect((received as ConsoleError).code).toBe('COMMAND_NOT_FOUND');
+});
+
+test('普通 Error 经 from 归一化后 emit', async () => {
+  const app = new TestConsoleApp({
+    mount: [
+      middleware.console(() => {
+        throw new Error('plain');
+      }),
+    ],
+  });
+  let received: unknown;
+  app.on('error', (err) => {
+    received = err;
+  });
+  await app.run('any');
+  expect(received).toBeInstanceOf(ConsoleError);
+  expect((received as ConsoleError).message).toBe('plain');
 });
 
 test('设置语言', async () => {

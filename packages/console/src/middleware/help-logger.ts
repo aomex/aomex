@@ -1,6 +1,6 @@
 import { Middleware, middleware } from '@aomex/common';
 import yargs from 'yargs';
-import { scriptName, version } from '../utils';
+import { ConsoleError, scriptName, version } from '../utils';
 import type { ConsoleDocument, ConsoleMiddleware } from '../override';
 import { collectConsoleDocument } from '../utils';
 import { styleText } from 'node:util';
@@ -48,7 +48,9 @@ export const helpLogger = (middlewareList: Middleware[]): ConsoleMiddleware => {
 
       const commandItem = document[command];
       if (!commandItem || commandItem.showInHelp === false) {
-        throw new Error(i18n.t('help.no_usage', { command }));
+        throw new ConsoleError(i18n.t('help.no_usage', { command }), {
+          code: 'NO_USAGE',
+        });
       }
 
       const cli = yargs([])
@@ -91,13 +93,14 @@ export const helpLogger = (middlewareList: Middleware[]): ConsoleMiddleware => {
         .filter((item) => item[1] <= 3)
         .sort((a, b) => a[1] - b[1])[0];
 
-      throw new Error(
+      throw new ConsoleError(
         recommendCommand
           ? i18n.t('command_found_recommended', {
               command,
               recommended: recommendCommand[0],
             })
           : i18n.t('command_not_found', { command }),
+        { code: 'COMMAND_NOT_FOUND' },
       );
     }
   });
