@@ -29,13 +29,14 @@ export abstract class Middleware<Props extends object = object> {
   /**
    * 跳过执行中间件。
    *
+   * 可传入布尔值（固定跳过/不跳过），或根据上下文动态判断的函数。
    * 返回的类型未使用Partial，因为skip的设计是在部分场景下才需要触发的。
    */
   public skip(
-    when: (ctx: this['_contextType']) => boolean | Promise<boolean>,
+    when: boolean | ((ctx: this['_contextType']) => boolean | Promise<boolean>),
   ): MixinMiddleware<Props> {
     return middleware.mixin(async (ctx, next) => {
-      const skipped = await when(ctx);
+      const skipped = typeof when === 'boolean' ? when : await when(ctx);
       return skipped ? next() : this.fn(ctx, next);
     });
   }

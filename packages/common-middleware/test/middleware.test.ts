@@ -26,6 +26,34 @@ describe('skip', () => {
     await compose([md.skip(() => false)])({});
     expect(spy).toHaveBeenCalledTimes(1);
   });
+
+  test('直接传boolean跳过中间件', async () => {
+    const spy = vitest.fn((_, next: Next) => {
+      return next();
+    });
+
+    const md = middleware.mixin(spy);
+
+    await compose([md.skip(true)])({});
+    expect(spy).toHaveBeenCalledTimes(0);
+
+    await compose([md.skip(false)])({});
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  test('异步判断函数', async () => {
+    const spy = vitest.fn((_, next: Next) => {
+      return next();
+    });
+
+    const md = middleware.mixin(spy);
+
+    await compose([md.skip(async () => true)])({});
+    expect(spy).toHaveBeenCalledTimes(0);
+
+    await compose([md.skip(async () => false)])({});
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
 });
 
 test('注册时可传递多个参数', () => {

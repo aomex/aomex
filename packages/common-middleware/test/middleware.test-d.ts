@@ -35,6 +35,11 @@ middleware.mixin<{ test1: 'a'; test2: boolean }>((ctx) => {
   const md2 = md1.skip(() => true);
   expectType<TypeEqual<MixinMiddleware<{ test: string }>, typeof md2>>(true);
   expectType<TypeEqual<Middleware<object>, typeof md2>>(false);
+
+  const md3 = md1.skip(true);
+  expectType<TypeEqual<MixinMiddleware<{ test: string }>, typeof md3>>(true);
+  const md4 = md1.skip(false);
+  expectType<TypeEqual<MixinMiddleware<{ test: string }>, typeof md4>>(true);
 }
 
 // skip上下文
@@ -43,6 +48,10 @@ middleware.mixin<{ test1: 'a'; test2: boolean }>((ctx) => {
   md1.skip((ctx) => {
     expectType<TypeEqual<object, typeof ctx>>(true);
     return true;
+  });
+  md1.skip(async (ctx) => {
+    expectType<TypeEqual<object, typeof ctx>>(true);
+    return false;
   });
 
   class MyMiddleWare<Props extends object> extends Middleware<Props> {
@@ -54,4 +63,19 @@ middleware.mixin<{ test1: 'a'; test2: boolean }>((ctx) => {
     expectType<TypeEqual<{ foo: 'bar' }, typeof ctx>>(true);
     return true;
   });
+}
+
+// skip非法入参
+{
+  const md = middleware.mixin(() => {});
+  // @ts-expect-error
+  md.skip('yes');
+  // @ts-expect-error
+  md.skip(1);
+  // @ts-expect-error
+  md.skip(() => 'yes');
+  // @ts-expect-error
+  md.skip(async () => 1);
+  // @ts-expect-error
+  md.skip();
 }
