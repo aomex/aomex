@@ -32,7 +32,7 @@ test('匹配多个则报错', async () => {
     .toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL匹配超过1个规则",
+        "LABEL符合了多条规则",
       ],
     }
   `);
@@ -43,7 +43,7 @@ test('匹配不上则报错', async () => {
   await expect(validator['validate']({}, '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL未匹配规则",
+        "LABEL不符合规则",
       ],
     }
   `);

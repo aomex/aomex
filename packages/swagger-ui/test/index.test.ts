@@ -38,7 +38,7 @@ test('获取html', async () => {
     .expect((res) => {
       expect(res.text).toMatchInlineSnapshot(`
         "<!doctype html>
-        <html lang="zh_CN">
+        <html lang="zh-CN">
           <head>
             <meta charset="utf-8" />
             <title>foo</title>
@@ -157,7 +157,7 @@ test('动态返回openapi文档', async () => {
     .expect((res) => {
       expect(res.text).toMatchInlineSnapshot(`
         "<!doctype html>
-        <html lang="zh_CN">
+        <html lang="zh-CN">
           <head>
             <meta charset="utf-8" />
             <title>a-title</title>
@@ -199,7 +199,7 @@ test('yaml文档', async () => {
     .expect((res) => {
       expect(res.text).toMatchInlineSnapshot(`
         "<!doctype html>
-        <html lang="zh_CN">
+        <html lang="zh-CN">
           <head>
             <meta charset="utf-8" />
             <title>bar</title>
@@ -241,7 +241,7 @@ test('yml文档', async () => {
     .expect((res) => {
       expect(res.text).toMatchInlineSnapshot(`
         "<!doctype html>
-        <html lang="zh_CN">
+        <html lang="zh-CN">
           <head>
             <meta charset="utf-8" />
             <title>bar</title>

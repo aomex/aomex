@@ -56,24 +56,34 @@ test('不匹配则报错', async () => {
   await expect(validator['validate']('b', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL不是指定字面量",
+        "LABEL不是指定的值",
       ],
     }
   `);
 });
 
 test('构造期拒绝非法值', () => {
-  expect(() => new LiteralValidator(Number.NaN as any)).toThrow(/字面量只支持/);
+  expect(() => new LiteralValidator(Number.NaN as any)).toThrow(
+    /只支持字符串、数字、布尔值和 null/,
+  );
   expect(() => new LiteralValidator(Number.POSITIVE_INFINITY as any)).toThrow(
-    /字面量只支持/,
+    /只支持字符串、数字、布尔值和 null/,
   );
   expect(() => new LiteralValidator(Number.NEGATIVE_INFINITY as any)).toThrow(
-    /字面量只支持/,
+    /只支持字符串、数字、布尔值和 null/,
   );
-  expect(() => new LiteralValidator({} as any)).toThrow(/字面量只支持/);
-  expect(() => new LiteralValidator([] as any)).toThrow(/字面量只支持/);
-  expect(() => new LiteralValidator(1n as any)).toThrow(/字面量只支持/);
-  expect(() => new LiteralValidator(Symbol('x') as any)).toThrow(/字面量只支持/);
+  expect(() => new LiteralValidator({} as any)).toThrow(
+    /只支持字符串、数字、布尔值和 null/,
+  );
+  expect(() => new LiteralValidator([] as any)).toThrow(
+    /只支持字符串、数字、布尔值和 null/,
+  );
+  expect(() => new LiteralValidator(1n as any)).toThrow(
+    /只支持字符串、数字、布尔值和 null/,
+  );
+  expect(() => new LiteralValidator(Symbol('x') as any)).toThrow(
+    /只支持字符串、数字、布尔值和 null/,
+  );
 });
 
 test('optional / default / nullable', async () => {

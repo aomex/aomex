@@ -99,7 +99,7 @@ test('非文件类型', async () => {
     .toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL必须是文件类型",
+        "LABEL必须为文件",
       ],
     }
   `);
@@ -114,7 +114,7 @@ test('体积太大', async () => {
     validate(req.body, {
       file1: validator,
     }),
-  ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: file1文件体积太大]`);
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: file1文件过大]`);
   res.flush();
 });
 
@@ -127,7 +127,7 @@ test('媒体类型不正确', async () => {
     validate(req.body, {
       file1: validator,
     }),
-  ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: file1包含不支持的文件类型]`);
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: file1的文件类型不受支持]`);
   res.flush();
 });
 

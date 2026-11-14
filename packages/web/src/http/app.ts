@@ -7,9 +7,12 @@ import {
   I18n,
   Middleware,
   compose,
+  ensureI18nLanguage,
+  resolveI18nLanguage,
   internalDestroyServices,
   middleware,
   type CombinedServices,
+  type I18nLanguage,
   type PromisifiedService,
 } from '@aomex/common';
 import type { BaseLoggerService } from '@aomex/logger';
@@ -30,6 +33,7 @@ export namespace WebApp {
      * const app = new WebApp({
      *   services,
      *   logger: services.logger,
+     *   language: { mode: 'fixed', language: 'zh-CN' },
      *   mount: [md1, md2],
      * });
      *
@@ -56,11 +60,27 @@ export namespace WebApp {
      *   { logger: () => import('./logger.service.js') },
      *   { eager: ['logger'] },
      * );
-     * new WebApp({ services, logger: services.logger });
+     * new WebApp({
+     *   services,
+     *   logger: services.logger,
+     *   language: { mode: 'fixed', language: 'zh-CN' },
+     * });
      * ```
      */
     logger: Logger;
-    language?: 'zh_CN' | 'en_US' | (string & {});
+    /**
+     * 语言。
+     *
+     * - `mode: 'fixed'`：整站固定为 `language`（内置规范码，如 `zh-CN`）。
+     * - `mode: 'dynamic'`：按请求头协商。`zh_CN`、`zh-cn` 等别名会归一到规范码；都不中则用必填的 `fallback`。
+     *
+     * ```ts
+     * language: { mode: 'fixed', language: 'zh-CN' }
+     * language: { mode: 'dynamic', fallback: 'zh-CN' }
+     * language: { mode: 'dynamic', header: 'x-language', fallback: 'en-US' }
+     * ```
+     */
+    language: LanguageOption;
     /**
      * 客户端 IP 解析（`ctx.request.ip`）。
      *
@@ -68,11 +88,7 @@ export namespace WebApp {
      * （可被伪造）。生产环境建议显式配置，按反向代理层数严格取值：
      *
      * ```ts
-     * new WebApp({
-     *   services,
-     *   logger: services.logger,
-     *   proxyIP: { header: 'x-forwarded-for', hops: 1 },
-     * });
+     * proxyIP: { header: 'x-forwarded-for', hops: 1 }
      * ```
      */
     proxyIP?: {
@@ -108,6 +124,23 @@ export namespace WebApp {
     };
   }
 
+  export type LanguageOption =
+    | {
+        mode: 'fixed';
+        /** 固定使用的语言。 */
+        language: I18nLanguage;
+      }
+    | {
+        mode: 'dynamic';
+        /**
+         * 读取的请求头。默认 `accept-language`。
+         * `accept-language` 按 q 值排序；其它头按逗号分隔、忽略 q。
+         */
+        header?: string;
+        /** 请求头缺失或无法匹配时的语言。 */
+        fallback: I18nLanguage;
+      };
+
   export type Infer<T> =
     T extends WebApp<infer U>
       ? U extends any[]
@@ -131,6 +164,38 @@ export class WebApp<
     this.middlewareList = [];
     this.middlewareList = options.mount || [];
     this.logger = options.logger;
+  }
+
+  /**
+   * `fixed` 直接返回配置语言；`dynamic` 从请求头协商。
+   */
+  protected resolveLanguage(ctx: WebContext): string {
+    const option = this.options.language;
+    if (option.mode === 'fixed') return option.language;
+
+    const headerName = (option.header ?? 'accept-language').toLowerCase();
+    const accepted =
+      headerName === 'accept-language'
+        ? ctx.request.accept.languages()
+        : this.readLanguageHeader(ctx, headerName);
+    const tags = Array.isArray(accepted) ? accepted : [];
+
+    for (const tag of tags) {
+      if (!tag || tag === '*') continue;
+      const resolved = resolveI18nLanguage(tag);
+      if (resolved) return resolved;
+    }
+    return option.fallback;
+  }
+
+  protected readLanguageHeader(ctx: WebContext, name: string): string[] {
+    const raw = ctx.request.headers[name];
+    if (!raw) return [];
+    const value = Array.isArray(raw) ? raw.join(',') : raw;
+    return value
+      .split(',')
+      .map((part) => part.split(';')[0]?.trim() ?? '')
+      .filter((tag) => tag.length > 0);
   }
 
   protected bindServerLifecycle(server: http.Server | https.Server): void {
@@ -157,10 +222,10 @@ export class WebApp<
 
   callback(): http.RequestListener<any, any> {
     const fn = compose([
-      middleware.mixin((_, next) => {
-        return this.options.language
-          ? I18n.provider(this.options.language, next)
-          : next();
+      middleware.mixin(async (ctx: WebContext, next) => {
+        const language = this.resolveLanguage(ctx);
+        await ensureI18nLanguage(language);
+        return I18n.provider(language, next);
       }),
       parseBody(),
       ...this.middlewareList,

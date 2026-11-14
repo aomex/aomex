@@ -4,9 +4,11 @@ import {
   I18n,
   Middleware,
   compose,
+  ensureI18nLanguage,
   internalDestroyServices,
   middleware,
   type CombinedServices,
+  type I18nLanguage,
   type PromisifiedService,
 } from '@aomex/common';
 import type { BaseLoggerService } from '@aomex/logger';
@@ -28,6 +30,7 @@ export namespace ConsoleApp {
      * const app = new ConsoleApp({
      *   services,
      *   logger: services.logger,
+     *   language: 'zh-CN',
      *   mount: [md1, md2],
      * });
      *
@@ -54,11 +57,19 @@ export namespace ConsoleApp {
      *   { logger: () => import('./logger.service.js') },
      *   { eager: ['logger'] },
      * );
-     * new ConsoleApp({ services, logger: services.logger });
+     * new ConsoleApp({
+     *   services,
+     *   logger: services.logger,
+     *   language: 'zh-CN',
+     * });
      * ```
      */
     logger: Logger;
-    language?: 'zh_CN' | 'en_US' | (string & {});
+    /**
+     * 全局语言，只能是内置规范码（如 `zh-CN` / `en-US`）。
+     * 异步语言包会在执行指令前按需加载。
+     */
+    language: I18nLanguage;
   }
 
   export type Infer<T> =
@@ -127,10 +138,10 @@ export class ConsoleApp<
 
     try {
       await compose([
-        middleware.mixin((_, next) => {
-          return this.options.language
-            ? I18n.provider(this.options.language, next)
-            : next();
+        middleware.mixin(async (_, next) => {
+          const language = this.options.language;
+          await ensureI18nLanguage(language);
+          return I18n.provider(language, next);
         }),
         helpLogger(this.middlewareList),
         ...this.middlewareList,

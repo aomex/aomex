@@ -84,9 +84,9 @@ test('报错日志', async () => {
     { logger: async () => CaptureLogger },
     { eager: ['logger'] },
   );
-  const app = new ConsoleApp({ services, logger: services.logger });
+  const app = new ConsoleApp({ services, logger: services.logger, language: 'zh-CN' });
   await app.run('foo');
-  expect(msg).toMatchInlineSnapshot(`"指令 "foo" 不存在"`);
+  expect(msg).toMatchInlineSnapshot(`"命令「foo」不存在"`);
 });
 
 test('自定义报错回调', async () => {
@@ -96,7 +96,7 @@ test('自定义报错回调', async () => {
     msg = err.message;
   });
   await app.run('foo');
-  expect(msg).toMatchInlineSnapshot(`"指令 "foo" 不存在"`);
+  expect(msg).toMatchInlineSnapshot(`"命令「foo」不存在"`);
 });
 
 test('on(error) 收到 ConsoleError，含业务 code', async () => {
@@ -130,20 +130,20 @@ test('普通 Error 经 from 归一化后 emit', async () => {
 
 test('设置语言', async () => {
   const app1 = new TestConsoleApp({
-    language: 'zh_CN',
+    language: 'zh-CN',
     mount: [
       middleware.mixin(() => {
-        expect(i18n.language).toBe('zh_CN');
+        expect(i18n.language).toBe('zh-CN');
       }),
     ],
   });
   await app1.run('foo:bar');
 
   const app2 = new TestConsoleApp({
-    language: 'en_US',
+    language: 'en-US',
     mount: [
       middleware.mixin(() => {
-        expect(i18n.language).toBe('en_US');
+        expect(i18n.language).toBe('en-US');
       }),
     ],
   });
@@ -174,7 +174,7 @@ test('services：信号路径会等 onDestroy 完成再 exit', async () => {
     demo: async () => Demo,
   });
   await services.demo.ping();
-  new ConsoleApp({ services, logger: services.logger });
+  new ConsoleApp({ services, logger: services.logger, language: 'zh-CN' });
 
   expect(handlers.has('SIGTERM')).toBe(true);
   handlers.get('SIGTERM')!();
@@ -209,7 +209,7 @@ test('services：beforeExit 调度销毁且不 exit', async () => {
     demo: async () => Demo,
   });
   await services.demo.ping();
-  new ConsoleApp({ services, logger: services.logger });
+  new ConsoleApp({ services, logger: services.logger, language: 'zh-CN' });
 
   handlers.get('beforeExit')!();
   await vitest.waitFor(() => expect(destroyed).toBe(1));
@@ -246,7 +246,7 @@ test('services：支持数组', async () => {
   });
   await s1.a.ping();
   await s2.b.ping();
-  new ConsoleApp({ services: [s1, s2], logger: s1.logger });
+  new ConsoleApp({ services: [s1, s2], logger: s1.logger, language: 'zh-CN' });
 
   handlers.get('beforeExit')!();
   await vitest.waitFor(() => expect(destroyed).toBe(2));

@@ -1,4 +1,4 @@
-import { combineServices, type CombinedServices } from '@aomex/common';
+import { combineServices, type CombinedServices, type I18nLanguage } from '@aomex/common';
 import { toArray } from '@aomex/internal-tools';
 import { BaseLoggerService, ConsoleTransport } from '@aomex/logger';
 import { ConsoleApp } from './cli/app';
@@ -18,19 +18,22 @@ const defaultLoggerServices = await combineServices(
   { eager: ['logger'] },
 );
 
+/** 测试默认：整站简体 */
+const defaultLanguage = 'zh-CN' as const satisfies I18nLanguage;
+
 export namespace TestConsoleApp {
   export type Option<T extends ConsoleMiddlewareToken[] | [] = []> = Omit<
     ConsoleApp.Option<T>,
-    'services' | 'logger'
+    'services' | 'logger' | 'language'
   > & {
     services?: CombinedServices | readonly CombinedServices[];
     logger?: ConsoleApp.Logger;
+    language?: I18nLanguage;
   };
 }
 
 /**
- * 测试专用 ConsoleApp：仅将 `services` / `logger` 改为选填，其余与 `ConsoleApp` 一致。
- * 未传 `logger` 时用默认袋；`defaultLoggerServices` 始终 `concat` 进 `services`。
+ * 测试专用 ConsoleApp：`services` / `logger` / `language` 选填并带默认值。
  *
  * ```ts
  * new TestConsoleApp({ mount: [md] });
@@ -45,6 +48,7 @@ export class TestConsoleApp<
       ...options,
       services: toArray(options.services ?? []).concat(defaultLoggerServices),
       logger: options.logger ?? defaultLoggerServices.logger,
+      language: options.language ?? defaultLanguage,
     });
   }
 }

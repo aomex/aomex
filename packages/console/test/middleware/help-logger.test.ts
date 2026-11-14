@@ -32,10 +32,10 @@ test('未传入指令时输出全局消息', async () => {
   const app = new TestConsoleApp({});
   await app.run();
   expect(lastMsg).toMatchInlineSnapshot(`
-    "aomex [指令] [选项]
+    "aomex [命令] [选项]
 
     选项：
-      -v, --version  显示aomex版本号                                                 [布尔]
+      -v, --version  显示 aomex 的版本号                                              [布尔]
       -h, --help     显示帮助信息                                                     [布尔]"
   `);
 });
@@ -55,14 +55,14 @@ test('自定义指令', async () => {
   });
   await app.run('-h');
   expect(stripVTControlCharacters(lastMsg)).toMatchInlineSnapshot(`
-    "aomex [指令] [选项]
+    "aomex [命令] [选项]
 
     命令：
       aomex foo  im foo
       aomex bar  im bar
 
     选项：
-      -v, --version  显示aomex版本号                                                 [布尔]
+      -v, --version  显示 aomex 的版本号                                              [布尔]
       -h, --help     显示帮助信息                                                     [布尔]"
   `);
 });
@@ -115,13 +115,13 @@ test('设置show=false禁止显示用法', async () => {
   });
   await app.run('-h');
   expect(stripVTControlCharacters(lastMsg)).toMatchInlineSnapshot(`
-    "aomex [指令] [选项]
+    "aomex [命令] [选项]
 
     命令：
       aomex foo  foooooo
 
     选项：
-      -v, --version  显示aomex版本号                                                 [布尔]
+      -v, --version  显示 aomex 的版本号                                              [布尔]
       -h, --help     显示帮助信息                                                     [布尔]"
   `);
 
@@ -130,7 +130,7 @@ test('设置show=false禁止显示用法', async () => {
     lastMsg = err.message;
   });
   await app.run('bar', '-h');
-  expect(stripVTControlCharacters(lastMsg)).toMatch('找不到关于指令 "bar" 的用法');
+  expect(stripVTControlCharacters(lastMsg)).toMatch('找不到命令「bar」的用法');
 });
 
 test('指令参数', async () => {
@@ -198,6 +198,7 @@ test('检测相似指令', async () => {
   const app = new ConsoleApp({
     services,
     logger: services.logger,
+    language: 'zh-CN',
     mount: [
       middleware.console({
         fn: () => {},
@@ -214,7 +215,26 @@ test('检测相似指令', async () => {
   });
 
   await app.run('fooo');
-  expect(lastMsg).toMatch('Error: 指令 "fooo" 不存在，你是说 "aomex fool" 吗？');
+  expect(lastMsg).toMatch('Error: 命令「fooo」不存在，你是说「aomex fool」吗？');
   await app.run('testme');
-  expect(lastMsg).toMatch('Error: 指令 "testme" 不存在');
+  expect(lastMsg).toMatch('Error: 命令「testme」不存在');
+});
+
+test('帮助里的 yargs 文案跟随规范语言码', async () => {
+  const cases = [
+    ['en-US', '[boolean]'],
+    ['zh-TW', '[布林]'],
+    ['zh-HK', '[布林]'],
+    ['ja-JP', '[真偽]'],
+    ['be-BY', '[булевы тып]'],
+    ['hy-AM', '[boolean]'],
+  ] as const;
+  for (const [language, marker] of cases) {
+    const app = new TestConsoleApp({ language });
+    await app.run('-h');
+    expect(lastMsg, language).toContain(marker);
+  }
+  const restore = new TestConsoleApp({ language: 'zh-CN' });
+  await restore.run('-h');
+  expect(lastMsg).toContain('[布尔]');
 });

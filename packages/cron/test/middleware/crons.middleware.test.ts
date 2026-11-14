@@ -31,7 +31,7 @@ test('文档', async () => {
         "summary": "查看定时任务执行状态",
       },
       "cron:stop": {
-        "summary": "退出定时任务",
+        "summary": "停止定时任务",
       },
     }
   `);

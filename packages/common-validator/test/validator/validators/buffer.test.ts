@@ -24,7 +24,7 @@ test('非缓冲类型', async () => {
   await expect(validator['validate']([], '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL必须是buffer类型",
+        "LABEL必须为 Buffer",
       ],
     }
   `);
@@ -40,7 +40,7 @@ test('从十六进制恢复', async () => {
   await expect(validator['validate']('zzz', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL必须是buffer类型",
+        "LABEL必须为 Buffer",
       ],
     }
   `);
@@ -54,7 +54,7 @@ test('从base64字符串恢复', async () => {
   await expect(validator['validate']('AAE', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL必须是buffer类型",
+        "LABEL必须为 Buffer",
       ],
     }
   `);

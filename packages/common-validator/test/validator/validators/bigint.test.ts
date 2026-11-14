@@ -22,7 +22,7 @@ test('最小值（包含自身）', async () => {
   await expect(validator['validate'](1n, '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL不在指定的数字范围",
+        "LABEL超出允许的数值范围",
       ],
     }
   `);
@@ -39,7 +39,7 @@ test('最小值（不包含自身）', async () => {
   await expect(validator['validate'](10n, '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL不在指定的数字范围",
+        "LABEL超出允许的数值范围",
       ],
     }
   `);
@@ -53,7 +53,7 @@ test('最大值（包含自身）', async () => {
   await expect(validator['validate'](101n, '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL不在指定的数字范围",
+        "LABEL超出允许的数值范围",
       ],
     }
   `);
@@ -70,7 +70,7 @@ test('最大值（不包含自身）', async () => {
   await expect(validator['validate'](10n, '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL不在指定的数字范围",
+        "LABEL超出允许的数值范围",
       ],
     }
   `);
@@ -92,7 +92,7 @@ test('严格模式下，禁止从字符串或者数字转换', async () => {
   const validator = new BigIntValidator().strict();
   for (const data of [123, '123']) {
     await expect(validator['validate'](data, '', 'LABEL')).resolves.toStrictEqual({
-      errors: ['LABEL必须是大整数类型'],
+      errors: ['LABEL必须为 BigInt'],
     });
   }
 });

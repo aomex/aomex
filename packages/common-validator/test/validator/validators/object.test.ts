@@ -48,7 +48,7 @@ test('属性验证失败报错', async () => {
   expect(result).toMatchInlineSnapshot(`
     {
       "errors": [
-        "path_1.data必须是对象类型",
+        "path_1.data必须为对象",
       ],
     }
   `);
@@ -68,7 +68,7 @@ describe('解析字符串', () => {
     expect(result1).toMatchInlineSnapshot(`
       {
         "errors": [
-          "LABEL必须是对象类型",
+          "LABEL必须为对象",
         ],
       }
     `);
@@ -76,7 +76,7 @@ describe('解析字符串', () => {
     expect(result2).toMatchInlineSnapshot(`
       {
         "errors": [
-          "LABEL必须是对象类型",
+          "LABEL必须为对象",
         ],
       }
     `);
@@ -89,7 +89,7 @@ describe('解析字符串', () => {
     expect(result).toMatchInlineSnapshot(`
       {
         "errors": [
-          "LABEL必须是对象类型",
+          "LABEL必须为对象",
         ],
       }
     `);

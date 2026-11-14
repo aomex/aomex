@@ -1,0 +1,8 @@
+import { I18n } from '@aomex/common';
+import { zh } from './zh-cn';
+
+/** ar-EG */
+export default I18n.satisfies(zh).define({
+  wrong_type: 'القيمة من النوع غير الصحيح',
+  not_integer: 'القيمة ليست عددًا صحيحًا',
+});

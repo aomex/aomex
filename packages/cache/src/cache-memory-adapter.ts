@@ -62,7 +62,7 @@ export class CacheMemoryAdapter extends CacheAdapter {
     }
 
     if (Number.isNaN(value) || !Number.isInteger(value)) {
-      throw new Error('缓存值不是整数类型');
+      throw new Error(i18n.t('not_integer'));
     }
 
     this.setValueSync(key, String(++value));

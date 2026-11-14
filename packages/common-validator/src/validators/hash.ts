@@ -48,10 +48,6 @@ export class HashValidator<T = string> extends BaseStringValidator<T> {
   constructor(algorithm: HashValidator.Algorithm) {
     super();
     this.config.algorithm = algorithm;
-
-    if (!Object.hasOwn(HashValidator.algorithmLength, algorithm)) {
-      throw new Error('未知的哈希类型');
-    }
   }
 
   declare public docs: (

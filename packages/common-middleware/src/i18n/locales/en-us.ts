@@ -3,6 +3,6 @@ import { zh } from './zh-cn';
 
 export const en = I18n.satisfies(zh).define({
   middleware: {
-    call_next_multiple: 'call next() multiple times',
+    call_next_multiple: 'next() was called more than once',
   },
 });

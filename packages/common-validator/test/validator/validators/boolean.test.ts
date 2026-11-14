@@ -40,7 +40,7 @@ test('不在范围内则报错', async () => {
   await expect(validator['validate']('yes', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL必须是布尔类型",
+        "LABEL必须为布尔值",
       ],
     }
   `);

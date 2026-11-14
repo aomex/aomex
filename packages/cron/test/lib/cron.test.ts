@@ -55,7 +55,7 @@ test('时间', () => {
         command: '',
         commanders: '',
       }).time,
-  ).toThrowErrorMatchingInlineSnapshot(`[Error: 时间表达式不合法：*/2]`);
+  ).toThrowErrorMatchingInlineSnapshot(`[Error: 无效的 Cron 表达式：*/2]`);
 
   expect(
     () =>
@@ -64,7 +64,7 @@ test('时间', () => {
         command: '',
         commanders: '',
       }).time,
-  ).toThrowErrorMatchingInlineSnapshot(`[Error: 时间表达式不合法：* * * * * * *]`);
+  ).toThrowErrorMatchingInlineSnapshot(`[Error: 无效的 Cron 表达式：* * * * * * *]`);
 });
 
 test('转换为字符串', async () => {

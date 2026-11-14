@@ -110,6 +110,7 @@ describe('日志', () => {
     const app = new WebApp({
       services,
       logger: services.logger,
+      language: { mode: 'fixed', language: 'zh-CN' },
       mount: [
         middleware.mixin(() => {
           throw new Error('foo bar');
@@ -141,6 +142,7 @@ describe('日志', () => {
     const app = new WebApp({
       services,
       logger: services.logger,
+      language: { mode: 'fixed', language: 'zh-CN' },
       mount: [
         middleware.mixin(() => {
           throw new Error('foo bar');
@@ -172,6 +174,7 @@ describe('日志', () => {
     const app = new WebApp({
       services,
       logger: services.logger,
+      language: { mode: 'fixed', language: 'zh-CN' },
       mount: [
         middleware.web((ctx) => {
           ctx.throw(404, 'foo bar');
@@ -202,6 +205,7 @@ describe('日志', () => {
     const app = new WebApp({
       services,
       logger: services.logger,
+      language: { mode: 'fixed', language: 'zh-CN' },
       mount: [
         middleware.web((ctx) => {
           ctx.throw(500, 'foo bar', {
@@ -215,22 +219,68 @@ describe('日志', () => {
   });
 });
 
-test('设置语言', async () => {
-  const app1 = new TestWebApp({
-    language: 'zh_CN',
+test('按 Accept-Language 协商语言', async () => {
+  const seen: string[] = [];
+  const app = new TestWebApp({
+    language: { mode: 'dynamic', header: 'accept-language', fallback: 'zh-CN' },
     mount: [
       middleware.mixin(() => {
-        expect(i18n.language).toBe('zh_CN');
+        seen.push(i18n.language);
+      }),
+    ],
+  });
+  const server = app.listen();
+  await supertest(server).get('/').set('Accept-Language', 'en-US,zh-CN;q=0.8');
+  await supertest(server).get('/').set('Accept-Language', 'zh');
+  await supertest(server).get('/').set('Accept-Language', 'ja-JP;q=0.9,en;q=0.1');
+  await supertest(server).get('/').set('Accept-Language', 'xx-YY');
+  expect(seen).toEqual(['en-US', 'zh-CN', 'ja-JP', 'zh-CN']);
+});
+
+test('自定义语言头，匹配不到用 fallback', async () => {
+  const seen: string[] = [];
+  const app = new TestWebApp({
+    language: { mode: 'dynamic', header: 'x-language', fallback: 'en-US' },
+    mount: [
+      middleware.mixin(() => {
+        seen.push(i18n.language);
+      }),
+    ],
+  });
+  const server = app.listen();
+  await supertest(server).get('/').set('x-language', 'zh_CN');
+  await supertest(server).get('/');
+  expect(seen).toEqual(['zh-CN', 'en-US']);
+});
+
+test('固定语言忽略请求头', async () => {
+  const app = new TestWebApp({
+    language: { mode: 'fixed', language: 'zh-CN' },
+    mount: [
+      middleware.mixin(() => {
+        expect(i18n.language).toBe('zh-CN');
+      }),
+    ],
+  });
+  await supertest(app.listen()).get('/').set('Accept-Language', 'en-US');
+});
+
+test('设置语言', async () => {
+  const app1 = new TestWebApp({
+    language: { mode: 'fixed', language: 'zh-CN' },
+    mount: [
+      middleware.mixin(() => {
+        expect(i18n.language).toBe('zh-CN');
       }),
     ],
   });
   await supertest(app1.listen()).get('/');
 
   const app2 = new TestWebApp({
-    language: 'en_US',
+    language: { mode: 'fixed', language: 'en-US' },
     mount: [
       middleware.mixin(() => {
-        expect(i18n.language).toBe('en_US');
+        expect(i18n.language).toBe('en-US');
       }),
     ],
   });
@@ -274,7 +324,11 @@ test('services：server close 时自动等 onDestroy 跑完', async () => {
   });
   await services.demo.ping();
 
-  const app = new WebApp({ services, logger: services.logger });
+  const app = new WebApp({
+    services,
+    logger: services.logger,
+    language: { mode: 'fixed', language: 'zh-CN' },
+  });
   const server = app.listen(0);
   await new Promise<void>((resolve, reject) => {
     server.on('listening', () => resolve());
@@ -305,7 +359,11 @@ test('services：支持数组', async () => {
   await s1.a.ping();
   await s2.b.ping();
 
-  const app = new WebApp({ services: [s1, s2], logger: s1.logger });
+  const app = new WebApp({
+    services: [s1, s2],
+    logger: s1.logger,
+    language: { mode: 'fixed', language: 'zh-CN' },
+  });
   const server = app.listen(0);
   await new Promise<void>((resolve, reject) => {
     server.on('listening', () => resolve());
@@ -339,7 +397,11 @@ test('services：SIGTERM 先关 server 再等 onDestroy 后 exit', async () => {
     demo: async () => Demo,
   });
   await services.demo.ping();
-  const app = new WebApp({ services, logger: services.logger });
+  const app = new WebApp({
+    services,
+    logger: services.logger,
+    language: { mode: 'fixed', language: 'zh-CN' },
+  });
   const server = app.listen(0);
   await new Promise<void>((resolve, reject) => {
     server.on('listening', () => resolve());

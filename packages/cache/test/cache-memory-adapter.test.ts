@@ -183,7 +183,7 @@ describe('数组操作', () => {
     const store = memoryAdapter();
     await store.leftPushValue('foo', 'bar');
     await expect(store.getValue('foo')).rejects.toThrowErrorMatchingInlineSnapshot(
-      `[Error: 错误的值类型]`,
+      `[Error: 值的类型不正确]`,
     );
   });
 
@@ -197,7 +197,7 @@ describe('数组操作', () => {
     const store = memoryAdapter();
     await store.leftPushValue('foo', 'bar');
     await expect(store.increaseValue('foo')).rejects.toThrowErrorMatchingInlineSnapshot(
-      `[Error: 错误的值类型]`,
+      `[Error: 值的类型不正确]`,
     );
   });
 

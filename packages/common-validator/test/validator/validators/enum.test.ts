@@ -266,10 +266,10 @@ test('pick/omit 后 default 仍在范围内则保留', async () => {
 
 test('pick/omit 后 default 不在范围内则抛错', () => {
   const base = rule.enum(['a', 'b', 'c']).default('c');
-  expect(() => base.omit('c')).toThrow(/默认值"c"不在枚举范围/);
-  expect(() => base.pick('a', 'b')).toThrow(/默认值"c"不在枚举范围/);
-  expect(() => base.pick(['a'])).toThrow(/默认值"c"不在枚举范围/);
+  expect(() => base.omit('c')).toThrow(/默认值「c」不在枚举范围/);
+  expect(() => base.pick('a', 'b')).toThrow(/默认值「c」不在枚举范围/);
+  expect(() => base.pick(['a'])).toThrow(/默认值「c」不在枚举范围/);
 
   const withFn = rule.enum(['a', 'b', 'c']).default(() => 'c' as const);
-  expect(() => withFn.omit('c')).toThrow(/默认值"c"不在枚举范围/);
+  expect(() => withFn.omit('c')).toThrow(/默认值「c」不在枚举范围/);
 });

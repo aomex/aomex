@@ -7,6 +7,12 @@ import { styleText } from 'node:util';
 import { getDistance } from '../utils/get-distance';
 import { i18n } from '../i18n';
 
+/** 规范码 → yargs/y18n 文件名；其余把 `-` 换成 `_`，由 y18n 自行回退到语种前缀。 */
+function yargsLocale(language: string): string {
+  if (language === 'zh-HK') return 'zh_TW';
+  return language.replaceAll('-', '_');
+}
+
 export const helpLogger = (middlewareList: Middleware[]): ConsoleMiddleware => {
   return middleware.console(async (ctx, next) => {
     const {
@@ -19,7 +25,7 @@ export const helpLogger = (middlewareList: Middleware[]): ConsoleMiddleware => {
         console.log(version);
       } else {
         const cli = yargs([])
-          .locale(i18n.language)
+          .locale(yargsLocale(i18n.language))
           .scriptName(scriptName)
           .usage(`${scriptName} ${i18n.t('help.command')} ${i18n.t('help.option')}`)
           .describe('version', i18n.t('help.version', { scriptName }))
@@ -54,7 +60,7 @@ export const helpLogger = (middlewareList: Middleware[]): ConsoleMiddleware => {
       }
 
       const cli = yargs([])
-        .locale(i18n.language)
+        .locale(yargsLocale(i18n.language))
         .scriptName(scriptName)
         .version(false)
         .help(false);

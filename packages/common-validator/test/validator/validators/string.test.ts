@@ -16,7 +16,7 @@ test('默认允许空字符串', async () => {
   await expect(validator['validate']('', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL必填",
+        "LABEL为必填项",
       ],
     }
   `);

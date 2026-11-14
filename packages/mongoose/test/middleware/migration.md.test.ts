@@ -40,10 +40,10 @@ test('文档', async () => {
             "type": "boolean",
           },
         ],
-        "summary": "回滚迁移逻辑",
+        "summary": "回滚迁移",
       },
       "mongoose:migration:up": {
-        "summary": "执行迁移逻辑",
+        "summary": "执行迁移",
       },
     }
   `);

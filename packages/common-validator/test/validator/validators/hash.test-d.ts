@@ -44,3 +44,9 @@ const validator = new TargetValidator('md5');
   const v = validator.docs({ title: '' });
   expectType<TargetValidator<DefaultType>>(v);
 }
+
+// 非法算法由类型拦截
+{
+  // @ts-expect-error
+  new TargetValidator('md6');
+}

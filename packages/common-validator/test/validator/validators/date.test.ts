@@ -61,7 +61,7 @@ test('解析格式', async () => {
     .toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL必须是时间类型",
+        "LABEL必须为日期",
       ],
     }
   `);
@@ -106,7 +106,7 @@ describe('时间戳', () => {
     expect(result).toMatchInlineSnapshot(`
       {
         "errors": [
-          "LABEL必须是时间类型",
+          "LABEL必须为日期",
         ],
       }
     `);
@@ -126,7 +126,7 @@ describe('范围', () => {
       .toMatchInlineSnapshot(`
       {
         "errors": [
-          "LABEL不在指定时间内",
+          "LABEL不在允许的时间范围内",
         ],
       }
     `);
@@ -138,7 +138,7 @@ describe('范围', () => {
       .toMatchInlineSnapshot(`
       {
         "errors": [
-          "LABEL不在指定时间内",
+          "LABEL不在允许的时间范围内",
         ],
       }
     `);
@@ -156,7 +156,7 @@ describe('范围', () => {
       .toMatchInlineSnapshot(`
       {
         "errors": [
-          "LABEL不在指定时间内",
+          "LABEL不在允许的时间范围内",
         ],
       }
     `);
@@ -168,7 +168,7 @@ describe('范围', () => {
       .toMatchInlineSnapshot(`
       {
         "errors": [
-          "LABEL不在指定时间内",
+          "LABEL不在允许的时间范围内",
         ],
       }
     `);

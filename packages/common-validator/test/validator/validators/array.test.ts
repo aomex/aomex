@@ -49,9 +49,9 @@ test('指定元素类型', async () => {
   await expect(validator['validate'](data, '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "0必须是数组类型",
-        "1必须是数组类型",
-        "2必须是数组类型",
+        "0必须为数组",
+        "1必须为数组",
+        "2必须为数组",
       ],
     }
   `);
@@ -307,8 +307,8 @@ describe('唯一', () => {
       .toMatchInlineSnapshot(`
       {
         "errors": [
-          "LABEL.0必须是数字类型",
-          "LABEL.1必须是数字类型",
+          "LABEL.0必须为数字",
+          "LABEL.1必须为数字",
         ],
       }
     `);

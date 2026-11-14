@@ -16,7 +16,7 @@ test('非缓冲类型', async () => {
     .toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL必须是stream类型",
+        "LABEL必须为 Stream",
       ],
     }
   `);

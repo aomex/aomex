@@ -15,10 +15,10 @@ export const en = I18n.satisfies(zh).define({
   },
   migration: {
     create: 'Generate migration file',
-    up: 'Execute migration logic',
-    down: 'Rollback migration logic',
-    file_not_found: "Migration file '{{file}}' not found",
-    input_file_name: 'What is migration file name? > ',
-    file_created: 'Migration file has been created at "{{file}}"',
+    up: 'Run migration',
+    down: 'Roll back migration',
+    file_not_found: 'Migration file "{{file}}" does not exist',
+    input_file_name: 'Enter the migration file name: ',
+    file_created: 'Migration file created: "{{file}}"',
   },
 });

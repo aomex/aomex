@@ -18,19 +18,25 @@ const defaultLoggerServices = await combineServices(
   { eager: ['logger'] },
 );
 
+/** 测试默认：整站简体 */
+const defaultLanguage = {
+  mode: 'fixed',
+  language: 'zh-CN',
+} as const satisfies WebApp.LanguageOption;
+
 export namespace TestWebApp {
   export type Option<T extends WebMiddlewareToken[] | [] = []> = Omit<
     WebApp.Option<T>,
-    'services' | 'logger'
+    'services' | 'logger' | 'language'
   > & {
     services?: CombinedServices | readonly CombinedServices[];
     logger?: WebApp.Logger;
+    language?: WebApp.LanguageOption;
   };
 }
 
 /**
- * 测试专用 WebApp：仅将 `services` / `logger` 改为选填，其余与 `WebApp` 一致。
- * 未传 `logger` 时用默认袋；`defaultLoggerServices` 始终 `concat` 进 `services`。
+ * 测试专用 WebApp：`services` / `logger` / `language` 选填并带默认值。
  *
  * ```ts
  * new TestWebApp({ mount: [md] });
@@ -43,6 +49,7 @@ export class TestWebApp<T extends WebMiddlewareToken[] | [] = any[]> extends Web
       ...options,
       services: toArray(options.services ?? []).concat(defaultLoggerServices),
       logger: options.logger ?? defaultLoggerServices.logger,
+      language: options.language ?? defaultLanguage,
     });
   }
 }

@@ -34,7 +34,7 @@ describe('长度', () => {
       .toMatchInlineSnapshot(`
       {
         "errors": [
-          "LABEL字符串长度不合法",
+          "LABEL长度不符合要求",
         ],
       }
     `);
@@ -52,7 +52,7 @@ describe('长度', () => {
       .toMatchInlineSnapshot(`
       {
         "errors": [
-          "LABEL字符串长度不合法",
+          "LABEL长度不符合要求",
         ],
       }
     `);
@@ -70,7 +70,7 @@ describe('长度', () => {
       .toMatchInlineSnapshot(`
       {
         "errors": [
-          "LABEL字符串长度不合法",
+          "LABEL长度不符合要求",
         ],
       }
     `);
@@ -82,7 +82,7 @@ describe('长度', () => {
       .toMatchInlineSnapshot(`
       {
         "errors": [
-          "LABEL字符串长度不合法",
+          "LABEL长度不符合要求",
         ],
       }
     `);
@@ -93,7 +93,7 @@ describe('长度', () => {
       .toMatchInlineSnapshot(`
       {
         "errors": [
-          "LABEL字符串长度不合法",
+          "LABEL长度不符合要求",
         ],
       }
     `);
@@ -104,7 +104,7 @@ test('只允许字符串', async () => {
   const validator = new MockStringValidator();
   for (const data of [1, {}, 1n, []]) {
     await expect(validator['validate'](data, '', 'LABEL')).resolves.toStrictEqual({
-      errors: ['LABEL必须是字符串类型'],
+      errors: ['LABEL必须为字符串'],
     });
   }
 });
@@ -114,7 +114,7 @@ test('空字符串是空值', async () => {
   await expect(validator['validate']('', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL必填",
+        "LABEL为必填项",
       ],
     }
   `);
@@ -125,7 +125,7 @@ test('去除两边空格', async () => {
   await expect(validator['validate']('   ', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL必填",
+        "LABEL为必填项",
       ],
     }
   `);
@@ -139,7 +139,7 @@ test('匹配格式', async () => {
   await expect(validator['validate']('abd', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL字符串未匹配到规则",
+        "LABEL不符合规则",
       ],
     }
   `);

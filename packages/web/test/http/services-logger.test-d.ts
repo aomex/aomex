@@ -18,7 +18,11 @@ const services = await combineServices({
   demo: async () => Demo,
 });
 
-new WebApp({ services, logger: services.logger });
+new WebApp({
+  services,
+  logger: services.logger,
+  language: { mode: 'fixed', language: 'zh-CN' },
+});
 
 declare const ctx: WebContext;
 expectType<WebApp.Logger>(ctx.logger);

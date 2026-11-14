@@ -1,0 +1,12 @@
+import { I18n } from '@aomex/common';
+import { zh } from './zh-cn';
+
+/** km-KH */
+export default I18n.satisfies(zh).define({
+  eject: 'នាំចេញបញ្ជីកិច្ចការដែលបានគ្រោងទុក',
+  start: 'ចាប់ផ្តើមកិច្ចការដែលបានគ្រោងទុក',
+  stop: 'បញ្ឈប់កិច្ចការដែលបានកំណត់ពេល',
+  stats: 'ពិនិត្យស្ថានភាពប្រតិបត្តិនៃកិច្ចការដែលបានកំណត់ពេល',
+  not_started: 'កិច្ចការដែលបានគ្រោងទុកមិនត្រូវបានចាប់ផ្តើមទេ ច្រក៖ {{port}}',
+  invalid_cron_time: 'កន្សោម cron មិនត្រឹមត្រូវ៖ {{time}}',
+});

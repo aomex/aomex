@@ -26,7 +26,7 @@ test('必须匹配所有规则', async () => {
   await expect(validator['validate']('x', '', 'LABEL')).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL未匹配所有规则",
+        "LABEL不符合全部规则",
       ],
     }
   `);

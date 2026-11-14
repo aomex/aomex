@@ -4,8 +4,8 @@ import { zh } from './zh-cn';
 export const en = I18n.satisfies(zh).define({
   eject: 'Eject cron tasks to crontab',
   start: 'Start cron tasks',
-  stop: 'Stop cron tasks',
+  stop: 'Stop scheduled tasks',
   stats: 'Show cron tasks stats',
   not_started: 'cron not started with port: {{port}}',
-  invalid_cron_time: 'Invalid cron time expression: {{time}}',
+  invalid_cron_time: 'Invalid cron expression: {{time}}',
 });
