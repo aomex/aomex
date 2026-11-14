@@ -1,11 +1,21 @@
 import type { OpenAPI } from '@aomex/common';
 import { getFileValues } from '@aomex/internal-file-import';
-import { Router, WebMiddleware, WebRequest, type OpenApiInjector } from '@aomex/web';
+import {
+  Router,
+  WebMiddleware,
+  WebRequest,
+  type OpenApiInjector,
+  type WebMiddlewareToken,
+} from '@aomex/web';
 import path from 'node:path';
 import { methodToVerb } from './method-to-verb';
 import snakeCase from 'lodash.snakecase';
 
-export const parseFiles = async (document: OpenAPI.Document, files: string[]) => {
+export const parseFiles = async (
+  document: OpenAPI.Document,
+  files: string[],
+  mount: WebMiddlewareToken[] = [],
+) => {
   const usedTags: string[] = [];
 
   const data: {
@@ -32,7 +42,9 @@ export const parseFiles = async (document: OpenAPI.Document, files: string[]) =>
         if (builder.docs.showInOpenapi === false) continue;
         delete builder.docs.showInOpenapi;
 
-        const builderMiddlewareList = groupMiddlewareList
+        // 顺序与运行时一致：全局 mount → 路由组 → 接口级
+        const builderMiddlewareList = mount
+          .concat(groupMiddlewareList)
           .concat(builder['middlewareList'])
           .filter((middleware) => middleware instanceof WebMiddleware) as WebMiddleware[];
 

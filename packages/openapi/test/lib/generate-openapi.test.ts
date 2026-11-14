@@ -1,4 +1,6 @@
+import { join } from 'path';
 import { expect, test } from 'vitest';
+import { middleware } from '@aomex/common';
 import { generateOpenapi } from '../../src';
 
 test('指定基础文档', async () => {
@@ -47,4 +49,42 @@ test('手动修复文档', async () => {
       ],
     }
   `);
+});
+
+test('挂载全局中间件收集文档', async () => {
+  const result = await generateOpenapi({
+    routers: join(import.meta.dirname, '..', 'fixtures', 'routers', 'a.router.ts'),
+    mount: [
+      middleware.web({
+        fn: () => {},
+        openapi: {
+          onDocument(doc) {
+            doc.info.description = 'from-global-mount';
+          },
+          onMethod(methodItem) {
+            methodItem.deprecated = true;
+          },
+        },
+      }),
+    ],
+  });
+
+  expect(result.info.description).toBe('from-global-mount');
+  expect(result.paths['/foo']!.get!.deprecated).toBe(true);
+  expect(result.paths['/bar/{id}']!.post!.deprecated).toBe(true);
+  // showInOpenapi: false 的 /baz 仍不出现
+  expect(result.paths['/baz']).toBeUndefined();
+});
+
+test('mount 缺省与空数组等价于不挂载', async () => {
+  const routers = join(
+    import.meta.dirname,
+    '..',
+    'fixtures',
+    'routers',
+    'empty.router.ts',
+  );
+  const without = await generateOpenapi({ routers });
+  const empty = await generateOpenapi({ routers, mount: [] });
+  expect(without).toEqual(empty);
 });

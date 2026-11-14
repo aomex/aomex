@@ -67,7 +67,7 @@ export const generateOpenapiWithSpinner = async (
     {
       title: i18n.t('parse_routers'),
       task: async (ctx) => {
-        ctx.usedTags = await parseFiles(ctx.document, ctx.files);
+        ctx.usedTags = await parseFiles(ctx.document, ctx.files, config.mount);
         await sleep(500);
       },
     },

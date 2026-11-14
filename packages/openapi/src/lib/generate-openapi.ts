@@ -1,5 +1,6 @@
 import { OpenAPI } from '@aomex/common';
 import { pathToFiles, type GlobPathOptions } from '@aomex/internal-file-import';
+import type { WebMiddlewareToken } from '@aomex/web';
 import { methodParameterToPathParameter } from './hoist-parameter';
 import { hoistSchemaRef } from './hoist-schema-ref';
 import { initializeDocument } from './initialize-document';
@@ -11,6 +12,20 @@ export interface GenerateOpenapiOptions {
    * http接口路由文件
    */
   routers: GlobPathOptions;
+  /**
+   * Web 全局中间件（与 `WebApp` 的 `mount` 对应）。
+   * 用于收集鉴权、错误格式化等全局中间件写入的 OpenAPI 信息。
+   *
+   * ```ts
+   * import { middlewares } from './middleware/web.js';
+   *
+   * generateOpenapi({
+   *   routers: './src/routers',
+   *   mount: middlewares,
+   * });
+   * ```
+   */
+  mount?: WebMiddlewareToken[];
   /**
    * Openapi基础信息
    */
@@ -32,7 +47,7 @@ export const generateOpenapi = async (
 ): Promise<OpenAPI.Document> => {
   const document = await initializeDocument(config.docs);
   const files = await pathToFiles(config.routers);
-  const usedTags = await parseFiles(document, files);
+  const usedTags = await parseFiles(document, files, config.mount);
   appendTag(document, usedTags);
   await config.fix?.(document);
   hoistSchemaRef(document);

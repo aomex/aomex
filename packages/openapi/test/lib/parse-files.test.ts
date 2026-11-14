@@ -1,7 +1,9 @@
 import { join } from 'path';
 import { expect, test } from 'vitest';
 import { sequenceFile } from '../fixtures/routers/sequence.router';
-import { readFileSync, rmSync } from 'fs';
+import { appendFileSync, readFileSync, rmSync } from 'fs';
+import { middleware, rule } from '@aomex/common';
+import { formatError } from '@aomex/web';
 import { initializeDocument, parseFiles } from '../../src';
 
 test('解析文件', async () => {
@@ -186,5 +188,134 @@ test('文档生成顺序', async () => {
   await parseFiles(document, [file]);
   expect(readFileSync(sequenceFile, 'utf8')).toMatchInlineSnapshot(
     `"111122223333444455556666"`,
+  );
+});
+
+test('全局 mount 注入到每个接口', async () => {
+  const file = join(import.meta.dirname, '..', 'fixtures', 'routers', 'a.router.ts');
+  const document = await initializeDocument();
+  await parseFiles(
+    document,
+    [file],
+    [
+      formatError({
+        content: {
+          code: rule.string(),
+          message: rule.string(),
+        },
+        handler(err) {
+          return { code: 'ERR', message: err.message };
+        },
+      }),
+      middleware.web({
+        fn: () => {},
+        openapi: {
+          onDocument(doc) {
+            doc.components ||= {};
+            doc.components.securitySchemes ||= {};
+            doc.components.securitySchemes['globalAuth'] ||= {
+              type: 'apiKey',
+              in: 'header',
+              name: 'x-token',
+            };
+          },
+          onMethod(methodItem) {
+            methodItem.security ||= [];
+            methodItem.security.push({ globalAuth: [] });
+          },
+        },
+      }),
+      // mixin 无 openapi，应被过滤
+      middleware.mixin(() => {}),
+    ],
+  );
+
+  expect(document.components).toMatchInlineSnapshot(`
+    {
+      "securitySchemes": {
+        "globalAuth": {
+          "in": "header",
+          "name": "x-token",
+          "type": "apiKey",
+        },
+      },
+    }
+  `);
+  expect(document.paths['/foo']!.get!.security).toEqual([{ globalAuth: [] }]);
+  expect(document.paths['/bar/{id}']!.post!.security).toEqual([{ globalAuth: [] }]);
+  expect(document.paths['/foo']!.get!.responses).toMatchObject({
+    default: {
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              code: { type: 'string' },
+              message: { type: 'string' },
+            },
+          },
+        },
+      },
+    },
+  });
+  // /foo 已有 200 响应，formatError 的 default 不应覆盖 200
+  expect(document.paths['/foo']!.get!.responses['200']).toBeDefined();
+  expect(document.paths['/bar/{id}']!.post!.responses).toMatchObject({
+    default: {
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+          },
+        },
+      },
+    },
+  });
+});
+
+test('全局 mount 先于路由中间件执行', async () => {
+  try {
+    rmSync(sequenceFile);
+  } catch {}
+
+  const file = join(
+    import.meta.dirname,
+    '..',
+    'fixtures',
+    'routers',
+    'sequence.router.ts',
+  );
+
+  const globalMd = middleware.web({
+    fn: () => {},
+    openapi: {
+      onDocument() {
+        appendFileSync(sequenceFile, 'G');
+      },
+      onPath() {
+        appendFileSync(sequenceFile, 'g');
+      },
+      onMethod() {
+        appendFileSync(sequenceFile, 'm');
+      },
+      postMethod() {
+        appendFileSync(sequenceFile, 'M');
+      },
+      postPath() {
+        appendFileSync(sequenceFile, 'p');
+      },
+      postDocument() {
+        appendFileSync(sequenceFile, 'P');
+      },
+    },
+  });
+
+  const document = await initializeDocument();
+  await parseFiles(document, [file], [globalMd]);
+
+  // /bar: 全局+3 路由；/baz: 全局+1 路由。各钩子内全局排在对应接口路由 md 之前
+  // onDocument: G111G1；onPath: g222g2；… 依此类推
+  expect(readFileSync(sequenceFile, 'utf8')).toMatchInlineSnapshot(
+    `"G111G1g222g2m333m3M444M4p555p5P666P6"`,
   );
 });
