@@ -1,7 +1,8 @@
-import createHttpError from 'http-errors';
 import type { WebApp } from './app';
 import type { WebRequest } from './request';
 import type { Body, WebResponse } from './response';
+import { HttpError, type HttpErrorProperties } from '../utils';
+import type { HttpErrorStatus } from '../middleware/response-media';
 
 export class WebContext {
   readonly redirect: WebResponse['redirect'];
@@ -50,36 +51,43 @@ export class WebContext {
   }
 
   /**
-   * 抛出Http请求异常
+   * 抛出 HTTP 请求异常（必须指定 4xx/5xx 状态码）
    *
    * ```typescript
    *    ctx.throw(403);
    *    ctx.throw(400, 'name required');
    *    ctx.throw(400, new Error('invalid'));
-   *    ctx.throw(500, new Error('server error'), { expose: true });
+   *    ctx.throw(500, 'server error', { expose: true });
+   *    ctx.throw(404, { code: 'USER_NOT_FOUND' });
    * ```
-   * @link https://github.com/jshttp/http-errors
    * @throws {HttpError}
-   * @see createHttpError.HttpError
-   *
    */
+  throw(statusCode: HttpErrorStatus): never;
   throw(
-    statusCode: number,
+    statusCode: HttpErrorStatus,
     message?: string | Error,
     properties?: HttpErrorProperties,
   ): never;
-  throw(err: Error, properties?: HttpErrorProperties): never;
-  throw(statusCode: number, properties?: HttpErrorProperties): never;
-  throw(arg: any, ...args: any[]) {
-    throw createHttpError(arg, ...args);
+  throw(statusCode: HttpErrorStatus, properties: HttpErrorProperties): never;
+  throw(
+    statusCode: HttpErrorStatus,
+    messageOrProperties?: string | Error | HttpErrorProperties,
+    properties?: HttpErrorProperties,
+  ): never {
+    if (messageOrProperties instanceof Error) {
+      const foreign = Object.assign(new Error(messageOrProperties.message), {
+        statusCode,
+        status: statusCode,
+        name: messageOrProperties.name,
+        stack: messageOrProperties.stack,
+        cause: properties?.cause ?? messageOrProperties,
+        ...properties,
+      });
+      throw HttpError.from(foreign);
+    }
+    if (messageOrProperties !== undefined && typeof messageOrProperties === 'object') {
+      throw new HttpError(statusCode, undefined, messageOrProperties);
+    }
+    throw new HttpError(statusCode, messageOrProperties, properties);
   }
-}
-
-export interface HttpErrorProperties {
-  expose?: boolean;
-  statusCode?: number;
-  code?: string;
-  headers?: Record<string, any>;
-  cause?: any;
-  [key: string]: any;
 }

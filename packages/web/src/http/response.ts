@@ -12,7 +12,7 @@ import type {
 import stream from 'node:stream';
 import { finished } from 'node:stream/promises';
 import destroy from 'destroy';
-import createHttpError, { type HttpError, isHttpError } from 'http-errors';
+import { HttpError } from '../utils';
 import type { WebContext } from './context';
 import type { WebRequest } from './request';
 import contentDisposition from 'content-disposition';
@@ -49,6 +49,10 @@ export class WebResponse extends ServerResponse {
    * 是否明确设置过状态码
    */
   private _explicitStatus = false;
+  /**
+   * `formatError` 已写过错误响应；`onError` 跳过默认纯文本兜底
+   */
+  private _errorHandled = false;
   private _statusCode: number = 404;
   private _updatingContentType: boolean = false;
 
@@ -213,26 +217,26 @@ export class WebResponse extends ServerResponse {
     return result === false ? null : result;
   }
 
-  onError(error?: Error | HttpError | null) {
+  onError(error?: Error | null) {
     if (error == null) return;
 
-    const err = isHttpError(error) ? error : createHttpError(error);
-    this.removeHeaders(...this.getHeaderNames());
-    err.headers && this.setHeaders(err.headers);
+    const err = HttpError.from(error);
+    const ctx = this.ctx as WebContext & WebApp.Props;
 
-    const code = err.status || err.statusCode;
-    if (err['code'] === 'ENOENT') {
-      this.statusCode = 404;
-    } else if (typeof code !== 'number' || !statuses.message[code]) {
-      this.statusCode = 500;
+    if (this._errorHandled) {
+      // 已写 body；外侧中间件仍可能在上行 catch 里改了 err.headers
+      err.headers && this.setHeaders(err.headers);
     } else {
-      this.statusCode = code;
+      this.removeHeaders(...this.getHeaderNames());
+      err.headers && this.setHeaders(err.headers);
+      this.statusCode = err.statusCode;
+      const expose = this.app.debug || err.expose;
+      this.ctx.send(
+        expose ? err.message : (statuses.message[this.statusCode] ?? 'Error'),
+      );
     }
 
-    this.body =
-      this.app.debug || err.expose ? err.message : statuses.message[this.statusCode]!;
-    // @ts-ignore
-    this.app.emit('error', err, this.ctx);
+    this.app.emit('error', err, ctx);
     this.flush();
   }
 

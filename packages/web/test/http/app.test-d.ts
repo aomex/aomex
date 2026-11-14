@@ -1,8 +1,8 @@
 import { combineServices, middleware, Service } from '@aomex/common';
-import { WebApp, WebContext } from '../../src';
+import { WebApp, WebContext, formatError } from '../../src';
 import { TestWebApp, TestWebLoggerService } from '../../src/testing';
 import { expectType } from 'ts-expect';
-import { HttpError } from 'http-errors';
+import type { HttpError } from '../../src';
 import http from 'http';
 
 // 创建实例：services + logger 必填
@@ -156,6 +156,12 @@ import http from 'http';
   app.on('error', (err, ctx) => {
     expectType<HttpError>(err);
     expectType<WebContext & WebApp.Props>(ctx);
+  });
+  formatError({
+    handler(err) {
+      expectType<string>(err.message);
+      return { code: err.code };
+    },
   });
   // @ts-expect-error
   app.on('data', () => {});

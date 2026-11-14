@@ -755,9 +755,6 @@ importers:
       '@types/formidable':
         specifier: ^3.5.1
         version: 3.5.1
-      '@types/http-errors':
-        specifier: ^2.0.4
-        version: 2.0.4
       '@types/statuses':
         specifier: ^2.0.5
         version: 2.0.5
@@ -782,9 +779,6 @@ importers:
       fresh:
         specifier: ^0.5.2
         version: 0.5.2
-      http-errors:
-        specifier: ^2.0.0
-        version: 2.0.0
       mime-types:
         specifier: ^3.0.1
         version: 3.0.1
@@ -2251,9 +2245,6 @@ packages:
 
   '@types/hast@2.3.10':
     resolution: {integrity: sha512-McWspRw8xx8J9HurkVBfYj0xKoE25tOFlHGdx4MJ5xORQrMGZNqJhVQWaIbm6Oyla5kYOXtDiopzKRJzEOkwJw==}
-
-  '@types/http-errors@2.0.4':
-    resolution: {integrity: sha512-D0CFMMtydbJAegzOyHjtiKPLlvnm3iTZyZRSZoLq2mRhDdmLfIWOCYPfQJ4cu2erKghU++QvjcUjp/5h7hESpA==}
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -8633,8 +8624,6 @@ snapshots:
   '@types/hast@2.3.10':
     dependencies:
       '@types/unist': 2.0.10
-
-  '@types/http-errors@2.0.4': {}
 
   '@types/json-schema@7.0.15': {}
 

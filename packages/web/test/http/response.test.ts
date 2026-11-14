@@ -5,7 +5,7 @@ import { dirname } from 'node:path';
 import { join } from 'path';
 import { Stream } from 'stream';
 import { finished } from 'node:stream/promises';
-import createHttpError from 'http-errors';
+import { HttpError } from '../../src';
 
 const dir = dirname(import.meta.dirname);
 
@@ -348,7 +348,7 @@ describe('error', () => {
     const { res, app } = await mockServer((agent) => agent.get('/'));
     const spy = vitest.fn();
     app.addListener('error', spy);
-    res.onError(new Error('foo bar'));
+    await res.onError(new Error('foo bar'));
     expect(res.body).toBe('foo bar');
     expect(res.statusCode).toBe(500);
     expect(spy).toHaveBeenCalledOnce();
@@ -357,7 +357,7 @@ describe('error', () => {
   test('手动设置状态码', async () => {
     const { res, app } = await mockServer((agent) => agent.get('/'));
     app.addListener('error', () => {});
-    res.onError(createHttpError(403, 'foo bar'));
+    await res.onError(new HttpError(403, 'foo bar'));
     expect(res.body).toBe('foo bar');
     expect(res.statusCode).toBe(403);
   });
@@ -365,8 +365,8 @@ describe('error', () => {
   test('禁止导出报错内容', async () => {
     const { res, app } = await mockServer((agent) => agent.get('/'));
     app.addListener('error', () => {});
-    res.onError(
-      createHttpError(403, 'foo bar', {
+    await res.onError(
+      new HttpError(403, 'foo bar', {
         expose: false,
       }),
     );
@@ -384,7 +384,7 @@ describe('error', () => {
         "origin": "x",
       }
     `);
-    res.onError(new Error('foo bar'));
+    await res.onError(new Error('foo bar'));
     expect(res.getHeaders()).toMatchInlineSnapshot(`
       {
         "content-length": 7,
@@ -397,10 +397,10 @@ describe('error', () => {
     const { res, app } = await mockServer((agent) => agent.get('/'));
     app.addListener('error', () => {});
     res.setHeaders({ Origin: 'x', Accept: 'y' });
-    const err = createHttpError('foo bar', {
+    const err = new HttpError(500, 'foo bar', {
       headers: { origin: 'xx', accept: 'yy' },
     });
-    res.onError(err);
+    await res.onError(err);
     expect(res.getHeaders()).toMatchInlineSnapshot(`
       {
         "accept": "yy",
@@ -414,8 +414,17 @@ describe('error', () => {
   test('ENOENT异常', async () => {
     const { res, app } = await mockServer((agent) => agent.get('/'));
     app.addListener('error', () => {});
-    res.onError(createHttpError({ code: 'ENOENT' }));
+    await res.onError(new HttpError(500, undefined, { code: 'ENOENT' }));
     expect(res.statusCode).toBe(404);
+    expect(res.body).toBe('Not Found');
+  });
+
+  test('未处理错误走默认纯文本', async () => {
+    const { res, app } = await mockServer((agent) => agent.get('/'));
+    app.addListener('error', () => {});
+    await res.onError(new HttpError(403, 'nope', { code: 'FORBIDDEN' }));
+    expect(res.statusCode).toBe(403);
+    expect(res.body).toBe('nope');
   });
 });
 

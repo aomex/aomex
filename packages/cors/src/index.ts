@@ -155,7 +155,7 @@ export const cors = (options: CorsOptions = {}): WebMiddleware => {
     return next().catch((err: HttpError) => {
       const errHeaders = err.headers || {};
       const varyWithOrigin = vary.append(
-        errHeaders['vary'] || errHeaders['Vary'] || '',
+        String(errHeaders['vary'] || errHeaders['Vary'] || ''),
         'Origin',
       );
       delete errHeaders['Vary'];

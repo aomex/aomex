@@ -14,7 +14,7 @@ import {
 } from '@aomex/common';
 import type { BaseLoggerService } from '@aomex/logger';
 import { WebContext } from './context';
-import type { HttpError } from 'http-errors';
+import type { HttpError } from '../utils';
 import type { WebMiddlewareToken } from '../override';
 import { toArray, type Union2Intersection } from '@aomex/internal-tools';
 import { parseBody } from '../middleware/parse-body';

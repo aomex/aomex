@@ -90,7 +90,7 @@ test('业务抛错经 onError 后仍删除临时文件', async () => {
   try {
     ctx.throw(400, 'biz failed');
   } catch (err) {
-    res.onError(err as Error);
+    await res.onError(err as Error);
   }
 
   await waitDeleted(filepath);

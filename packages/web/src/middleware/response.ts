@@ -1,79 +1,33 @@
-import {
-  Validator,
-  type ValidatorToken,
-  toValidator,
-  type OpenAPI,
-  toDocument,
-} from '@aomex/common';
+import { Validator, type ValidatorToken, type OpenAPI, toDocument } from '@aomex/common';
 import { WebMiddleware, type OpenApiInjector } from '../override';
-import { getMimeType } from '../utils';
-import type { Body, HttpErrorProperties } from '../http';
+import type { Body } from '../http';
+import type { HttpErrorProperties } from '../utils';
+import {
+  resolveResponseContentType,
+  type EmptyStatus,
+  type HttpStatus,
+  type OKStatus,
+  type RedirectStatus,
+  type WebResponseMediaOptions,
+} from './response-media';
+import { responseFormatKey, X_RESPONSE_FORMAT_DEFAULT } from './format-error';
 
-type OKStatus = 200 | 201 | 202 | 203 | 206 | 207 | 208 | 226;
-type EmptyStatus = 204 | 205 | 304;
-type RedirectStatus = 300 | 301 | 302 | 303 | 305 | 307 | 308;
-type ClientErrorStatus =
-  | 400
-  | 401
-  | 402
-  | 403
-  | 404
-  | 405
-  | 406
-  | 407
-  | 408
-  | 409
-  | 410
-  | 412
-  | 413
-  | 414
-  | 415
-  | 416
-  | 417
-  | 418
-  | 421
-  | 422
-  | 423
-  | 424
-  | 425
-  | 426
-  | 427
-  | 428
-  | 429
-  | 431
-  | 451;
-type ServerErrorStatus =
-  500 | 501 | 502 | 503 | 504 | 505 | 506 | 507 | 508 | 509 | 510 | 511;
-type HttpStatus =
-  OKStatus | EmptyStatus | RedirectStatus | ClientErrorStatus | ServerErrorStatus;
+export type {
+  ClientErrorStatus,
+  EmptyStatus,
+  HttpErrorStatus,
+  HttpStatus,
+  OKStatus,
+  RedirectStatus,
+  ServerErrorStatus,
+  WebResponseMediaOptions,
+} from './response-media';
 
 export interface WebResponseOptions<
   Code extends HttpStatus,
   Content extends ValidatorToken,
-> extends Pick<OpenAPI.MediaTypeObject, 'example'> {
+> extends WebResponseMediaOptions<Content> {
   statusCode: Code;
-  /**
-   * 响应格式，支持简写和完整写法。如果不填，则根据content的结构判断
-   *
-   * 包括但不限于如下类型：
-   * - application/json
-   * - application/*
-   * - json
-   * - text
-   * - binary
-   * - html
-   * - stream
-   */
-  contentType?: string;
-  /**
-   * 响应内容结构
-   */
-  content?: Content;
-  /**
-   * 报文结构
-   */
-  headers?: { [key: string]: ValidatorToken };
-  description?: string;
 }
 
 export class WebResponseMiddleware<
@@ -145,19 +99,45 @@ export class WebResponseMiddleware<
     return {
       onMethod: (methodItem) => {
         methodItem.responses ||= {};
-        const { statusCode, content, headers, example, description = '' } = this.options;
+        const { statusCode, content, headers, example } = this.options;
+        const prev = methodItem.responses[statusCode];
+
+        // 无 content：整份借用 formatError 槽，再单点覆盖显式字段
+        if (!content) {
+          const borrowed = this.peekResponseFormat(methodItem, statusCode);
+          const resItem: OpenAPI.ResponseObject =
+            prev && !('$ref' in prev)
+              ? prev
+              : borrowed
+                ? structuredClone(borrowed)
+                : { description: '' };
+
+          if (this.options.description !== undefined) {
+            resItem.description = this.options.description;
+          } else if (!resItem.description) {
+            resItem.description = '';
+          }
+
+          if (headers) {
+            resItem.headers = Object.fromEntries(
+              Object.entries(headers).map(([key, header]) => [key, toDocument(header)]),
+            );
+          }
+
+          methodItem.responses[statusCode] = resItem;
+          return;
+        }
+
         const resItem: OpenAPI.ResponseObject = (methodItem.responses[statusCode] = {
-          description,
+          description: this.options.description ?? '',
         });
 
-        if (content) {
-          resItem.content = {
-            [this.getContentType()]: {
-              schema: toDocument(content).schema,
-              example,
-            },
-          };
-        }
+        resItem.content = {
+          [resolveResponseContentType(this.options)]: {
+            schema: toDocument(content).schema,
+            example,
+          },
+        };
 
         if (headers) {
           resItem.headers = Object.fromEntries(
@@ -169,36 +149,18 @@ export class WebResponseMiddleware<
   }
 
   protected getContentType(): string {
-    let { contentType, content } = this.options;
+    return resolveResponseContentType(this.options);
+  }
 
-    if (!contentType) {
-      const validator = toValidator(content!);
-      const docs = validator['toDocument']();
-      switch (docs.type) {
-        case 'array':
-        case 'object':
-          contentType = getMimeType('json');
-          break;
-        case 'boolean':
-        case 'integer':
-        case 'number':
-          contentType = getMimeType('text');
-          break;
-        case 'string':
-          if (docs.format === 'binary') {
-            contentType = getMimeType('bin');
-          } else {
-            contentType = getMimeType('text');
-          }
-          break;
-        default:
-          contentType = '*/*';
-      }
-    } else if (!contentType.includes('*')) {
-      contentType = getMimeType(contentType);
-    }
-
-    return contentType.split(';')[0]!;
+  /** 优先读对应状态键，再回退 `x-response-format-default` */
+  protected peekResponseFormat(
+    methodItem: OpenAPI.OperationObject,
+    statusCode: number,
+  ): OpenAPI.ResponseObject | undefined {
+    const ext = methodItem as Record<string, unknown>;
+    const specific = ext[responseFormatKey(statusCode)];
+    if (specific) return specific as OpenAPI.ResponseObject;
+    return ext[X_RESPONSE_FORMAT_DEFAULT] as OpenAPI.ResponseObject | undefined;
   }
 }
 
@@ -206,6 +168,10 @@ export class WebResponseMiddleware<
  * 响应数据声明。多个状态码时请多次调用函数。
  * - 生成openapi文档
  * - 静态类型约束，以保证运行时和文档一致
+ *
+ * 错误状态若只声明 `statusCode`、不写 `content`：整份借用
+ * `x-response-format-{code}` / `default`（含 description、content、headers），
+ * 再按本中间件显式字段单点覆盖。
  */
 export const response = <Code extends HttpStatus, Content extends ValidatorToken>(
   options: WebResponseOptions<Code, Content>,
