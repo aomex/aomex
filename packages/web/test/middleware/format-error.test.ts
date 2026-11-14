@@ -114,7 +114,6 @@ describe('formatError', () => {
 
   test('未挂 formatError 时走默认纯文本', async () => {
     const app = new TestWebApp({
-      debug: true,
       mount: [
         middleware.web((ctx) => {
           ctx.throw(400, 'bad request detail');
@@ -130,7 +129,6 @@ describe('formatError', () => {
 
   test('statusCodes 只处理列表内状态', async () => {
     const app = new TestWebApp({
-      debug: true,
       mount: [
         formatError({
           statusCodes: [400],
@@ -241,9 +239,8 @@ describe('formatError', () => {
     expect(res.headers['x-limit']).toBe('100');
   });
 
-  test('message 按 expose/debug 净化', async () => {
+  test('message 按 expose 净化', async () => {
     const app = new TestWebApp({
-      debug: false,
       mount: [
         formatError({
           content: { message: rule.string(), expose: rule.boolean() },
@@ -275,7 +272,6 @@ describe('formatError', () => {
   test('raw 为完整 HttpError，message 已净化', async () => {
     let rawMessage = '';
     const app = new TestWebApp({
-      debug: false,
       mount: [
         formatError({
           content: { message: rule.string() },
@@ -293,27 +289,6 @@ describe('formatError', () => {
     const res = await supertest(app.listen()).get('/');
     expect(rawMessage).toBe('secret detail');
     expect(res.body).toEqual({ message: 'Internal Server Error' });
-  });
-
-  test('debug: true 时 message 暴露原文', async () => {
-    const app = new TestWebApp({
-      debug: true,
-      mount: [
-        formatError({
-          content: { message: rule.string() },
-          handler(err) {
-            return { message: err.message };
-          },
-        }),
-        middleware.web((ctx) => {
-          ctx.throw(500, 'secret detail');
-        }),
-      ],
-    });
-
-    const res = await supertest(app.listen()).get('/');
-    expect(res.status).toBe(500);
-    expect(res.body).toEqual({ message: 'secret detail' });
   });
 
   test('async handler 返回 content 对齐的 body', async () => {

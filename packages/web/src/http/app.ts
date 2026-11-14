@@ -24,12 +24,6 @@ export namespace WebApp {
 
   export interface Option<T extends WebMiddlewareToken[] | []> {
     /**
-     * 调试模式。默认值：`process.env.NODE_ENV !== 'production'`
-     *
-     * 如果开启，则`5xx`异常会响应真实的错误信息。
-     */
-    debug?: boolean;
-    /**
      * 全局中间件
      *
      * ```typescript
@@ -159,10 +153,6 @@ export class WebApp<
     };
     process.once('SIGTERM', stop);
     process.once('SIGINT', stop);
-  }
-
-  get debug(): boolean {
-    return this.options.debug ?? process.env['NODE_ENV'] !== 'production';
   }
 
   callback(): http.RequestListener<any, any> {

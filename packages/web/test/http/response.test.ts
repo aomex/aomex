@@ -349,7 +349,7 @@ describe('error', () => {
     const spy = vitest.fn();
     app.addListener('error', spy);
     await res.onError(new Error('foo bar'));
-    expect(res.body).toBe('foo bar');
+    expect(res.body).toBe('Internal Server Error');
     expect(res.statusCode).toBe(500);
     expect(spy).toHaveBeenCalledOnce();
   });
@@ -362,7 +362,7 @@ describe('error', () => {
     expect(res.statusCode).toBe(403);
   });
 
-  test('禁止导出报错内容', async () => {
+  test('expose: false 时不导出 message', async () => {
     const { res, app } = await mockServer((agent) => agent.get('/'));
     app.addListener('error', () => {});
     await res.onError(
@@ -370,7 +370,7 @@ describe('error', () => {
         expose: false,
       }),
     );
-    expect(res.body).toBe('foo bar');
+    expect(res.body).toBe('Forbidden');
     expect(res.statusCode).toBe(403);
   });
 
@@ -387,7 +387,7 @@ describe('error', () => {
     await res.onError(new Error('foo bar'));
     expect(res.getHeaders()).toMatchInlineSnapshot(`
       {
-        "content-length": 7,
+        "content-length": 21,
         "content-type": "text/plain; charset=utf-8",
       }
     `);
@@ -404,7 +404,7 @@ describe('error', () => {
     expect(res.getHeaders()).toMatchInlineSnapshot(`
       {
         "accept": "yy",
-        "content-length": 7,
+        "content-length": 21,
         "content-type": "text/plain; charset=utf-8",
         "origin": "xx",
       }

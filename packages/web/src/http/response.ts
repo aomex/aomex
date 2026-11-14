@@ -230,9 +230,8 @@ export class WebResponse extends ServerResponse {
       this.removeHeaders(...this.getHeaderNames());
       err.headers && this.setHeaders(err.headers);
       this.statusCode = err.statusCode;
-      const expose = this.app.debug || err.expose;
       this.ctx.send(
-        expose ? err.message : (statuses.message[this.statusCode] ?? 'Error'),
+        err.expose ? err.message : (statuses.message[this.statusCode] ?? 'Error'),
       );
     }
 

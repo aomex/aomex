@@ -18,8 +18,6 @@ import http from 'http';
     logger: async () => TestWebLoggerService,
   });
   new WebApp({ services, logger: services.logger });
-  new WebApp({ services, logger: services.logger, debug: true });
-  new WebApp({ services, logger: services.logger, debug: false });
   new WebApp({
     services,
     logger: services.logger,
@@ -98,7 +96,7 @@ import http from 'http';
 {
   new TestWebApp();
   new TestWebApp({});
-  new TestWebApp({ debug: true, mount: [] });
+  new TestWebApp({ mount: [] });
 }
 
 // 监听http

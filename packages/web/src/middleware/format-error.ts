@@ -32,7 +32,7 @@ export interface FormatErrorPublic {
   code?: string;
   /**
    * 已净化文案：
-   * - `expose || debug` → 原始 `HttpError.message`
+   * - `expose` → 原始 `HttpError.message`
    * - 否则 → statuses 标准文案
    */
   message: string;
@@ -110,7 +110,7 @@ export class FormatErrorMiddleware<Content extends ValidatorToken> extends WebMi
         res.statusCode = err.statusCode;
         res['_errorHandled'] = true;
 
-        const body = await options.handler(this.toPublic(err, ctx.app.debug));
+        const body = await options.handler(this.toPublic(err));
         if (body !== undefined) {
           ctx.send(body as Body);
         }
@@ -119,13 +119,12 @@ export class FormatErrorMiddleware<Content extends ValidatorToken> extends WebMi
     });
   }
 
-  /** 生成可安全导出的公开视图（与默认 `onError` 同一套 expose/debug 规则） */
-  protected toPublic(err: HttpError, debug: boolean): FormatErrorPublic {
-    const reveal = debug || err.expose;
+  /** 生成可安全导出的公开视图（与默认 `onError` 同一套 expose 规则） */
+  protected toPublic(err: HttpError): FormatErrorPublic {
     return {
       statusCode: err.statusCode,
       code: err.code,
-      message: reveal ? err.message : (statuses.message[err.statusCode] ?? 'Error'),
+      message: err.expose ? err.message : (statuses.message[err.statusCode] ?? 'Error'),
       expose: err.expose,
       raw: err,
     };

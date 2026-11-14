@@ -9,37 +9,22 @@ import fs from 'node:fs';
 import { join } from 'path';
 import { i18n } from '../../src/i18n';
 
-describe('debug', () => {
-  test('通过配置开启', () => {
-    const app = new TestWebApp({ debug: true });
-    expect(app.debug).toBeTruthy();
+test('5xx 默认不暴露 message，expose: true 才暴露', async () => {
+  const app = new TestWebApp({
+    mount: [
+      middleware.web((ctx) => {
+        if (ctx.request.query['t'] === 'expose') {
+          ctx.throw(500, '数据库配置有问题', { expose: true });
+        }
+        ctx.throw(500, '数据库配置有问题');
+      }),
+    ],
   });
-
-  test('通过配置关闭', () => {
-    const app = new TestWebApp({ debug: false });
-    expect(app.debug).toBeFalsy();
-  });
-
-  test('通过NODE_ENV判断', () => {
-    const app = new TestWebApp();
-    expect(app.debug).toBeTruthy();
-    process.env['NODE_ENV'] = 'production';
-    expect(app.debug).toBeFalsy();
-  });
-
-  test('开启后500响应真实错误', async () => {
-    const app = new TestWebApp({
-      debug: true,
-      mount: [
-        middleware.web((ctx) => {
-          ctx.throw(500, '数据库配置有问题');
-        }),
-      ],
-    });
-    await supertest(app.listen()).get('/').expect(500, '数据库配置有问题');
-    app['options'].debug = false;
-    await supertest(app.listen()).get('/').expect(500, 'Internal Server Error');
-  });
+  await supertest(app.listen()).get('/').expect(500, 'Internal Server Error');
+  await supertest(app.listen())
+    .get('/')
+    .query({ t: 'expose' })
+    .expect(500, '数据库配置有问题');
 });
 
 test('挂载中间件', () => {
