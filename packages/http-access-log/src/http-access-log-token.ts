@@ -1,4 +1,4 @@
-export enum HttpLoggerToken {
+export enum HttpAccessLogToken {
   method = '[method]',
   url = '[url]',
   statusCode = '[statusCode]',

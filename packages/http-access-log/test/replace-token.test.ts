@@ -1,11 +1,11 @@
 import { describe, expect, test, vitest } from 'vitest';
 import { replaceToken } from '../src/replace-token';
-import { HttpLoggerToken } from '../src';
+import { HttpAccessLogToken } from '../src';
 import { stripVTControlCharacters, styleText } from 'node:util';
 
 test('method', async () => {
   const msg = await replaceToken({
-    message: HttpLoggerToken.method,
+    message: HttpAccessLogToken.method,
     request: { method: 'GET', ip: '::', url: '/' },
     startTime: process.hrtime(),
   });
@@ -14,7 +14,7 @@ test('method', async () => {
 
 test('url', async () => {
   const msg = await replaceToken({
-    message: HttpLoggerToken.url,
+    message: HttpAccessLogToken.url,
     request: { method: 'GET', ip: '::', url: '/foo/bar' },
     startTime: process.hrtime(),
   });
@@ -24,7 +24,7 @@ test('url', async () => {
 describe('状态码', () => {
   test.each([200, 201, 202, 204])('绿色 %s', async (statusCode) => {
     const msg = await replaceToken({
-      message: HttpLoggerToken.statusCode,
+      message: HttpAccessLogToken.statusCode,
       response: { statusCode },
       request: { method: 'GET', ip: '::', url: '/' },
       startTime: process.hrtime(),
@@ -35,7 +35,7 @@ describe('状态码', () => {
 
   test.each([300, 301, 302, 308])('蓝绿色 %s', async (statusCode) => {
     const msg = await replaceToken({
-      message: HttpLoggerToken.statusCode,
+      message: HttpAccessLogToken.statusCode,
       response: { statusCode },
       request: { method: 'GET', ip: '::', url: '/' },
       startTime: process.hrtime(),
@@ -46,7 +46,7 @@ describe('状态码', () => {
 
   test.each([400, 401, 403, 404, 405, 406])('黄色 %s', async (statusCode) => {
     const msg = await replaceToken({
-      message: HttpLoggerToken.statusCode,
+      message: HttpAccessLogToken.statusCode,
       response: { statusCode },
       request: { method: 'GET', ip: '::', url: '/' },
       startTime: process.hrtime(),
@@ -57,7 +57,7 @@ describe('状态码', () => {
 
   test.each([500, 501, 502, 503, 504])('红色 %s', async (statusCode) => {
     const msg = await replaceToken({
-      message: HttpLoggerToken.statusCode,
+      message: HttpAccessLogToken.statusCode,
       response: { statusCode },
       request: { method: 'GET', ip: '::', url: '/' },
       startTime: process.hrtime(),
@@ -70,7 +70,7 @@ describe('状态码', () => {
 describe('响应内容长度', async () => {
   test('0', async () => {
     const msg = await replaceToken({
-      message: HttpLoggerToken.contentLength,
+      message: HttpAccessLogToken.contentLength,
       response: { contentLength: 0 },
       request: { method: 'GET', ip: '::', url: '/' },
       startTime: process.hrtime(),
@@ -80,7 +80,7 @@ describe('响应内容长度', async () => {
 
   test('有值', async () => {
     const msg = await replaceToken({
-      message: HttpLoggerToken.contentLength,
+      message: HttpAccessLogToken.contentLength,
       response: { contentLength: 1520 },
       request: { method: 'GET', ip: '::', url: '/' },
       startTime: process.hrtime(),
@@ -90,7 +90,7 @@ describe('响应内容长度', async () => {
 
   test('未提供', async () => {
     const msg = await replaceToken({
-      message: HttpLoggerToken.contentLength,
+      message: HttpAccessLogToken.contentLength,
       request: { method: 'GET', ip: '::', url: '/' },
       startTime: process.hrtime(),
     });
@@ -99,7 +99,7 @@ describe('响应内容长度', async () => {
 
   test('与空状态码一起', async () => {
     const msg = await replaceToken({
-      message: HttpLoggerToken.contentLength,
+      message: HttpAccessLogToken.contentLength,
       request: { method: 'GET', ip: '::', url: '/' },
       response: { statusCode: 204, contentLength: 123 },
       startTime: process.hrtime(),
@@ -110,7 +110,7 @@ describe('响应内容长度', async () => {
 
 test('响应类型', async () => {
   const msg = await replaceToken({
-    message: HttpLoggerToken.contentType,
+    message: HttpAccessLogToken.contentType,
     request: { method: 'GET', ip: '::', url: '/' },
     response: { contentType: 'application/json' },
     startTime: process.hrtime(),
@@ -123,7 +123,7 @@ test('响应时间差', async () => {
   const spy = vitest.spyOn(process, 'hrtime').mockImplementationOnce(() => [0, 10000]);
 
   const msg = await replaceToken({
-    message: HttpLoggerToken.duration,
+    message: HttpAccessLogToken.duration,
     request: { method: 'GET', ip: '::', url: '/' },
     startTime: start,
   });
@@ -133,7 +133,7 @@ test('响应时间差', async () => {
 
 test('IP', async () => {
   const msg = await replaceToken({
-    message: HttpLoggerToken.ip,
+    message: HttpAccessLogToken.ip,
     request: { method: 'GET', ip: '::127.0.0.1', url: '/' },
     startTime: process.hrtime(),
   });
@@ -142,7 +142,7 @@ test('IP', async () => {
 
 test('组合', async () => {
   const msg = await replaceToken({
-    message: `  ${HttpLoggerToken.ip} ${HttpLoggerToken.method} ${HttpLoggerToken.url} ${HttpLoggerToken.method} ${HttpLoggerToken.statusCode} xx `,
+    message: `  ${HttpAccessLogToken.ip} ${HttpAccessLogToken.method} ${HttpAccessLogToken.url} ${HttpAccessLogToken.method} ${HttpAccessLogToken.statusCode} xx `,
     request: { method: 'GET', ip: '::127.0.0.1', url: '/foo/bar/baz' },
     startTime: process.hrtime(),
   });
@@ -153,7 +153,7 @@ test('组合', async () => {
 
 test('未知令牌', async () => {
   const msg = await replaceToken({
-    message: `${HttpLoggerToken.statusCode} [status] [code]`,
+    message: `${HttpAccessLogToken.statusCode} [status] [code]`,
     request: { method: 'GET', ip: '::127.0.0.1', url: '/' },
     startTime: process.hrtime(),
   });
@@ -162,7 +162,7 @@ test('未知令牌', async () => {
 
 test('自定义令牌', async () => {
   const msg = await replaceToken({
-    message: `${HttpLoggerToken.statusCode} [status] [code] [custom]`,
+    message: `${HttpAccessLogToken.statusCode} [status] [code] [custom]`,
     request: { method: 'GET', ip: '::127.0.0.1', url: '/' },
     tokens: {
       status: () => '706',
@@ -175,7 +175,7 @@ test('自定义令牌', async () => {
 
 test('双括号', async () => {
   const msg = await replaceToken({
-    message: `[${HttpLoggerToken.method}]`,
+    message: `[${HttpAccessLogToken.method}]`,
     request: { method: 'GET', ip: '::', url: '/' },
     startTime: process.hrtime(),
   });

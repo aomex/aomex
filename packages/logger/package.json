@@ -21,12 +21,17 @@
   },
   "files": [
     "dist",
-    "LICENSE",
     "package.json",
     "README.md",
     "CHANGELOG.md"
   ],
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
-  "license": "MIT"
+  "license": "MIT",
+  "peerDependencies": {
+    "@aomex/common": "^3.0.0"
+  },
+  "devDependencies": {
+    "@aomex/common": "workspace:^"
+  }
 }

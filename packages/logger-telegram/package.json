@@ -1,0 +1,44 @@
+{
+  "name": "@aomex/logger-telegram",
+  "version": "3.30.7",
+  "description": "aomex logger Telegram Bot transport (grammy)",
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "prepublishOnly": "tsdown"
+  },
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "files": [
+    "dist",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@aomex/common": "^3.0.0",
+    "@aomex/logger": "^3.0.0"
+  },
+  "dependencies": {
+    "@grammyjs/auto-retry": "^2.0.2",
+    "grammy": "^1.46.0"
+  },
+  "devDependencies": {
+    "@aomex/common": "workspace:^",
+    "@aomex/logger": "workspace:^"
+  }
+}

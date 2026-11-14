@@ -1,9 +1,9 @@
-import { Logger, Transport } from '../../src';
+import { Transport, type LogRecord } from '../../src';
 
 export class MockTransport extends Transport {
-  messages: Logger.Log[] = [];
+  messages: LogRecord[] = [];
 
-  override async consume(message: Logger.Log): Promise<any> {
+  override async consume(message: LogRecord): Promise<any> {
     this.messages.push(message);
   }
 }

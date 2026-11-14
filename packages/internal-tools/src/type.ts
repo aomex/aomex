@@ -33,7 +33,12 @@ type PromisifySignature<T> = T extends (...args: infer A) => infer R
 /**
  * 将函数（含重载）的返回值 Promise 化；各重载签名分别保留。
  * 非函数类型原样返回。
+ *
+ * 若签名本身已返回 `Promise`（含方法级泛型如 `withBindings`），则原样保留：
+ * 再走 `CallSignatures` 展开会丢失泛型推断，并可能触发 TS2589。
  */
-export type PromisifyFunction<T> = [CallSignatures<T>] extends [never]
+export type PromisifyFunction<T> = T extends (...args: any) => Promise<any>
   ? T
-  : Union2Intersection<PromisifySignature<CallSignatures<T>>>;
+  : [CallSignatures<T>] extends [never]
+    ? T
+    : Union2Intersection<PromisifySignature<CallSignatures<T>>>;

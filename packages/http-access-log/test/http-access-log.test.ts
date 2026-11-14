@@ -1,5 +1,5 @@
 import { middleware } from '@aomex/common';
-import { Logger, Transport } from '@aomex/logger';
+import { Transport, type LogRecord } from '@aomex/logger';
 import { WebApp } from '@aomex/web';
 import { stripVTControlCharacters } from 'node:util';
 import {
@@ -11,7 +11,7 @@ import {
   vitest,
   type MockInstance,
 } from 'vitest';
-import { httpLogger } from '../src';
+import { httpAccessLog } from '../src';
 import supertest from 'supertest';
 import { createReadStream } from 'node:fs';
 import { join } from 'node:path';
@@ -20,9 +20,9 @@ import sleep from 'sleep-promise';
 let msgs: string[] = [];
 
 class MockTransport extends Transport {
-  override async consume(message: Logger.Log): Promise<any> {
+  override async consume(message: LogRecord): Promise<any> {
     msgs.push(
-      `[${message.level}] ${this.dateToString(new Date(message.timestamp))} ${stripVTControlCharacters(message.content)}`,
+      `[${message.level}] ${this.dateToString(new Date(message.timestamp))} ${stripVTControlCharacters(message.message)}`,
     );
   }
 }
@@ -54,7 +54,7 @@ afterAll(() => {
 test('打印日志', async () => {
   const app = new WebApp({
     mount: [
-      httpLogger({ transports }),
+      httpAccessLog({ transports }),
       middleware.web((ctx) => {
         ctx.send(200, 'foo bar');
       }),
@@ -65,7 +65,7 @@ test('打印日志', async () => {
   await sleep(100);
   expect(msgs).toMatchInlineSnapshot(`
   [
-    "[http] 2024-06-04 11:23:12 ::ffff:127.0.0.1 GET /api 200 1s 7b",
+    "[info] 2024-06-04 11:23:12 ::ffff:127.0.0.1 GET /api 200 1s 7b",
   ]
   `);
 });
@@ -73,7 +73,7 @@ test('打印日志', async () => {
 test('打印错误日志', async () => {
   const app = new WebApp({
     mount: [
-      httpLogger({ transports }),
+      httpAccessLog({ transports }),
       middleware.web((ctx) => {
         ctx.throw(400, 'bad request');
       }),
@@ -84,7 +84,7 @@ test('打印错误日志', async () => {
   await sleep(100);
   expect(msgs).toMatchInlineSnapshot(`
     [
-      "[http] 2024-06-04 11:23:12 ::ffff:127.0.0.1 GET /api 400 1s 11b",
+      "[info] 2024-06-04 11:23:12 ::ffff:127.0.0.1 GET /api 400 1s 11b",
     ]
   `);
 });
@@ -92,7 +92,7 @@ test('打印错误日志', async () => {
 test('数据流也能获取长度', async () => {
   const app = new WebApp({
     mount: [
-      httpLogger({ transports }),
+      httpAccessLog({ transports }),
       middleware.web((ctx) => {
         ctx.send(createReadStream(join(import.meta.dirname, 'fixture', 'file.txt')));
       }),
@@ -103,7 +103,7 @@ test('数据流也能获取长度', async () => {
   await sleep(100);
   expect(msgs).toMatchInlineSnapshot(`
     [
-      "[http] 2024-06-04 11:23:12 ::ffff:127.0.0.1 GET /api 200 1s 108b",
+      "[info] 2024-06-04 11:23:12 ::ffff:127.0.0.1 GET /api 200 1s 108b",
     ]
   `);
 });
@@ -111,7 +111,7 @@ test('数据流也能获取长度', async () => {
 test('自定义令牌', async () => {
   const app = new WebApp({
     mount: [
-      httpLogger({
+      httpAccessLog({
         format: '[method] [foo] [bar] [baz]',
         customTokens: {
           foo: () => 'ifooo',
@@ -129,7 +129,7 @@ test('自定义令牌', async () => {
   await sleep(100);
   expect(msgs).toMatchInlineSnapshot(`
     [
-      "[http] 2024-06-04 11:23:12 GET ifooo [bar] bazzz",
+      "[info] 2024-06-04 11:23:12 GET ifooo [bar] bazzz",
     ]
   `);
 });
@@ -137,7 +137,7 @@ test('自定义令牌', async () => {
 test('禁用日志', async () => {
   const app = new WebApp({
     mount: [
-      httpLogger({
+      httpAccessLog({
         disable: true,
         transports,
       }),
@@ -155,7 +155,7 @@ test('禁用日志', async () => {
 test('不存在消费实例也相当于禁用日志', async () => {
   const app = new WebApp({
     mount: [
-      httpLogger({
+      httpAccessLog({
         disable: true,
         transports: [],
       }),

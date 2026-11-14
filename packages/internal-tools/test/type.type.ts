@@ -81,4 +81,8 @@ import type {
   >(true);
   expectType<TypeEqual<() => Promise<'x'>, PromisifyFunction<() => Promise<'x'>>>>(true);
   expectType<TypeEqual<number, PromisifyFunction<number>>>(true);
+
+  // 已返回 Promise 的泛型方法：原样保留（不经 CallSignatures 展开）
+  type WB = <T>(cb: () => Promise<T>) => Promise<T>;
+  expectType<TypeEqual<WB, PromisifyFunction<WB>>>(true);
 }

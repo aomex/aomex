@@ -1,7 +1,7 @@
 import prettyTime from 'pretty-time';
 import { bytes } from '@aomex/internal-tools';
 import { statuses } from '@aomex/web';
-import { HttpLoggerToken } from './http-logger-token';
+import { HttpAccessLogToken } from './http-access-log-token';
 import { styleText } from 'node:util';
 
 export const colorCodes = <const>{
@@ -49,19 +49,19 @@ export const replaceToken = async (opts: {
     }
 
     switch (`[${token}]`) {
-      case HttpLoggerToken.method:
+      case HttpAccessLogToken.method:
         replace(styleText('bold', method));
         break;
-      case HttpLoggerToken.url:
+      case HttpAccessLogToken.url:
         replace(styleText('gray', url));
         break;
-      case HttpLoggerToken.statusCode:
+      case HttpAccessLogToken.statusCode:
         const c =
           colorCodes[((statusCode / 100) | 0) as keyof typeof colorCodes] ||
           colorCodes[0]!;
         replace(styleText(c, statusCode.toString()));
         break;
-      case HttpLoggerToken.contentLength:
+      case HttpAccessLogToken.contentLength:
         replace(
           styleText(
             'gray',
@@ -73,13 +73,13 @@ export const replaceToken = async (opts: {
           ),
         );
         break;
-      case HttpLoggerToken.contentType:
+      case HttpAccessLogToken.contentType:
         replace(styleText('gray', contentType));
         break;
-      case HttpLoggerToken.duration:
+      case HttpAccessLogToken.duration:
         replace(styleText('gray', prettyTime(process.hrtime(startTime))));
         break;
-      case HttpLoggerToken.ip:
+      case HttpAccessLogToken.ip:
         replace(styleText('gray', request.ip));
         break;
     }

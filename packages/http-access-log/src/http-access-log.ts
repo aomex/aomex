@@ -1,58 +1,65 @@
 import { middleware } from '@aomex/common';
-import { Logger, Transport } from '@aomex/logger';
+import { BaseLoggerService, ConsoleTransport, type Transport } from '@aomex/logger';
 import type { WebContext, WebMiddleware } from '@aomex/web';
-import { HttpLoggerToken } from './http-logger-token';
+import { HttpAccessLogToken } from './http-access-log-token';
 import { Counter } from './counter';
 import stream from 'node:stream';
 import { replaceToken } from './replace-token';
 
-export interface HttpLoggerOptions {
+export interface HttpAccessLogOptions {
   /**
    * 是否禁用请求日志。默认：`false`
    */
   disable?: boolean;
   /**
-   * 响应输出格式，建议使用 **HttpLoggerToken** 拼接。默认值：`[ip] [method] [url] [statusCode] [duration] [contentLength]`
+   * 响应输出格式，建议使用 **HttpAccessLogToken** 拼接。默认值：`[ip] [method] [url] [statusCode] [duration] [contentLength]`
    */
   format?: string;
   /**
-   * 日志输出端口。默认使用 `Logger.transport.Console`。
+   * 日志输出端口。默认使用 `ConsoleTransport`。
    */
   transports?: Transport[];
   /**
    * 自定义关键词
    * ```
-   * requestLogger({
-   *   format: ' [request] [time] [href]'
+   * httpAccessLog({
+   *   format: ' [request] [time] [href]',
    *   customTokens: {
    *     href: (ctx) => ctx.request.href,
-   *   }
+   *   },
    * })
    * ```
    */
   customTokens?: { [key: string]: (ctx: WebContext) => string | Promise<string> };
 }
 
-export const httpLogger = (options: HttpLoggerOptions = {}): WebMiddleware => {
+class HttpAccessLogService extends BaseLoggerService {
+  constructor(private readonly entries: BaseLoggerService.TransportEntry[]) {
+    super();
+  }
+
+  protected createTransports(): BaseLoggerService.TransportEntry[] {
+    return this.entries;
+  }
+}
+
+export const httpAccessLog = (options: HttpAccessLogOptions = {}): WebMiddleware => {
   const { disable = false, customTokens } = options;
   const format =
     options.format ||
-    `${HttpLoggerToken.ip} ${HttpLoggerToken.method} ${HttpLoggerToken.url} ${HttpLoggerToken.statusCode} ${HttpLoggerToken.duration} ${HttpLoggerToken.contentLength}`;
+    `${HttpAccessLogToken.ip} ${HttpAccessLogToken.method} ${HttpAccessLogToken.url} ${HttpAccessLogToken.statusCode} ${HttpAccessLogToken.duration} ${HttpAccessLogToken.contentLength}`;
 
-  let transports = options.transports;
-  if (!transports || transports.length === 0) {
-    transports = [new Logger.transports.Console()];
-  }
+  const transportList =
+    options.transports && options.transports.length > 0
+      ? options.transports
+      : [new ConsoleTransport()];
 
-  const logger = Logger.create({
-    levels: ['http'],
-    transports: transports.map((transport) => {
-      return { transport, level: 'all' };
-    }),
-  });
+  const logger = new HttpAccessLogService(
+    transportList.map((transport) => ({ transport })),
+  );
 
   return middleware.web(async (ctx, next) => {
-    if (disable || logger.transports.count('http') === 0) return next();
+    if (disable) return next();
 
     const start = process.hrtime();
     const tokens = customTokens
@@ -76,7 +83,7 @@ export const httpLogger = (options: HttpLoggerOptions = {}): WebMiddleware => {
       }
 
       response.once('close', async () => {
-        logger.http(
+        logger.info(
           await replaceToken({
             message: format,
             tokens,
