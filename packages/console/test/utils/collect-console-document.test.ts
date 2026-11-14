@@ -1,9 +1,9 @@
+import { TestConsoleApp } from '../../src/testing';
 import { MixinMiddleware, middleware } from '@aomex/common';
 import { expect, test, vitest } from 'vitest';
-import { ConsoleApp, collectConsoleDocument } from '../../src';
+import { collectConsoleDocument } from '../../src';
 import sleep from 'sleep-promise';
-
-const app = new ConsoleApp();
+const app = new TestConsoleApp({});
 
 test('返回异步结果', () => {
   expect(

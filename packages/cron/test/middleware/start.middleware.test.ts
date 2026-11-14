@@ -1,4 +1,4 @@
-import { ConsoleApp } from '@aomex/console';
+import { TestConsoleApp } from '../../../console/src/testing';
 import { middleware } from '@aomex/common';
 import { beforeEach, expect, test, vitest } from 'vitest';
 import { start } from '../../src/middleware/start.middleware';
@@ -9,7 +9,6 @@ import { createConnection } from 'net';
 import { stop } from '../../src/middleware/stop.middleware';
 import { getPort } from '../mock/get-port';
 import { Cron } from '../../src/lib/cron';
-
 const testDir = dirname(import.meta.dirname);
 
 let port: number;
@@ -19,7 +18,7 @@ beforeEach(async () => {
 });
 
 test('无任务时自动结束', async () => {
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [
       start({ commanders: join(testDir, 'mock', 'commanders', 'empty.cmd.ts'), port }),
     ],
@@ -31,7 +30,7 @@ test('执行任务', async () => {
   const spy = vitest.spyOn(Cron.prototype, 'start').mockImplementation(async () => {
     await sleep(1000);
   });
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [
       start({ commanders: join(testDir, 'mock', 'commanders', 'start.cmd.ts'), port }),
     ],
@@ -45,7 +44,7 @@ test('执行任务', async () => {
 });
 
 test('等待长任务完成后才能中断', { timeout: 9_000 }, async () => {
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [
       start({
         commanders: join(testDir, 'mock', 'commanders', 'start-delay.cmd.ts'),
@@ -86,7 +85,7 @@ test('等待长任务完成后才能中断', { timeout: 9_000 }, async () => {
 });
 
 test('使用监听获取正在执行的任务', { timeout: 9_000 }, async () => {
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [
       start({
         commanders: join(testDir, 'mock', 'commanders', 'start-delay.cmd.ts'),
@@ -128,7 +127,7 @@ test('使用监听获取正在执行的任务', { timeout: 9_000 }, async () => 
 });
 
 test('使用cron:stop结束任务', { timeout: 9_000 }, async () => {
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [
       start({
         commanders: join(testDir, 'mock', 'commanders', 'start-delay.cmd.ts'),
@@ -153,7 +152,7 @@ test('使用cron:stop结束任务', { timeout: 9_000 }, async () => {
 
 test('不是cron:start指令则继续往后执行', async () => {
   const spy = vitest.fn();
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [
       start({ commanders: join(testDir, 'mock', 'commanders', 'empty.cmd.ts'), port }),
       middleware.console(spy),

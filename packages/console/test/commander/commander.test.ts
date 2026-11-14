@@ -1,18 +1,12 @@
+import { TestConsoleApp } from '../../src/testing';
 import { expect, test, vitest } from 'vitest';
-import {
-  collectConsoleDocument,
-  Commander,
-  commanders,
-  ConsoleApp,
-  options,
-} from '../../src';
+import { collectConsoleDocument, Commander, commanders, options } from '../../src';
 import { middleware, rule } from '@aomex/common';
-
 test('前缀', async () => {
   const commander = new Commander({ prefix: 'schedule:' });
   const spy = vitest.fn();
   commander.create('a', { action: spy });
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [commanders([commander])],
   });
 
@@ -50,7 +44,7 @@ test('挂载中间件组', async () => {
     },
   });
 
-  const app = new ConsoleApp({ mount: [commanders([commander])] });
+  const app = new TestConsoleApp({ mount: [commanders([commander])] });
   await app.run('foo');
   expect(str).toBe('1234567');
 });
@@ -64,7 +58,7 @@ test('一个commander可注册多个command', async () => {
   commander.create('b', { action: spy2 });
   commander.create('c', { action: spy3 });
 
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [commanders([commander])],
   });
 
@@ -104,7 +98,7 @@ test('文档', async () => {
   await collectConsoleDocument({
     document: doc,
     middlewareList: [commander['toMiddleware']()],
-    app: new ConsoleApp(),
+    app: new TestConsoleApp({}),
   });
   expect(doc).toMatchInlineSnapshot(`
     {

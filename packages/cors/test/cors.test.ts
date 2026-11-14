@@ -1,11 +1,10 @@
+import { TestWebApp } from '../../web/src/testing';
 import { describe, expect, test } from 'vitest';
 import request from 'supertest';
 import { cors } from '../src';
-import { WebApp } from '@aomex/web';
 import { middleware } from '@aomex/common';
-
 describe('默认配置', function () {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [cors()],
   });
 
@@ -51,7 +50,7 @@ describe('默认配置', function () {
 
 describe('options.secureContext', function () {
   test('[true] 非预请求总是设置 `Cross-Origin-Opener-Policy` & `Cross-Origin-Embedder-Policy`', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors({ secureContext: true })],
     });
     await request(app.listen())
@@ -63,7 +62,7 @@ describe('options.secureContext', function () {
   });
 
   test('[true] 预请求总是设置 `Cross-Origin-Opener-Policy` & `Cross-Origin-Embedder-Policy`', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors({ secureContext: true })],
     });
     await request(app.listen())
@@ -76,7 +75,7 @@ describe('options.secureContext', function () {
   });
 
   test('[true] 非预请求不设置 `Cross-Origin-Opener-Policy` & `Cross-Origin-Embedder-Policy`', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors({ secureContext: false })],
     });
     await request(app.listen())
@@ -90,7 +89,7 @@ describe('options.secureContext', function () {
   });
 
   test('[false] 预请求不设置 `Cross-Origin-Opener-Policy` & `Cross-Origin-Embedder-Policy`', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors({ secureContext: false })],
     });
     await request(app.listen())
@@ -107,13 +106,13 @@ describe('options.secureContext', function () {
 
 describe('options.origin', function () {
   test.each([
-    new WebApp({
+    new TestWebApp({
       mount: [cors({ origin: () => '' })],
     }),
-    new WebApp({
+    new TestWebApp({
       mount: [cors({ origin: async () => '' })],
     }),
-    new WebApp({
+    new TestWebApp({
       mount: [cors({ origin: '' })],
     }),
   ])('禁用跨域', async (app) => {
@@ -125,13 +124,13 @@ describe('options.origin', function () {
   });
 
   test.each([
-    new WebApp({
+    new TestWebApp({
       mount: [cors({ origin: () => '*' })],
     }),
-    new WebApp({
+    new TestWebApp({
       mount: [cors({ origin: async () => '*' })],
     }),
-    new WebApp({
+    new TestWebApp({
       mount: [cors({ origin: '*' })],
     }),
   ])('设置 Access-Control-Allow-Origin 为 *', async (app) => {
@@ -141,7 +140,7 @@ describe('options.origin', function () {
 
 describe('options.exposeHeaders', function () {
   test('字符串', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors({ exposeHeaders: 'content-length' })],
     });
     await request(app.listen())
@@ -151,7 +150,7 @@ describe('options.exposeHeaders', function () {
   });
 
   test('数组', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors({ exposeHeaders: ['content-length', 'x-header'] })],
     });
     await request(app.listen())
@@ -163,7 +162,7 @@ describe('options.exposeHeaders', function () {
 
 describe('options.maxAge', function () {
   test('默认值', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors()],
     });
     await request(app.listen())
@@ -175,7 +174,7 @@ describe('options.maxAge', function () {
   });
 
   test('使用数字', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors({ maxAge: 7200 })],
     });
     await request(app.listen())
@@ -187,7 +186,7 @@ describe('options.maxAge', function () {
   });
 
   test('使用字符串', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors({ maxAge: '3600' })],
     });
     await request(app.listen())
@@ -199,7 +198,7 @@ describe('options.maxAge', function () {
   });
 
   test('非预请求则不设置', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors({ maxAge: 3600 })],
     });
     await request(app.listen())
@@ -213,13 +212,13 @@ describe('options.maxAge', function () {
 
 describe('options.credentials', function () {
   test.each([
-    new WebApp({
+    new TestWebApp({
       mount: [cors({ credentials: true })],
     }),
-    new WebApp({
+    new TestWebApp({
       mount: [cors({ credentials: () => true })],
     }),
-    new WebApp({
+    new TestWebApp({
       mount: [cors({ credentials: async () => true })],
     }),
   ])('[true] 不设置 Access-Control-Allow-Credentials', async (app) => {
@@ -236,16 +235,16 @@ describe('options.credentials', function () {
   });
 
   test.each([
-    new WebApp({
+    new TestWebApp({
       mount: [cors({})],
     }),
-    new WebApp({
+    new TestWebApp({
       mount: [cors({ credentials: false })],
     }),
-    new WebApp({
+    new TestWebApp({
       mount: [cors({ credentials: () => false })],
     }),
-    new WebApp({
+    new TestWebApp({
       mount: [cors({ credentials: async () => false })],
     }),
   ])('[false] 不设置 Access-Control-Allow-Credentials', async (app) => {
@@ -269,7 +268,7 @@ describe('options.credentials', function () {
 
 describe('options.allowHeaders', function () {
   test('字符串', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors({ allowHeaders: 'X-PINGOTHER' })],
     });
 
@@ -282,7 +281,7 @@ describe('options.allowHeaders', function () {
   });
 
   test('数组', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors({ allowHeaders: ['X-PINGOTHER', 'Y'] })],
     });
 
@@ -295,7 +294,7 @@ describe('options.allowHeaders', function () {
   });
 
   test('把请求报文 Access-Control-Request-Headers 上的内容复制到 Access-Control-Allow-Headers', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors()],
     });
     await request(app.listen())
@@ -310,7 +309,7 @@ describe('options.allowHeaders', function () {
 
 describe('options.allowMethods', function () {
   test('默认值', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors()],
     });
 
@@ -323,7 +322,7 @@ describe('options.allowMethods', function () {
   });
 
   test('数组', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors({ allowMethods: ['GET', 'POST'] })],
     });
 
@@ -336,7 +335,7 @@ describe('options.allowMethods', function () {
   });
 
   test('跳过报文', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [cors({ allowMethods: undefined })],
     });
 
@@ -353,7 +352,7 @@ describe('options.allowMethods', function () {
 
 describe('vary', () => {
   test('其他中间件设置了vary报文', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [
         middleware.web((ctx, next) => {
           ctx.response.vary('Accept-Encoding');
@@ -369,7 +368,7 @@ describe('vary', () => {
   });
 
   test('其他中间件报错并设置了vary', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [
         cors({ allowMethods: undefined }),
         middleware.web((ctx) => {
@@ -389,7 +388,7 @@ describe('vary', () => {
   });
 
   test('其他中间件报错并设置了vary=*', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [
         cors({ allowMethods: undefined }),
         middleware.web((ctx) => {
@@ -409,7 +408,7 @@ describe('vary', () => {
   });
 
   test('其他中间件报错并设置了vary而且包含了Origin，则不能重复添加', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [
         cors({ allowMethods: undefined }),
         middleware.web((ctx) => {
@@ -430,7 +429,7 @@ describe('vary', () => {
 });
 
 test('options.privateNetworkAccess=false', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [cors({ privateNetworkAccess: false })],
   });
 
@@ -461,7 +460,7 @@ test('options.privateNetworkAccess=false', async () => {
 });
 
 describe('options.privateNetworkAccess=true', function () {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [cors({ privateNetworkAccess: true })],
   });
   test('非预请求不设置 `Access-Control-Allow-Private-Network`', async () => {

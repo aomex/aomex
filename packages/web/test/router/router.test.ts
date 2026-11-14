@@ -1,14 +1,14 @@
+import { TestWebApp } from '../../src/testing';
 import { expect, test, vitest } from 'vitest';
-import { Router, routers, WebApp } from '../../src';
+import { Router, routers } from '../../src';
 import { middleware } from '@aomex/common';
 import supertest from 'supertest';
-
 test('前缀', async () => {
   const router = new Router({ prefix: '/test/foo' });
   const spy = vitest.fn();
   router.get('/bar', { action: spy });
 
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [routers([router])],
   });
 
@@ -48,7 +48,7 @@ test('挂载中间件', async () => {
     },
   });
 
-  const app = new WebApp({ mount: [routers([router])] });
+  const app = new TestWebApp({ mount: [routers([router])] });
   await supertest(app.listen()).get('/test/foo/bar');
   expect(str).toBe('1234567');
 });
@@ -61,7 +61,7 @@ test.each(<const>['get', 'post', 'put', 'delete', 'patch'])(
     const spy = vitest.fn();
     router[name]('/foo', { action: spy });
 
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [routers([router])],
     });
     await Promise.all([
@@ -79,7 +79,7 @@ test('支持任意方法', async () => {
   const spy = vitest.fn();
   router.all('/foo', { action: spy });
 
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [routers([router])],
   });
 
@@ -103,7 +103,7 @@ test('支持自定义方法', async () => {
   const spy = vitest.fn();
   router.customize(['POST', 'DELETE'], '/foo', { action: spy });
 
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [routers([router])],
   });
 
@@ -130,7 +130,7 @@ test('params', async () => {
       spy(ctx.request.params);
     },
   });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [routers([router])],
   });
   await supertest(app.listen()).get('/users/2/posts/5678');
@@ -146,7 +146,7 @@ test('一个router可注册多个route', async () => {
   router.get('/bar', { action: spy2 });
   router.get('/baz', { action: spy3 });
 
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [routers([router])],
   });
 

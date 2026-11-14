@@ -1,9 +1,11 @@
-import { WebApp, WebContext } from '@aomex/web';
-import { ConsoleApp, ConsoleContext } from '@aomex/console';
+import { WebContext } from '@aomex/web';
+import { TestWebApp } from '../../web/src/testing';
+import { ConsoleContext } from '@aomex/console';
+import { TestConsoleApp } from '../../console/src/testing';
 import { traceMiddleware, type AsyncTraceRecord } from '../src';
 import { expectType, type TypeEqual } from 'ts-expect';
 
-new WebApp({
+new TestWebApp({
   mount: [
     traceMiddleware('', (record, ctx: WebContext) => {
       expectType<TypeEqual<AsyncTraceRecord, typeof record>>(true);
@@ -12,7 +14,7 @@ new WebApp({
   ],
 });
 
-new ConsoleApp({
+new TestConsoleApp({
   mount: [
     traceMiddleware('', (record, ctx: ConsoleContext) => {
       expectType<TypeEqual<AsyncTraceRecord, typeof record>>(true);

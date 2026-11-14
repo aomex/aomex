@@ -1,6 +1,4 @@
 import EventEmitter from 'node:events';
-import { EOL } from 'node:os';
-import { styleText } from 'node:util';
 import { hideBin } from 'yargs/helpers';
 import {
   I18n,
@@ -9,7 +7,9 @@ import {
   internalDestroyServices,
   middleware,
   type CombinedServices,
+  type PromisifiedService,
 } from '@aomex/common';
+import type { BaseLoggerService } from '@aomex/logger';
 import { ConsoleInput } from './input';
 import { ConsoleContext } from './context';
 import { helpLogger } from '../middleware/help-logger';
@@ -17,12 +17,18 @@ import type { ConsoleMiddlewareToken } from '../override';
 import { toArray, type Union2Intersection } from '@aomex/internal-tools';
 
 export namespace ConsoleApp {
+  export type Logger = PromisifiedService<BaseLoggerService>;
+
   export interface Option<T extends ConsoleMiddlewareToken[] | []> {
     /**
      * 全局中间件
      * ```typescript
      *
-     * const app = new ConsoleApp({ mount: [md1, md2] });
+     * const app = new ConsoleApp({
+     *   services,
+     *   logger: services.logger,
+     *   mount: [md1, md2],
+     * });
      *
      * declare module '@aomex/console' {
      *   namespace ConsoleApp {
@@ -34,9 +40,23 @@ export namespace ConsoleApp {
      */
     mount?: T;
     /**
-     * `combineServices` 的返回值（单个或数组）。传入后在进程 beforeExit/SIGINT/SIGTERM 时自动销毁。
+     * `combineServices` 的返回值（单个或数组）。
+     * 关停：进程 beforeExit / SIGINT / SIGTERM 时自动销毁。
      */
-    services?: CombinedServices | readonly CombinedServices[];
+    services: CombinedServices | readonly CombinedServices[];
+    /**
+     * 经 `combineServices` 处理后的 logger（通常为 `services.logger`）。
+     * 默认 `error` 监听 / `ctx.logger` 均走此实例。
+     *
+     * ```ts
+     * const services = await combineServices(
+     *   { logger: () => import('./logger.service.js') },
+     *   { eager: ['logger'] },
+     * );
+     * new ConsoleApp({ services, logger: services.logger });
+     * ```
+     */
+    logger: Logger;
     language?: 'zh_CN' | 'en_US' | (string & {});
   }
 
@@ -56,17 +76,17 @@ export class ConsoleApp<
   error: [err: Error, ctx: ConsoleContext & ConsoleApp.Props, level: number];
 }> {
   level: number = 0;
-  protected readonly point?: string;
   protected readonly middlewareList: Middleware[];
+  protected readonly logger: ConsoleApp.Logger;
 
-  constructor(protected readonly options: ConsoleApp.Option<T> = {}) {
+  constructor(protected readonly options: ConsoleApp.Option<T>) {
     super();
     this.middlewareList = options.mount || [];
-    this.bindServicesShutdown(options.services ? toArray(options.services) : []);
+    this.logger = options.logger;
+    this.bindServicesShutdown(toArray(options.services));
   }
 
   protected bindServicesShutdown(services: CombinedServices[]) {
-    if (!services.length) return;
     // beforeExit：异步 onDestroy 会拖住事件循环直至结束
     process.once('beforeExit', () => {
       void internalDestroyServices(services);
@@ -99,7 +119,9 @@ export class ConsoleApp<
 
     // 至少需要一个监听者，否则程序会报错
     if (!this.listenerCount('error')) {
-      this.on('error', this.log.bind(this));
+      this.on('error', (err) => {
+        void this.logger.error(err);
+      });
     }
 
     try {
@@ -120,10 +142,5 @@ export class ConsoleApp<
     } finally {
       --this.level;
     }
-  }
-
-  public log(err: Error) {
-    const stack = (err.stack || err.toString()).split(EOL).map((item) => '  ' + item);
-    console.error([styleText('red', stack.shift() || ''), stack.join(EOL)].join(EOL));
   }
 }

@@ -1,12 +1,11 @@
+import { TestWebApp } from '../../web/src/testing';
 import { Readable } from 'node:stream';
 import { middleware } from '@aomex/common';
-import { WebApp } from '@aomex/web';
 import { expect, test } from 'vitest';
 import supertest from 'supertest';
 import { prettyJson } from '../src';
-
 test('默认开启美化', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       prettyJson(),
       middleware.web((ctx) => {
@@ -28,7 +27,7 @@ test('默认开启美化', async () => {
 });
 
 test('null和undefined', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       prettyJson(),
       middleware.web((ctx) => {
@@ -49,7 +48,7 @@ test('null和undefined', async () => {
 });
 
 test('通过enable=false关闭美化', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       prettyJson({ enable: false }),
       middleware.web((ctx) => {
@@ -66,7 +65,7 @@ test('通过enable=false关闭美化', async () => {
 });
 
 test('自定义空格', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       prettyJson({ spaces: 6 }),
       middleware.web((ctx) => {
@@ -87,7 +86,7 @@ test('自定义空格', async () => {
 });
 
 test('通过查询字符串开启美化', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       prettyJson({ enable: false, query: 'make_it_pretty' }),
       middleware.web((ctx) => {
@@ -113,7 +112,7 @@ test('通过查询字符串开启美化', async () => {
 });
 
 test('如果设置中不包含查询字符串，则查询字符串无效', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       prettyJson({ enable: false }),
       middleware.web((ctx) => {
@@ -130,7 +129,7 @@ test('如果设置中不包含查询字符串，则查询字符串无效', async
 });
 
 test('美化对象流', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       prettyJson({ spaces: 4 }),
       middleware.web((ctx) => {
@@ -163,7 +162,7 @@ test('美化对象流', async () => {
 });
 
 test('普通流不美化', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       prettyJson({ spaces: 4 }),
       middleware.web((ctx) => {

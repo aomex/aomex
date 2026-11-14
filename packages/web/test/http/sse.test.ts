@@ -1,13 +1,12 @@
+import { TestWebApp } from '../../src/testing';
 import { expect, test, vi } from 'vitest';
 import http from 'node:http';
 import type { AddressInfo } from 'node:net';
 import request from 'supertest';
 import { middleware } from '@aomex/common';
-import { WebApp } from '../../src';
 import { mockServer } from '../fixture/mock-server';
-
 test('设置 SSE 响应头并发送 data', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -29,7 +28,7 @@ test('设置 SSE 响应头并发送 data', async () => {
 });
 
 test('response.sse 与 ctx.sse 等价', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.response.sse({ heartbeat: false });
@@ -45,7 +44,7 @@ test('response.sse 与 ctx.sse 等价', async () => {
 });
 
 test('多行字符串 data 拆成多行 data 字段', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -60,7 +59,7 @@ test('多行字符串 data 拆成多行 data 字段', async () => {
 });
 
 test('id / event / retry 字段', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false, retry: 3000 });
@@ -79,7 +78,7 @@ test('id / event / retry 字段', async () => {
 });
 
 test('Options.retry 为 0 仍写入', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false, retry: 0 });
@@ -93,7 +92,7 @@ test('Options.retry 为 0 仍写入', async () => {
 });
 
 test('send 仅 event、无 data', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -109,7 +108,7 @@ test('send 仅 event、无 data', async () => {
 });
 
 test('send 支持 null / boolean / array，undefined 不写 data', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -131,7 +130,7 @@ test('send 支持 null / boolean / array，undefined 不写 data', async () => {
 
 test('读取 Last-Event-ID', async () => {
   let lastEventId: string | undefined;
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -147,7 +146,7 @@ test('读取 Last-Event-ID', async () => {
 
 test('无 Last-Event-ID 时为 undefined', async () => {
   let lastEventId: string | undefined = 'unset';
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -164,7 +163,7 @@ test('无 Last-Event-ID 时为 undefined', async () => {
 test('Last-Event-ID 空字符串为 undefined，数组取首项', async () => {
   let emptyId: string | undefined = 'unset';
   let arrayId: string | undefined;
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -183,7 +182,7 @@ test('Last-Event-ID 空字符串为 undefined，数组取首项', async () => {
 });
 
 test('stream 推送结束后自动 close', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -201,7 +200,7 @@ test('stream 推送结束后自动 close', async () => {
 });
 
 test('stream 支持同步回调', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -218,7 +217,7 @@ test('stream 支持同步回调', async () => {
 
 test('onClose 在 close 时触发', async () => {
   const spy = vi.fn();
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -236,7 +235,7 @@ test('onClose 在 close 时触发', async () => {
 test('onClose 可链式且均可执行', async () => {
   const a = vi.fn();
   const b = vi.fn();
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -253,7 +252,7 @@ test('onClose 可链式且均可执行', async () => {
 
 test('已关闭后再 onClose 立即执行', async () => {
   const spy = vi.fn();
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -269,7 +268,7 @@ test('已关闭后再 onClose 立即执行', async () => {
 
 test('重复 close 幂等，onClose 只跑一轮', async () => {
   const spy = vi.fn();
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -286,7 +285,7 @@ test('重复 close 幂等，onClose 只跑一轮', async () => {
 
 test('teardown 抛错不影响关流与后续 teardown', async () => {
   const spy = vi.fn();
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -305,7 +304,7 @@ test('teardown 抛错不影响关流与后续 teardown', async () => {
 
 test('headers 已发送后再开 SSE 抛错', async () => {
   let error: unknown;
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         ctx.response.statusCode = 200;
@@ -327,7 +326,7 @@ test('headers 已发送后再开 SSE 抛错', async () => {
 });
 
 test('close 后 send 不再写入', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -361,7 +360,7 @@ test('response 不可写时 writeRaw 触发 close', async () => {
 });
 
 test('id/event 中的换行会被剔除', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -379,7 +378,7 @@ test('id/event 中的换行会被剔除', async () => {
 
 test('stream 内 signal 在 close 后 aborted', async () => {
   let aborted = false;
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -397,7 +396,7 @@ test('stream 内 signal 在 close 后 aborted', async () => {
 
 test('stream 抛错时仍会 close', async () => {
   const spy = vi.fn();
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });
@@ -416,7 +415,7 @@ test('stream 抛错时仍会 close', async () => {
 });
 
 test('heartbeat: 0 与 false 均关闭心跳', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: 0 });
@@ -432,7 +431,7 @@ test('heartbeat: 0 与 false 均关闭心跳', async () => {
 });
 
 test('heartbeat 定时写出注释行', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: 30 });
@@ -448,7 +447,7 @@ test('heartbeat 定时写出注释行', async () => {
 
 test('客户端断开触发自动 close', async () => {
   const onClose = vi.fn();
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
         const sse = ctx.sse({ heartbeat: false });

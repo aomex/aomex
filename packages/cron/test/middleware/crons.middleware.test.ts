@@ -1,7 +1,7 @@
+import { TestConsoleApp } from '../../../console/src/testing';
 import { expect, test } from 'vitest';
 import { crons } from '../../src';
 import {
-  ConsoleApp,
   ConsoleMiddleware,
   collectConsoleDocument,
   type ConsoleDocument,
@@ -17,7 +17,7 @@ test('文档', async () => {
   await collectConsoleDocument({
     document: docs,
     middlewareList: [crons({ commanders: '' })],
-    app: new ConsoleApp(),
+    app: new TestConsoleApp({}),
   });
   expect(docs).toMatchInlineSnapshot(`
     {

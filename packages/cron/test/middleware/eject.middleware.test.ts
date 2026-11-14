@@ -1,13 +1,12 @@
+import { TestConsoleApp } from '../../../console/src/testing';
 import { expect, test, vitest } from 'vitest';
 import { eject } from '../../src/middleware/eject.middleware';
 import { dirname, join } from 'path';
 import { middleware } from '@aomex/common';
-import { ConsoleApp } from '@aomex/console';
-
 const testDir = dirname(import.meta.dirname);
 
 test('导出任务列表', async () => {
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [
       eject({
         commanders: join(testDir, 'mock', 'commanders', 'eject.cmd.ts'),
@@ -27,7 +26,7 @@ test('导出任务列表', async () => {
 
 test('无效指令继续往后执行', async () => {
   const spy = vitest.fn();
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [
       eject({
         commanders: join(testDir, '..', 'package.json'),

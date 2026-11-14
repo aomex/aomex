@@ -1,6 +1,8 @@
 import { afterAll, expect, test, vitest } from 'vitest';
 import { ConsoleApp } from '../../src';
+import { TestConsoleApp, TestConsoleLoggerService } from '../../src/testing';
 import { combineServices, middleware, Service } from '@aomex/common';
+import { BaseLoggerService } from '@aomex/logger';
 import { i18n } from '../../src/i18n';
 
 let consoleSpy = vitest.spyOn(console, 'error').mockImplementation(() => {});
@@ -13,34 +15,32 @@ test('挂载全局中间件', () => {
   const m1 = middleware.mixin(() => {});
   const m2 = middleware.mixin(() => {});
 
-  const app = new ConsoleApp({ mount: [m1, m2, m2] });
+  const app = new TestConsoleApp({ mount: [m1, m2, m2] });
   expect(app['middlewareList']).toStrictEqual([m1, m2, m2]);
 });
 
 test('执行指令', async () => {
-  const app = new ConsoleApp();
+  const app = new TestConsoleApp();
   const code = await app.run('foo');
   expect(code).toBe(1);
 });
 
 test('找到指令', async () => {
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [
       middleware.console((ctx) => {
         ctx.commandMatched = true;
       }),
     ],
   });
-  const code = await app.run('foo');
-  expect(code).toBe(0);
+  await expect(app.run('any')).resolves.toBe(0);
 });
 
-test('参数从指令获取', async () => {
+test('传递参数', async () => {
   const originArgv = process.argv;
-  process.argv = ['node', 'bin', 'foo', '--bar', 'baz', '-f', 'k'];
-
+  process.argv = ['node', 'cli', 'foo', '--bar', 'baz', '-f', 'k'];
   const spy = vitest.fn();
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [
       middleware.console((ctx) => {
         ctx.commandMatched = true;
@@ -54,7 +54,7 @@ test('参数从指令获取', async () => {
 });
 
 test('深层指令', async () => {
-  const app = new ConsoleApp();
+  const app = new TestConsoleApp();
   expect(app.level).toBe(0);
   const p1 = app.run('foo');
   expect(app.level).toBe(1);
@@ -67,18 +67,30 @@ test('深层指令', async () => {
 });
 
 test('报错日志', async () => {
-  const app = new ConsoleApp();
   let msg = '';
-  const spy = vitest.spyOn(app, 'log').mockImplementation((err) => {
-    msg = err.message;
-  });
+  class CaptureLogger extends BaseLoggerService {
+    protected createTransports() {
+      return [];
+    }
+    override error(messageOrError: unknown, message?: string): void {
+      msg = Error.isError(messageOrError)
+        ? messageOrError.message
+        : String(messageOrError);
+      if (message === undefined) super.error(messageOrError);
+      else super.error(messageOrError, message);
+    }
+  }
+  const services = await combineServices(
+    { logger: async () => CaptureLogger },
+    { eager: ['logger'] },
+  );
+  const app = new ConsoleApp({ services, logger: services.logger });
   await app.run('foo');
-  expect(spy).toHaveBeenCalledOnce();
   expect(msg).toMatchInlineSnapshot(`"指令 "foo" 不存在"`);
 });
 
 test('自定义报错回调', async () => {
-  const app = new ConsoleApp();
+  const app = new TestConsoleApp();
   let msg = '';
   app.on('error', (err) => {
     msg = err.message;
@@ -88,7 +100,7 @@ test('自定义报错回调', async () => {
 });
 
 test('设置语言', async () => {
-  const app1 = new ConsoleApp({
+  const app1 = new TestConsoleApp({
     language: 'zh_CN',
     mount: [
       middleware.mixin(() => {
@@ -98,7 +110,7 @@ test('设置语言', async () => {
   });
   await app1.run('foo:bar');
 
-  const app2 = new ConsoleApp({
+  const app2 = new TestConsoleApp({
     language: 'en_US',
     mount: [
       middleware.mixin(() => {
@@ -128,9 +140,12 @@ test('services：信号路径会等 onDestroy 完成再 exit', async () => {
     }
   }
 
-  const services = await combineServices({ demo: async () => Demo });
+  const services = await combineServices({
+    logger: async () => TestConsoleLoggerService,
+    demo: async () => Demo,
+  });
   await services.demo.ping();
-  new ConsoleApp({ services });
+  new ConsoleApp({ services, logger: services.logger });
 
   expect(handlers.has('SIGTERM')).toBe(true);
   handlers.get('SIGTERM')!();
@@ -160,9 +175,12 @@ test('services：beforeExit 调度销毁且不 exit', async () => {
     }
   }
 
-  const services = await combineServices({ demo: async () => Demo });
+  const services = await combineServices({
+    logger: async () => TestConsoleLoggerService,
+    demo: async () => Demo,
+  });
   await services.demo.ping();
-  new ConsoleApp({ services });
+  new ConsoleApp({ services, logger: services.logger });
 
   handlers.get('beforeExit')!();
   await vitest.waitFor(() => expect(destroyed).toBe(1));
@@ -189,11 +207,17 @@ test('services：支持数组', async () => {
     }
   }
 
-  const s1 = await combineServices({ a: async () => Demo });
-  const s2 = await combineServices({ b: async () => Demo });
+  const s1 = await combineServices({
+    logger: async () => TestConsoleLoggerService,
+    a: async () => Demo,
+  });
+  const s2 = await combineServices({
+    logger: async () => TestConsoleLoggerService,
+    b: async () => Demo,
+  });
   await s1.a.ping();
   await s2.b.ping();
-  new ConsoleApp({ services: [s1, s2] });
+  new ConsoleApp({ services: [s1, s2], logger: s1.logger });
 
   handlers.get('beforeExit')!();
   await vitest.waitFor(() => expect(destroyed).toBe(2));

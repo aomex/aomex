@@ -10,16 +10,18 @@ import {
   internalDestroyServices,
   middleware,
   type CombinedServices,
+  type PromisifiedService,
 } from '@aomex/common';
+import type { BaseLoggerService } from '@aomex/logger';
 import { WebContext } from './context';
 import type { HttpError } from 'http-errors';
-import { EOL } from 'node:os';
 import type { WebMiddlewareToken } from '../override';
-import { styleText } from 'node:util';
 import { toArray, type Union2Intersection } from '@aomex/internal-tools';
 import { parseBody } from '../middleware/parse-body';
 
 export namespace WebApp {
+  export type Logger = PromisifiedService<BaseLoggerService>;
+
   export interface Option<T extends WebMiddlewareToken[] | []> {
     /**
      * 调试模式。默认值：`process.env.NODE_ENV !== 'production'`
@@ -32,7 +34,9 @@ export namespace WebApp {
      *
      * ```typescript
      * const app = new WebApp({
-     *   mount: [md1, md2]
+     *   services,
+     *   logger: services.logger,
+     *   mount: [md1, md2],
      * });
      *
      * declare module '@aomex/web' {
@@ -45,10 +49,23 @@ export namespace WebApp {
      */
     mount?: T;
     /**
-     * `combineServices` 的返回值（单个或数组）。传入后在 HTTP(S) 关停时自动 `onDestroy`：
-     * SIGINT/SIGTERM → `server.close()` → 再 await 销毁已加载服务。
+     * `combineServices` 的返回值（单个或数组）。
+     * 关停：SIGINT/SIGTERM → `server.close()` → 再 await 销毁已加载服务。
      */
-    services?: CombinedServices | readonly CombinedServices[];
+    services: CombinedServices | readonly CombinedServices[];
+    /**
+     * 经 `combineServices` 处理后的 logger（通常为 `services.logger`）。
+     * 默认 `error` 监听 / `ctx.logger` 均走此实例。
+     *
+     * ```ts
+     * const services = await combineServices(
+     *   { logger: () => import('./logger.service.js') },
+     *   { eager: ['logger'] },
+     * );
+     * new WebApp({ services, logger: services.logger });
+     * ```
+     */
+    logger: Logger;
     language?: 'zh_CN' | 'en_US' | (string & {});
     /**
      * 客户端 IP 解析（`ctx.request.ip`）。
@@ -57,8 +74,11 @@ export namespace WebApp {
      * （可被伪造）。生产环境建议显式配置，按反向代理层数严格取值：
      *
      * ```ts
-     * new WebApp({ proxyIP: { header: 'x-forwarded-for', hops: 1 } });
-     * new WebApp({ proxyIP: { header: 'x-real-ip', hops: 1 } });
+     * new WebApp({
+     *   services,
+     *   logger: services.logger,
+     *   proxyIP: { header: 'x-forwarded-for', hops: 1 },
+     * });
      * ```
      */
     proxyIP?: {
@@ -109,18 +129,18 @@ export class WebApp<
 > extends stream.EventEmitter<{
   error: [err: HttpError, ctx: WebContext & WebApp.Props];
 }> {
-  protected readonly point?: string;
   protected readonly middlewareList: WebMiddlewareToken[];
+  protected readonly logger: WebApp.Logger;
 
-  constructor(protected readonly options: WebApp.Option<T> = {}) {
+  constructor(protected readonly options: WebApp.Option<T>) {
     super();
     this.middlewareList = [];
     this.middlewareList = options.mount || [];
+    this.logger = options.logger;
   }
 
   protected bindServerLifecycle(server: http.Server | https.Server): void {
-    const services = this.options.services ? toArray(this.options.services) : [];
-    if (!services.length) return;
+    const services = toArray(this.options.services);
 
     // 手动 close：尽量跑完 onDestroy（不 exit）
     server.once('close', () => {
@@ -158,7 +178,10 @@ export class WebApp<
 
     // 至少需要监听一个，否则emit会报错
     if (!this.listenerCount('error')) {
-      this.on('error', this.log.bind(this));
+      this.on('error', (err) => {
+        if (err.expose) return;
+        void this.logger.error(err);
+      });
     }
 
     return (req: WebRequest, res: WebResponse) => {
@@ -214,11 +237,5 @@ export class WebApp<
     );
     this.bindServerLifecycle(server);
     return { listen: server.listen.bind(server) };
-  }
-
-  log(err: HttpError, ctx: WebContext) {
-    if (ctx.response.statusCode === 404 || err.expose) return;
-    const msgs = (err.stack || err.toString()).split(EOL);
-    console.error(['', styleText('bgRed', msgs.shift()!), msgs.join(EOL), ''].join(EOL));
   }
 }

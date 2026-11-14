@@ -406,6 +406,9 @@ importers:
       '@aomex/common':
         specifier: workspace:^
         version: link:../common
+      '@aomex/logger':
+        specifier: workspace:^
+        version: link:../logger
       '@types/yargs':
         specifier: ^17.0.23
         version: 17.0.32
@@ -804,6 +807,9 @@ importers:
       '@aomex/common':
         specifier: workspace:^
         version: link:../common
+      '@aomex/logger':
+        specifier: workspace:^
+        version: link:../logger
       '@types/co-body':
         specifier: ^6.1.3
         version: 6.1.3

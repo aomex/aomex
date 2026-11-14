@@ -1,6 +1,6 @@
+import { TestConsoleApp } from '../../src/testing';
 import { expect, test } from 'vitest';
 import {
-  ConsoleApp,
   ConsoleInput,
   ConsoleMiddleware,
   options,
@@ -9,8 +9,7 @@ import {
 } from '../../src';
 import { compose, middleware, rule } from '@aomex/common';
 import { collectConsoleDocument } from '../../src/utils';
-
-const app = new ConsoleApp();
+const app = new TestConsoleApp({});
 
 test('中间件', () => {
   expect(options({})).toBeInstanceOf(ConsoleMiddleware);
@@ -104,7 +103,7 @@ test('文档', async () => {
         },
       }),
     ],
-    app: new ConsoleApp(),
+    app: new TestConsoleApp({}),
   });
   expect(doc).toMatchInlineSnapshot(`
     {

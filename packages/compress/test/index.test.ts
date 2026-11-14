@@ -1,12 +1,11 @@
+import { TestWebApp } from '../../web/src/testing';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import request from 'supertest';
 import { describe, test, expect } from 'vitest';
 import { compress, type CompressProps } from '../src';
 import { middleware } from '@aomex/common';
-import { WebApp } from '@aomex/web';
 import { dirname, join } from 'node:path';
-
 const buffer = crypto.randomBytes(1024); // 1024 B
 const bufferString = buffer.toString('hex'); // 2048 B
 const sendString = middleware.web((ctx) => {
@@ -14,7 +13,7 @@ const sendString = middleware.web((ctx) => {
 });
 
 test('压缩字符串', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [compress(), sendString],
   });
 
@@ -31,7 +30,7 @@ test('压缩字符串', async () => {
 });
 
 test('阈值以下不允许压缩字符串', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [compress({ threshold: '1mb' }), sendString],
   });
 
@@ -48,7 +47,7 @@ test('阈值以下不允许压缩字符串', async () => {
 });
 
 test('压缩JSON', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       compress(),
       middleware.web((ctx) => {
@@ -72,7 +71,7 @@ test('压缩JSON', async () => {
 });
 
 test('阈值以下不允许压缩JSON', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       compress(),
       middleware.web((ctx) => {
@@ -94,7 +93,7 @@ test('阈值以下不允许压缩JSON', async () => {
 });
 
 test('压缩Buffer', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       compress(),
       middleware.web((ctx) => {
@@ -116,7 +115,7 @@ test('压缩Buffer', async () => {
 });
 
 test('压缩数据流', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       compress(),
       middleware.web((ctx) => {
@@ -141,7 +140,7 @@ test('压缩数据流', async () => {
 });
 
 test('设置 ctx.compress=true 时强制压缩未达阈值的内容', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       compress({ threshold: '1mb' }),
       middleware.web<CompressProps>((ctx) => {
@@ -163,7 +162,7 @@ test('设置 ctx.compress=true 时强制压缩未达阈值的内容', async () =
 });
 
 test('设置 ctx.compress=false 时禁止压缩', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       compress(),
       middleware.web<CompressProps>((ctx) => {
@@ -185,7 +184,7 @@ test('设置 ctx.compress=false 时禁止压缩', async () => {
 });
 
 test('不压缩HEAD请求', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [compress(), sendString],
   });
 
@@ -198,7 +197,7 @@ test('不压缩HEAD请求', async () => {
 });
 
 test('阈值设为0时不压缩', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [compress({ threshold: 0 }), sendString],
   });
 
@@ -214,7 +213,7 @@ test('阈值设为0时不压缩', async () => {
 });
 
 test('图片不压缩', () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       compress(),
       middleware.web((ctx) => {
@@ -235,7 +234,7 @@ test('图片不压缩', () => {
 
 test('SSE(text/event-stream)不压缩', async () => {
   const body = 'data: ' + bufferString + '\n\n';
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       compress(),
       middleware.web((ctx) => {
@@ -258,7 +257,7 @@ test('SSE(text/event-stream)不压缩', async () => {
 
 test('SSE 即使 needCompress=true 也不压缩', async () => {
   const body = 'data: ' + bufferString + '\n\n';
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       compress(),
       middleware.web<CompressProps>((ctx) => {
@@ -281,7 +280,7 @@ test('SSE 即使 needCompress=true 也不压缩', async () => {
 });
 
 test('已经设置了Content-Encoding则不压缩', () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       compress(),
       middleware.web((ctx) => {
@@ -308,7 +307,7 @@ describe('Cache-Control', () => {
     'no-transform , max-age=1000',
     'max-age=1000 , no-transform',
   ])('跳过Cache-Control', async (headerValue) => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [
         compress(),
         middleware.web((ctx, next) => {
@@ -334,7 +333,7 @@ describe('Cache-Control', () => {
   test.each(['not-no-transform', 'public', 'no-transform-thingy'])(
     '不跳过Cache-Control',
     async (headerValue) => {
-      const app = new WebApp({
+      const app = new TestWebApp({
         mount: [
           compress(),
           middleware.web((ctx, next) => {
@@ -360,7 +359,7 @@ describe('Cache-Control', () => {
 });
 
 describe('accept-encoding', () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [compress(), sendString],
   });
 
@@ -422,7 +421,7 @@ describe('accept-encoding', () => {
   });
 
   test('禁用某项压缩方案', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [compress({ br: false }), sendString],
     });
 
@@ -436,7 +435,7 @@ describe('accept-encoding', () => {
 });
 
 test('空内容不压缩', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       compress({ br: false }),
       middleware.web((ctx) => {
@@ -455,7 +454,7 @@ test('空内容不压缩', async () => {
 });
 
 test('空状态码不压缩', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       compress({ br: false }),
       middleware.web((ctx) => {

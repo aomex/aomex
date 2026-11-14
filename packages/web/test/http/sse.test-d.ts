@@ -1,7 +1,7 @@
+import { TestWebApp } from '../../src/testing';
 import { middleware } from '@aomex/common';
 import { WebApp, type ServerSentEvents } from '../../src';
-
-const app = new WebApp({
+const app = new TestWebApp({
   mount: [
     middleware.web(async (ctx) => {
       ctx.sse();

@@ -1,19 +1,20 @@
 import { createServer } from 'http';
 import supertest from 'supertest';
-import { WebApp, WebContext, WebRequest, WebResponse } from '../../src';
+import { WebContext, WebRequest, WebResponse } from '../../src';
+import { TestWebApp } from '../../src/testing';
 import type Test from 'supertest/lib/test';
 import { compose } from '@aomex/common';
 import { parseBody } from '../../src/middleware/parse-body';
 
 export const mockServer = async (
   agent: (agent: ReturnType<typeof supertest>) => Test,
-  appOptions?: WebApp.Option<[]>,
+  appOptions?: TestWebApp.Option<[]>,
 ) => {
   return new Promise<{
     req: WebRequest;
     res: WebResponse;
     ctx: WebContext;
-    app: WebApp;
+    app: TestWebApp;
   }>((resolve) => {
     const server = createServer(
       {
@@ -22,7 +23,7 @@ export const mockServer = async (
         ServerResponse: WebResponse,
       },
       (req: WebRequest, res: WebResponse) => {
-        const app = new WebApp(appOptions);
+        const app = new TestWebApp(appOptions);
         const ctx = new WebContext(app, req, res);
         compose([parseBody()])(ctx).then(() => {
           resolve({ req, res, ctx, app });

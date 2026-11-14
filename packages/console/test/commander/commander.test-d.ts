@@ -1,7 +1,7 @@
+import { TestConsoleApp } from '../../src/testing';
 import { middleware } from '@aomex/common';
-import { Commander, ConsoleApp, ConsoleContext } from '../../src';
+import { Commander, ConsoleContext } from '../../src';
 import { expectType, type TypeEqual } from 'ts-expect';
-
 // 创建实例
 {
   new Commander();
@@ -32,7 +32,7 @@ declare module '@aomex/console' {
     interface Props extends T {}
   }
 }
-const app = new ConsoleApp({
+const app = new TestConsoleApp({
   mount: [
     middleware.console<{ abcde: boolean }>(() => {}),
     middleware.console<{ foo?: string }>(() => {}),

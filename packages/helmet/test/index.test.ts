@@ -1,16 +1,16 @@
+import { TestWebApp } from '../../web/src/testing';
 import { expect, test, vitest } from 'vitest';
 import { helmet } from '../src';
-import { WebApp, WebMiddleware } from '@aomex/web';
+import { WebMiddleware } from '@aomex/web';
 import { middleware } from '@aomex/common';
 import supertest from 'supertest';
-
 test('中间件', async () => {
   const md = helmet();
   expect(md).toBeInstanceOf(WebMiddleware);
 });
 
 test('默认设置报文', async () => {
-  const app = new WebApp({ mount: [helmet()] });
+  const app = new TestWebApp({ mount: [helmet()] });
   await supertest(app.listen())
     .get('/')
     .expect((res) => {
@@ -34,7 +34,7 @@ test('默认设置报文', async () => {
 
 test('执行后面的中间件', async () => {
   const spy = vitest.fn();
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [helmet(), middleware.web(spy)],
   });
   await supertest(app.listen()).get('/');

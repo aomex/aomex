@@ -1,5 +1,6 @@
+import { TestConsoleApp } from '../../../console/src/testing';
 import '../../src';
-import { ConsoleApp, terminal } from '@aomex/console';
+import { terminal } from '@aomex/console';
 import { middleware } from '@aomex/common';
 import { beforeEach, expect, test, vitest } from 'vitest';
 import { dirname, join } from 'path';
@@ -8,7 +9,6 @@ import { createServer } from 'net';
 import type { ServerWriteData } from '../../src';
 import sleep from 'sleep-promise';
 import { getPort } from '../mock/get-port';
-
 // Windows 上 pidusage 依赖 wmic，查询不存在的 PID 会很慢甚至卡住，导致断言时 stdout 仍为空。
 vitest.mock('pidusage', () => ({
   default: vitest.fn(async () => ({})),
@@ -34,7 +34,7 @@ test('连接服务', async () => {
 
   server.listen(port);
 
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [stats({ commanders: '', port })],
   });
   const code = await app.run('cron:stats');
@@ -72,7 +72,7 @@ test('接收消息', { timeout: 9_000 }, async () => {
 
   server.listen(port);
 
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [stats({ commanders: '', port })],
   });
   let outputs: string[] = [];
@@ -100,7 +100,7 @@ test('接收消息', { timeout: 9_000 }, async () => {
 
 test('无效指令继续往后执行', { timeout: 9_000 }, async () => {
   const spy = vitest.fn();
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [
       stats({
         commanders: join(testDir, '..', 'package.json'),
@@ -117,7 +117,7 @@ test('无效指令继续往后执行', { timeout: 9_000 }, async () => {
 });
 
 test('监听了无效的端口', { timeout: 9_000 }, async () => {
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [stats({ commanders: '', port })],
   });
   const spy = vitest.spyOn(terminal, 'printWarning');

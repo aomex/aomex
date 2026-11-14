@@ -23,6 +23,11 @@ export class WebContext {
     this.sse = response.sse.bind(response);
   }
 
+  /** 与构造时传入的 `logger` 相同，取自 app */
+  get logger(): WebApp.Logger {
+    return this.app['logger'];
+  }
+
   /**
    * 发送响应内容和状态，包含字符串，对象，数据流，缓冲区等。
    * ```typescript

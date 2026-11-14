@@ -1,13 +1,12 @@
+import { TestWebApp } from '../../web/src/testing';
 import { createReadStream } from 'node:fs';
 import request from 'supertest';
 import { expect, test } from 'vitest';
-import { WebApp } from '@aomex/web';
 import { middleware } from '@aomex/common';
 import { etag } from '../src';
 import { join } from 'node:path';
-
 test('没有响应内容时不设置etag', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [etag()],
   });
 
@@ -19,7 +18,7 @@ test('没有响应内容时不设置etag', async () => {
 });
 
 test('已经包含etag报文时，不再重新设置etag', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       etag(),
       middleware.web((ctx) => {
@@ -37,7 +36,7 @@ test('已经包含etag报文时，不再重新设置etag', async () => {
 });
 
 test('响应字符串时，添加etag报文', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       etag(),
       middleware.web((ctx) => {
@@ -50,7 +49,7 @@ test('响应字符串时，添加etag报文', async () => {
 });
 
 test('响应Buffer时，添加etag报文', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       etag(),
       middleware.web((ctx) => {
@@ -63,7 +62,7 @@ test('响应Buffer时，添加etag报文', async () => {
 });
 
 test('响应JSON时，添加etag报文', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       etag(),
       middleware.web((ctx) => {
@@ -76,7 +75,7 @@ test('响应JSON时，添加etag报文', async () => {
 });
 
 test('带path的数据流时，添加etag报文，并携带W/', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       etag(),
       middleware.web((ctx) => {
@@ -92,7 +91,7 @@ test('带path的数据流时，添加etag报文，并携带W/', async () => {
 });
 
 test('手动开启携带W/', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       etag({ weak: true }),
       middleware.web((ctx) => {

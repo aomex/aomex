@@ -1,50 +1,112 @@
 import { combineServices, middleware, Service } from '@aomex/common';
 import { WebApp, WebContext } from '../../src';
+import { TestWebApp, TestWebLoggerService } from '../../src/testing';
 import { expectType } from 'ts-expect';
 import { HttpError } from 'http-errors';
 import http from 'http';
 
-// 创建实例
+// 创建实例：services + logger 必填
 {
+  // @ts-expect-error services/logger 必填
   new WebApp();
+  // @ts-expect-error services/logger 必填
   new WebApp({});
-  new WebApp({ debug: true });
-  new WebApp({ debug: false });
-  new WebApp({ proxyIP: { header: 'x-forwarded-for', hops: 1 } });
-  new WebApp({ proxyIP: { header: 'x-real-ip', hops: 1 } });
-  new WebApp({ proxyIP: { header: 'cf-connecting-ip', hops: 0 } });
-  // (string & {})：允许已知联合外的任意头名
-  new WebApp({ proxyIP: { header: 'x-custom-client-ip', hops: 1 } });
-  new WebApp({ proxyIP: { header: 'X-My-Real-IP', hops: 2 } });
-  // @ts-expect-error
-  new WebApp({ proxyIP: { hops: 1 } });
-  // @ts-expect-error
-  new WebApp({ proxyIP: { header: 'x-forwarded-for' } });
-  // @ts-expect-error
-  new WebApp({ proxyIP: { header: 'x-forwarded-for', hops: '1' } });
-  // @ts-expect-error
-  new WebApp({ proxyIP: true });
 }
 
-// services
+{
+  const services = await combineServices({
+    logger: async () => TestWebLoggerService,
+  });
+  new WebApp({ services, logger: services.logger });
+  new WebApp({ services, logger: services.logger, debug: true });
+  new WebApp({ services, logger: services.logger, debug: false });
+  new WebApp({
+    services,
+    logger: services.logger,
+    proxyIP: { header: 'x-forwarded-for', hops: 1 },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    proxyIP: { header: 'x-real-ip', hops: 1 },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    proxyIP: { header: 'cf-connecting-ip', hops: 0 },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    proxyIP: { header: 'x-custom-client-ip', hops: 1 },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    proxyIP: { header: 'X-My-Real-IP', hops: 2 },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    // @ts-expect-error
+    proxyIP: { hops: 1 },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    // @ts-expect-error
+    proxyIP: { header: 'x-forwarded-for' },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    // @ts-expect-error
+    proxyIP: { header: 'x-forwarded-for', hops: '1' },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    // @ts-expect-error
+    proxyIP: true,
+  });
+}
+
+// services / logger
 {
   class Demo extends Service {
     ping() {
       return 1;
     }
   }
-  const services = await combineServices({ demo: async () => Demo });
-  new WebApp({ services });
-  new WebApp({ services: [services, services] });
+  const withoutLogger = await combineServices({ demo: async () => Demo });
+  // @ts-expect-error 缺少 logger
+  new WebApp({ services: withoutLogger });
+
+  const services = await combineServices({
+    logger: async () => TestWebLoggerService,
+    demo: async () => Demo,
+  });
+  new WebApp({ services, logger: services.logger });
+  new WebApp({ services: [services, services], logger: services.logger });
   // @ts-expect-error
-  new WebApp({ services: 1 });
+  new WebApp({ services: 1, logger: services.logger });
   // @ts-expect-error
-  new WebApp({ services: 'x' });
+  new WebApp({ services, logger: 1 });
+}
+
+// TestWebApp：services/logger 选填
+{
+  new TestWebApp();
+  new TestWebApp({});
+  new TestWebApp({ debug: true, mount: [] });
 }
 
 // 监听http
 {
-  const app = new WebApp();
+  const services = await combineServices({
+    logger: async () => TestWebLoggerService,
+  });
+  const app = new WebApp({ services, logger: services.logger });
   app.listen();
   app.listen(3000);
   app.listen(3000, '127.0.0.1');
@@ -55,7 +117,10 @@ import http from 'http';
 
 // 监听https
 {
-  const app = new WebApp();
+  const services = await combineServices({
+    logger: async () => TestWebLoggerService,
+  });
+  const app = new WebApp({ services, logger: services.logger });
   // @ts-expect-error
   app.http({ cert: '' }).listen();
   app.https({ cert: '' }).listen();
@@ -63,21 +128,39 @@ import http from 'http';
 
 // 挂载
 {
-  new WebApp({ mount: undefined });
-  new WebApp({ mount: [] });
-  //@ts-expect-error
-  new WebApp({ mount: {} });
-  //@ts-expect-error
-  new WebApp({ mount: middleware.web(() => {}) });
+  const services = await combineServices({
+    logger: async () => TestWebLoggerService,
+  });
+  new WebApp({ services, logger: services.logger, mount: undefined });
+  new WebApp({ services, logger: services.logger, mount: [] });
+  new WebApp({
+    services,
+    logger: services.logger,
+    // @ts-expect-error
+    mount: {},
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    // @ts-expect-error
+    mount: middleware.web(() => {}),
+  });
 }
 
-// 事件
+// 事件 / ctx.logger
 {
-  const app = new WebApp();
+  const services = await combineServices({
+    logger: async () => TestWebLoggerService,
+  });
+  const app = new WebApp({ services, logger: services.logger });
   app.on('error', (err, ctx) => {
     expectType<HttpError>(err);
     expectType<WebContext & WebApp.Props>(ctx);
   });
   // @ts-expect-error
   app.on('data', () => {});
+
+  const ctx = null as unknown as WebContext;
+  expectType<WebApp.Logger>(ctx.logger);
+  expectType<WebApp.Logger>(app['logger']);
 }

@@ -1,10 +1,11 @@
+import { TestConsoleApp } from '../../src/testing';
 import { afterAll, expect, test, vitest } from 'vitest';
 import { ConsoleApp, ConsoleMiddleware } from '../../src';
 import { afterEach } from 'node:test';
-import { middleware } from '@aomex/common';
+import { combineServices, middleware } from '@aomex/common';
+import { BaseLoggerService } from '@aomex/logger';
 import { stripVTControlCharacters } from 'node:util';
 import { helpLogger } from '../../src/middleware/help-logger';
-
 let lastMsg = '';
 const spyLog = vitest.spyOn(console, 'log').mockImplementation((data) => {
   lastMsg = data;
@@ -28,7 +29,7 @@ test('是中间件', () => {
 });
 
 test('未传入指令时输出全局消息', async () => {
-  const app = new ConsoleApp();
+  const app = new TestConsoleApp({});
   await app.run();
   expect(lastMsg).toMatchInlineSnapshot(`
     "aomex [指令] [选项]
@@ -49,7 +50,7 @@ test('自定义指令', async () => {
       },
     },
   });
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [md],
   });
   await app.run('-h');
@@ -67,7 +68,7 @@ test('自定义指令', async () => {
 });
 
 test('输出版本号', async () => {
-  const app = new ConsoleApp();
+  const app = new TestConsoleApp({});
   const spy = vitest.spyOn(console, 'log');
   await app.run('-v');
   expect(spy).toHaveBeenLastCalledWith('{{#version}}');
@@ -84,7 +85,7 @@ test('展示指令详情', async () => {
       },
     },
   });
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [md],
   });
   await app.run('foo', '-h');
@@ -109,7 +110,7 @@ test('设置show=false禁止显示用法', async () => {
       },
     },
   });
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [md],
   });
   await app.run('-h');
@@ -124,6 +125,10 @@ test('设置show=false禁止显示用法', async () => {
       -h, --help     显示帮助信息                                                     [布尔]"
   `);
 
+  app.removeAllListeners('error');
+  app.on('error', (err) => {
+    lastMsg = err.message;
+  });
   await app.run('bar', '-h');
   expect(stripVTControlCharacters(lastMsg)).toMatch('找不到关于指令 "bar" 的用法');
 });
@@ -159,7 +164,7 @@ test('指令参数', async () => {
       },
     },
   });
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [md],
   });
   await app.run('foo', '-h');
@@ -176,7 +181,23 @@ test('指令参数', async () => {
 });
 
 test('检测相似指令', async () => {
+  class CaptureLogger extends BaseLoggerService {
+    protected createTransports() {
+      return [];
+    }
+    override error(messageOrError: unknown, message?: string): void {
+      lastMsg = `Error: ${Error.isError(messageOrError) ? messageOrError.message : String(messageOrError)}`;
+      if (message === undefined) super.error(messageOrError);
+      else super.error(messageOrError, message);
+    }
+  }
+  const services = await combineServices(
+    { logger: async () => CaptureLogger },
+    { eager: ['logger'] },
+  );
   const app = new ConsoleApp({
+    services,
+    logger: services.logger,
     mount: [
       middleware.console({
         fn: () => {},

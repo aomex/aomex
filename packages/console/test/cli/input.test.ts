@@ -1,7 +1,7 @@
+import { TestConsoleApp } from '../../src/testing';
 import { expect, test } from 'vitest';
-import { ConsoleApp, ConsoleInput } from '../../src';
-
-const app = new ConsoleApp();
+import { ConsoleInput } from '../../src';
+const app = new TestConsoleApp({});
 
 test('识别指令', () => {
   const input = new ConsoleInput(app, ['foo', 'bar']);

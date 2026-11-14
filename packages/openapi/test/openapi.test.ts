@@ -1,11 +1,11 @@
+import { TestConsoleApp } from '../../console/src/testing';
 import { afterEach, expect, test, vitest } from 'vitest';
 import { openapi } from '../src';
-import { ConsoleApp, ConsoleMiddleware } from '@aomex/console';
+import { ConsoleMiddleware } from '@aomex/console';
 import { middleware } from '@aomex/common';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import { readFileSync, rmSync } from 'fs';
-
 afterEach(async () => {
   try {
     rmSync('openapi.json');
@@ -19,7 +19,7 @@ test('中间件', async () => {
 test('执行指令', async () => {
   const file = join(tmpdir(), Math.random() + Date.now() + 'openapi.json');
 
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [openapi({ routers: [], saveToFile: file })],
   });
 
@@ -32,7 +32,7 @@ test('执行指令', async () => {
 
 test('未命中则继续执行中间件', async () => {
   const spy = vitest.fn();
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [openapi({ routers: [] }), middleware.console(spy)],
   });
 
@@ -45,7 +45,7 @@ test('未命中则继续执行中间件', async () => {
 });
 
 test('自定义指令名称', async () => {
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [openapi({ commandName: 'openapi:admin', routers: [] })],
   });
 

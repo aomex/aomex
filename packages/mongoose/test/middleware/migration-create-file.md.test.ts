@@ -1,9 +1,8 @@
-import { ConsoleApp } from '@aomex/console';
+import { TestConsoleApp } from '../../../console/src/testing';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 import { migrationCreateFile } from '../../src/middleware/migration-create-file.md';
 import path from 'path';
 import { readdir, readFile, rm } from 'fs/promises';
-
 let migrationsPath!: string;
 
 beforeEach(async () => {
@@ -19,7 +18,7 @@ afterEach(async () => {
 });
 
 test('生成时间前缀', async () => {
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [migrationCreateFile(migrationsPath)],
   });
   await app.run('mongoose:migration:create', '--name', 'foobar');
@@ -29,7 +28,7 @@ test('生成时间前缀', async () => {
 });
 
 test('自定义名称', async () => {
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [migrationCreateFile(migrationsPath)],
   });
   await app.run('mongoose:migration:create', '--name', 'foobar');
@@ -39,7 +38,7 @@ test('自定义名称', async () => {
 });
 
 test('模板内容', async () => {
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [migrationCreateFile(migrationsPath)],
   });
   await app.run('mongoose:migration:create', '--name', 'foo');

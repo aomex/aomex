@@ -1,5 +1,5 @@
+import { TestWebApp } from '../../web/src/testing';
 import { middleware, OpenAPI } from '@aomex/common';
-import { WebApp } from '@aomex/web';
 import { expect, test } from 'vitest';
 import { JwtStrategy } from '../src';
 import supertest from 'supertest';
@@ -8,10 +8,9 @@ import sleep from 'sleep-promise';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 import { Auth } from '@aomex/auth';
-
 test('报头令牌', async () => {
   const jwt = new JwtStrategy({ secret: 'secrets', onVerified: (payload) => payload });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [new Auth({ strategies: { jwt } }).authenticate('jwt')],
   });
   const token = jwt.signature({ foo: 'bar' });
@@ -24,7 +23,7 @@ test('报头令牌', async () => {
 
 test('报头令牌无效', async () => {
   const jwt = new JwtStrategy({ secret: 'secrets', onVerified: (payload) => payload });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [new Auth({ strategies: { jwt } }).authenticate('jwt')],
   });
   const token = jwt.signature({ foo: 'bar' });
@@ -38,7 +37,7 @@ test('密码错误', async () => {
     secret: 'secrets',
     onVerified: (payload) => payload,
   });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [new Auth({ strategies: { jwt } }).authenticate('jwt')],
   });
   const token = jsonwebtoken.sign({ foo: 'bar' }, 'different-secrets');
@@ -55,7 +54,7 @@ test('多个密码', async () => {
     legacySecretOrPublicKey: ['different-secret', 'some-other-secret'],
     onVerified: (payload) => payload,
   });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [new Auth({ strategies: { jwt } }).authenticate('jwt')],
   });
   const token = jsonwebtoken.sign({ foo: 'bar' }, 'different-secret');
@@ -73,7 +72,7 @@ test('多个密码', async () => {
 
 test('令牌时效性', async () => {
   const jwt = new JwtStrategy({ secret: 'secrets', onVerified: (payload) => payload });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [new Auth({ strategies: { jwt } }).authenticate('jwt')],
   });
   const token = jwt.signature({ foo: 'bar' }, { expiresIn: '2s' });
@@ -94,7 +93,7 @@ test('验证成功后再次判断', async () => {
     secret: 'secrets',
     onVerified: async () => false,
   });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [new Auth({ strategies: { jwt } }).authenticate('jwt')],
   });
   const token = jwt.signature({ foo: 'bar' });
@@ -111,7 +110,7 @@ test('issuer匹配失败', async () => {
     verifyOptions: { issuer: 'foo' },
     onVerified: (payload) => payload,
   });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [new Auth({ strategies: { jwt } }).authenticate('jwt')],
   });
   const token = jwt.signature({ foo: 'bar' }, { issuer: 'bar' });
@@ -133,7 +132,7 @@ test('密钥对', async () => {
     onVerified: (payload) => payload,
   });
 
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [new Auth({ strategies: { jwt } }).authenticate('jwt')],
   });
   const token = jwt.signature({ foo: 'bar' }, { algorithm: 'RS256' });
@@ -155,7 +154,7 @@ test('错误的密钥对', async () => {
     onVerified: (payload) => payload,
   });
 
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [new Auth({ strategies: { jwt } }).authenticate('jwt')],
   });
   const token = jwt.signature({ foo: 'bar' }, { algorithm: 'RS256' });
@@ -176,7 +175,7 @@ test('权限认证', async () => {
       return character === role.toString();
     },
   });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       new Auth({ strategies: { jwt } }).authenticate('jwt').authorize(0),
       middleware.web((ctx) => {

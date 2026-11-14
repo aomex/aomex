@@ -1,13 +1,12 @@
+import { TestWebApp } from '../../web/src/testing';
 import { middleware } from '@aomex/common';
-import { WebApp } from '@aomex/web';
 import { expect, test, vitest } from 'vitest';
 import { rateLimit } from '../src/rate-limit';
 import supertest from 'supertest';
 import { RateLimitMemoryStore } from '../src/memory-store';
 import sleep from 'sleep-promise';
-
 test('设置黑名单', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       rateLimit({
         denyList: () => true,
@@ -19,7 +18,7 @@ test('设置黑名单', async () => {
 });
 
 test('设置白名单', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       rateLimit({
         maxRequest: 1,
@@ -40,7 +39,7 @@ test('设置白名单', async () => {
 });
 
 test('无法识别ID视为白名单', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       rateLimit({
         maxRequest: 1,
@@ -63,7 +62,7 @@ test('无法识别ID视为白名单', async () => {
 test('默认id为客户端IP', async () => {
   const store = new RateLimitMemoryStore();
   const spy = vitest.spyOn(store, 'getAndSet');
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [rateLimit({ store })],
   });
   await supertest(app.listen()).get('/');
@@ -75,7 +74,7 @@ test('默认id为客户端IP', async () => {
 });
 
 test('携带额外报头', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [rateLimit({ maxRequest: 20 })],
   });
   await supertest(app.listen())
@@ -88,7 +87,7 @@ test('携带额外报头', async () => {
 });
 
 test('超过速率后抛出429状态码', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [rateLimit({ maxRequest: 2 })],
   });
   await supertest(app.listen()).get('/').expect(404).expect('x-ratelimit-remaining', '1');
@@ -103,7 +102,7 @@ test('超过速率后抛出429状态码', async () => {
 });
 
 test('retry-after格式为秒', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [rateLimit({ maxRequest: 1, duration: 3600_000 })],
   });
   await supertest(app.listen()).get('/');
@@ -115,7 +114,7 @@ test('retry-after格式为秒', async () => {
 });
 
 test('可以取消headers', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [rateLimit({ headers: false })],
   });
   await supertest(app.listen())
@@ -128,7 +127,7 @@ test('可以取消headers', async () => {
 });
 
 test('定制重置周期', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [rateLimit({ duration: 1500, maxRequest: 2 })],
   });
 
@@ -144,7 +143,7 @@ test('定制重置周期', async () => {
 });
 
 test('定制报错信息', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [rateLimit({ errorMessage: 'Wait a minute', maxRequest: 1 })],
   });
   await supertest(app.listen()).get('/').expect(404);

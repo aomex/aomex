@@ -1,10 +1,9 @@
+import { TestWebApp } from '../../web/src/testing';
 import supertest from 'supertest';
 import { expect, test } from 'vitest';
 import { Auth } from '@aomex/auth';
-import { WebApp } from '@aomex/web';
 import { BearerStrategy } from '../src';
 import { middleware, OpenAPI } from '@aomex/common';
-
 test('无令牌', async () => {
   const auth = new Auth({
     strategies: {
@@ -15,7 +14,7 @@ test('无令牌', async () => {
       }),
     },
   });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [auth.authenticate('bearer')],
   });
   await supertest(app.listen()).get('/').expect(401);
@@ -32,7 +31,7 @@ test('报头令牌', async () => {
     },
   });
 
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       auth.authenticate('bearer'),
       middleware.web((ctx) => {
@@ -60,7 +59,7 @@ test('报头令牌格式错误', async () => {
       }),
     },
   });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [auth.authenticate('bearer')],
   });
 
@@ -78,7 +77,7 @@ test('从cookie获取令牌', async () => {
       }),
     },
   });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       auth.authenticate('bearer'),
       middleware.web((ctx) => {
@@ -105,7 +104,7 @@ test('从查询字符串获取令牌', async () => {
       }),
     },
   });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       auth.authenticate('bearer'),
       middleware.web((ctx) => {
@@ -131,7 +130,7 @@ test('从请求实体获取令牌', async () => {
       }),
     },
   });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       auth.authenticate('bearer'),
       middleware.web((ctx) => {
@@ -162,7 +161,7 @@ test('按顺序获取', async () => {
       }),
     },
   });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       auth.authenticate('bearer'),
       middleware.web((ctx) => {
@@ -222,7 +221,7 @@ test('权限认证', async () => {
     },
   });
 
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       auth.authenticate('bearer').authorize(0),
       middleware.web((ctx) => {

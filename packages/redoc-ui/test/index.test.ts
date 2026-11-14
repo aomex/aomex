@@ -1,10 +1,10 @@
+import { TestWebApp } from '../../web/src/testing';
 import { expect, test } from 'vitest';
 import { redocUI } from '../src';
 import path from 'path';
-import { WebApp, WebMiddleware } from '@aomex/web';
+import { WebMiddleware } from '@aomex/web';
 import supertest from 'supertest';
 import { middleware } from '@aomex/common';
-
 const openapiJson = path.join(import.meta.dirname, 'fixtures', 'openapi.json');
 const openapiYAML = path.join(import.meta.dirname, 'fixtures', 'openapi.yaml');
 const openapiYML = path.join(import.meta.dirname, 'fixtures', 'openapi.yml');
@@ -14,7 +14,7 @@ test('中间件', () => {
 });
 
 test('获取html', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       redocUI({
         openapi: openapiJson,
@@ -74,7 +74,7 @@ test('获取html', async () => {
 });
 
 test('修改路由前缀', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [redocUI({ openapi: openapiJson, uriPrefix: '/api' })],
   });
   await supertest(app.listen())
@@ -85,7 +85,7 @@ test('修改路由前缀', async () => {
 });
 
 test('穿透中间件', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       redocUI({ openapi: openapiJson }),
       middleware.web((ctx) => {
@@ -98,7 +98,7 @@ test('穿透中间件', async () => {
 });
 
 test('不能通过路径穿越读取redoc目录外文件', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       redocUI({ openapi: openapiJson }),
       middleware.web((ctx) => {
@@ -118,7 +118,7 @@ test('不能通过路径穿越读取redoc目录外文件', async () => {
 });
 
 test('只支持GET和HEAD', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       redocUI({ openapi: openapiJson }),
       middleware.web((ctx) => {
@@ -135,14 +135,14 @@ test('只支持GET和HEAD', async () => {
 });
 
 test('开关', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [redocUI({ openapi: openapiJson, enable: () => false })],
   });
   await supertest(app.listen()).get('/redoc').expect(404);
 });
 
 test('动态返回openapi文档', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       redocUI({
         openapi: async () => {
@@ -197,7 +197,7 @@ test('动态返回openapi文档', async () => {
 });
 
 test('yaml文档', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [redocUI({ openapi: openapiYAML })],
   });
   await supertest(app.listen())
@@ -243,7 +243,7 @@ test('yaml文档', async () => {
 });
 
 test('yml文档', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [redocUI({ openapi: openapiYML })],
   });
   await supertest(app.listen())
@@ -289,7 +289,7 @@ test('yml文档', async () => {
 });
 
 test('访问openapi.json', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [redocUI({ openapi: openapiJson })],
   });
   await supertest(app.listen())

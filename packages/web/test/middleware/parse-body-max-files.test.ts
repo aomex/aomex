@@ -1,10 +1,10 @@
+import { TestWebApp } from '../../src/testing';
 import { expect, test } from 'vitest';
 import { createServer } from 'http';
 import supertest from 'supertest';
 import { compose } from '@aomex/common';
-import { WebApp, WebContext, WebRequest, WebResponse } from '../../src';
+import { WebContext, WebRequest, WebResponse } from '../../src';
 import { parseBody } from '../../src/middleware/parse-body';
-
 test('超过 maxFiles=30 时 parseBody 拒绝', { timeout: 10_000 }, async () => {
   await new Promise<void>((resolve, reject) => {
     const server = createServer(
@@ -14,7 +14,7 @@ test('超过 maxFiles=30 时 parseBody 拒绝', { timeout: 10_000 }, async () =>
         ServerResponse: WebResponse,
       },
       (req: WebRequest, res: WebResponse) => {
-        const app = new WebApp();
+        const app = new TestWebApp({});
         const ctx = new WebContext(app, req, res);
         compose([parseBody()])(ctx).then(
           () => reject(new Error('expected parseBody to reject')),
@@ -46,7 +46,7 @@ test('空文件在 allowEmptyFiles=false 时被拒绝', { timeout: 10_000 }, asy
         ServerResponse: WebResponse,
       },
       (req: WebRequest, res: WebResponse) => {
-        const app = new WebApp();
+        const app = new TestWebApp({});
         const ctx = new WebContext(app, req, res);
         compose([parseBody()])(ctx).then(
           () => reject(new Error('expected parseBody to reject')),

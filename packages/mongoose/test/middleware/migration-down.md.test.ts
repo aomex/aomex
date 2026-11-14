@@ -1,3 +1,4 @@
+import { TestConsoleApp } from '../../../console/src/testing';
 import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import { beforeEach, afterEach, test, expect } from 'vitest';
@@ -8,7 +9,6 @@ import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { MigrationModel } from '../../src/models/migration.model';
 import { migrationDown } from '../../src/middleware/migration-down.md';
 import { getMongoBinary } from '../helper/get-mongo-binary';
-
 const modelsPath = path.join(
   path.relative(path.resolve(), path.dirname(import.meta.dirname)),
   'fixtures',
@@ -36,7 +36,7 @@ beforeEach(async () => {
 
   await mkdir(migrationsPath, { recursive: true });
 
-  app = new ConsoleApp({
+  app = new TestConsoleApp({
     mount: [
       migrationDown({
         migrationsPath: migrationsPath,
@@ -60,7 +60,7 @@ test('没有迁移记录则不回滚', async () => {
 
 test('回滚文件不存在则直接报错', async () => {
   await MigrationModel.insertMany([{ filename: '12345_test' }]);
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [
       migrationDown({
         migrationsPath: migrationsPath,

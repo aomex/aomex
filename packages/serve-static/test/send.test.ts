@@ -1,15 +1,14 @@
+import { TestWebApp } from '../../web/src/testing';
 import { middleware } from '@aomex/common';
-import { WebApp } from '@aomex/web';
 import request from 'supertest';
 import { send } from '../src';
 import { describe, expect, test } from 'vitest';
 import { join } from 'path';
 import { readFileSync } from 'fs';
-
 const fixturesDir = join(import.meta.dirname, 'fixtures');
 
 test('找到文件则发送文件', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [middleware.web((ctx) => send(ctx, { root: fixturesDir }))],
   });
   await request(app.listen()).get('/hello.txt').expect(200).expect('world');
@@ -17,7 +16,7 @@ test('找到文件则发送文件', async () => {
 
 describe('indexFile', () => {
   test('设置后则要自动加上', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [
         middleware.web((ctx) => send(ctx, { root: fixturesDir, indexFile: 'index.txt' })),
       ],
@@ -31,7 +30,7 @@ describe('indexFile', () => {
   });
 
   test('不设置则使用默认的 index.html', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [middleware.web((ctx) => send(ctx, { root: fixturesDir }))],
     });
     await request(app.listen())
@@ -42,7 +41,7 @@ describe('indexFile', () => {
   });
 
   test('禁用则不补全 index.html', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [
         middleware.web((ctx) => send(ctx, { root: fixturesDir, indexFile: false })),
       ],
@@ -53,14 +52,14 @@ describe('indexFile', () => {
 });
 
 test('.dot文件直接返回 404', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [middleware.web((ctx) => send(ctx, { root: fixturesDir }))],
   });
   await request(app.listen()).get('/.df.txt').expect(404);
 });
 
 test('没有后缀则直接使用 content-type=text', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [middleware.web((ctx) => send(ctx, { root: fixturesDir }))],
   });
   await request(app.listen())
@@ -71,7 +70,7 @@ test('没有后缀则直接使用 content-type=text', async () => {
 
 describe('Cache-Control', () => {
   test('默认配置', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [
         middleware.web((ctx) => send(ctx, { root: fixturesDir, cacheControl: {} })),
       ],
@@ -83,7 +82,7 @@ describe('Cache-Control', () => {
   });
 
   test('private', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [
         middleware.web((ctx) =>
           send(ctx, { root: fixturesDir, cacheControl: { publicOrPrivate: 'private' } }),
@@ -96,7 +95,7 @@ describe('Cache-Control', () => {
   });
 
   test('maxAge', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [
         middleware.web((ctx) =>
           send(ctx, { root: fixturesDir, cacheControl: { maxAge: 221_000 } }),
@@ -110,7 +109,7 @@ describe('Cache-Control', () => {
   });
 
   test('immutable', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [
         middleware.web((ctx) =>
           send(ctx, { root: fixturesDir, cacheControl: { immutable: true } }),
@@ -123,7 +122,7 @@ describe('Cache-Control', () => {
   });
 
   test('no-cache', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [
         middleware.web((ctx) =>
           send(ctx, { root: fixturesDir, cacheControl: { noCache: true } }),
@@ -136,7 +135,7 @@ describe('Cache-Control', () => {
   });
 
   test('no-store', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [
         middleware.web((ctx) =>
           send(ctx, { root: fixturesDir, cacheControl: { noStore: true } }),
@@ -150,21 +149,21 @@ describe('Cache-Control', () => {
 });
 
 test('root之外的文件无法获取', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [middleware.web((ctx) => send(ctx, { root: fixturesDir }))],
   });
   await request(app.listen()).get('/README.md').expect(404);
 });
 
 test('不能通过..到root上一级获取', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [middleware.web((ctx) => send(ctx, { root: fixturesDir }))],
   });
   await request(app.listen()).get('/../send.test.ts').expect(404);
 });
 
 test('不能通过URL编码的..逃逸root', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [middleware.web((ctx) => send(ctx, { root: fixturesDir }))],
   });
   await request(app.listen()).get('/..%2fsend.test.ts').expect(404);
@@ -172,7 +171,7 @@ test('不能通过URL编码的..逃逸root', async () => {
 });
 
 test('formatPath引入..后也不能逃逸root', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web((ctx) =>
         send(ctx, {
@@ -193,7 +192,7 @@ test('formatPath引入..后也不能逃逸root', async () => {
 
 describe('压缩', () => {
   test('优先使用br', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [middleware.web((ctx) => send(ctx, { root: fixturesDir }))],
     });
     // brotli可以被直接解析了
@@ -213,7 +212,7 @@ describe('压缩', () => {
   });
 
   test('gzip', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [middleware.web((ctx) => send(ctx, { root: fixturesDir }))],
     });
     const gzText = readFileSync(join(fixturesDir, 'compress.txt.gz'), 'utf8');
@@ -226,7 +225,7 @@ describe('压缩', () => {
   });
 
   test('禁止压缩', async () => {
-    const app = new WebApp({
+    const app = new TestWebApp({
       mount: [
         middleware.web((ctx) =>
           send(ctx, { root: fixturesDir, useCompressedFile: false }),
@@ -246,7 +245,7 @@ describe('压缩', () => {
 });
 
 test('修改路径', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       middleware.web((ctx) =>
         send(ctx, {

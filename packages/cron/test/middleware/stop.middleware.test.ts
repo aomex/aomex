@@ -1,5 +1,6 @@
+import { TestConsoleApp } from '../../../console/src/testing';
 import '../../src';
-import { ConsoleApp, terminal } from '@aomex/console';
+import { terminal } from '@aomex/console';
 import { middleware, sleep } from '@aomex/common';
 import { beforeEach, expect, test, vitest } from 'vitest';
 import { dirname, join } from 'path';
@@ -8,7 +9,6 @@ import { createServer } from 'net';
 import { getPort } from '../mock/get-port';
 import { appForAlive } from '../mock/app-for-alive';
 import { readFile, rm } from 'fs/promises';
-
 const testDir = dirname(import.meta.dirname);
 
 let port: number;
@@ -30,7 +30,7 @@ test('连接服务', async () => {
 
   server.listen(port);
 
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [stop({ commanders: '', port })],
   });
   const code = await app.run('cron:stop');
@@ -42,7 +42,7 @@ test('连接服务', async () => {
 
 test('无效指令继续往后执行', { timeout: 9_000 }, async () => {
   const spy = vitest.fn();
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [
       stop({
         commanders: join(testDir, '..', 'package.json'),
@@ -59,7 +59,7 @@ test('无效指令继续往后执行', { timeout: 9_000 }, async () => {
 });
 
 test('监听了无效的端口', { timeout: 9_000 }, async () => {
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [stop({ commanders: '', port })],
   });
   const spy = vitest.spyOn(terminal, 'printWarning');

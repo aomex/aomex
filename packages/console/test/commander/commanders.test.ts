@@ -1,14 +1,13 @@
+import { TestConsoleApp } from '../../src/testing';
 import { expect, test, vitest } from 'vitest';
 import {
   collectConsoleDocument,
   Commander,
   commanders,
-  ConsoleApp,
   ConsoleMiddleware,
 } from '../../src';
 import { dirname, join } from 'node:path';
 import { middleware } from '@aomex/common';
-
 const dir = dirname(import.meta.dirname);
 
 test('中间件', async () => {
@@ -16,7 +15,7 @@ test('中间件', async () => {
 });
 
 test('从路径动态加载', async () => {
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [commanders(join(dir, 'fixture'))],
   });
   await expect(app.run('aaa1')).resolves.toBe(0);
@@ -36,7 +35,7 @@ test('直接传入指令', async () => {
       console.log('bar');
     },
   });
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [commanders([commander])],
   });
   await expect(app.run('schedule:a')).resolves.toBe(0);
@@ -55,7 +54,7 @@ test('缓存指令实例', async () => {
   commander.create('b', {
     action: () => {},
   });
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [commanders([commander])],
   });
 
@@ -75,7 +74,7 @@ test('缓存指令实例', async () => {
 
 test('未匹配上指令时继续其他中间件', async () => {
   const spy = vitest.fn();
-  const app = new ConsoleApp({
+  const app = new TestConsoleApp({
     mount: [commanders(join(dir, 'fixture', 'commanders')), middleware.console(spy)],
   });
   await app.run('aaa1');
@@ -99,7 +98,7 @@ test('文档', async () => {
   await collectConsoleDocument({
     document: doc,
     middlewareList: [commanders([commander])],
-    app: new ConsoleApp(),
+    app: new TestConsoleApp({}),
   });
   expect(doc).toMatchInlineSnapshot(`
     {

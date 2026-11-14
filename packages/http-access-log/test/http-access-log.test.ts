@@ -1,6 +1,6 @@
+import { TestWebApp } from '../../web/src/testing';
 import { middleware } from '@aomex/common';
 import { Transport, type LogRecord } from '@aomex/logger';
-import { WebApp } from '@aomex/web';
 import { stripVTControlCharacters } from 'node:util';
 import {
   afterAll,
@@ -16,7 +16,6 @@ import supertest from 'supertest';
 import { createReadStream } from 'node:fs';
 import { join } from 'node:path';
 import sleep from 'sleep-promise';
-
 let msgs: string[] = [];
 
 class MockTransport extends Transport {
@@ -52,7 +51,7 @@ afterAll(() => {
 });
 
 test('打印日志', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       httpAccessLog({ transports }),
       middleware.web((ctx) => {
@@ -71,7 +70,7 @@ test('打印日志', async () => {
 });
 
 test('打印错误日志', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       httpAccessLog({ transports }),
       middleware.web((ctx) => {
@@ -90,7 +89,7 @@ test('打印错误日志', async () => {
 });
 
 test('数据流也能获取长度', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       httpAccessLog({ transports }),
       middleware.web((ctx) => {
@@ -109,7 +108,7 @@ test('数据流也能获取长度', async () => {
 });
 
 test('自定义令牌', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       httpAccessLog({
         format: '[method] [foo] [bar] [baz]',
@@ -135,7 +134,7 @@ test('自定义令牌', async () => {
 });
 
 test('禁用日志', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       httpAccessLog({
         disable: true,
@@ -153,7 +152,7 @@ test('禁用日志', async () => {
 });
 
 test('不存在消费实例也相当于禁用日志', async () => {
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       httpAccessLog({
         disable: true,

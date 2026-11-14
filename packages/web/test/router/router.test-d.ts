@@ -1,7 +1,7 @@
+import { TestWebApp } from '../../src/testing';
 import { middleware, rule } from '@aomex/common';
 import { type TypeEqual, expectType } from 'ts-expect';
-import { response, Router, WebApp, WebContext } from '../../src';
-
+import { response, Router, WebContext } from '../../src';
 // 创建实例
 {
   new Router();
@@ -32,7 +32,7 @@ declare module '@aomex/web' {
     interface Props extends T {}
   }
 }
-const app = new WebApp({
+const app = new TestWebApp({
   mount: [
     middleware.web<{ abcde: boolean }>(() => {}),
     middleware.web<{ foo?: string }>(() => {}),

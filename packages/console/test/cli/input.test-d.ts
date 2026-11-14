@@ -1,7 +1,7 @@
+import { TestConsoleApp } from '../../src/testing';
 import { type TypeEqual, expectType } from 'ts-expect';
-import { ConsoleApp, ConsoleInput } from '../../src';
-
-const app = new ConsoleApp();
+import { ConsoleInput } from '../../src';
+const app = new TestConsoleApp({});
 const input = new ConsoleInput(app, ['foo', 'bar']);
 
 const options = input.parseArgv();

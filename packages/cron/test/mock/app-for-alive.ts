@@ -1,13 +1,13 @@
-import { commanders, ConsoleApp } from '@aomex/console';
+import { TestConsoleApp } from '../../../console/src/testing';
+import { commanders } from '@aomex/console';
 import { crons } from '../../src';
 import { join, relative } from 'node:path';
-
 const commanderFile = relative(
   process.cwd(),
   join(import.meta.dirname, 'commanders', 'alive.cmd.ts'),
 );
 
-export const appForAlive = new ConsoleApp({
+export const appForAlive = new TestConsoleApp({
   mount: [
     crons({
       commanders: commanderFile,

@@ -1,10 +1,9 @@
+import { TestWebApp } from '../../web/src/testing';
 import { middleware, OpenAPI } from '@aomex/common';
 import { expect, test, vitest } from 'vitest';
 import { Auth, AuthError } from '../src';
 import { MockStrategy } from './mocks/mock-strategy';
-import { WebApp } from '@aomex/web';
 import supertest from 'supertest';
-
 test('返回策略实例', () => {
   const strategy = new MockStrategy();
   const auth = new Auth({ strategies: { mock: strategy } });
@@ -20,7 +19,7 @@ test('认证返回对象', async () => {
   vitest.spyOn(strategy, 'authenticate').mockImplementation(() => {
     return { foo: 'bar' };
   });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       auth.authenticate('mock'),
       middleware.web((ctx) => {
@@ -43,7 +42,7 @@ test('认证返回字符串', async () => {
   vitest.spyOn(strategy, 'authenticate').mockImplementation(() => {
     return 'foo-bar';
   });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       auth.authenticate('mock'),
       middleware.web((ctx) => {
@@ -61,7 +60,7 @@ test('认证返回false', async () => {
   const auth = new Auth({ strategies: { mock: strategy } });
   // @ts-expect-error
   vitest.spyOn(strategy, 'authenticate').mockImplementation(() => false);
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [auth.authenticate('mock')],
   });
 
@@ -83,7 +82,7 @@ test('认证抛出异常', async () => {
     .mockImplementationOnce(() => {
       return new AuthError('ijk');
     });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [auth.authenticate('mock')],
   });
 
@@ -100,7 +99,7 @@ test('授权返回true', async () => {
     return 'foo-bar';
   });
   vitest.spyOn(strategy, 'authorize').mockImplementation(() => true);
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       auth.authenticate('mock'),
       middleware.web((ctx) => {
@@ -120,7 +119,7 @@ test('授权返回false', async () => {
     return 'foo-bar';
   });
   vitest.spyOn(strategy, 'authorize').mockImplementation(() => false);
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       auth.authenticate('mock'),
       auth.authorize('mock'),
@@ -152,7 +151,7 @@ test('授权抛出异常', async () => {
     .mockImplementationOnce(() => {
       return new AuthError('ijk');
     });
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [auth.authenticate('mock'), auth.authorize('mock')],
   });
 
@@ -173,7 +172,7 @@ test('认证加授权返回200', async () => {
   // @ts-expect-error
   vitest.spyOn(auth, 'internalAuthorize').mockImplementation(async () => true);
 
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       md.authorize(),
       middleware.web((ctx) => {
@@ -197,7 +196,7 @@ test('认证加授权返回403', async () => {
     .spyOn(auth, 'internalAuthorize')
     .mockImplementation(async (ctx) => void ctx.throw(403));
 
-  const app = new WebApp({
+  const app = new TestWebApp({
     mount: [
       md.authorize(),
       middleware.web((ctx) => {
