@@ -231,6 +231,50 @@ const proxyIP = { mode: 'detect' } as const;
   });
 }
 
+// shutdown
+{
+  const services = await combineServices({
+    logger: async () => TestWebLoggerService,
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    language,
+    proxyIP,
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    language,
+    proxyIP,
+    shutdown: {},
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    language,
+    proxyIP,
+    shutdown: { timeout: 5_000 },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    language,
+    proxyIP,
+    // @ts-expect-error timeout 须为 number
+    shutdown: { timeout: '5s' },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    language,
+    proxyIP,
+    // @ts-expect-error shutdown 须为对象
+    shutdown: 5_000,
+  });
+  new TestWebApp({ shutdown: { timeout: 1_000 } });
+}
+
 // 事件 / ctx.logger
 {
   const services = await combineServices({

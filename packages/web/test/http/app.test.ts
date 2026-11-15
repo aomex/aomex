@@ -4,7 +4,7 @@ import { TestWebApp, TestWebLoggerService } from '../../src/testing';
 import { combineServices, middleware, Service } from '@aomex/common';
 import { BaseLoggerService } from '@aomex/logger';
 import supertest from 'supertest';
-import { Server } from 'http';
+import { Server } from 'node:http';
 import fs from 'node:fs';
 import { join } from 'path';
 import { i18n } from '../../src/i18n';
@@ -421,6 +421,138 @@ test('services：SIGTERM 先关 server 再等 onDestroy 后 exit', async () => {
   await vitest.waitFor(() => expect(destroyed).toBe(1));
   expect(exit).toHaveBeenCalledWith(0);
   expect(server.listening).toBeFalsy();
+
+  once.mockRestore();
+  exit.mockRestore();
+});
+
+test('shutdown：重复信号只关停一次', async () => {
+  const handlers = new Map<string | symbol, (...args: any[]) => void>();
+  const once = vitest.spyOn(process, 'once').mockImplementation((event, fn) => {
+    handlers.set(event, fn as (...args: any[]) => void);
+    return process;
+  });
+  const exit = vitest.spyOn(process, 'exit').mockImplementation((() => {}) as never);
+
+  const app = new TestWebApp({ shutdown: { timeout: 100 } });
+  const server = app.listen(0);
+  await new Promise<void>((resolve, reject) => {
+    server.on('listening', () => resolve());
+    server.on('error', reject);
+  });
+  const closeSpy = vitest.spyOn(server, 'close');
+
+  handlers.get('SIGTERM')!();
+  handlers.get('SIGTERM')!();
+  handlers.get('SIGINT')!();
+
+  await vitest.waitFor(() => expect(exit).toHaveBeenCalledWith(0));
+  expect(closeSpy).toHaveBeenCalledTimes(1);
+
+  once.mockRestore();
+  exit.mockRestore();
+});
+
+test('shutdown.timeout 到期后 closeAllConnections', async () => {
+  const handlers = new Map<string | symbol, (...args: any[]) => void>();
+  const once = vitest.spyOn(process, 'once').mockImplementation((event, fn) => {
+    handlers.set(event, fn as (...args: any[]) => void);
+    return process;
+  });
+  const exit = vitest.spyOn(process, 'exit').mockImplementation((() => {}) as never);
+
+  const app = new TestWebApp({
+    shutdown: { timeout: 50 },
+    mount: [
+      middleware.web(async (ctx) => {
+        await new Promise((r) => setTimeout(r, 10_000));
+        ctx.response.body = 'done';
+      }),
+    ],
+  });
+  const server = app.listen(0) as Server;
+  await new Promise<void>((resolve, reject) => {
+    server.on('listening', () => resolve());
+    server.on('error', reject);
+  });
+
+  const forceSpy = vitest.spyOn(server, 'closeAllConnections');
+  const address = server.address();
+  if (!address || typeof address === 'string') throw new Error('expected port');
+
+  // 挂起在途请求，迫使 close() 等待，直到超时强制断开
+  const http = await import('node:http');
+  const pending = new Promise<void>((resolve) => {
+    const req = http.get(`http://127.0.0.1:${address.port}/`, (res) => {
+      res.resume();
+      res.on('end', () => resolve());
+    });
+    req.on('error', () => resolve());
+  });
+
+  await new Promise((r) => setTimeout(r, 30));
+  handlers.get('SIGTERM')!();
+
+  await vitest.waitFor(() => expect(forceSpy).toHaveBeenCalled());
+  await vitest.waitFor(() => expect(exit).toHaveBeenCalledWith(0));
+  await pending;
+
+  once.mockRestore();
+  exit.mockRestore();
+});
+
+test('shutdown：在途请求在超时前结束时不触发 closeAllConnections', async () => {
+  const handlers = new Map<string | symbol, (...args: any[]) => void>();
+  const once = vitest.spyOn(process, 'once').mockImplementation((event, fn) => {
+    handlers.set(event, fn as (...args: any[]) => void);
+    return process;
+  });
+  const exit = vitest.spyOn(process, 'exit').mockImplementation((() => {}) as never);
+
+  const app = new TestWebApp({
+    shutdown: { timeout: 500 },
+    mount: [
+      middleware.web(async (ctx) => {
+        await new Promise((r) => setTimeout(r, 30));
+        ctx.response.body = 'done';
+      }),
+    ],
+  });
+  const server = app.listen(0) as Server;
+  await new Promise<void>((resolve, reject) => {
+    server.on('listening', () => resolve());
+    server.on('error', reject);
+  });
+
+  const forceSpy = vitest.spyOn(server, 'closeAllConnections');
+  const address = server.address();
+  if (!address || typeof address === 'string') throw new Error('expected port');
+
+  // Connection: close，避免 keep-alive 拖住 server.close()
+  const http = await import('node:http');
+  const pending = new Promise<void>((resolve, reject) => {
+    http
+      .get(
+        {
+          hostname: '127.0.0.1',
+          port: address.port,
+          path: '/',
+          headers: { connection: 'close' },
+        },
+        (res) => {
+          res.resume();
+          res.on('end', () => resolve());
+        },
+      )
+      .on('error', reject);
+  });
+
+  await new Promise((r) => setTimeout(r, 10));
+  handlers.get('SIGTERM')!();
+
+  await pending;
+  await vitest.waitFor(() => expect(exit).toHaveBeenCalledWith(0));
+  expect(forceSpy).not.toHaveBeenCalled();
 
   once.mockRestore();
   exit.mockRestore();

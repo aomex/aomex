@@ -10,7 +10,7 @@ const destroying = new WeakMap<object, Promise<void>>();
  * 业务代码不要调用：把 `combineServices` 结果交给 `WebApp` / `ConsoleApp` 的 `services`，由框架在关停时调用。
  *
  * 触发时机：
- * - `WebApp`：`SIGINT` / `SIGTERM` → `server.close()` 后再销毁；手动 `server.close()` 时也会销毁
+ * - `WebApp`：`SIGINT` / `SIGTERM` → `server.close()`（超时则 `closeAllConnections`）后再销毁；手动 `server.close()` 时也会销毁
  * - `ConsoleApp`：进程 `beforeExit`，以及 `SIGINT` / `SIGTERM`
  */
 export const internalDestroyServices = async (

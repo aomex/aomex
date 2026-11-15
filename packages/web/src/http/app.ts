@@ -53,6 +53,11 @@ export namespace WebApp {
      */
     services: CombinedServices | readonly CombinedServices[];
     /**
+     * 优雅关停：`SIGINT`/`SIGTERM` → `close` → 超时则强制断开 → 销毁服务 → 退出。
+     * @default { timeout: 5_000 }
+     */
+    shutdown?: ShutdownOption;
+    /**
      * 经 `combineServices` 处理后的 logger（通常为 `services.logger`）。
      * 默认 `error` 监听 / `ctx.logger` 均走此实例。
      *
@@ -96,6 +101,14 @@ export namespace WebApp {
      * ```
      */
     proxyIP: ProxyIPOption;
+  }
+
+  export interface ShutdownOption {
+    /**
+     * 等待在途请求结束的上限（毫秒）。超时后 `closeAllConnections`。
+     * @default 5000
+     */
+    timeout?: number;
   }
 
   export type LanguageOption =
@@ -213,18 +226,29 @@ export class WebApp<
 
   protected bindServerLifecycle(server: http.Server | https.Server): void {
     const services = toArray(this.options.services);
+    const timeout = Math.max(0, this.options.shutdown?.timeout ?? 5_000);
 
-    // 手动 close：尽量跑完 onDestroy（不 exit）
+    // 手动 close：销毁服务（不 exit）
     server.once('close', () => {
       void internalDestroyServices(services);
     });
 
-    // 信号：先关 server，再 await 销毁，最后 exit，避免异步 onDestroy 被掐断
+    let stopping = false;
     const stop = () => {
+      if (stopping) return;
+      stopping = true;
+
       void (async () => {
-        await new Promise<void>((resolve) => {
-          server.close(() => resolve());
-        });
+        let forceTimer: NodeJS.Timeout | undefined;
+        try {
+          await new Promise<void>((resolve) => {
+            server.close(() => resolve());
+            forceTimer = setTimeout(() => server.closeAllConnections(), timeout);
+          });
+        } finally {
+          if (forceTimer) clearTimeout(forceTimer);
+        }
+
         await internalDestroyServices(services);
         process.exit(0);
       })();
