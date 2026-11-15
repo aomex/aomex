@@ -4,10 +4,16 @@ import type { CronOptions, CronsOptions } from '../../src/lib/type';
 import sleep from 'sleep-promise';
 
 function createCron(
-  options: CronOptions & CronsOptions & { command: string; crontab?: Cron[] },
+  options: CronOptions &
+    Omit<CronsOptions, 'port' | 'commanders'> & {
+      command: string;
+      crontab?: Cron[];
+      commanders?: CronsOptions['commanders'];
+      port?: number;
+    },
 ) {
-  const { crontab = [], ...rest } = options;
-  return new Cron({ ...rest, crontab });
+  const { crontab = [], commanders = '', port = 0, ...rest } = options;
+  return new Cron({ ...rest, commanders, port, crontab });
 }
 
 test('时间', () => {

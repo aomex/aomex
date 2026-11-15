@@ -10,6 +10,7 @@ test('导出任务列表', async () => {
     mount: [
       eject({
         commanders: join(testDir, 'mock', 'commanders', 'eject.cmd.ts'),
+        port: 9786,
       }),
     ],
   });
@@ -30,6 +31,7 @@ test('无效指令继续往后执行', async () => {
     mount: [
       eject({
         commanders: join(testDir, '..', 'package.json'),
+        port: 9786,
       }),
       middleware.console(spy),
     ],

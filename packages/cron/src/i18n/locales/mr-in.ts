@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'नियोजित कार्यांची अंमलबजावणी स्थिती तपासा',
   not_started: 'शेड्यूल केलेले कार्य सुरू झाले नाही, पोर्ट: {{port}}',
   invalid_cron_time: 'अवैध क्रॉन अभिव्यक्ती: {{time}}',
+  invalid_port: 'अवैध सर्व्हर पोर्ट: {{port}} (वैध श्रेणी: 1-65535)',
 });

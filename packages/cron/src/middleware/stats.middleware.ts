@@ -4,7 +4,7 @@ import type { CronsOptions, ServerWriteData } from '../lib/type';
 import net from 'node:net';
 import pidusage from 'pidusage';
 import { bytes } from '@aomex/internal-tools';
-import { CONNECT_REFUSED, DEFAULT_PORT } from '../lib/constant';
+import { CONNECT_REFUSED } from '../lib/constant';
 import formatDuration from 'format-duration';
 import { i18n } from '../i18n';
 
@@ -16,8 +16,8 @@ export const stats = (opts: CronsOptions): ConsoleMiddleware => {
       if (ctx.input.command !== commandName) return next();
       ctx.commandMatched = true;
 
-      const PORT = opts.port || DEFAULT_PORT;
-      const client = net.createConnection({ port: PORT }, () => {
+      const { port } = opts;
+      const client = net.createConnection({ port }, () => {
         client.write(commandName);
         const timer = setInterval(() => {
           client.write(commandName);
@@ -38,7 +38,7 @@ export const stats = (opts: CronsOptions): ConsoleMiddleware => {
       client.on('error', (err) => {
         // @ts-expect-error
         if (err.code === CONNECT_REFUSED) {
-          terminal.printWarning(i18n.t('not_started', { port: PORT }));
+          terminal.printWarning(i18n.t('not_started', { port }));
           resolve(undefined);
         } else {
           reject(err);

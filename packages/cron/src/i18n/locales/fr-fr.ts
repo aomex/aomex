@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: "Vérifier l'état d'exécution des tâches planifiées",
   not_started: "La tâche planifiée n'est pas démarrée, port : {{port}}",
   invalid_cron_time: 'Expression cron invalide : {{time}}',
+  invalid_port: 'Port de serveur invalide : {{port}} (plage valide : 1-65535)',
 });

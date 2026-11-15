@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'নির্ধারিত কার্য সম্পাদনের স্থিতি পরীক্ষা করুন',
   not_started: 'নির্ধারিত কাজটি শুরু হয়নি, পোর্ট: {{port}}',
   invalid_cron_time: 'অবৈধ ক্রন অভিব্যক্তি: {{time}}',
+  invalid_port: 'অবৈধ সার্ভার পোর্ট: {{port}} (বৈধ পরিসর: 1-65535)',
 });

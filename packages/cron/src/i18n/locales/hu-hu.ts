@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Ellenőrizze az ütemezett feladatok végrehajtási állapotát',
   not_started: 'Az ütemezett feladat nem indul el, port: {{port}}',
   invalid_cron_time: 'Érvénytelen cron kifejezés: {{time}}',
+  invalid_port: 'Érvénytelen szerverport: {{port}} (érvényes tartomány: 1-65535)',
 });

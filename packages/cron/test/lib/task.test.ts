@@ -11,10 +11,16 @@ import { TELL_CHILD_STOP } from '../../src/lib/constant';
 type WinResult = Awaited<ReturnType<Task['win']>>;
 
 function createCron(
-  options: CronOptions & CronsOptions & { command: string; crontab?: Cron[] },
+  options: CronOptions &
+    Omit<CronsOptions, 'port' | 'commanders'> & {
+      command: string;
+      crontab?: Cron[];
+      commanders?: CronsOptions['commanders'];
+      port?: number;
+    },
 ) {
-  const { crontab = [], ...rest } = options;
-  return new Cron({ ...rest, crontab });
+  const { crontab = [], commanders = '', port = 0, ...rest } = options;
+  return new Cron({ ...rest, commanders, port, crontab });
 }
 
 function expectWon(result: WinResult): Extract<WinResult, { slot: string }> {

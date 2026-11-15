@@ -9,4 +9,6 @@ export default I18n.satisfies(zh).define({
   stats: 'Patikrinkite suplanuotų užduočių vykdymo būseną',
   not_started: 'Suplanuota užduotis nepradėta, prievadas: {{port}}',
   invalid_cron_time: 'Netinkama cron išraiška: {{time}}',
+  invalid_port:
+    'Netinkamas serverio prievadas: {{port}} (galiojantis diapazonas: 1-65535)',
 });

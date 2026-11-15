@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Rejalashtirilgan vazifalarning bajarilishi holatini tekshiring',
   not_started: 'Rejalashtirilgan vazifa boshlanmadi, port: {{port}}',
   invalid_cron_time: 'Yaroqsiz cron ifodasi: {{time}}',
+  invalid_port: 'Yaroqsiz server porti: {{port}} (yaroqli diapazon: 1-65535)',
 });

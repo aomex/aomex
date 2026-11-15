@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'طے شدہ کاموں کے عمل کی حیثیت کو چیک کریں۔',
   not_started: 'طے شدہ کام شروع نہیں ہوا ہے، پورٹ: {{port}}',
   invalid_cron_time: 'غلط کرون اظہار: {{time}}',
+  invalid_port: 'غلط سرور پورٹ: {{port}} (درست حد: 1-65535)',
 });

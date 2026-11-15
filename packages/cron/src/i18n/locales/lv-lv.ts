@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Pārbaudiet plānoto uzdevumu izpildes statusu',
   not_started: 'Ieplānotais uzdevums nav sākts, ports: {{port}}',
   invalid_cron_time: 'Nederīga cron izteiksme: {{time}}',
+  invalid_port: 'Nederīgs servera ports: {{port}} (derīgs diapazons: 1-65535)',
 });

@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Verificați starea de execuție a sarcinilor programate',
   not_started: 'Sarcina programată nu este pornită, port: {{port}}',
   invalid_cron_time: 'Expresie cron nevalidă: {{time}}',
+  invalid_port: 'Port de server nevalid: {{port}} (interval valid: 1-65535)',
 });

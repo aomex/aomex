@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Төлөвлөсөн ажлуудын гүйцэтгэлийн байдлыг шалгана уу',
   not_started: 'Төлөвлөсөн ажил эхлээгүй байна, порт: {{port}}',
   invalid_cron_time: 'Буруу крон илэрхийлэл: {{time}}',
+  invalid_port: 'Буруу серверийн порт: {{port}} (хүчинтэй хүрээ: 1-65535)',
 });

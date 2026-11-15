@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Comproba o estado de execución das tarefas programadas',
   not_started: 'Non se inicia a tarefa programada, porto: {{port}}',
   invalid_cron_time: 'Expresión cron non válida: {{time}}',
+  invalid_port: 'Porto de servidor non válido: {{port}} (rango válido: 1-65535)',
 });

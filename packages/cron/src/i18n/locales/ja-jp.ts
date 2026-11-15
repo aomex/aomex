@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'スケジュールされたタスクの実行ステータスを確認する',
   not_started: 'スケジュールされたタスクは開始されていません。ポート: {{port}}',
   invalid_cron_time: '無効な cron 式: {{time}}',
+  invalid_port: '無効なサービスポート：{{port}}（有効範囲：1-65535）',
 });

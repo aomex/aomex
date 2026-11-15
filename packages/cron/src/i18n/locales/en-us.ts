@@ -8,4 +8,5 @@ export const en = I18n.satisfies(zh).define({
   stats: 'Show cron tasks stats',
   not_started: 'cron not started with port: {{port}}',
   invalid_cron_time: 'Invalid cron expression: {{time}}',
+  invalid_port: 'Invalid server port: {{port}} (valid range: 1-65535)',
 });

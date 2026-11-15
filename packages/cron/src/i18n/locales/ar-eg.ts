@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'التحقق من حالة تنفيذ المهام المجدولة',
   not_started: 'لم يتم بدء المهمة المجدولة، المنفذ: {{port}}',
   invalid_cron_time: 'تعبير cron غير صالح: {{time}}',
+  invalid_port: 'منفذ خادم غير صالح: {{port}} (النطاق الصالح: 1-65535)',
 });

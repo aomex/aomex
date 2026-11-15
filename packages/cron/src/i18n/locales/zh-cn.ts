@@ -7,4 +7,5 @@ export const zh = I18n.define({
   stats: '查看定时任务执行状态',
   not_started: '定时任务未启动，端口：{{port}}',
   invalid_cron_time: '无效的 Cron 表达式：{{time}}',
+  invalid_port: '无效的服务端口：{{port}}（有效范围：1-65535）',
 });

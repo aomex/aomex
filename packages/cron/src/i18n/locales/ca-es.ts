@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: "Comproveu l'estat d'execució de les tasques programades",
   not_started: "La tasca programada no s'ha iniciat, port: {{port}}",
   invalid_cron_time: 'Expressió cron no vàlida: {{time}}',
+  invalid_port: 'Port de servidor no vàlid: {{port}} (interval vàlid: 1-65535)',
 });

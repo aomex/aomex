@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Rewşa pêkanîna karên plansazkirî kontrol bikin',
   not_started: 'Karê plansazkirî dest pê nekiriye, port: {{port}}',
   invalid_cron_time: 'Gotina kronê nederbasdar: {{time}}',
+  invalid_port: 'Porta pêşkêşkerê nederbasdar: {{port}} (rêza derbasdar: 1-65535)',
 });

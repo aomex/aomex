@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Planlaşdırılmış tapşırıqların icra vəziyyətini yoxlayın',
   not_started: 'Planlaşdırılmış tapşırıq başlamadı, port: {{port}}',
   invalid_cron_time: 'Yanlış cron ifadəsi: {{time}}',
+  invalid_port: 'Yanlış server portu: {{port}} (etibarlı diapazon: 1-65535)',
 });

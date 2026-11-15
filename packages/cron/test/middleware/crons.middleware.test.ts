@@ -8,7 +8,7 @@ import {
 } from '@aomex/console';
 
 test('是中间件组', () => {
-  expect(crons({ commanders: '' })).toBeInstanceOf(ConsoleMiddleware);
+  expect(crons({ commanders: '', port: 9786 })).toBeInstanceOf(ConsoleMiddleware);
 });
 
 test('文档', async () => {
@@ -16,7 +16,7 @@ test('文档', async () => {
 
   await collectConsoleDocument({
     document: docs,
-    middlewareList: [crons({ commanders: '' })],
+    middlewareList: [crons({ commanders: '', port: 9786 })],
     app: new TestConsoleApp({}),
   });
   expect(docs).toMatchInlineSnapshot(`

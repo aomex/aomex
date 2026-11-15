@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Kontrollige ajastatud ülesannete täitmise olekut',
   not_started: 'Ajastatud ülesannet ei käivitata, port: {{port}}',
   invalid_cron_time: 'Kehtetu cron-avaldis: {{time}}',
+  invalid_port: 'Kehtetu serveri port: {{port}} (kehtiv vahemik: 1-65535)',
 });

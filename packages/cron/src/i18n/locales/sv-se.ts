@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Kontrollera exekveringsstatusen för schemalagda uppgifter',
   not_started: 'Den schemalagda uppgiften startas inte, port: {{port}}',
   invalid_cron_time: 'Ogiltigt cron-uttryck: {{time}}',
+  invalid_port: 'Ogiltig serverport: {{port}} (giltigt intervall: 1-65535)',
 });

@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'وضعیت اجرای وظایف برنامه ریزی شده را بررسی کنید',
   not_started: 'کار برنامه ریزی شده شروع نشده است، پورت: {{port}}',
   invalid_cron_time: 'عبارت cron نامعتبر است: {{time}}',
+  invalid_port: 'پورت سرور نامعتبر: {{port}} (محدوده معتبر: 1-65535)',
 });

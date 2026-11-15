@@ -2,7 +2,7 @@ import { terminal, type ConsoleMiddleware } from '@aomex/console';
 import { middleware } from '@aomex/common';
 import type { CronsOptions, ServerWriteData } from '../lib/type';
 import net from 'node:net';
-import { CONNECT_REFUSED, DEFAULT_PORT } from '../lib/constant';
+import { CONNECT_REFUSED } from '../lib/constant';
 import { bytes, sleep } from '@aomex/internal-tools';
 import formatDuration from 'format-duration';
 import pidusage from 'pidusage';
@@ -16,8 +16,8 @@ export const stop = (opts: CronsOptions): ConsoleMiddleware => {
       if (ctx.input.command !== commandName) return next();
       ctx.commandMatched = true;
 
-      const PORT = opts.port || DEFAULT_PORT;
-      const client = net.createConnection({ port: PORT }, () => {
+      const { port } = opts;
+      const client = net.createConnection({ port }, () => {
         client.write(commandName);
       });
 
@@ -113,7 +113,7 @@ export const stop = (opts: CronsOptions): ConsoleMiddleware => {
       client.on('error', (err) => {
         // @ts-expect-error
         if (err.code === CONNECT_REFUSED) {
-          terminal.printWarning(i18n.t('not_started', { port: PORT }));
+          terminal.printWarning(i18n.t('not_started', { port }));
           resolve(undefined);
         } else {
           reject(

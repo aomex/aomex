@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Tjek udførelsesstatus for planlagte opgaver',
   not_started: 'Den planlagte opgave er ikke startet, port: {{port}}',
   invalid_cron_time: 'Ugyldigt cron-udtryk: {{time}}',
+  invalid_port: 'Ugyldig serverport: {{port}} (gyldigt interval: 1-65535)',
 });

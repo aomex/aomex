@@ -1,4 +1,3 @@
-export const DEFAULT_PORT = 9786;
 export const CONNECT_REFUSED = 'ECONNREFUSED';
 
 export const ENV_CRON = 'AOMEX_CRON';

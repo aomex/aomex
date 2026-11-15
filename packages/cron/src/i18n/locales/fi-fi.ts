@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Tarkista ajoitettujen tehtävien suoritustila',
   not_started: 'Ajastettua tehtävää ei ole aloitettu, portti: {{port}}',
   invalid_cron_time: 'Virheellinen cron-lauseke: {{time}}',
+  invalid_port: 'Virheellinen palvelinportti: {{port}} (kelvollinen alue: 1-65535)',
 });

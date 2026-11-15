@@ -1,16 +1,16 @@
-import type { Caching } from '@aomex/cache';
+import type { CacheAdapter } from '@aomex/cache';
 import type { GlobPathOptions } from '@aomex/internal-file-import';
 
 export interface CronsOptions {
   commanders: GlobPathOptions;
   /**
-   * 集群服务共享状态。默认使用内存缓存，只能约束当前进程
+   * 集群服务共享状态。默认使用内存存储，只能约束当前进程
    */
-  cache?: Caching;
+  store?: CacheAdapter;
   /**
-   * 服务端口，用于查看任务状态和停止定时任务。默认值：`9786`
+   * 服务端口，用于查看任务状态和停止定时任务。有效范围：`1-65535`
    */
-  port?: number;
+  port: number;
 }
 
 export interface CronTimeObject {

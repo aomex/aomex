@@ -26,6 +26,25 @@ test('无任务时自动结束', async () => {
   await expect(app.run('cron:start')).resolves.toBe(0);
 });
 
+test('非法端口报错', async () => {
+  for (const badPort of [0, -1, 1.5, 65536]) {
+    const errors: Error[] = [];
+    const app = new TestConsoleApp({
+      mount: [
+        start({
+          commanders: join(testDir, 'mock', 'commanders', 'empty.cmd.ts'),
+          port: badPort,
+        }),
+      ],
+    });
+    app.on('error', (err) => {
+      errors.push(err);
+    });
+    await expect(app.run('cron:start')).resolves.toBe(1);
+    expect(errors[0]?.message).toMatch(/无效的服务端口/);
+  }
+});
+
 test('执行任务', async () => {
   const spy = vitest.spyOn(Cron.prototype, 'start').mockImplementation(async () => {
     await sleep(1000);

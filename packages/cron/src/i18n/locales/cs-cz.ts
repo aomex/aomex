@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Zkontrolujte stav provádění naplánovaných úloh',
   not_started: 'Naplánovaná úloha není spuštěna, port: {{port}}',
   invalid_cron_time: 'Neplatný cron výraz: {{time}}',
+  invalid_port: 'Neplatný port serveru: {{port}} (platný rozsah: 1-65535)',
 });

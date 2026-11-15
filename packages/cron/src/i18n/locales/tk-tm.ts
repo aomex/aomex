@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Meýilleşdirilen meseleleriň ýerine ýetirilişini barlaň',
   not_started: 'Meýilleşdirilen mesele başlananok, port: {{port}}',
   invalid_cron_time: 'Nädogry kron aňlatmasy: {{time}}',
+  invalid_port: 'Nädogry serwer porty: {{port}} (dogry aralyk: 1-65535)',
 });

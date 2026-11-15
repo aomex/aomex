@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Жоспарланған тапсырмалардың орындалу күйін тексеріңіз',
   not_started: 'Жоспарланған тапсырма іске қосылмаған, порт: {{port}}',
   invalid_cron_time: 'Жарамсыз cron өрнегі: {{time}}',
+  invalid_port: 'Жарамсыз сервер порты: {{port}} (жарамды диапазон: 1-65535)',
 });

@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Egiaztatu programatutako zereginen exekuzio-egoera',
   not_started: 'Programatutako zeregina ez da hasi, ataka: {{port}}',
   invalid_cron_time: 'Cron adierazpen baliogabea: {{time}}',
+  invalid_port: 'Zerbitzari-portu baliogabea: {{port}} (baliozko tartea: 1-65535)',
 });

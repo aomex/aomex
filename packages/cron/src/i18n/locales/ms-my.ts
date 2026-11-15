@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Semak status pelaksanaan tugas yang dijadualkan',
   not_started: 'Tugas yang dijadualkan tidak dimulakan, port: {{port}}',
   invalid_cron_time: 'Ungkapan cron tidak sah: {{time}}',
+  invalid_port: 'Port pelayan tidak sah: {{port}} (julat sah: 1-65535)',
 });

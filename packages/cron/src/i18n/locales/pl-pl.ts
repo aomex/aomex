@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Sprawdź status realizacji zaplanowanych zadań',
   not_started: 'Zaplanowane zadanie nie zostało uruchomione, port: {{port}}',
   invalid_cron_time: 'Nieprawidłowe wyrażenie cron: {{time}}',
+  invalid_port: 'Nieprawidłowy port serwera: {{port}} (prawidłowy zakres: 1-65535)',
 });

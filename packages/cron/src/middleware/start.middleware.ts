@@ -2,7 +2,6 @@ import { middleware, sleep } from '@aomex/common';
 import { collectCrontab as collectCrontab } from '../lib/collect-crontab';
 import type { CronsOptions, ServerWriteData } from '../lib/type';
 import net, { Socket } from 'node:net';
-import { DEFAULT_PORT } from '../lib/constant';
 import { i18n } from '../i18n';
 
 const commandName = 'cron:start';
@@ -13,6 +12,10 @@ export const start = (opts: CronsOptions) => {
       if (ctx.input.command !== commandName) return next();
 
       ctx.commandMatched = true;
+      if (!Number.isInteger(opts.port) || opts.port < 1 || opts.port > 65535) {
+        throw new Error(i18n.t('invalid_port', { port: opts.port }));
+      }
+
       const crontab = await collectCrontab(opts);
       const DELAY = 300;
 
@@ -87,8 +90,7 @@ export const start = (opts: CronsOptions) => {
         });
       });
 
-      const PORT = opts.port || DEFAULT_PORT;
-      server.listen(PORT);
+      server.listen(opts.port);
 
       // CTRL + C
       // 子进程也会被立即杀死，但是task.start仍然在生产任务

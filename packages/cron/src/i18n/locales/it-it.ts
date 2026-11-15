@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Controlla lo stato di esecuzione delle attività pianificate',
   not_started: "L'attività pianificata non è stata avviata, porta: {{port}}",
   invalid_cron_time: 'Espressione cron non valida: {{time}}',
+  invalid_port: 'Porta del server non valida: {{port}} (intervallo valido: 1-65535)',
 });

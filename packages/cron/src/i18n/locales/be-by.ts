@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Праверце стан выканання запланаваных задач',
   not_started: 'Запланаванае заданне не запушчана, порт: {{port}}',
   invalid_cron_time: 'Няправільны выраз cron: {{time}}',
+  invalid_port: 'Няправільны порт сервера: {{port}} (дапушчальны дыяпазон: 1-65535)',
 });

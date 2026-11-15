@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Zamanlanmış görevlerin yürütme durumunu kontrol edin',
   not_started: 'Zamanlanmış görev başlatılmadı, bağlantı noktası: {{port}}',
   invalid_cron_time: 'Geçersiz cron ifadesi: {{time}}',
+  invalid_port: 'Geçersiz sunucu bağlantı noktası: {{port}} (geçerli aralık: 1-65535)',
 });

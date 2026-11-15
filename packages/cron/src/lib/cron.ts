@@ -85,8 +85,8 @@ export class Cron {
     );
   }
 
-  public get cache(): Caching {
-    return (this._cache ??= this.options.cache || new Caching(new CacheMemoryAdapter()));
+  get cache(): Caching {
+    return (this._cache ??= new Caching(this.options.store ?? new CacheMemoryAdapter()));
   }
 
   public get argv(): string[] {

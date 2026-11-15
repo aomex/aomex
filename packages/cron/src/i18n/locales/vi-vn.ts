@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Kiểm tra trạng thái thực hiện các tác vụ đã lên lịch',
   not_started: 'Tác vụ theo lịch trình chưa được bắt đầu, cổng: {{port}}',
   invalid_cron_time: 'Biểu thức cron không hợp lệ: {{time}}',
+  invalid_port: 'Cổng máy chủ không hợp lệ: {{port}} (phạm vi hợp lệ: 1-65535)',
 });

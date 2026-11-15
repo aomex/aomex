@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: '查看定時任務執行狀態',
   not_started: '定時任務未啟動，端口：{{port}}',
   invalid_cron_time: '無效的 Cron 表達式：{{time}}',
+  invalid_port: '無效的服務連接埠：{{port}}（有效範圍：1-65535）',
 });

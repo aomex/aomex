@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Athugaðu framkvæmdarstöðu áætlaðra verkefna',
   not_started: 'Áætlað verkefni er ekki ræst, höfn: {{port}}',
   invalid_cron_time: 'Ógild cron tjáning: {{time}}',
+  invalid_port: 'Ógildur netþjónshöfn: {{port}} (gilt svið: 1-65535)',
 });

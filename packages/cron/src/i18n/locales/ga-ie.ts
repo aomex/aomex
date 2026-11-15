@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Seiceáil stádas forghníomhaithe na dtascanna sceidealta',
   not_started: 'Níl an tasc sceidealta tosaithe, port: {{port}}',
   invalid_cron_time: 'Slonn neamhbhailí cron: {{time}}',
+  invalid_port: 'Port freastalaí neamhbhailí: {{port}} (raon bailí: 1-65535)',
 });

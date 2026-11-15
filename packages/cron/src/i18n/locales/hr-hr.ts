@@ -9,4 +9,5 @@ export default I18n.satisfies(zh).define({
   stats: 'Provjerite status izvršenja planiranih zadataka',
   not_started: 'Planirani zadatak nije pokrenut, port: {{port}}',
   invalid_cron_time: 'Nevažeći cron izraz: {{time}}',
+  invalid_port: 'Nevažeći poslužiteljski port: {{port}} (važeći raspon: 1-65535)',
 });
