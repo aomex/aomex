@@ -8,7 +8,7 @@ import {
 export { ValidatorSchema };
 
 /**
- * 创建可派生的字段集合，可直接或经 pick/omit/extend/merge 后用于校验
+ * 创建可派生的字段集合，可直接或经 pick/omit/extend/partial/required 后用于校验
  *
  * 嵌套裸对象会在入库前转为 `rule.object(...)`：
  * ```typescript
@@ -26,6 +26,7 @@ export { ValidatorSchema };
  *
  * const createUserSchema = userSchema.omit('id');
  * const patchUserSchema = userSchema.pick('name', 'email').partial();
+ * const requiredSchema = patchUserSchema.required();
  * type User = Validator.Infer<typeof userSchema>;
  * ```
  */

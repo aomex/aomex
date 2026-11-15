@@ -25,6 +25,7 @@ export class DecimalValidator<T = Decimal> extends Validator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => DecimalValidator<T | Validator.TOptional>;
+  declare public required: () => DecimalValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => DecimalValidator<T | null>;
   declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,

@@ -45,6 +45,8 @@ test('派生操作不继承 name', () => {
   expect(named.extend(schema({ tag: rule.string() }))['name']).toBeUndefined();
   expect(named.partial()['name']).toBeUndefined();
   expect(named.partial('name')['name']).toBeUndefined();
+  expect(named.required()['name']).toBeUndefined();
+  expect(named.required('age')['name']).toBeUndefined();
 });
 
 test('rule.object(schema) 转为 ObjectValidator 并可校验', async () => {
@@ -179,6 +181,119 @@ test('partial：指定字段，剩余参数与数组形式等价', async () => {
   });
 
   await expect(validate({}, byRest)).rejects.toThrow(ValidateDeniedError);
+});
+
+test('required：全部字段必填', async () => {
+  const allRequired = userSchema.required();
+  await expect(
+    validate({ id: '1', name: 'a', email: 'a@b.com' }, allRequired),
+  ).rejects.toThrow(ValidateDeniedError);
+  await expect(
+    validate({ id: '1', name: 'a', email: 'a@b.com', age: '18' }, allRequired),
+  ).resolves.toStrictEqual({
+    id: 1,
+    name: 'a',
+    email: 'a@b.com',
+    age: 18,
+  });
+});
+
+test('required：指定字段，剩余参数与数组形式等价', async () => {
+  const byRest = userSchema.required('age');
+  const byArr = userSchema.required(['age']);
+
+  await expect(
+    validate({ id: '1', name: 'a', email: 'a@b.com' }, byRest),
+  ).rejects.toThrow(ValidateDeniedError);
+  await expect(validate({ id: '1', name: 'a', email: 'a@b.com' }, byArr)).rejects.toThrow(
+    ValidateDeniedError,
+  );
+
+  await expect(
+    validate({ id: '1', name: 'a', email: 'a@b.com', age: '9' }, byRest),
+  ).resolves.toStrictEqual({
+    id: 1,
+    name: 'a',
+    email: 'a@b.com',
+    age: 9,
+  });
+  await expect(
+    validate({ id: '1', name: 'a', email: 'a@b.com', age: '9' }, byArr),
+  ).resolves.toStrictEqual({
+    id: 1,
+    name: 'a',
+    email: 'a@b.com',
+    age: 9,
+  });
+});
+
+test('required：有 default 时可调用，字段保持 default（no-op）', async () => {
+  const withDefault = schema({
+    name: rule.string().optional(),
+    page: rule.int().default(1),
+  });
+  const tightened = withDefault.required();
+  expect(tightened['rules'].page['config'].required).toBe(false);
+  expect(tightened['rules'].page['config'].defaultValue).toBe(1);
+  expect(tightened['rules'].name['config'].required).toBe(true);
+
+  await expect(validate({}, tightened)).rejects.toThrow(ValidateDeniedError);
+  await expect(validate({ name: 'a' }, tightened)).resolves.toStrictEqual({
+    name: 'a',
+    page: 1,
+  });
+});
+
+test('required：与 partial 互逆', async () => {
+  const roundtrip = userSchema.partial().required();
+  await expect(validate({ name: 'a' }, roundtrip)).rejects.toThrow(ValidateDeniedError);
+  await expect(
+    validate({ id: '1', name: 'a', email: 'a@b.com', age: '2' }, roundtrip),
+  ).resolves.toStrictEqual({
+    id: 1,
+    name: 'a',
+    email: 'a@b.com',
+    age: 2,
+  });
+});
+
+test('partial/required：空数组不等于无参全量', async () => {
+  // 绕过类型：[] 解包后应 no-op，不能退化成全量 optional/required
+  const partialEmpty = userSchema.partial([] as any) as unknown as typeof userSchema;
+  expect(partialEmpty['rules'].id['config'].required).toBe(true);
+  expect(partialEmpty['rules'].age['config'].required).toBe(false);
+
+  const requiredEmpty = userSchema.required([] as any) as unknown as typeof userSchema;
+  expect(requiredEmpty['rules'].age['config'].required).toBe(false);
+
+  const partialAll = userSchema.partial();
+  expect(partialAll['rules'].id['config'].required).toBe(false);
+});
+
+test('required：指定已必填键为 no-op；required 后再 partial', async () => {
+  const same = userSchema.required('name');
+  expect(same['rules'].name['config'].required).toBe(true);
+  await expect(
+    validate({ id: '1', name: 'a', email: 'a@b.com' }, same),
+  ).resolves.toStrictEqual({
+    id: 1,
+    name: 'a',
+    email: 'a@b.com',
+    age: undefined,
+  });
+
+  const againPartial = userSchema.required().partial('age');
+  await expect(
+    validate({ id: '1', name: 'a', email: 'a@b.com' }, againPartial),
+  ).resolves.toStrictEqual({
+    id: 1,
+    name: 'a',
+    email: 'a@b.com',
+    age: undefined,
+  });
+  await expect(validate({ id: '1', name: 'a' }, againPartial)).rejects.toThrow(
+    ValidateDeniedError,
+  );
 });
 
 test('嵌套 object 与 array', async () => {

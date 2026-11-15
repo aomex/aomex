@@ -34,6 +34,7 @@ export class ObjectValidator<T = Validator.TObject> extends Validator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => ObjectValidator<T | Validator.TOptional>;
+  declare public required: () => ObjectValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => ObjectValidator<T | null>;
   declare public default: (
     object: Validator.ParameterOrFn<T>,

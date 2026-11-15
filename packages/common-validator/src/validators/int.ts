@@ -11,6 +11,7 @@ export class IntValidator<T = number> extends BaseNumberValidator<T> {
   declare protected config: BaseNumberValidator.Options<T>;
 
   declare public optional: () => IntValidator<T | Validator.TOptional>;
+  declare public required: () => IntValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => IntValidator<T | null>;
   declare public default: (
     integer: Validator.ParameterOrFn<T>,

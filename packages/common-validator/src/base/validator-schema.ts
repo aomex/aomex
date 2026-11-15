@@ -6,9 +6,13 @@ import {
 } from '../api/to-validator';
 
 type HasPublicOptional = { optional: () => any };
+type HasPublicRequired = { required: () => any };
 
 type PartialBlockedByTransform =
   '部分字段携带了 transform，无法调用 partial()；可改为指定其中不含 transform 的字段';
+
+type RequiredBlockedByTransform =
+  '部分字段携带了 transform，无法调用 required()；可改为指定其中不含 transform 的字段';
 
 type PartialRules<T> = {
   [K in keyof T]: T[K] extends { optional: () => infer R }
@@ -18,8 +22,20 @@ type PartialRules<T> = {
     : never;
 };
 
+type RequiredRules<T> = {
+  [K in keyof T]: T[K] extends { required: () => infer R }
+    ? R extends Validator
+      ? R
+      : never
+    : never;
+};
+
 type PartialableKey<T> = {
   [P in keyof T]-?: T[P] extends HasPublicOptional ? P & string : never;
+}[keyof T];
+
+type RequireableKey<T> = {
+  [P in keyof T]-?: T[P] extends HasPublicRequired ? P & string : never;
 }[keyof T];
 
 function normalizeKeys<K>(keys: K[] | [readonly K[]]): K[] {
@@ -33,7 +49,7 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
   constructor(
     protected readonly rules: T,
     /**
-     * 可选的 OpenAPI 具名组件名；`pick` / `omit` / `extend` / `partial` 不会带上该名称
+     * 可选的 OpenAPI 具名组件名；`pick` / `omit` / `extend` / `partial` / `required` 不会带上该名称
      */
     protected readonly name?: string,
   ) {}
@@ -61,17 +77,13 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
    */
   pick<K extends keyof T>(...keys: K[]): ValidatorSchema<Pick<T, K>>;
   pick<K extends keyof T>(keys: readonly K[]): ValidatorSchema<Pick<T, K>>;
-  pick<K extends keyof T>(...keys: K[] | [readonly K[]]): ValidatorSchema<Pick<T, K>> {
-    const list = normalizeKeys(keys);
-    return new ValidatorSchema(
-      list.reduce(
-        (acc, key) => {
-          acc[key] = this.rules[key];
-          return acc;
-        },
-        {} as Pick<T, K>,
-      ),
-    );
+  pick(...keys: string[] | [readonly string[]]): any {
+    const next: Record<string, Validator> = {};
+    for (const key of normalizeKeys(keys)) {
+      const validator = this.rules[key];
+      if (validator) next[key] = validator;
+    }
+    return new ValidatorSchema(next);
   }
 
   /**
@@ -84,19 +96,15 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
    */
   omit<K extends keyof T>(...keys: K[]): ValidatorSchema<Omit<T, K>>;
   omit<K extends keyof T>(keys: readonly K[]): ValidatorSchema<Omit<T, K>>;
-  omit<K extends keyof T>(...keys: K[] | [readonly K[]]): ValidatorSchema<Omit<T, K>> {
-    const list = normalizeKeys(keys);
-    return new ValidatorSchema(
-      Object.keys(this.rules)
-        .filter((key) => !list.includes(key as K))
-        .reduce(
-          (acc, key) => {
-            acc[key as keyof Omit<T, K>] = this.rules[key as keyof Omit<T, K>];
-            return acc;
-          },
-          {} as Omit<T, K>,
-        ),
-    );
+  omit(...keys: string[] | [readonly string[]]): any {
+    const excluded = new Set(normalizeKeys(keys));
+    const next: Record<string, Validator> = {};
+    for (const key of Object.keys(this.rules)) {
+      if (excluded.has(key)) continue;
+      const validator = this.rules[key];
+      if (validator) next[key] = validator;
+    }
+    return new ValidatorSchema(next);
   }
 
   /**
@@ -150,16 +158,52 @@ export class ValidatorSchema<T extends Record<string, Validator<any>>> {
   partial<K extends PartialableKey<T>>(
     keys: readonly [K, ...K[]],
   ): ValidatorSchema<Omit<T, K> & PartialRules<Pick<T, K>>>;
-  partial(this: any, ...keys: (keyof T)[] | [readonly (keyof T)[]]): any {
-    const self = this as ValidatorSchema<T>;
-    const list = normalizeKeys(keys);
-    const selected = (
-      list.length ? list : (Object.keys(self.rules) as (keyof T)[])
-    ) as (keyof T)[];
-    const next = { ...self.rules } as Record<string, Validator>;
-    for (const key of selected) {
-      const validator = self.rules[key] as unknown as { optional: () => Validator };
-      next[key as string] = validator.optional();
+  partial(...keys: string[] | [readonly string[]]): any {
+    return this.mapSelected(keys, (v) => v['optional']());
+  }
+
+  /**
+   * 把全部字段变成必填（`partial()` 的反向）。
+   * 若有字段使用了 `transform`，不能无参调用；可改成 `required('字段名')` 只处理没有 `transform` 的字段。
+   * 已有 `default` 的字段调用时保持不变（缺省仍走默认值）。
+   */
+  required(
+    this: [T] extends [{ [K in keyof T]: T[K] extends HasPublicRequired ? T[K] : never }]
+      ? this
+      : RequiredBlockedByTransform,
+  ): ValidatorSchema<RequiredRules<T>>;
+  /**
+   * 把指定字段变成必填，只能选没有 `transform` 的字段。
+   * 已有 `default` 的字段调用时保持不变。
+   *
+   * ```typescript
+   * schema.required('name', 'email');
+   * schema.required(['name', 'email']);
+   * ```
+   */
+  required<K extends RequireableKey<T>>(
+    ...keys: [K, ...K[]]
+  ): ValidatorSchema<Omit<T, K> & RequiredRules<Pick<T, K>>>;
+  required<K extends RequireableKey<T>>(
+    keys: readonly [K, ...K[]],
+  ): ValidatorSchema<Omit<T, K> & RequiredRules<Pick<T, K>>>;
+  required(...keys: string[] | [readonly string[]]): any {
+    return this.mapSelected(keys, (v) => v['required']());
+  }
+
+  /**
+   * 无参（rest 长度为 0）表示全部字段。
+   * 必须在 normalizeKeys 之前判断：`fn([])` 的 rest 长度是 1，解包后才变成空数组。
+   */
+  protected mapSelected(
+    keys: string[] | [readonly string[]],
+    map: (validator: Validator) => Validator,
+  ) {
+    const targets = keys.length === 0 ? Object.keys(this.rules) : normalizeKeys(keys);
+    const next: Record<string, Validator> = { ...this.rules };
+    for (const key of targets) {
+      const validator = this.rules[key];
+      if (validator) next[key] = map(validator);
     }
     return new ValidatorSchema(next);
   }

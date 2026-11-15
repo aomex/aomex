@@ -15,10 +15,24 @@ const validator = new TargetValidator();
   expectType<TypeEqual<DefaultType | undefined, Validator.Infer<typeof v>>>(true);
 }
 
+// 必填（optional 的反向）
+{
+  const v = validator.optional().required();
+  expectType<TypeEqual<DefaultType, Validator.Infer<typeof v>>>(true);
+  const again = validator.required();
+  expectType<TypeEqual<DefaultType, Validator.Infer<typeof again>>>(true);
+}
+
 // nullable
 {
   const v = validator.nullable();
   expectType<TargetValidator<any>>(v);
+  expectType<TypeEqual<DefaultType | null, Validator.Infer<typeof v>>>(true);
+}
+
+// optional + nullable → required
+{
+  const v = validator.optional().nullable().required();
   expectType<TypeEqual<DefaultType | null, Validator.Infer<typeof v>>>(true);
 }
 
@@ -27,6 +41,8 @@ const validator = new TargetValidator();
   const v = validator.optional().default(10);
   expectType<TargetValidator<any>>(v);
   expectType<TypeEqual<DefaultType, Validator.Infer<typeof v>>>(true);
+  const withRequired = v.required();
+  expectType<TypeEqual<DefaultType, Validator.Infer<typeof withRequired>>>(true);
 }
 
 // 严格模式

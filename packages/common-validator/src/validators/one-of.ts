@@ -25,6 +25,7 @@ export class OneOfValidator<T = never> extends Validator<T> {
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;
   declare public optional: () => OneOfValidator<T | Validator.TOptional>;
+  declare public required: () => OneOfValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => OneOfValidator<T | null>;
 
   protected override isEmpty(_: any): boolean {

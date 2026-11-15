@@ -14,6 +14,7 @@ export class NumberValidator<T = number> extends BaseNumberValidator<T> {
   declare protected config: NumberValidator.Options<T>;
 
   declare public optional: () => NumberValidator<T | Validator.TOptional>;
+  declare public required: () => NumberValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => NumberValidator<T | null>;
   declare public default: (
     number: Validator.ParameterOrFn<T>,

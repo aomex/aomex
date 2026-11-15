@@ -164,6 +164,20 @@ export abstract class Validator<T = unknown> {
   }
 
   /**
+   * 将字段设为必填（`optional()` 的反向）。
+   *
+   * 若已设置 `default(...)`，则原样返回：缺省仍由默认值补齐，无需也不应清掉 default。
+   */
+  protected required(): Validator {
+    const validator = this.copy();
+    if (validator.config.defaultValue !== undefined) {
+      return validator;
+    }
+    validator.config.required = true;
+    return validator;
+  }
+
+  /**
    * 把`null`识别成合法的值
    * @see optional
    */

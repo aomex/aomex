@@ -20,6 +20,7 @@ export class StringValidator<T = string> extends BaseStringValidator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => StringValidator<T | Validator.TOptional>;
+  declare public required: () => StringValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => StringValidator<T | null>;
   declare public default: (
     string: Validator.ParameterOrFn<T>,

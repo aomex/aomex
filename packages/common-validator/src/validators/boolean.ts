@@ -19,6 +19,7 @@ export class BooleanValidator<T = boolean> extends Validator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => BooleanValidator<T | Validator.TOptional>;
+  declare public required: () => BooleanValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => BooleanValidator<T | null>;
   declare public default: (
     boolValue: boolean,

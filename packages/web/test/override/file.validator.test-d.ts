@@ -12,6 +12,12 @@ const validator = new TargetValidator();
   expectType<TypeEqual<DefaultType | undefined, Validator.Infer<typeof v>>>(true);
 }
 
+// 必填（optional 的反向）
+{
+  const v = validator.optional().required();
+  expectType<TypeEqual<DefaultType, Validator.Infer<typeof v>>>(true);
+}
+
 // 转换函数
 {
   const v = validator.transform(async (data) => {
@@ -20,6 +26,10 @@ const validator = new TargetValidator();
   });
   expectType<TransformedValidator<string>>(v);
   expectType<TypeEqual<string, Validator.Infer<typeof v>>>(true);
+  // @ts-expect-error
+  v.required();
+  // @ts-expect-error
+  v.optional();
 }
 
 // 文档

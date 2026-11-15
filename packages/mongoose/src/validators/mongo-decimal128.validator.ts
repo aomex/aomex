@@ -16,6 +16,9 @@ export class MongoDecimal128Validator<T = mongo.Decimal128> extends Validator<T>
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => MongoDecimal128Validator<T | Validator.TOptional>;
+  declare public required: () => MongoDecimal128Validator<
+    Exclude<T, Validator.TOptional>
+  >;
   declare public nullable: () => MongoDecimal128Validator<T | null>;
   declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,

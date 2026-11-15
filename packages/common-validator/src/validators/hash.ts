@@ -55,6 +55,7 @@ export class HashValidator<T = string> extends BaseStringValidator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => HashValidator<T | Validator.TOptional>;
+  declare public required: () => HashValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => HashValidator<T | null>;
   declare public default: (
     algorithm: Validator.ParameterOrFn<T>,

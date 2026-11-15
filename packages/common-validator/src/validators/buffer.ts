@@ -21,6 +21,7 @@ export class BufferValidator<T = Buffer> extends Validator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => BufferValidator<T | Validator.TOptional>;
+  declare public required: () => BufferValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => BufferValidator<T | null>;
   declare public default: (buffer: Buffer) => BufferValidator<T | Validator.TDefault>;
   declare public transform: <T1>(

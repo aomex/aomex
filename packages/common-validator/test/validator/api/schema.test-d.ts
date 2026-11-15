@@ -346,6 +346,244 @@ const userSchema = schema({
   >(true);
 }
 
+// required：全部字段（含已是必填的字段，等价收紧 optional）
+{
+  const allRequired = userSchema.required();
+  expectType<
+    TypeEqual<
+      {
+        id: number;
+        name: string;
+        age: number;
+        email: string;
+        profile: { bio: string };
+      },
+      Validator.Infer<typeof allRequired>
+    >
+  >(true);
+  // 错误形状
+  expectType<
+    TypeEqual<
+      {
+        id: number;
+        name: string;
+        email: string;
+        profile: { bio: string };
+      } & { age?: number | undefined },
+      Validator.Infer<typeof allRequired>
+    >
+  >(false);
+  // 实例类型：age 去掉 TOptional
+  expectType<
+    TypeEqual<
+      ValidatorSchema<{
+        id: IntValidator;
+        name: StringValidator;
+        age: IntValidator;
+        email: EmailValidator;
+        profile: ObjectValidator<{ bio: string }>;
+      }>,
+      typeof allRequired
+    >
+  >(true);
+}
+
+// required：空 schema
+{
+  const empty = schema({}).required();
+  expectType<TypeEqual<{}, Validator.Infer<typeof empty>>>(true);
+}
+
+// required：指定字段（rest / 数组等价；可指定已是必填的键）
+{
+  const requireAge = userSchema.required('age');
+  expectType<
+    TypeEqual<
+      {
+        id: number;
+        name: string;
+        age: number;
+        email: string;
+        profile: { bio: string };
+      },
+      Validator.Infer<typeof requireAge>
+    >
+  >(true);
+
+  const requireAgeArr = userSchema.required(['age']);
+  expectType<
+    TypeEqual<Validator.Infer<typeof requireAgeArr>, Validator.Infer<typeof requireAge>>
+  >(true);
+
+  const requireName = userSchema.required('name');
+  expectType<
+    TypeEqual<Validator.Infer<typeof requireName>, Validator.Infer<typeof userSchema>>
+  >(true);
+
+  const requireMulti = userSchema.required('age', 'name');
+  const requireMultiArr = userSchema.required(['age', 'name']);
+  expectType<
+    TypeEqual<
+      Validator.Infer<typeof requireMulti>,
+      Validator.Infer<typeof requireMultiArr>
+    >
+  >(true);
+  expectType<
+    TypeEqual<
+      {
+        id: number;
+        name: string;
+        age: number;
+        email: string;
+        profile: { bio: string };
+      },
+      Validator.Infer<typeof requireMulti>
+    >
+  >(true);
+
+  // @ts-expect-error
+  userSchema.required('missing');
+  // @ts-expect-error
+  userSchema.required(['missing']);
+  // @ts-expect-error 空元组不满足至少一键
+  userSchema.required([]);
+}
+
+// required：只收紧顶层，不深入嵌套 object 字段
+{
+  const nested = schema({
+    profile: rule.object({
+      bio: rule.string().optional(),
+    }),
+  });
+  const topRequired = nested.partial().required();
+  expectType<
+    TypeEqual<
+      { profile: { bio?: string | undefined } },
+      Validator.Infer<typeof topRequired>
+    >
+  >(true);
+  expectType<
+    TypeEqual<{ profile: { bio: string } }, Validator.Infer<typeof topRequired>>
+  >(false);
+}
+
+// required：含 transform 时不可用；含 default 可调用（default 字段 Infer 仍必有值）
+{
+  const withTransform = schema({
+    id: rule.int(),
+    name: rule.string().transform((s) => s.length),
+  });
+  // @ts-expect-error 部分字段带 transform 时，无参 required 不可用
+  withTransform.required();
+  // @ts-expect-error 只能指定不含 transform 的字段
+  withTransform.required('name');
+  const onlyId = withTransform.required('id');
+  expectType<TypeEqual<{ id: number; name: number }, Validator.Infer<typeof onlyId>>>(
+    true,
+  );
+
+  const withDefault = schema({
+    id: rule.int().optional(),
+    page: rule.int().default(1),
+  });
+  const requiredWithDefault = withDefault.required();
+  expectType<
+    TypeEqual<{ id: number; page: number }, Validator.Infer<typeof requiredWithDefault>>
+  >(true);
+  const onlyPage = withDefault.required('page');
+  expectType<
+    TypeEqual<
+      { page: number } & { id?: number | undefined },
+      Validator.Infer<typeof onlyPage>
+    >
+  >(true);
+  const onlyIdKeepDefault = withDefault.required('id');
+  expectType<
+    TypeEqual<{ id: number; page: number }, Validator.Infer<typeof onlyIdKeepDefault>>
+  >(true);
+}
+
+// required：nullable + optional → 去掉 undefined，保留 null
+{
+  const withNull = schema({
+    note: rule.string().optional().nullable(),
+  });
+  expectType<
+    TypeEqual<{ note?: string | null | undefined }, Validator.Infer<typeof withNull>>
+  >(true);
+  const noteRequired = withNull.required();
+  expectType<TypeEqual<{ note: string | null }, Validator.Infer<typeof noteRequired>>>(
+    true,
+  );
+  expectType<
+    TypeEqual<{ note?: string | null | undefined }, Validator.Infer<typeof noteRequired>>
+  >(false);
+}
+
+// required：与 partial 互逆；required 后再 partial 指定键
+{
+  const roundtrip = userSchema.partial().required();
+  expectType<
+    TypeEqual<
+      {
+        id: number;
+        name: string;
+        age: number;
+        email: string;
+        profile: { bio: string };
+      },
+      Validator.Infer<typeof roundtrip>
+    >
+  >(true);
+
+  const againPartial = roundtrip.partial('age', 'email');
+  expectType<
+    TypeEqual<
+      {
+        id: number;
+        name: string;
+        profile: { bio: string };
+      } & {
+        age?: number | undefined;
+        email?: string | undefined;
+      },
+      Validator.Infer<typeof againPartial>
+    >
+  >(true);
+}
+
+// required：pick / omit / extend 后收紧
+{
+  const fromPatch = userSchema.pick('name', 'email', 'age').partial().required('name');
+  expectType<
+    TypeEqual<
+      { name: string } & {
+        email?: string | undefined;
+        age?: number | undefined;
+      },
+      Validator.Infer<typeof fromPatch>
+    >
+  >(true);
+
+  const createThenRequireAge = userSchema
+    .omit('id')
+    .extend({ password: rule.string() })
+    .required('age');
+  expectType<
+    TypeEqual<
+      {
+        name: string;
+        email: string;
+        profile: { bio: string };
+        password: string;
+        age: number;
+      },
+      Validator.Infer<typeof createThenRequireAge>
+    >
+  >(true);
+}
+
 // 链式派生：CRUD 常见组合
 {
   const createUser = userSchema.omit('id').extend({
@@ -496,23 +734,24 @@ const userSchema = schema({
   >(true);
 }
 
-// pick -> omit -> extend(字段表) -> extend(schema) -> partial 串联后仍可 Infer
+// pick -> omit -> extend(字段表) -> extend(schema) -> partial -> required 串联后仍可 Infer
 {
   const pipeline = userSchema
     .pick('id', 'name', 'email', 'age')
     .omit('id')
     .extend({ tag: rule.string() })
     .extend(schema({ active: rule.boolean() }))
-    .partial('name', 'tag');
+    .partial('name', 'tag')
+    .required('age', 'name');
 
   expectType<
     TypeEqual<
       {
         email: string;
         active: boolean;
+        age: number;
+        name: string;
       } & {
-        age?: number | undefined;
-        name?: string | undefined;
         tag?: string | undefined;
       },
       Validator.Infer<typeof pipeline>

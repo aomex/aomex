@@ -27,6 +27,7 @@ export class UrlValidator<T = string> extends BaseStringValidator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => UrlValidator<T | Validator.TOptional>;
+  declare public required: () => UrlValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => UrlValidator<T | null>;
   declare public default: (
     Url: Validator.ParameterOrFn<T>,

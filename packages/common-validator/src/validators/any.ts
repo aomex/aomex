@@ -12,6 +12,7 @@ export class AnyValidator<T = AnyValidator.Type> extends Validator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => AnyValidator<T | Validator.TOptional>;
+  declare public required: () => AnyValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => AnyValidator<T | null>;
   declare public default: (
     anyValue: Validator.ParameterOrFn<T>,

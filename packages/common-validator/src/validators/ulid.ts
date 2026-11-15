@@ -22,6 +22,7 @@ export class UlidValidator<T = string> extends BaseStringValidator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => UlidValidator<T | Validator.TOptional>;
+  declare public required: () => UlidValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => UlidValidator<T | null>;
   declare public default: (
     uuid: Validator.ParameterOrFn<T>,

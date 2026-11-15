@@ -15,6 +15,7 @@ export class StreamValidator<T = stream.Stream> extends Validator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => StreamValidator<T | Validator.TOptional>;
+  declare public required: () => StreamValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => StreamValidator<T | null>;
   declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,

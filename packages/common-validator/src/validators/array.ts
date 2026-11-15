@@ -41,6 +41,7 @@ export class ArrayValidator<T = unknown[]> extends Validator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => ArrayValidator<T | Validator.TOptional>;
+  declare public required: () => ArrayValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => ArrayValidator<T | null>;
   declare public default: (
     array: Validator.ParameterOrFn<T>,

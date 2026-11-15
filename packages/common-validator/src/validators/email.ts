@@ -20,6 +20,7 @@ export class EmailValidator<T = string> extends BaseStringValidator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => EmailValidator<T | Validator.TOptional>;
+  declare public required: () => EmailValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => EmailValidator<T | null>;
   declare public default: (
     email: Validator.ParameterOrFn<T>,

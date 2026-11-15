@@ -16,6 +16,7 @@ export class MongoObjectIdValidator<T = mongo.ObjectId> extends Validator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => MongoObjectIdValidator<T | Validator.TOptional>;
+  declare public required: () => MongoObjectIdValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => MongoObjectIdValidator<T | null>;
   declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,

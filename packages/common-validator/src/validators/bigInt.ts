@@ -24,6 +24,7 @@ export class BigIntValidator<T = bigint> extends Validator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => BigIntValidator<T | Validator.TOptional>;
+  declare public required: () => BigIntValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => BigIntValidator<T | null>;
   declare public default: (value: bigint) => BigIntValidator<T | Validator.TDefault>;
   declare public transform: <T1>(

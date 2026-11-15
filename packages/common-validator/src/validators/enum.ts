@@ -75,6 +75,7 @@ export class EnumValidator<const T = never> extends Validator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => EnumValidator<T | Validator.TOptional>;
+  declare public required: () => EnumValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => EnumValidator<T | null>;
   declare public default: (
     value: Validator.ParameterOrFn<T>,

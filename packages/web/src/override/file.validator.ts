@@ -43,6 +43,7 @@ export class FileValidator<T = FileValidator.FormidableFile> extends Validator<T
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => FileValidator<T | Validator.TOptional>;
+  declare public required: () => FileValidator<Exclude<T, Validator.TOptional>>;
   declare public transform: <T1>(
     fn: Validator.TransformFn<T, T1>,
   ) => TransformedValidator<T1>;

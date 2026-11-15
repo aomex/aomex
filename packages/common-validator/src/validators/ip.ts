@@ -29,6 +29,7 @@ export class IpValidator<T = string> extends BaseStringValidator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => IpValidator<T | Validator.TOptional>;
+  declare public required: () => IpValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => IpValidator<T | null>;
   declare public default: (
     ip: Validator.ParameterOrFn<T>,

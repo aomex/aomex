@@ -30,6 +30,7 @@ export class DateValidator<T = Date> extends Validator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => DateValidator<T | Validator.TOptional>;
+  declare public required: () => DateValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => DateValidator<T | null>;
   declare public default: (
     date: Validator.ParameterOrFn<Date>,

@@ -39,6 +39,7 @@ export class LiteralValidator<const T = never> extends Validator<T> {
     mode?: Validator.DocumentMergeMode,
   ) => this;
   declare public optional: () => LiteralValidator<T | Validator.TOptional>;
+  declare public required: () => LiteralValidator<Exclude<T, Validator.TOptional>>;
   declare public nullable: () => LiteralValidator<T | null>;
   declare public default: (
     value: Validator.ParameterOrFn<T>,

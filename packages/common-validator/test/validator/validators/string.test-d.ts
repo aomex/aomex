@@ -15,6 +15,16 @@ const validator = new TargetValidator();
   expectType<TypeEqual<DefaultType | undefined, Validator.Infer<typeof v>>>(true);
 }
 
+// 必填（optional 的反向）
+{
+  const v = validator.optional().required();
+  expectType<TargetValidator<any>>(v);
+  expectType<TypeEqual<DefaultType, Validator.Infer<typeof v>>>(true);
+  // 已是必填再 required：Infer 不变
+  const again = validator.required();
+  expectType<TypeEqual<DefaultType, Validator.Infer<typeof again>>>(true);
+}
+
 // nullable
 {
   const v = validator.nullable();
@@ -22,11 +32,21 @@ const validator = new TargetValidator();
   expectType<TypeEqual<DefaultType | null, Validator.Infer<typeof v>>>(true);
 }
 
+// optional + nullable → required：去掉 undefined，保留 null
+{
+  const v = validator.optional().nullable().required();
+  expectType<TypeEqual<DefaultType | null, Validator.Infer<typeof v>>>(true);
+  expectType<TypeEqual<DefaultType | null | undefined, Validator.Infer<typeof v>>>(false);
+}
+
 // 默认值
 {
   const v = validator.optional().default('abc');
   expectType<TargetValidator<any>>(v);
   expectType<TypeEqual<DefaultType, Validator.Infer<typeof v>>>(true);
+  // 有 default 时 required 类型仍必有值（运行时 no-op）
+  const withRequired = v.required();
+  expectType<TypeEqual<DefaultType, Validator.Infer<typeof withRequired>>>(true);
 }
 
 // 转换函数
@@ -37,6 +57,11 @@ const validator = new TargetValidator();
   });
   expectType<TransformedValidator<string>>(v);
   expectType<TypeEqual<string, Validator.Infer<typeof v>>>(true);
+  // transform 后无公开 required
+  // @ts-expect-error
+  v.required();
+  // @ts-expect-error
+  v.optional();
 }
 
 // 文档

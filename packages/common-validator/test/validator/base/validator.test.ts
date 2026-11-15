@@ -40,6 +40,12 @@ describe('链式调用返回新的实例', () => {
     expect(v1).not.toBe(validator);
   });
 
+  test('required', () => {
+    const v1 = validator['required']();
+    expect(v1).toBeInstanceOf(MockValidator);
+    expect(v1).not.toBe(validator);
+  });
+
   test('nullable', () => {
     const v1 = validator['nullable']();
     expect(v1).toBeInstanceOf(MockValidator);
@@ -108,6 +114,49 @@ describe('optional()', async () => {
         ValidateResult.accept(undefined),
       );
     }
+  });
+});
+
+describe('required()', async () => {
+  const empty = ['', null, undefined];
+
+  test('optional 后再 required，空值重新拒绝', async () => {
+    const validator = new MockValidator()['optional']()['required']();
+    expect(validator['config'].required).toBe(true);
+    for (const value of empty) {
+      await expect(validator['validate'](value, '', 'LABEL')).resolves.toStrictEqual({
+        errors: ['LABEL为必填项'],
+      });
+    }
+  });
+
+  test('已是必填再 required：仍拒绝空值', async () => {
+    const validator = new MockValidator()['required']();
+    expect(validator['config'].required).toBe(true);
+    await expect(validator['validate'](undefined, '', 'LABEL')).resolves.toStrictEqual({
+      errors: ['LABEL为必填项'],
+    });
+  });
+
+  test('有 default 时 required 为 no-op，缺省仍走默认值', async () => {
+    const validator = new MockValidator()['default']('test1')['required']();
+    expect(validator['config'].required).toBe(false);
+    expect(validator['config'].defaultValue).toBe('test1');
+    await expect(validator['validate'](undefined)).resolves.toStrictEqual(
+      ValidateResult.accept('test1'),
+    );
+  });
+
+  test('optional + nullable 后再 required：拒绝 undefined，仍接受 null', async () => {
+    const validator = new MockValidator()['optional']()['nullable']()['required']();
+    expect(validator['config'].required).toBe(true);
+    expect(validator['config'].nullable).toBe(true);
+    await expect(validator['validate'](undefined, '', 'LABEL')).resolves.toStrictEqual({
+      errors: ['LABEL为必填项'],
+    });
+    await expect(validator['validate'](null, '')).resolves.toStrictEqual(
+      ValidateResult.accept(null),
+    );
   });
 });
 

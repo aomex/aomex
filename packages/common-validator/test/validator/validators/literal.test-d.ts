@@ -46,6 +46,12 @@ import {
   expectType<TypeEqual<null | undefined, Validator.Infer<typeof nullOptional>>>(true);
 }
 
+// 必填（optional 的反向）
+{
+  const v = rule.literal('a').optional().required();
+  expectType<TypeEqual<'a', Validator.Infer<typeof v>>>(true);
+}
+
 // nullable
 {
   const v = rule.literal('a').nullable();
@@ -82,6 +88,10 @@ import {
   });
   expectType<TransformedValidator<string>>(v);
   expectType<TypeEqual<string, Validator.Infer<typeof v>>>(true);
+  // @ts-expect-error
+  v.required();
+  // @ts-expect-error
+  v.optional();
 }
 
 // 文档
