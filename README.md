@@ -61,10 +61,10 @@ npx create-aomex@latest
 
 # 缓存
 
-| Name                                                  | Version                                                         | Desc         |
-| ----------------------------------------------------- | --------------------------------------------------------------- | ------------ |
-| [cache](./packages/cache)                             | ![npm](https://img.shields.io/npm/v/@aomex/cache)               | 缓存服务     |
-| [cache-redis-adapter](./packages/cache-redis-adapter) | ![npm](https://img.shields.io/npm/v/@aomex/cache-redis-adapter) | Redis 适配器 |
+| Name                                                  | Version                                                         | Desc                           |
+| ----------------------------------------------------- | --------------------------------------------------------------- | ------------------------------ |
+| [cache](./packages/cache)                             | ![npm](https://img.shields.io/npm/v/@aomex/cache)               | 缓存服务（`/memory`、`/file`） |
+| [cache-redis-adapter](./packages/cache-redis-adapter) | ![npm](https://img.shields.io/npm/v/@aomex/cache-redis-adapter) | Redis 适配器                   |
 
 # 身份认证
 

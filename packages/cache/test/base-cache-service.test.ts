@@ -1,6 +1,7 @@
 import { combineServices, internalDestroyServices } from '@aomex/common';
 import { afterEach, expect, test, vitest } from 'vitest';
-import { BaseCacheService, memoryAdapter, remember, type CacheAdapter } from '../src';
+import { BaseCacheService, remember, type CacheAdapter } from '../src';
+import { CacheMemoryAdapter } from '../src/adapters/cache-memory-adapter';
 
 afterEach(() => {
   vitest.restoreAllMocks();
@@ -10,7 +11,7 @@ test('onInit 调用 createAdapter 并 connect', async () => {
   const connect = vitest.fn(async () => {});
   class DemoCacheService extends BaseCacheService {
     protected createAdapter() {
-      const adapter = memoryAdapter();
+      const adapter = new CacheMemoryAdapter();
       adapter.connect = connect;
       return adapter;
     }
@@ -31,7 +32,7 @@ test('onDestroy 调用 adapter.disconnect', async () => {
   const disconnect = vitest.fn(async () => {});
   class DemoCacheService extends BaseCacheService {
     protected createAdapter() {
-      const adapter = memoryAdapter();
+      const adapter = new CacheMemoryAdapter();
       adapter.disconnect = disconnect;
       return adapter;
     }
@@ -51,7 +52,7 @@ test('onDestroy 调用 adapter.disconnect', async () => {
 test('业务方法可通过 this.cache 读写', async () => {
   class DemoCacheService extends BaseCacheService {
     protected createAdapter() {
-      return memoryAdapter();
+      return new CacheMemoryAdapter();
     }
     async load(id: number) {
       const key = this.concat('item', id);
@@ -73,7 +74,7 @@ test('业务方法可通过 this.cache 读写', async () => {
 test('concat 用冒号拼接片段', async () => {
   class DemoCacheService extends BaseCacheService {
     protected createAdapter() {
-      return memoryAdapter();
+      return new CacheMemoryAdapter();
     }
     build(...parts: Array<string | number>) {
       return this.concat(...parts);
@@ -92,7 +93,7 @@ test('concat 用冒号拼接片段', async () => {
 test('hash 返回 md5 hex', async () => {
   class DemoCacheService extends BaseCacheService {
     protected createAdapter() {
-      return memoryAdapter();
+      return new CacheMemoryAdapter();
     }
     md5(key: string | number) {
       return this.hash(key);
@@ -111,7 +112,7 @@ test('hash 返回 md5 hex', async () => {
 test('ttl 提供分钟到年的毫秒常量', async () => {
   class DemoCacheService extends BaseCacheService {
     protected createAdapter() {
-      return memoryAdapter();
+      return new CacheMemoryAdapter();
     }
     readTtl() {
       return this.ttl;
@@ -135,7 +136,7 @@ test('ttl 提供分钟到年的毫秒常量', async () => {
 test('未加载实例时 destroy 不报错', async () => {
   class DemoCacheService extends BaseCacheService {
     protected createAdapter(): CacheAdapter {
-      return memoryAdapter();
+      return new CacheMemoryAdapter();
     }
   }
 
@@ -151,7 +152,7 @@ test('eager 预初始化后 remember 可立即使用', async () => {
 
   class CacheService extends BaseCacheService {
     protected createAdapter() {
-      return memoryAdapter();
+      return new CacheMemoryAdapter();
     }
     protected override async onInit() {
       await super.onInit();

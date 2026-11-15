@@ -2,19 +2,19 @@ import { type TypeEqual, expectType } from 'ts-expect';
 import { BaseCacheService } from '../src/base-cache-service';
 import { Caching } from '../src/caching';
 import { remember, type Remember } from '../src/remember';
-import { memoryAdapter } from '../src';
+import { CacheMemoryAdapter } from '../src/adapters/cache-memory-adapter';
 
 {
   class DemoCacheService extends BaseCacheService {
     protected createAdapter() {
-      return memoryAdapter();
+      return new CacheMemoryAdapter();
     }
   }
   const service = new DemoCacheService();
   remember.setInstance(service);
 
   // @ts-expect-error 只接收 BaseCacheService
-  remember.setInstance(new Caching(memoryAdapter()));
+  remember.setInstance(new Caching(new CacheMemoryAdapter()));
 }
 
 {

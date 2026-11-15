@@ -1,5 +1,6 @@
 import { scriptName } from '@aomex/console';
-import { CacheMemoryAdapter, Caching } from '@aomex/cache';
+import { Caching } from '@aomex/cache';
+import { CacheMemoryAdapter } from '@aomex/cache/memory';
 import type { CronsOptions, CronOptions } from './type';
 import * as cronParser from 'cron-parser';
 import { Task } from './task';

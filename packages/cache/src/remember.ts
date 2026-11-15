@@ -140,7 +140,7 @@ function createRemember(): Remember {
  * ```typescript
  * class CacheService extends BaseCacheService {
  *   protected createAdapter() {
- *     return redisAdapter({ host: '127.0.0.1' });
+ *     return new CacheRedisAdapter({ host: '127.0.0.1' });
  *   }
  *
  *   protected override async onInit() {

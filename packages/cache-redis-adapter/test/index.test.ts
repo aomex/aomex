@@ -2,7 +2,7 @@ import type { RedisOptions } from 'ioredis';
 import RedisMemoryServer from 'redis-memory-server';
 import { afterAll, afterEach, beforeAll, describe, expect, test, vitest } from 'vitest';
 import { getRedisBinary } from './helper/get-redis-binary';
-import { CacheRedisAdapter, redisAdapter } from '../src';
+import { CacheRedisAdapter } from '../src';
 import sleep from 'sleep-promise';
 
 let redisServer: RedisMemoryServer;
@@ -18,7 +18,7 @@ beforeAll(async () => {
     host: await redisServer.getHost(),
     port: await redisServer.getPort(),
   };
-  store = redisAdapter({ ...opts });
+  store = new CacheRedisAdapter({ ...opts });
 }, 60_000 /* start redis */);
 
 afterEach(async () => {
@@ -236,7 +236,7 @@ test('删除全部指定前缀缓存', async () => {
 });
 
 test('disconnect 关闭连接且可重复调用', async () => {
-  const adapter = redisAdapter({ ...opts, db: 1 });
+  const adapter = new CacheRedisAdapter({ ...opts, db: 1 });
   await adapter.connect();
   const spy = vitest.spyOn(adapter.redis, 'disconnect');
   await adapter.disconnect();

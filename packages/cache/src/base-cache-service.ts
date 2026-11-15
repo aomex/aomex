@@ -19,9 +19,11 @@ const CACHE_TTL = {
  * 缓存领域服务基类：子类实现 `createAdapter`，在业务方法里通过 `this.cache` 访问。
  *
  * ```typescript
+ * import { CacheMemoryAdapter } from '@aomex/cache/memory';
+ *
  * class CacheService extends BaseCacheService {
  *   protected createAdapter() {
- *     return redisAdapter({ host: '127.0.0.1' });
+ *     return new CacheMemoryAdapter();
  *   }
  * }
  * ```

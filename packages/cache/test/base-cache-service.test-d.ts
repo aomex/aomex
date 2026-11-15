@@ -1,10 +1,11 @@
 import { combineServices, type PromisifiedService } from '@aomex/common';
 import { type TypeEqual, expectType } from 'ts-expect';
-import { BaseCacheService, CacheAdapter, Caching, memoryAdapter } from '../src';
+import { BaseCacheService, CacheAdapter, Caching } from '../src';
+import { CacheMemoryAdapter } from '../src/adapters/cache-memory-adapter';
 
 class DemoCacheService extends BaseCacheService {
   protected createAdapter() {
-    return memoryAdapter();
+    return new CacheMemoryAdapter();
   }
 
   async load(id: number) {

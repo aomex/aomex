@@ -106,5 +106,3 @@ end
     this.redis.disconnect();
   }
 }
-
-export const redisAdapter = (config: RedisOptions) => new CacheRedisAdapter(config);

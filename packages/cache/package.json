@@ -7,13 +7,26 @@
   },
   "type": "module",
   "types": "src/index.ts",
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./file": "./src/adapters/cache-file-adapter.ts",
+    "./memory": "./src/adapters/cache-memory-adapter.ts",
+    "./package.json": "./package.json"
+  },
   "publishConfig": {
     "types": "dist/index.d.ts",
     "exports": {
       ".": {
         "types": "./dist/index.d.ts",
         "import": "./dist/index.js"
+      },
+      "./file": {
+        "types": "./dist/adapters/cache-file-adapter.d.ts",
+        "import": "./dist/adapters/cache-file-adapter.js"
+      },
+      "./memory": {
+        "types": "./dist/adapters/cache-memory-adapter.d.ts",
+        "import": "./dist/adapters/cache-memory-adapter.js"
       },
       "./package.json": "./package.json"
     },

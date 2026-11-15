@@ -1,5 +1,5 @@
-import { CacheAdapter } from './cache-adapter';
-import { i18n } from './i18n';
+import { CacheAdapter } from '../cache-adapter';
+import { i18n } from '../i18n';
 
 export class CacheMemoryAdapter extends CacheAdapter {
   private data = new Map<string, { value: string | string[]; expires?: number }>();
@@ -153,5 +153,3 @@ export class CacheMemoryAdapter extends CacheAdapter {
     return true;
   }
 }
-
-export const memoryAdapter = () => new CacheMemoryAdapter();
