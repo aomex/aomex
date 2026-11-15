@@ -1,33 +1,59 @@
 import { ValidateResult, Validator, ValidateDeniedError } from '../base';
 import { toValidator, type ValidatorToken } from './to-validator';
 
+export type ValidateOptions = {
+  /**
+   * - `true`（默认）：失败时抛出 `ValidateDeniedError`
+   * - `false`：失败时不抛错，返回 `{ data: null, errors }`
+   */
+  throwOnError?: boolean;
+  /**
+   * 报错文字格式化处理（仅 `throwOnError: true` 时生效）
+   */
+  errorFormatter?: (errors: ValidateResult.Denied['errors']) => string | Promise<string>;
+};
+
 /**
  * 验证传入数据，并返回可信的数据
  *
- * @param untrusted 数据源
- * @param schema 验证器
- * @param options.errorFormatter 报错文字格式化处理
+ * 默认失败抛错；传入 `{ throwOnError: false }` 时改为返回 Result。
  */
-export const validate = async <T extends ValidatorToken>(
+export async function validate<T extends ValidatorToken>(
+  untrusted: any,
+  validators: T,
+  options?: {
+    throwOnError?: true;
+    errorFormatter?: ValidateOptions['errorFormatter'];
+  },
+): Promise<Validator.Infer<T>>;
+export async function validate<T extends ValidatorToken>(
   untrusted: any,
   validators: T,
   options: {
-    errorFormatter?: (
-      errors: ValidateResult.Denied['errors'],
-    ) => string | Promise<string>;
-  } = {},
-): Promise<Validator.Infer<T>> => {
-  const { errorFormatter = defaultErrorFormatter } = options;
+    throwOnError: false;
+  },
+): Promise<ValidateResult.Safe<Validator.Infer<T>>>;
+export async function validate<T extends ValidatorToken>(
+  untrusted: any,
+  validators: T,
+  options: ValidateOptions = {},
+): Promise<Validator.Infer<T> | ValidateResult.Safe<Validator.Infer<T>>> {
+  const { throwOnError = true, errorFormatter } = options;
   const validator = toValidator(validators);
   const source = await untrusted;
   const trusted = await validator['validate'](source);
 
-  if (ValidateResult.noError(trusted)) return trusted.data;
+  if (ValidateResult.noError(trusted)) {
+    if (throwOnError) return trusted.data;
+    return { data: trusted.data, errors: null };
+  }
 
-  const msg = await errorFormatter(trusted.errors!);
-  throw new ValidateDeniedError(msg, trusted.errors);
-};
+  const errors = trusted.errors!;
 
-const defaultErrorFormatter = (errors: ValidateResult.Denied['errors']) => {
-  return errors[0];
-};
+  if (!throwOnError) {
+    return { data: null, errors };
+  }
+
+  const msg = errorFormatter ? await errorFormatter(errors) : errors[0];
+  throw new ValidateDeniedError(msg, errors);
+}

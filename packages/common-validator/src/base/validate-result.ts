@@ -8,6 +8,12 @@ export declare namespace ValidateResult {
   export interface Denied {
     errors: string[];
   }
+
+  /**
+   * `validate(..., { throwOnError: false })` 的返回形态。
+   * 请用 `errors === null` 收窄，勿用 `data === null`（合法值也可能为 `null`）。
+   */
+  export type Safe<T> = { data: T; errors: null } | { data: null; errors: string[] };
 }
 
 export const ValidateResult = {
