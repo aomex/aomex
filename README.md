@@ -61,18 +61,21 @@ npx create-aomex@latest
 
 # 缓存
 
-| Name                                                  | Version                                                         | Desc                           |
-| ----------------------------------------------------- | --------------------------------------------------------------- | ------------------------------ |
-| [cache](./packages/cache)                             | ![npm](https://img.shields.io/npm/v/@aomex/cache)               | 缓存服务（`/memory`、`/file`） |
-| [cache-redis-adapter](./packages/cache-redis-adapter) | ![npm](https://img.shields.io/npm/v/@aomex/cache-redis-adapter) | Redis 适配器                   |
+| Name                                                                  | Version                                                         | Desc         |
+| --------------------------------------------------------------------- | --------------------------------------------------------------- | ------------ |
+| [cache](./packages/cache)                                             | ![npm](https://img.shields.io/npm/v/@aomex/cache)               | 缓存服务     |
+| [cache-memory](./packages/cache/src/adapters/cache-memory-adapter.ts) | `@aomex/cache/memory`                                           | 内存适配器   |
+| [cache-file](./packages/cache/src/adapters/cache-file-adapter.ts)     | `@aomex/cache/file`                                             | 文件适配器   |
+| [cache-redis](./packages/cache-redis-adapter)                         | ![npm](https://img.shields.io/npm/v/@aomex/cache-redis-adapter) | Redis 适配器 |
 
 # 身份认证
 
-| Name                                                    | Version                                                          | Desc                |
-| ------------------------------------------------------- | ---------------------------------------------------------------- | ------------------- |
-| [auth](./packages/auth)                                 | ![npm](https://img.shields.io/npm/v/@aomex/auth)                 | 身份认证统一入口    |
-| [auth-bearer-strategy](./packages/auth-bearer-strategy) | ![npm](https://img.shields.io/npm/v/@aomex/auth-bearer-strategy) | Bearer Token 方案   |
-| [auth-jwt-strategy](./packages/auth-jwt-strategy)       | ![npm](https://img.shields.io/npm/v/@aomex/auth-jwt-strategy)    | Json Web Token 方案 |
+| Name                                                                    | Version                                                       | Desc                |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------- | ------------------- |
+| [auth](./packages/auth)                                                 | ![npm](https://img.shields.io/npm/v/@aomex/auth)              | 身份认证统一入口    |
+| [auth-bearer](./packages/auth/src/strategies/auth-bearer-strategy.ts)   | `@aomex/auth/bearer`                                          | Bearer Token 策略   |
+| [auth-api-key](./packages/auth/src/strategies/auth-api-key-strategy.ts) | `@aomex/auth/api-key`                                         | API Key 策略        |
+| [auth-jwt](./packages/auth-jwt-strategy)                                | ![npm](https://img.shields.io/npm/v/@aomex/auth-jwt-strategy) | Json Web Token 策略 |
 
 # 文档
 

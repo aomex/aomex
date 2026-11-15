@@ -7,13 +7,26 @@
   },
   "type": "module",
   "types": "src/index.ts",
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./bearer": "./src/strategies/auth-bearer-strategy.ts",
+    "./api-key": "./src/strategies/auth-api-key-strategy.ts",
+    "./package.json": "./package.json"
+  },
   "publishConfig": {
     "types": "dist/index.d.ts",
     "exports": {
       ".": {
         "types": "./dist/index.d.ts",
         "import": "./dist/index.js"
+      },
+      "./bearer": {
+        "types": "./dist/strategies/auth-bearer-strategy.d.ts",
+        "import": "./dist/strategies/auth-bearer-strategy.js"
+      },
+      "./api-key": {
+        "types": "./dist/strategies/auth-api-key-strategy.d.ts",
+        "import": "./dist/strategies/auth-api-key-strategy.js"
       },
       "./package.json": "./package.json"
     },

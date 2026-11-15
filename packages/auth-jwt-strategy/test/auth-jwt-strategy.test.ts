@@ -1,7 +1,7 @@
 import { TestWebApp } from '../../web/src/testing';
 import { middleware, OpenAPI } from '@aomex/common';
 import { expect, test } from 'vitest';
-import { JwtStrategy } from '../src';
+import { AuthJwtStrategy } from '../src/auth-jwt-strategy';
 import supertest from 'supertest';
 import jsonwebtoken from 'jsonwebtoken';
 import sleep from 'sleep-promise';
@@ -9,7 +9,10 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 import { Auth } from '@aomex/auth';
 test('报头令牌', async () => {
-  const jwt = new JwtStrategy({ secret: 'secrets', onVerified: (payload) => payload });
+  const jwt = new AuthJwtStrategy({
+    secret: 'secrets',
+    onVerified: (payload) => payload,
+  });
   const app = new TestWebApp({
     mount: [new Auth({ strategies: { jwt } }).authenticate('jwt')],
   });
@@ -22,7 +25,10 @@ test('报头令牌', async () => {
 });
 
 test('报头令牌无效', async () => {
-  const jwt = new JwtStrategy({ secret: 'secrets', onVerified: (payload) => payload });
+  const jwt = new AuthJwtStrategy({
+    secret: 'secrets',
+    onVerified: (payload) => payload,
+  });
   const app = new TestWebApp({
     mount: [new Auth({ strategies: { jwt } }).authenticate('jwt')],
   });
@@ -33,7 +39,7 @@ test('报头令牌无效', async () => {
 });
 
 test('密码错误', async () => {
-  const jwt = new JwtStrategy({
+  const jwt = new AuthJwtStrategy({
     secret: 'secrets',
     onVerified: (payload) => payload,
   });
@@ -49,7 +55,7 @@ test('密码错误', async () => {
 });
 
 test('多个密码', async () => {
-  const jwt = new JwtStrategy({
+  const jwt = new AuthJwtStrategy({
     secret: 'secrets',
     legacySecretOrPublicKey: ['different-secret', 'some-other-secret'],
     onVerified: (payload) => payload,
@@ -71,7 +77,10 @@ test('多个密码', async () => {
 });
 
 test('令牌时效性', async () => {
-  const jwt = new JwtStrategy({ secret: 'secrets', onVerified: (payload) => payload });
+  const jwt = new AuthJwtStrategy({
+    secret: 'secrets',
+    onVerified: (payload) => payload,
+  });
   const app = new TestWebApp({
     mount: [new Auth({ strategies: { jwt } }).authenticate('jwt')],
   });
@@ -89,7 +98,7 @@ test('令牌时效性', async () => {
 });
 
 test('验证成功后再次判断', async () => {
-  const jwt = new JwtStrategy({
+  const jwt = new AuthJwtStrategy({
     secret: 'secrets',
     onVerified: async () => false,
   });
@@ -105,7 +114,7 @@ test('验证成功后再次判断', async () => {
 });
 
 test('issuer匹配失败', async () => {
-  const jwt = new JwtStrategy({
+  const jwt = new AuthJwtStrategy({
     secret: 'secrets',
     verifyOptions: { issuer: 'foo' },
     onVerified: (payload) => payload,
@@ -123,7 +132,7 @@ test('issuer匹配失败', async () => {
 
 test('密钥对', async () => {
   const dir = import.meta.dirname;
-  const jwt = new JwtStrategy({
+  const jwt = new AuthJwtStrategy({
     publicKey: readFileSync(join(dir, 'fixture', 'public-key.pem')),
     privateKey: readFileSync(join(dir, 'fixture', 'private-key.pem')),
     verifyOptions: {
@@ -145,7 +154,7 @@ test('密钥对', async () => {
 
 test('错误的密钥对', async () => {
   const dir = import.meta.dirname;
-  const jwt = new JwtStrategy({
+  const jwt = new AuthJwtStrategy({
     publicKey: readFileSync(join(dir, 'fixture', 'wrong-public-key.pem')),
     privateKey: readFileSync(join(dir, 'fixture', 'private-key.pem')),
     verifyOptions: {
@@ -166,7 +175,7 @@ test('错误的密钥对', async () => {
 });
 
 test('权限认证', async () => {
-  const jwt = new JwtStrategy({
+  const jwt = new AuthJwtStrategy({
     secret: 'secrets',
     onVerified: (payload: { token: string }) => payload,
     onAuthorize(role: 0 | 1) {
@@ -198,7 +207,10 @@ test('权限认证', async () => {
 });
 
 test('文档', () => {
-  const jwt = new JwtStrategy({ secret: 'secrets', onVerified: (payload) => payload });
+  const jwt = new AuthJwtStrategy({
+    secret: 'secrets',
+    onVerified: (payload) => payload,
+  });
   const doc: OpenAPI.Document = {
     openapi: '',
     info: { title: '', version: '' },

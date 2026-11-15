@@ -1,8 +1,9 @@
-import { AuthError, Strategy } from '@aomex/auth';
 import { WebContext, type OpenApiInjector } from '@aomex/web';
 import { createHash } from 'node:crypto';
+import { AuthError } from '../auth-error';
+import { Strategy } from '../strategy';
 
-export type TokenLoaderItem =
+export type AuthBearerTokenLoaderItem =
   | {
       /**
        * 从报文中寻找指定的值作为token
@@ -32,13 +33,13 @@ export type TokenLoaderItem =
       key: `access_token` | (string & {});
     };
 
-export abstract class BaseBearerStrategy<
+export abstract class AuthBaseBearerStrategy<
   T extends object | string | number,
   AuthorizeArgs extends any[],
 > extends Strategy<T, AuthorizeArgs> {
-  protected readonly loaders: TokenLoaderItem[];
+  protected readonly loaders: AuthBearerTokenLoaderItem[];
 
-  constructor(loaders?: TokenLoaderItem[]) {
+  constructor(loaders?: AuthBearerTokenLoaderItem[]) {
     super();
     this.loaders = loaders || [{ type: 'header', key: 'authorization' }];
   }
@@ -97,7 +98,7 @@ export abstract class BaseBearerStrategy<
   }
 }
 
-export namespace BearerStrategy {
+export namespace AuthBearerStrategy {
   export type Options<T extends object | string | number, AuthorizeArgs extends any[]> = {
     /**
      * 找到token后的回调，解析并返回真正的身份数据
@@ -110,7 +111,7 @@ export namespace BearerStrategy {
     /**
      * 按从左到右的顺序获取token。默认：`[{ type: 'header', key: 'authorization' }]`
      */
-    tokenLoaders?: TokenLoaderItem[];
+    tokenLoaders?: AuthBearerTokenLoaderItem[];
   } & ({
     /**
      * 身份认证后的权限判断，如果权限不足，则返回`false`，系统会自动响应`403`状态码
@@ -147,17 +148,17 @@ export namespace BearerStrategy {
  *
  * 解析优先级： 自定义 -> header -> body -> query -> cookie
  */
-export class BearerStrategy<
+export class AuthBearerStrategy<
   T extends object | string | number,
   AuthorizeArgs extends any[],
-> extends BaseBearerStrategy<
+> extends AuthBaseBearerStrategy<
   {
     readonly token: string;
     readonly data: T;
   },
   AuthorizeArgs
 > {
-  constructor(protected readonly opts: BearerStrategy.Options<T, AuthorizeArgs>) {
+  constructor(protected readonly opts: AuthBearerStrategy.Options<T, AuthorizeArgs>) {
     super(opts.tokenLoaders);
   }
 

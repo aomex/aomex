@@ -1,13 +1,14 @@
 import { TestWebApp } from '../../web/src/testing';
 import supertest from 'supertest';
 import { expect, test } from 'vitest';
-import { Auth } from '@aomex/auth';
-import { BearerStrategy } from '../src';
+import { Auth } from '../src';
+import { AuthBearerStrategy } from '../src/strategies/auth-bearer-strategy';
 import { middleware, OpenAPI } from '@aomex/common';
+
 test('无令牌', async () => {
   const auth = new Auth({
     strategies: {
-      bearer: new BearerStrategy({
+      bearer: new AuthBearerStrategy({
         async onLoaded(token) {
           return token + 'foo';
         },
@@ -23,7 +24,7 @@ test('无令牌', async () => {
 test('报头令牌', async () => {
   const auth = new Auth({
     strategies: {
-      bearer: new BearerStrategy({
+      bearer: new AuthBearerStrategy({
         async onLoaded(token) {
           return token + 'foo';
         },
@@ -52,7 +53,7 @@ test('报头令牌', async () => {
 test('报头令牌格式错误', async () => {
   const auth = new Auth({
     strategies: {
-      bearer: new BearerStrategy({
+      bearer: new AuthBearerStrategy({
         async onLoaded(token) {
           return token + 'foo';
         },
@@ -69,7 +70,7 @@ test('报头令牌格式错误', async () => {
 test('从cookie获取令牌', async () => {
   const auth = new Auth({
     strategies: {
-      bearer: new BearerStrategy({
+      bearer: new AuthBearerStrategy({
         async onLoaded(token) {
           return token + 'foo';
         },
@@ -96,7 +97,7 @@ test('从cookie获取令牌', async () => {
 test('从查询字符串获取令牌', async () => {
   const auth = new Auth({
     strategies: {
-      bearer: new BearerStrategy({
+      bearer: new AuthBearerStrategy({
         async onLoaded(token) {
           return token + 'foo';
         },
@@ -122,7 +123,7 @@ test('从查询字符串获取令牌', async () => {
 test('从请求实体获取令牌', async () => {
   const auth = new Auth({
     strategies: {
-      bearer: new BearerStrategy({
+      bearer: new AuthBearerStrategy({
         async onLoaded(token) {
           return token + 'foo';
         },
@@ -149,7 +150,7 @@ test('从请求实体获取令牌', async () => {
 test('按顺序获取', async () => {
   const auth = new Auth({
     strategies: {
-      bearer: new BearerStrategy({
+      bearer: new AuthBearerStrategy({
         async onLoaded(token) {
           return token + 'foo';
         },
@@ -193,7 +194,7 @@ test('按顺序获取', async () => {
 test('签名', () => {
   const auth = new Auth({
     strategies: {
-      bearer: new BearerStrategy({
+      bearer: new AuthBearerStrategy({
         async onLoaded(token) {
           return token + 'foo';
         },
@@ -208,7 +209,7 @@ test('签名', () => {
 test('权限认证', async () => {
   const auth = new Auth({
     strategies: {
-      bearer: new BearerStrategy({
+      bearer: new AuthBearerStrategy({
         onLoaded(token) {
           return { token };
         },
@@ -251,7 +252,7 @@ test('文档', () => {
   };
   const md = new Auth({
     strategies: {
-      bear: new BearerStrategy({
+      bear: new AuthBearerStrategy({
         onLoaded() {
           return {};
         },

@@ -1,11 +1,11 @@
-import { Auth } from '@aomex/auth';
-import { BearerStrategy } from '../src';
+import { Auth } from '../src';
+import { AuthBearerStrategy } from '../src/strategies/auth-bearer-strategy';
 import { expectType, type TypeEqual } from 'ts-expect';
 import { WebMiddleware } from '@aomex/web';
 
 // 身份信息自动推导
 {
-  const bearer = new BearerStrategy({
+  const bearer = new AuthBearerStrategy({
     async onLoaded(_token) {
       return { userId: 1 };
     },
@@ -31,7 +31,7 @@ import { WebMiddleware } from '@aomex/web';
 
 // 认证加授权
 {
-  const bearer = new BearerStrategy({
+  const bearer = new AuthBearerStrategy({
     async onLoaded(_token) {
       return { userId: 1 };
     },
@@ -69,7 +69,7 @@ import { WebMiddleware } from '@aomex/web';
 
 // 授权
 {
-  const bearer = new BearerStrategy({
+  const bearer = new AuthBearerStrategy({
     async onLoaded(_token) {
       return { userId: 1 };
     },
@@ -94,7 +94,7 @@ import { WebMiddleware } from '@aomex/web';
 
 // 无授权
 {
-  const bearer = new BearerStrategy({
+  const bearer = new AuthBearerStrategy({
     async onLoaded(_token) {
       return { userId: 1 };
     },
@@ -111,7 +111,7 @@ import { WebMiddleware } from '@aomex/web';
 
 // 扩展数组
 {
-  const bearer = new BearerStrategy({
+  const bearer = new AuthBearerStrategy({
     async onLoaded(_token) {
       return { userId: 1 };
     },
@@ -129,7 +129,7 @@ import { WebMiddleware } from '@aomex/web';
 
 // 自循环
 {
-  new BearerStrategy({
+  new AuthBearerStrategy({
     onLoaded(_token) {
       return { userId: 1 };
     },
@@ -139,7 +139,7 @@ import { WebMiddleware } from '@aomex/web';
     },
   });
 
-  new BearerStrategy({
+  new AuthBearerStrategy({
     onLoaded(_token) {
       return { userId: 1 };
     },

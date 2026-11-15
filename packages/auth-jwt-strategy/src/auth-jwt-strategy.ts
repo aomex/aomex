@@ -4,10 +4,13 @@ import jsonWebToken, {
   type SignOptions,
 } from 'jsonwebtoken'; // CommonJS
 import { WebContext, type OpenApiInjector } from '@aomex/web';
-import { BaseBearerStrategy, type TokenLoaderItem } from '@aomex/auth-bearer-strategy';
 import type { AuthError } from '@aomex/auth';
+import {
+  AuthBaseBearerStrategy,
+  type AuthBearerTokenLoaderItem,
+} from '@aomex/auth/bearer';
 
-export namespace JwtStrategy {
+export namespace AuthJwtStrategy {
   type SecretProvider =
     | {
         /**
@@ -34,7 +37,7 @@ export namespace JwtStrategy {
     /**
      * 按从左到右的顺序获取token。默认：`[{ type: 'header', key: 'authorization' }]`
      */
-    tokenLoaders?: TokenLoaderItem[];
+    tokenLoaders?: AuthBearerTokenLoaderItem[];
     /**
      * 验证令牌时的额外参数。需要和生成令牌时保持一致
      */
@@ -88,13 +91,17 @@ export namespace JwtStrategy {
  *
  * 注意：请在这里onVerified形参中指定payload类型。
  */
-export class JwtStrategy<
+export class AuthJwtStrategy<
   Payload extends object | string,
   VerifiedPayload extends object | string | number,
   AuthorizeArgs extends any[],
-> extends BaseBearerStrategy<VerifiedPayload, AuthorizeArgs> {
+> extends AuthBaseBearerStrategy<VerifiedPayload, AuthorizeArgs> {
   constructor(
-    protected readonly opts: JwtStrategy.Options<Payload, VerifiedPayload, AuthorizeArgs>,
+    protected readonly opts: AuthJwtStrategy.Options<
+      Payload,
+      VerifiedPayload,
+      AuthorizeArgs
+    >,
   ) {
     super(opts.tokenLoaders);
   }

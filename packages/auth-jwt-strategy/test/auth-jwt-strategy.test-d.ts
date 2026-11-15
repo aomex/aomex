@@ -1,28 +1,32 @@
-import { JwtStrategy } from '../src';
+import { AuthJwtStrategy } from '../src/auth-jwt-strategy';
 import { type TypeEqual, expectType } from 'ts-expect';
 import type { WebMiddleware } from '@aomex/web';
 import { Auth } from '@aomex/auth';
 
 // 密码
 {
-  new JwtStrategy({ secret: '', onVerified: (payload) => payload });
-  new JwtStrategy({ publicKey: '', privateKey: '', onVerified: (payload) => payload });
+  new AuthJwtStrategy({ secret: '', onVerified: (payload) => payload });
+  new AuthJwtStrategy({
+    publicKey: '',
+    privateKey: '',
+    onVerified: (payload) => payload,
+  });
 
   // @ts-expect-error
-  new JwtStrategy();
+  new AuthJwtStrategy();
   // @ts-expect-error
-  new JwtStrategy({});
+  new AuthJwtStrategy({});
   // @ts-expect-error
-  new JwtStrategy({ onVerified: (payload) => payload });
+  new AuthJwtStrategy({ onVerified: (payload) => payload });
   // @ts-expect-error
-  new JwtStrategy({ publicKey: '', onVerified: (payload) => payload });
+  new AuthJwtStrategy({ publicKey: '', onVerified: (payload) => payload });
   // @ts-expect-error
-  new JwtStrategy({ privateKey: '', onVerified: (payload) => payload });
+  new AuthJwtStrategy({ privateKey: '', onVerified: (payload) => payload });
 }
 
 // 类型自动推导
 {
-  const jwt = new JwtStrategy({
+  const jwt = new AuthJwtStrategy({
     secret: '',
     onVerified(payload: { userId: number }, _ctx, _token) {
       return payload;
@@ -35,7 +39,7 @@ import { Auth } from '@aomex/auth';
 
 // 返回处理过的值
 {
-  const jwt = new JwtStrategy({
+  const jwt = new AuthJwtStrategy({
     secret: '',
     async onVerified(_payload: { userId: number }) {
       return { hello: 'world' };
@@ -48,7 +52,7 @@ import { Auth } from '@aomex/auth';
 
 // 认证加授权
 {
-  const jwt = new JwtStrategy({
+  const jwt = new AuthJwtStrategy({
     secret: '',
     onVerified(payload: { userId: number }, _ctx, _token) {
       return payload;
@@ -84,7 +88,7 @@ import { Auth } from '@aomex/auth';
 
 // 授权
 {
-  const jwt = new JwtStrategy({
+  const jwt = new AuthJwtStrategy({
     secret: '',
     onVerified(payload: { userId: number }, _ctx, _token) {
       return payload;
@@ -109,7 +113,7 @@ import { Auth } from '@aomex/auth';
 
 // 无授权
 {
-  const bearer = new JwtStrategy({
+  const bearer = new AuthJwtStrategy({
     secret: '',
     onVerified(_token) {
       return { userId: 1 };
@@ -127,7 +131,7 @@ import { Auth } from '@aomex/auth';
 
 // 扩展数组
 {
-  const bearer = new JwtStrategy({
+  const bearer = new AuthJwtStrategy({
     secret: '',
     onVerified(_token) {
       return { userId: 1 };
@@ -146,7 +150,7 @@ import { Auth } from '@aomex/auth';
 
 // 自循环
 {
-  new JwtStrategy({
+  new AuthJwtStrategy({
     secret: '',
     onVerified(_token) {
       return { userId: 1 };
@@ -157,7 +161,7 @@ import { Auth } from '@aomex/auth';
     },
   });
 
-  new JwtStrategy({
+  new AuthJwtStrategy({
     secret: '',
     onVerified(_token) {
       return { userId: 1 };
