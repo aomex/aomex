@@ -202,8 +202,13 @@ test('签名', () => {
     },
   });
 
-  expect(auth.strategy('bearer').signature('md5')).toMatch(/^[a-z0-9]{32}$/);
-  expect(auth.strategy('bearer').signature('sha1')).toMatch(/^[a-z0-9]{40}$/);
+  const bearer = auth.strategy('bearer');
+  expect(bearer.signature('md5')).toMatch(/^[a-f0-9]{32}$/);
+  expect(bearer.signature('sha1')).toMatch(/^[a-f0-9]{40}$/);
+  expect(bearer.signature('sha256')).toMatch(/^[a-f0-9]{64}$/);
+  expect(bearer.signature('sha512')).toMatch(/^[a-f0-9]{128}$/);
+  expect(bearer.signature('sha256', 1)).not.toBe(bearer.signature('sha256', 1));
+  expect(bearer.signature('sha256')).not.toBe(bearer.signature('sha256'));
 });
 
 test('权限认证', async () => {

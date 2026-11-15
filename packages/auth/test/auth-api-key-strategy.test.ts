@@ -403,8 +403,13 @@ test('签名', () => {
     },
   });
 
-  expect(auth.strategy('apiKey').signature('md5')).toMatch(/^[a-z0-9]{32}$/);
-  expect(auth.strategy('apiKey').signature('sha1')).toMatch(/^[a-z0-9]{40}$/);
+  const apiKey = auth.strategy('apiKey');
+  expect(apiKey.signature('md5')).toMatch(/^[a-f0-9]{32}$/);
+  expect(apiKey.signature('sha1')).toMatch(/^[a-f0-9]{40}$/);
+  expect(apiKey.signature('sha256')).toMatch(/^[a-f0-9]{64}$/);
+  expect(apiKey.signature('sha512')).toMatch(/^[a-f0-9]{128}$/);
+  expect(apiKey.signature('sha256', 1)).not.toBe(apiKey.signature('sha256', 1));
+  expect(apiKey.signature('sha256')).not.toBe(apiKey.signature('sha256'));
 });
 
 test('权限认证', async () => {

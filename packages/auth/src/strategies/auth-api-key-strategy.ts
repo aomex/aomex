@@ -1,5 +1,5 @@
 import { WebContext, type OpenApiInjector } from '@aomex/web';
-import { createHash } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
 import { AuthError } from '../auth-error';
 import { Strategy } from '../strategy';
 
@@ -94,19 +94,17 @@ export class AuthApiKeyStrategy<
   }
 
   /**
-   * 生成 API Key 字符串
-   * @param algorithm 签名算法
-   * @param uniqueKey 加入唯一的值（比如应用 id）降低重复风险
+   * 生成 API Key 字符串（密码学安全随机熵 + 可选业务唯一键）
+   * @param algorithm 摘要算法
+   * @param uniqueKey 加入唯一的值（比如应用 id）做域隔离
    */
   signature(
     algorithm: 'md5' | 'sha1' | 'sha256' | 'sha512' | (string & {}),
     uniqueKey?: string | number,
   ): string {
     return createHash(algorithm)
-      .update(String(uniqueKey))
-      .update(process.hrtime().toString())
-      .update(process.pid.toString())
-      .update(Math.random().toString())
+      .update(String(uniqueKey ?? ''))
+      .update(randomBytes(32))
       .digest('hex');
   }
 
