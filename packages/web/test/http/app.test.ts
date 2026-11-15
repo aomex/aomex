@@ -1,13 +1,122 @@
 import { describe, expect, test, vitest } from 'vitest';
-import { WebApp } from '../../src';
+import { body, WebApp } from '../../src';
 import { TestWebApp, TestWebLoggerService } from '../../src/testing';
-import { combineServices, middleware, Service } from '@aomex/common';
+import { combineServices, middleware, rule, Service } from '@aomex/common';
 import { BaseLoggerService } from '@aomex/logger';
 import supertest from 'supertest';
 import { Server } from 'node:http';
 import fs from 'node:fs';
 import { join } from 'path';
 import { i18n } from '../../src/i18n';
+
+test('body.payload.maxSize 超限返回 413', async () => {
+  const app = new TestWebApp({
+    body: { payload: { maxSize: 16 } },
+    mount: [
+      middleware.web((ctx) => {
+        ctx.send(ctx.request.body as object);
+      }),
+    ],
+  });
+  await supertest(app.listen())
+    .post('/')
+    .type('json')
+    .send({ data: '0123456789abcdef' })
+    .expect(413);
+});
+
+test('body.payload.maxSize 未超限可正常解析', async () => {
+  const app = new TestWebApp({
+    body: { payload: { maxSize: '1kb' } },
+    mount: [
+      middleware.web((ctx) => {
+        ctx.send(ctx.request.body as object);
+      }),
+    ],
+  });
+  await supertest(app.listen())
+    .post('/')
+    .type('json')
+    .send({ ok: true })
+    .expect(200, { ok: true });
+});
+
+test('body.formData.maxFileSize 作为应用级上限拒绝过大文件', async () => {
+  const app = new TestWebApp({
+    body: { formData: { maxFileSize: 8 } },
+    mount: [
+      body({
+        file1: rule.file().maxSize('1mb'),
+      }),
+      middleware.web((ctx) => {
+        ctx.send('ok');
+      }),
+    ],
+  });
+  await supertest(app.listen())
+    .post('/')
+    .attach('file1', Buffer.from('0123456789abcdef'), 'big.txt')
+    .expect(500);
+});
+
+test('body.formData.maxFields 超限拒绝', async () => {
+  const app = new TestWebApp({
+    body: { formData: { maxFields: 2 } },
+    mount: [
+      body({
+        a: rule.string().optional(),
+        b: rule.string().optional(),
+        c: rule.string().optional(),
+      }),
+      middleware.web((ctx) => {
+        ctx.send('ok');
+      }),
+    ],
+  });
+  await supertest(app.listen())
+    .post('/')
+    .field('a', '1')
+    .field('b', '2')
+    .field('c', '3')
+    .expect(500);
+});
+
+test('body.formData.maxFiles 作为应用级上限拒绝过多文件', async () => {
+  const app = new TestWebApp({
+    body: { formData: { maxFiles: 1 } },
+    mount: [
+      body({
+        files: rule.array(rule.file()).length({ max: 5 }),
+      }),
+      middleware.web((ctx) => {
+        ctx.send('ok');
+      }),
+    ],
+  });
+  await supertest(app.listen())
+    .post('/')
+    .attach('files', Buffer.from('a'), 'a.txt')
+    .attach('files', Buffer.from('b'), 'b.txt')
+    .expect(500);
+});
+
+test('body.formData.maxFileSize 支持字符串单位', async () => {
+  const app = new TestWebApp({
+    body: { formData: { maxFileSize: '8b' } },
+    mount: [
+      body({
+        file1: rule.file().maxSize('1mb'),
+      }),
+      middleware.web((ctx) => {
+        ctx.send('ok');
+      }),
+    ],
+  });
+  await supertest(app.listen())
+    .post('/')
+    .attach('file1', Buffer.from('0123456789abcdef'), 'big.txt')
+    .expect(500);
+});
 
 test('5xx 默认不暴露 message，expose: true 才暴露', async () => {
   const app = new TestWebApp({

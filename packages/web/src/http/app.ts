@@ -20,7 +20,7 @@ import { WebContext } from './context';
 import type { HttpError } from '../utils';
 import type { WebMiddlewareToken } from '../override';
 import { toArray, type Union2Intersection } from '@aomex/internal-tools';
-import { parseBody } from '../middleware/parse-body';
+import { parseBody, type ParseBodyOptions } from '../middleware/parse-body';
 
 export namespace WebApp {
   export type Logger = PromisifiedService<BaseLoggerService>;
@@ -101,6 +101,24 @@ export namespace WebApp {
      * ```
      */
     proxyIP: ProxyIPOption;
+    /**
+     * 请求体解析限制。
+     *
+     * - `payload`：json / urlencoded / text（整包进内存）
+     * - `formData`：`multipart/form-data`（与路由 `body()` 取更严）
+     *
+     * ```ts
+     * body: {
+     *   payload: { maxSize: '2mb' },
+     *   formData: {
+     *     maxFileSize: '20mb',
+     *     maxFiles: 10,
+     *     maxFields: 100,
+     *   },
+     * }
+     * ```
+     */
+    body?: ParseBodyOptions;
   }
 
   export interface ShutdownOption {
@@ -264,7 +282,7 @@ export class WebApp<
         await ensureI18nLanguage(language);
         return I18n.provider(language, next);
       }),
-      parseBody(),
+      parseBody(this.options.body),
       ...this.middlewareList,
     ]);
 

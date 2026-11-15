@@ -1,7 +1,340 @@
 import { expect, test, vitest } from 'vitest';
 import { mockServer } from '../fixture/mock-server';
-import { body } from '../../src';
+import { body, getFileUploadOptions } from '../../src';
+import { DEFAULT_MAX_FILES } from '../../src/middleware/parse-body';
 import { OpenAPI, compose, rule, schema } from '@aomex/common';
+
+test('getFileUploadOptions：按 schema 收集文件字段与 maxSize', () => {
+  expect(getFileUploadOptions({ name: rule.string() })).toEqual({
+    allowFileFields: [],
+    maxFiles: 0,
+  });
+
+  expect(getFileUploadOptions({ avatar: rule.file() })).toEqual({
+    allowFileFields: ['avatar'],
+    maxFiles: 1,
+  });
+
+  // array(file) 未写 length.max 时用 DEFAULT_MAX_FILES
+  expect(getFileUploadOptions({ photos: rule.array(rule.file()) })).toEqual({
+    allowFileFields: ['photos'],
+    maxFiles: DEFAULT_MAX_FILES,
+  });
+
+  // 仅部分字段写了 maxSize 时只取有配置的最大值
+  expect(
+    getFileUploadOptions({
+      avatar: rule.file(),
+      cover: rule.file().maxSize('2MB'),
+    }),
+  ).toEqual({
+    allowFileFields: ['avatar', 'cover'],
+    maxFiles: 2,
+    maxFileSize: 2 * 1024 * 1024,
+  });
+
+  const opts = getFileUploadOptions({
+    avatar: rule.file().maxSize('2MB'),
+    photos: rule.array(rule.file().maxSize('5MB')).length({ max: 3 }),
+  });
+  expect(opts.allowFileFields).toEqual(['avatar', 'photos']);
+  expect(opts.maxFileSize).toBe(5 * 1024 * 1024);
+  expect(opts.maxFiles).toBe(4); // 1 + 3
+
+  // 顶层 oneOf / anyOf / allOf 含 file
+  expect(
+    getFileUploadOptions({
+      avatar: rule.oneOf([rule.file().maxSize('1MB'), rule.string()]),
+    }),
+  ).toEqual({
+    allowFileFields: ['avatar'],
+    maxFiles: 1,
+    maxFileSize: 1 * 1024 * 1024,
+  });
+
+  expect(
+    getFileUploadOptions({
+      avatar: rule.anyOf([rule.file().maxSize('2MB'), rule.file().maxSize('5MB')]),
+    }),
+  ).toEqual({
+    allowFileFields: ['avatar'],
+    maxFiles: 1,
+    maxFileSize: 5 * 1024 * 1024,
+  });
+
+  expect(
+    getFileUploadOptions({
+      avatar: rule.allOf([rule.file().maxSize('3MB'), rule.file()]),
+    }),
+  ).toEqual({
+    allowFileFields: ['avatar'],
+    maxFiles: 1,
+    maxFileSize: 3 * 1024 * 1024,
+  });
+
+  // array 包 oneOf(file)
+  expect(
+    getFileUploadOptions({
+      photos: rule.array(rule.oneOf([rule.file(), rule.string()])).length({ max: 4 }),
+    }),
+  ).toEqual({
+    allowFileFields: ['photos'],
+    maxFiles: 4,
+  });
+
+  // oneOf 分支里含 array(file) 时取更宽的个数上限
+  expect(
+    getFileUploadOptions({
+      media: rule.oneOf([rule.file(), rule.array(rule.file()).length({ max: 3 })]),
+    }),
+  ).toEqual({
+    allowFileFields: ['media'],
+    maxFiles: 3,
+  });
+
+  // 嵌套 object 内的 file 忽略；oneOf 仅含此类分支时不收录
+  expect(
+    getFileUploadOptions({
+      profile: rule.object({ avatar: rule.file().maxSize('1MB') }),
+      nested: rule.oneOf([rule.object({ f: rule.file() }), rule.string()]),
+    }),
+  ).toEqual({
+    allowFileFields: [],
+    maxFiles: 0,
+  });
+
+  // 根是 anyOf / oneOf：展开各 object 分支的顶层字段，个数取较大值
+  expect(
+    getFileUploadOptions(
+      rule.anyOf([
+        rule.object({ avatar: rule.file().maxSize('1MB') }),
+        rule.object({ name: rule.string() }),
+      ]),
+    ),
+  ).toEqual({
+    allowFileFields: ['avatar'],
+    maxFiles: 1,
+    maxFileSize: 1 * 1024 * 1024,
+  });
+
+  expect(
+    getFileUploadOptions(
+      rule.oneOf([
+        rule.object({ avatar: rule.file() }),
+        rule.object({
+          photos: rule.array(rule.file()).length({ max: 3 }),
+        }),
+      ]),
+    ),
+  ).toEqual({
+    allowFileFields: ['avatar', 'photos'],
+    maxFiles: 3,
+  });
+
+  // 根是 allOf：各分支同时成立，个数相加
+  expect(
+    getFileUploadOptions(
+      rule.allOf([
+        rule.object({ avatar: rule.file() }),
+        rule.object({ cover: rule.file().maxSize('2MB') }),
+      ]),
+    ),
+  ).toEqual({
+    allowFileFields: ['avatar', 'cover'],
+    maxFiles: 2,
+    maxFileSize: 2 * 1024 * 1024,
+  });
+
+  // 根是 array(file) 没有字段名；array(object) 只收录对象顶层文件字段
+  expect(getFileUploadOptions(rule.array(rule.file()))).toEqual({
+    allowFileFields: [],
+    maxFiles: 0,
+  });
+  expect(
+    getFileUploadOptions(
+      rule.array(rule.object({ avatar: rule.file().maxSize('1MB') })).length({ max: 5 }),
+    ),
+  ).toEqual({
+    allowFileFields: ['avatar'],
+    maxFiles: 1,
+    maxFileSize: 1 * 1024 * 1024,
+  });
+
+  // 组合里再套组合；分支 object 内的嵌套 object 仍忽略
+  expect(
+    getFileUploadOptions(
+      rule.anyOf([
+        rule.oneOf([rule.object({ a: rule.file().maxSize('2MB') }), rule.string()]),
+        rule.object({ profile: rule.object({ avatar: rule.file() }) }),
+      ]),
+    ),
+  ).toEqual({
+    allowFileFields: ['a'],
+    maxFiles: 1,
+    maxFileSize: 2 * 1024 * 1024,
+  });
+});
+
+test('getFileUploadOptions：组合与不收集场景', () => {
+  const mb = (n: number) => n * 1024 * 1024;
+
+  // 根是 file / string：没有字段名
+  expect(getFileUploadOptions(rule.file())).toEqual({
+    allowFileFields: [],
+    maxFiles: 0,
+  });
+  expect(getFileUploadOptions(rule.string())).toEqual({
+    allowFileFields: [],
+    maxFiles: 0,
+  });
+
+  // 根组合里没有带文件字段的 object
+  expect(
+    getFileUploadOptions(
+      rule.anyOf([rule.object({ name: rule.string() }), rule.string()]),
+    ),
+  ).toEqual({
+    allowFileFields: [],
+    maxFiles: 0,
+  });
+
+  // 同对象里，非文件组合字段不收录
+  expect(
+    getFileUploadOptions({
+      avatar: rule.file(),
+      extra: rule.oneOf([rule.string(), rule.number()]),
+    }),
+  ).toEqual({
+    allowFileFields: ['avatar'],
+    maxFiles: 1,
+  });
+
+  // 字段上 anyOf / allOf：个数取较大值，不把 file 和 array(file) 相加
+  expect(
+    getFileUploadOptions({
+      media: rule.anyOf([rule.file(), rule.array(rule.file()).length({ max: 2 })]),
+    }),
+  ).toEqual({
+    allowFileFields: ['media'],
+    maxFiles: 2,
+  });
+  expect(
+    getFileUploadOptions({
+      media: rule.allOf([
+        rule.file().maxSize('1MB'),
+        rule.array(rule.file()).length({ max: 4 }),
+      ]),
+    }),
+  ).toEqual({
+    allowFileFields: ['media'],
+    maxFiles: 4,
+    maxFileSize: mb(1),
+  });
+
+  // array(oneOf(file)) 未写 length.max 时用默认个数，maxSize 仍从 file 带出
+  expect(
+    getFileUploadOptions({
+      photos: rule.array(rule.oneOf([rule.file().maxSize('1MB'), rule.string()])),
+    }),
+  ).toEqual({
+    allowFileFields: ['photos'],
+    maxFiles: DEFAULT_MAX_FILES,
+    maxFileSize: mb(1),
+  });
+
+  // 字段上的 array(object) / oneOf(object) 不收录内部 file
+  expect(
+    getFileUploadOptions({
+      avatar: rule.file(),
+      items: rule.array(rule.object({ file: rule.file().maxSize('9MB') })),
+    }),
+  ).toEqual({
+    allowFileFields: ['avatar'],
+    maxFiles: 1,
+  });
+
+  // 根 oneOf 同名字段只留一次，个数取较大值
+  expect(
+    getFileUploadOptions(
+      rule.oneOf([
+        rule.object({ avatar: rule.file() }),
+        rule.object({
+          avatar: rule.array(rule.file()).length({ max: 3 }),
+        }),
+      ]),
+    ),
+  ).toEqual({
+    allowFileFields: ['avatar'],
+    maxFiles: 3,
+  });
+
+  // 根 allOf 同名字段只留一次，个数仍按分支相加
+  expect(
+    getFileUploadOptions(
+      rule.allOf([
+        rule.object({ avatar: rule.file().maxSize('1MB') }),
+        rule.object({
+          avatar: rule.file().maxSize('4MB'),
+          cover: rule.file(),
+        }),
+      ]),
+    ),
+  ).toEqual({
+    allowFileFields: ['avatar', 'cover'],
+    maxFiles: 3,
+    maxFileSize: mb(4),
+  });
+
+  // 根 array(oneOf(object))：字段取并集，个数取较大值，外层 length 不参与
+  expect(
+    getFileUploadOptions(
+      rule
+        .array(
+          rule.oneOf([
+            rule.object({ avatar: rule.file() }),
+            rule.object({
+              photos: rule.array(rule.file()).length({ max: 2 }),
+            }),
+          ]),
+        )
+        .length({ max: 9 }),
+    ),
+  ).toEqual({
+    allowFileFields: ['avatar', 'photos'],
+    maxFiles: 2,
+  });
+
+  // 根 anyOf 里套 allOf：allOf 分支内部相加，再和其它分支取较大值
+  expect(
+    getFileUploadOptions(
+      rule.anyOf([
+        rule.allOf([rule.object({ a: rule.file() }), rule.object({ b: rule.file() })]),
+        rule.object({
+          c: rule.array(rule.file()).length({ max: 5 }),
+        }),
+      ]),
+    ),
+  ).toEqual({
+    allowFileFields: ['a', 'b', 'c'],
+    maxFiles: 5,
+  });
+
+  // additional 的动态字段名不进白名单
+  expect(
+    getFileUploadOptions(
+      rule.object({ avatar: rule.file() }).additional({
+        value: rule.file().maxSize('9MB'),
+      }),
+    ),
+  ).toEqual({
+    allowFileFields: ['avatar'],
+    maxFiles: 1,
+  });
+  expect(getFileUploadOptions(rule.object().additional({ value: rule.file() }))).toEqual({
+    allowFileFields: [],
+    maxFiles: 0,
+  });
+});
 
 test('包含next', async () => {
   const { ctx, res } = await mockServer((agent) =>

@@ -8,6 +8,7 @@ export default I18n.satisfies(zh).define({
       must_be_file: '{{label}} musí byť súbor',
       too_large: 'Súbor {{label}} je príliš veľký',
       unsupported_mimetype: 'Typ súboru {{label}} nie je podporovaný',
+      invalid_mimetype_token: 'Neplatný typ média alebo prípona súboru: {{token}}',
     },
   },
   response: {

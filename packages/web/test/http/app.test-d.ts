@@ -29,6 +29,87 @@ const proxyIP = { mode: 'detect' } as const;
     services,
     logger: services.logger,
     language,
+    proxyIP,
+    body: {
+      payload: { maxSize: '2mb' },
+      formData: { maxFileSize: '20mb', maxFiles: 10, maxFields: 100 },
+    },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    language,
+    proxyIP,
+    body: {
+      payload: { maxSize: 1024 * 1024 },
+      formData: { maxFileSize: 1024, maxFields: 50 },
+    },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    language,
+    proxyIP,
+    // @ts-expect-error
+    body: { payload: { maxSize: true } },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    language,
+    proxyIP,
+    // @ts-expect-error
+    body: { formData: { maxFiles: '10' } },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    language,
+    proxyIP,
+    // @ts-expect-error
+    body: { formData: { maxFields: '100' } },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    language,
+    proxyIP,
+    // @ts-expect-error
+    body: { formData: { maxFileSize: true } },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    language,
+    proxyIP,
+    body: {},
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    language,
+    proxyIP,
+    body: { payload: {} },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    language,
+    proxyIP,
+    body: { formData: {} },
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    language,
+    proxyIP,
+    // @ts-expect-error
+    body: true,
+  });
+  new WebApp({
+    services,
+    logger: services.logger,
+    language,
     proxyIP: { mode: 'detect' },
   });
   new WebApp({

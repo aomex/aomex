@@ -8,6 +8,7 @@ export default I18n.satisfies(zh).define({
       must_be_file: '{{label}} verður að vera skrá',
       too_large: '{{label}} skráin er of stór',
       unsupported_mimetype: 'Skráargerðin {{label}} er ekki studd',
+      invalid_mimetype_token: 'Ógildur miðilategund eða skráarending: {{token}}',
     },
   },
   response: {

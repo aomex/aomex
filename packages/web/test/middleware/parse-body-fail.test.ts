@@ -2,12 +2,16 @@ import { TestWebApp } from '../../src/testing';
 import { expect, test, vi } from 'vitest';
 import { createServer } from 'http';
 import supertest from 'supertest';
-import { compose } from '@aomex/common';
+import { compose, middleware } from '@aomex/common';
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import type { File } from 'formidable';
 import { WebContext, WebRequest, WebResponse } from '../../src';
-import { parseBody } from '../../src/middleware/parse-body';
+import {
+  internalEnsureBodyKey,
+  parseBody,
+  type ParseBodyProps,
+} from '../../src/middleware/parse-body';
 const dir = dirname(import.meta.dirname);
 
 type FormidableFn = typeof import('formidable');
@@ -42,12 +46,21 @@ test('form.parse 拒绝后清理已落盘临时文件', { timeout: 10_000 }, asy
       (req: WebRequest, res: WebResponse) => {
         const app = new TestWebApp({});
         const ctx = new WebContext(app, req, res);
-        compose([parseBody()])(ctx).then(
-          () => reject(new Error('expected parseBody to reject')),
+        compose([
+          parseBody(),
+          middleware.web(async (c, next) => {
+            await (c as typeof c & ParseBodyProps)[internalEnsureBodyKey]({
+              allowFileFields: ['files'],
+              maxFiles: 1,
+            });
+            return next();
+          }),
+        ])(ctx).then(
+          () => reject(new Error('expected ensureBody to reject')),
           (err) => {
             expect(err).toBeTruthy();
             expect(captured.length).toBeGreaterThan(0);
-            // 等 close 走完 parse-body catch 里的兜底清理；若已 closed 则不再等
+            // 等 close 走完 ensureBody catch 里的兜底清理；若已 closed 则不再等
             let settled = false;
             const finish = () => {
               if (settled) return;

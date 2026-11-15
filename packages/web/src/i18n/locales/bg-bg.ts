@@ -8,6 +8,7 @@ export default I18n.satisfies(zh).define({
       must_be_file: '{{label}} трябва да е файл',
       too_large: 'Файлът {{label}} е твърде голям',
       unsupported_mimetype: 'Файловият тип {{label}} не се поддържа',
+      invalid_mimetype_token: 'Невалиден медиен тип или файлово разширение: {{token}}',
     },
   },
   response: {

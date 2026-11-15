@@ -36,6 +36,10 @@ const validator = new TargetValidator();
 
   const v = validator.mimeTypes('.png');
   expectType<TargetValidator<DefaultType>>(v);
+  const withFallback = v.fallbackToMimetype();
+  expectType<TargetValidator<DefaultType>>(withFallback);
+  expectType<TargetValidator<DefaultType>>(v.fallbackToMimetype(true));
+  expectType<TargetValidator<DefaultType>>(v.fallbackToMimetype(false));
 }
 
 // 设置体积

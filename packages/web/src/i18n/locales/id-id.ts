@@ -8,6 +8,7 @@ export default I18n.satisfies(zh).define({
       must_be_file: '{{label}} harus berupa file',
       too_large: 'File {{label}} terlalu besar',
       unsupported_mimetype: 'Jenis file {{label}} tidak didukung',
+      invalid_mimetype_token: 'Jenis media atau ekstensi file tidak valid: {{token}}',
     },
   },
   response: {

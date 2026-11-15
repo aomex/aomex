@@ -8,6 +8,7 @@ export default I18n.satisfies(zh).define({
       must_be_file: '{{label}} ایک فائل ہونی چاہیے۔',
       too_large: '{{label}} فائل بہت بڑی ہے۔',
       unsupported_mimetype: '{{label}} کی فائل کی قسم تعاون یافتہ نہیں ہے۔',
+      invalid_mimetype_token: 'غلط میڈیا قسم یا فائل ایکسٹینشن: {{token}}',
     },
   },
   response: {

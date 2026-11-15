@@ -8,6 +8,7 @@ export default I18n.satisfies(zh).define({
       must_be_file: '{{label}} はファイルでなければなりません',
       too_large: '{{label}} ファイルが大きすぎます',
       unsupported_mimetype: 'ファイルタイプ {{label}} はサポートされていません',
+      invalid_mimetype_token: '無効なメディアタイプまたはファイル拡張子：{{token}}',
     },
   },
   response: {

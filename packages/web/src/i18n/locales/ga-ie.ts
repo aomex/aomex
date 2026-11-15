@@ -8,6 +8,7 @@ export default I18n.satisfies(zh).define({
       must_be_file: 'Ní mór {{label}} a bheith ina chomhad',
       too_large: 'Tá an comhad {{label}} ró-mhór',
       unsupported_mimetype: 'Ní thacaítear leis an gcineál comhaid {{label}}',
+      invalid_mimetype_token: 'Cineál meán nó iarmhír chomhaid neamhbhailí: {{token}}',
     },
   },
   response: {

@@ -1,8 +1,17 @@
 import { expect, test } from 'vitest';
 import { mockServer } from '../fixture/mock-server';
+import { ensureFiles } from '../fixture/ensure-files';
 import { existsSync } from 'node:fs';
 import { rename, unlink } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
+import { middleware, rule } from '@aomex/common';
+import { body } from '../../src';
+import {
+  DEFAULT_MAX_FILES,
+  internalEnsureBodyKey,
+  mergeUploadCeilings,
+  type ParseBodyProps,
+} from '../../src/middleware/parse-body';
 
 const dir = dirname(import.meta.dirname);
 
@@ -11,8 +20,10 @@ const waitDeleted = async (filepath: string) => {
 };
 
 test('解析后业务期间文件存在，响应结束后删除', async () => {
-  const { req, res } = await mockServer((agent) =>
-    agent.post('/').attach('file1', join(dir, 'fixture/upload-1.txt')),
+  const { req, res } = await mockServer(
+    (agent) => agent.post('/').attach('file1', join(dir, 'fixture/upload-1.txt')),
+    undefined,
+    [ensureFiles('file1')],
   );
 
   const filepath = (req.body as { file1: { filepath: string }[] }).file1[0]!.filepath;
@@ -23,11 +34,14 @@ test('解析后业务期间文件存在，响应结束后删除', async () => {
 });
 
 test('多文件都会在响应结束后删除', async () => {
-  const { req, res } = await mockServer((agent) =>
-    agent
-      .post('/')
-      .attach('files', join(dir, 'fixture/upload-1.txt'))
-      .attach('files', join(dir, 'fixture/upload-2.txt')),
+  const { req, res } = await mockServer(
+    (agent) =>
+      agent
+        .post('/')
+        .attach('files', join(dir, 'fixture/upload-1.txt'))
+        .attach('files', join(dir, 'fixture/upload-2.txt')),
+    undefined,
+    [ensureFiles('files')],
   );
 
   const filepaths = (req.body as { files: { filepath: string }[] }).files.map(
@@ -45,11 +59,14 @@ test('多文件都会在响应结束后删除', async () => {
 });
 
 test('相同文件上传两次：filepath不同、md5相同，响应结束后都删除', async () => {
-  const { req, res } = await mockServer((agent) =>
-    agent
-      .post('/')
-      .attach('files', join(dir, 'fixture/upload-1.txt'))
-      .attach('files', join(dir, 'fixture/upload-1.txt')),
+  const { req, res } = await mockServer(
+    (agent) =>
+      agent
+        .post('/')
+        .attach('files', join(dir, 'fixture/upload-1.txt'))
+        .attach('files', join(dir, 'fixture/upload-1.txt')),
+    undefined,
+    [ensureFiles('files')],
   );
 
   const files = (req.body as { files: { filepath: string; hash: string }[] }).files;
@@ -65,8 +82,14 @@ test('相同文件上传两次：filepath不同、md5相同，响应结束后都
 });
 
 test('仅字段+附件时也会清理附件临时文件', async () => {
-  const { req, res } = await mockServer((agent) =>
-    agent.post('/').field('name', 'a').attach('file1', join(dir, 'fixture/upload-1.txt')),
+  const { req, res } = await mockServer(
+    (agent) =>
+      agent
+        .post('/')
+        .field('name', 'a')
+        .attach('file1', join(dir, 'fixture/upload-1.txt')),
+    undefined,
+    [ensureFiles('file1')],
   );
 
   const filepath = (req.body as { file1: { filepath: string }[] }).file1[0]!.filepath;
@@ -77,16 +100,16 @@ test('仅字段+附件时也会清理附件临时文件', async () => {
 });
 
 test('业务抛错经 onError 后仍删除临时文件', async () => {
-  const { req, res, ctx, app } = await mockServer((agent) =>
-    agent.post('/').attach('file1', join(dir, 'fixture/upload-1.txt')),
+  const { req, res, ctx, app } = await mockServer(
+    (agent) => agent.post('/').attach('file1', join(dir, 'fixture/upload-1.txt')),
+    undefined,
+    [ensureFiles('file1')],
   );
 
   const filepath = (req.body as { file1: { filepath: string }[] }).file1[0]!.filepath;
   expect(existsSync(filepath)).toBeTruthy();
 
-  // mockServer 未走 callback()，需先挂 error 监听，否则 emit('error') 会在 flush 前抛出
   app.on('error', () => {});
-  // 模拟 WebApp.callback：fn(ctx).catch(res.onError)
   try {
     ctx.throw(400, 'biz failed');
   } catch (err) {
@@ -97,8 +120,10 @@ test('业务抛错经 onError 后仍删除临时文件', async () => {
 });
 
 test('业务rename走后响应结束不报错且不误删新路径', async () => {
-  const { req, res } = await mockServer((agent) =>
-    agent.post('/').attach('file1', join(dir, 'fixture/upload-1.txt')),
+  const { req, res } = await mockServer(
+    (agent) => agent.post('/').attach('file1', join(dir, 'fixture/upload-1.txt')),
+    undefined,
+    [ensureFiles('file1')],
   );
 
   const tempPath = (req.body as { file1: { filepath: string }[] }).file1[0]!.filepath;
@@ -115,11 +140,15 @@ test('业务rename走后响应结束不报错且不误删新路径', async () =>
 
 test('不同请求的文件在各自响应结束时才删除', async () => {
   const [req1, req2] = await Promise.all([
-    mockServer((agent) =>
-      agent.post('/').attach('file1', join(dir, 'fixture/upload-1.txt')),
+    mockServer(
+      (agent) => agent.post('/').attach('file1', join(dir, 'fixture/upload-1.txt')),
+      undefined,
+      [ensureFiles('file1')],
     ),
-    mockServer((agent) =>
-      agent.post('/').attach('file1', join(dir, 'fixture/upload-2.txt')),
+    mockServer(
+      (agent) => agent.post('/').attach('file1', join(dir, 'fixture/upload-2.txt')),
+      undefined,
+      [ensureFiles('file1')],
     ),
   ]);
 
@@ -137,6 +166,144 @@ test('不同请求的文件在各自响应结束时才删除', async () => {
 
   req2.res.flush();
   await waitDeleted(filepath2);
+});
+
+test('mergeUploadCeilings：应用级上限取更严', () => {
+  const base = { allowFileFields: ['a'] as const, maxFiles: DEFAULT_MAX_FILES };
+
+  expect(mergeUploadCeilings(base)).toBe(base);
+  expect(mergeUploadCeilings(base, undefined)).toBe(base);
+
+  expect(
+    mergeUploadCeilings(
+      { allowFileFields: ['a'], maxFileSize: 100, maxFiles: 5, maxFields: 200 },
+      { maxFileSize: 50, maxFiles: 3, maxFields: 80 },
+    ),
+  ).toMatchObject({ maxFileSize: 50, maxFiles: 3, maxFields: 80 });
+
+  expect(
+    mergeUploadCeilings(
+      { allowFileFields: ['a'], maxFileSize: 20, maxFiles: 2 },
+      { maxFileSize: 50, maxFiles: 10 },
+    ),
+  ).toMatchObject({ maxFileSize: 20, maxFiles: 2 });
+
+  // 字符串单位解析为字节
+  expect(
+    mergeUploadCeilings(
+      { allowFileFields: ['a'], maxFileSize: 100, maxFiles: 5 },
+      { maxFileSize: '50b' },
+    ),
+  ).toMatchObject({ maxFileSize: 50, maxFiles: 5 });
+
+  expect(mergeUploadCeilings(base, { maxFileSize: 50, maxFiles: 3 })).toMatchObject({
+    maxFileSize: 50,
+    maxFiles: 3,
+  });
+
+  // maxFiles=0 时不被应用级上限抬高
+  expect(
+    mergeUploadCeilings(
+      { allowFileFields: [], maxFiles: 0 },
+      { maxFileSize: 50, maxFiles: 3 },
+    ),
+  ).toMatchObject({
+    maxFileSize: 50,
+    maxFiles: 0,
+  });
+
+  expect(mergeUploadCeilings(base, {})).toEqual(base);
+
+  expect(mergeUploadCeilings(base, { maxFields: 40 })).toMatchObject({
+    maxFiles: DEFAULT_MAX_FILES,
+    maxFields: 40,
+  });
+});
+
+test('无 body/internalEnsureBody 时 multipart 不解析文件', async () => {
+  const { req, res } = await mockServer((agent) =>
+    agent.post('/').attach('file1', join(dir, 'fixture/upload-1.txt')),
+  );
+  expect(req.body).toStrictEqual({});
+  res.flush();
+});
+
+test('非白名单文件字段不落盘', async () => {
+  const { req, res } = await mockServer(
+    (agent) =>
+      agent
+        .post('/')
+        .attach('avatar', join(dir, 'fixture/upload-1.txt'))
+        .attach('evil', join(dir, 'fixture/upload-2.txt')),
+    undefined,
+    [ensureFiles('avatar')],
+  );
+
+  const body = req.body as {
+    avatar?: { filepath: string }[];
+    evil?: { filepath: string }[];
+  };
+  expect(body.avatar?.[0]?.filepath).toBeTruthy();
+  expect(body.evil).toBeUndefined();
+  expect(existsSync(body.avatar![0]!.filepath)).toBeTruthy();
+
+  res.flush();
+  await waitDeleted(body.avatar![0]!.filepath);
+});
+
+test('body() 按 schema 收文件并校验', async () => {
+  const { ctx, res } = await mockServer(
+    (agent) =>
+      agent
+        .post('/')
+        .field('name', 'tom')
+        .attach('avatar', join(dir, 'fixture/upload-1.txt')),
+    undefined,
+    [
+      body({
+        name: rule.string(),
+        avatar: rule.file(),
+      }),
+    ],
+  );
+
+  // @ts-expect-error
+  expect(ctx.body.name).toBe('tom');
+  // @ts-expect-error
+  expect(ctx.body.avatar).toBeTruthy();
+  res.flush();
+});
+
+test('body() 无 file 字段时仍解析 form-data 文本', async () => {
+  const { ctx, res } = await mockServer(
+    (agent) => agent.post('/').field('name', 'tom').field('age', '18'),
+    undefined,
+    [body({ name: rule.string(), age: rule.int() })],
+  );
+
+  // @ts-expect-error
+  expect(ctx.body).toStrictEqual({ name: 'tom', age: 18 });
+  res.flush();
+});
+
+test('internalEnsureBody 幂等', async () => {
+  const { ctx, res } = await mockServer(
+    (agent) => agent.post('/').attach('file1', join(dir, 'fixture/upload-1.txt')),
+    undefined,
+    [
+      middleware.web(async (ctx, next) => {
+        const ensure = (ctx as typeof ctx & ParseBodyProps)[internalEnsureBodyKey];
+        await ensure({ allowFileFields: ['file1'], maxFiles: 30 });
+        const first = ctx.request.body;
+        await ensure({ allowFileFields: ['file1'], maxFiles: 30 });
+        expect(ctx.request.body).toBe(first);
+        return next();
+      }),
+    ],
+  );
+
+  expect((ctx.request.body as { file1: unknown }).file1).toBeTruthy();
+  res.flush();
 });
 
 test('payload string：json 解析为 string，text 保留原文', async () => {

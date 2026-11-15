@@ -8,6 +8,7 @@ export default I18n.satisfies(zh).define({
       must_be_file: '{{label}} ஒரு கோப்பாக இருக்க வேண்டும்',
       too_large: '{{label}} கோப்பு மிகவும் பெரியது',
       unsupported_mimetype: '{{label}} இன் கோப்பு வகை ஆதரிக்கப்படவில்லை',
+      invalid_mimetype_token: 'தவறான ஊடக வகை அல்லது கோப்பு நீட்டிப்பு: {{token}}',
     },
   },
   response: {

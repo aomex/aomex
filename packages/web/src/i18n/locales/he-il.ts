@@ -8,6 +8,7 @@ export default I18n.satisfies(zh).define({
       must_be_file: '{{label}} חייב להיות קובץ',
       too_large: 'קובץ {{label}} גדול מדי',
       unsupported_mimetype: 'סוג הקובץ {{label}} אינו נתמך',
+      invalid_mimetype_token: 'סוג מדיה או סיומת קובץ לא חוקיים: {{token}}',
     },
   },
   response: {

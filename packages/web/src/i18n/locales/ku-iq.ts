@@ -8,6 +8,7 @@ export default I18n.satisfies(zh).define({
       must_be_file: '.\n{{label}} دەبێت فایلێک بێت',
       too_large: '.\nفایلە {{label}} زۆر گەورەیە',
       unsupported_mimetype: '.\nجۆری پەڕگەی {{label}} پشتگیری ناکرێت',
+      invalid_mimetype_token: 'جۆری میدیا یان پاشگری پەڕگەی نادروست: {{token}}',
     },
   },
   response: {

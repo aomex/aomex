@@ -8,6 +8,7 @@ export default I18n.satisfies(zh).define({
       must_be_file: '{{label}} უნდა იყოს ფაილი',
       too_large: '{{label}} ფაილი ძალიან დიდია',
       unsupported_mimetype: 'ფაილის ტიპი {{label}} არ არის მხარდაჭერილი',
+      invalid_mimetype_token: 'არასწორი მედიის ტიპი ან ფაილის გაფართოება: {{token}}',
     },
   },
   response: {

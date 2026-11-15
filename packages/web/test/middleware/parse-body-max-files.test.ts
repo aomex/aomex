@@ -2,10 +2,15 @@ import { TestWebApp } from '../../src/testing';
 import { expect, test } from 'vitest';
 import { createServer } from 'http';
 import supertest from 'supertest';
-import { compose } from '@aomex/common';
+import { compose, middleware } from '@aomex/common';
 import { WebContext, WebRequest, WebResponse } from '../../src';
-import { parseBody } from '../../src/middleware/parse-body';
-test('超过 maxFiles=30 时 parseBody 拒绝', { timeout: 10_000 }, async () => {
+import {
+  internalEnsureBodyKey,
+  parseBody,
+  type ParseBodyProps,
+} from '../../src/middleware/parse-body';
+
+test('超过 maxFiles 时 ensureBody 拒绝', { timeout: 10_000 }, async () => {
   await new Promise<void>((resolve, reject) => {
     const server = createServer(
       {
@@ -16,8 +21,17 @@ test('超过 maxFiles=30 时 parseBody 拒绝', { timeout: 10_000 }, async () =>
       (req: WebRequest, res: WebResponse) => {
         const app = new TestWebApp({});
         const ctx = new WebContext(app, req, res);
-        compose([parseBody()])(ctx).then(
-          () => reject(new Error('expected parseBody to reject')),
+        compose([
+          parseBody(),
+          middleware.web(async (c, next) => {
+            await (c as typeof c & ParseBodyProps)[internalEnsureBodyKey]({
+              allowFileFields: ['files'],
+              maxFiles: 30,
+            });
+            return next();
+          }),
+        ])(ctx).then(
+          () => reject(new Error('expected ensureBody to reject')),
           (err) => {
             expect(String(err)).toMatch(/maxFiles/i);
             res.statusCode = 413;
@@ -48,8 +62,17 @@ test('空文件在 allowEmptyFiles=false 时被拒绝', { timeout: 10_000 }, asy
       (req: WebRequest, res: WebResponse) => {
         const app = new TestWebApp({});
         const ctx = new WebContext(app, req, res);
-        compose([parseBody()])(ctx).then(
-          () => reject(new Error('expected parseBody to reject')),
+        compose([
+          parseBody(),
+          middleware.web(async (c, next) => {
+            await (c as typeof c & ParseBodyProps)[internalEnsureBodyKey]({
+              allowFileFields: ['file1'],
+              maxFiles: 30,
+            });
+            return next();
+          }),
+        ])(ctx).then(
+          () => reject(new Error('expected ensureBody to reject')),
           (err) => {
             expect(String(err)).toMatch(/allowEmptyFiles|empty|size/i);
             res.statusCode = 400;

@@ -8,6 +8,8 @@ export default I18n.satisfies(zh).define({
       must_be_file: '{{label}} ir jābūt failam',
       too_large: '{{label}} fails ir pārāk liels',
       unsupported_mimetype: 'Faila tips {{label}} netiek atbalstīts',
+      invalid_mimetype_token:
+        'Nederīgs multivides tips vai faila paplašinājums: {{token}}',
     },
   },
   response: {

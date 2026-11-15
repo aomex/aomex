@@ -8,6 +8,7 @@ export default I18n.satisfies(zh).define({
       must_be_file: '{{label}} файл болуы керек',
       too_large: '{{label}} файлы тым үлкен',
       unsupported_mimetype: '{{label}} файл түріне қолдау көрсетілмейді',
+      invalid_mimetype_token: 'Жарамсыз медиа түрі немесе файл кеңейтімі: {{token}}',
     },
   },
   response: {

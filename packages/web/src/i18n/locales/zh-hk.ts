@@ -8,6 +8,7 @@ export default I18n.satisfies(zh).define({
       must_be_file: '{{label}}必須為檔案',
       too_large: '{{label}}檔案過大',
       unsupported_mimetype: '{{label}}的檔案類型不受支援',
+      invalid_mimetype_token: '無效的媒體類型或檔案副檔名：{{token}}',
     },
   },
   response: {

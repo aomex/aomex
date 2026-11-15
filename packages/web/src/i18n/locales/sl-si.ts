@@ -8,6 +8,7 @@ export default I18n.satisfies(zh).define({
       must_be_file: '{{label}} mora biti datoteka',
       too_large: 'Datoteka {{label}} je prevelika',
       unsupported_mimetype: 'Vrsta datoteke {{label}} ni podprta',
+      invalid_mimetype_token: 'Neveljavna vrsta medija ali končnica datoteke: {{token}}',
     },
   },
   response: {

@@ -8,6 +8,8 @@ export default I18n.satisfies(zh).define({
       must_be_file: '{{label}} သည် ဖိုင်ဖြစ်ရပါမည်။',
       too_large: '{{label}} ဖိုင်သည် ကြီးလွန်းသည်။',
       unsupported_mimetype: 'ဖိုင်အမျိုးအစား {{label}} ကို ပံ့ပိုးမထားပါ။',
+      invalid_mimetype_token:
+        'မမှန်ကန်သော မီဒီယာအမျိုးအစား သို့မဟုတ် ဖိုင်တိုးချဲ့မှု: {{token}}',
     },
   },
   response: {
