@@ -12,12 +12,4 @@ export const zh = I18n.define({
   mongoose: {
     unsupported_validator: '暂不支持 {{validator}}',
   },
-  migration: {
-    create: '创建迁移文件',
-    up: '执行迁移',
-    down: '回滚迁移',
-    file_not_found: '迁移文件「{{file}}」不存在',
-    input_file_name: '请输入迁移文件名：',
-    file_created: '迁移文件创建成功「{{file}}」',
-  },
 });

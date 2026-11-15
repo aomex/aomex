@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: '{{validator}} әлі қолдау көрсетілмейді',
   },
-  migration: {
-    create: 'Тасымалдау файлын жасаңыз',
-    up: 'Көшіруді орындау',
-    down: 'Кері тасымалдау',
-    file_not_found: '"{{file}}" тасымалдау файлы жоқ',
-    input_file_name: 'Тасымалдау файлының атын енгізіңіз:',
-    file_created: '"{{file}}" тасымалдау файлы сәтті жасалды.',
-  },
 });

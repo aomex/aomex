@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Pas encore pris en charge {{validator}}',
   },
-  migration: {
-    create: 'Créer un fichier de migration',
-    up: 'Exécuter la migration',
-    down: 'Annulation de la migration',
-    file_not_found: 'Le fichier de migration "{{file}}" n\'existe pas',
-    input_file_name: 'Veuillez saisir le nom du fichier de migration :',
-    file_created: 'Le fichier de migration a été créé avec succès "{{file}}"',
-  },
 });

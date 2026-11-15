@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'ยังไม่รองรับ {{validator}}',
   },
-  migration: {
-    create: 'สร้างไฟล์การโยกย้าย',
-    up: 'ดำเนินการโยกย้าย',
-    down: 'การโยกย้ายย้อนกลับ',
-    file_not_found: 'ไม่มีไฟล์การโยกย้าย "{{file}}"',
-    input_file_name: 'โปรดป้อนชื่อไฟล์การโยกย้าย:',
-    file_created: 'สร้างไฟล์การโยกย้ายสำเร็จแล้ว "{{file}}"',
-  },
 });

@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Dar nepalaikoma {{validator}}',
   },
-  migration: {
-    create: 'Sukurti migracijos failą',
-    up: 'Vykdyti migraciją',
-    down: 'Perkėlimas atgal',
-    file_not_found: 'Perkėlimo failas „{{file}}“ neegzistuoja',
-    input_file_name: 'Įveskite perkėlimo failo pavadinimą:',
-    file_created: 'Perkėlimo failas sėkmingai sukurtas „{{file}}“',
-  },
 });

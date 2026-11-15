@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Noch nicht unterstützt {{validator}}',
   },
-  migration: {
-    create: 'Migrationsdatei erstellen',
-    up: 'Führen Sie die Migration aus',
-    down: 'Rollback-Migration',
-    file_not_found: 'Die Migrationsdatei „{{file}}“ existiert nicht',
-    input_file_name: 'Bitte geben Sie den Namen der Migrationsdatei ein:',
-    file_created: 'Die Migrationsdatei wurde erfolgreich erstellt „{{file}}“',
-  },
 });

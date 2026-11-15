@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Belum disokong lagi {{validator}}',
   },
-  migration: {
-    create: 'Buat fail migrasi',
-    up: 'Laksanakan migrasi',
-    down: 'Penghijrahan balik',
-    file_not_found: 'Fail migrasi "{{file}}" tidak wujud',
-    input_file_name: 'Sila masukkan nama fail migrasi:',
-    file_created: 'Fail migrasi berjaya dibuat "{{file}}"',
-  },
 });

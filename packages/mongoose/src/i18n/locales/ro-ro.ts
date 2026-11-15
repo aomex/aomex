@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Nu este acceptat încă {{validator}}',
   },
-  migration: {
-    create: 'Creați fișierul de migrare',
-    up: 'Executați migrarea',
-    down: 'Migrarea înapoi',
-    file_not_found: 'Fișierul de migrare „{{file}}” nu există',
-    input_file_name: 'Introduceți numele fișierului de migrare:',
-    file_created: 'Fișierul de migrare a fost creat cu succes „{{file}}”',
-  },
 });

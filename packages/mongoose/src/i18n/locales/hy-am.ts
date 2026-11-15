@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: '{{validator}} դեռ չի աջակցվում',
   },
-  migration: {
-    create: 'Ստեղծեք միգրացիոն ֆայլ',
-    up: 'Կատարել միգրացիա',
-    down: 'Հետադարձ միգրացիա',
-    file_not_found: '«{{file}}» միգրացիոն ֆայլը գոյություն չունի',
-    input_file_name: 'Խնդրում ենք մուտքագրել միգրացիոն ֆայլի անունը.',
-    file_created: 'Միգրացիոն ֆայլը հաջողությամբ ստեղծվել է «{{file}}»',
-  },
 });

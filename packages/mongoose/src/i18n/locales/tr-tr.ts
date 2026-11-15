@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Henüz desteklenmiyor {{validator}}',
   },
-  migration: {
-    create: 'Taşıma dosyası oluştur',
-    up: 'Taşımayı yürüt',
-    down: 'Geri alma geçişi',
-    file_not_found: '"{{file}}" geçiş dosyası mevcut değil',
-    input_file_name: 'Lütfen taşıma dosyasının adını girin:',
-    file_created: 'Taşıma dosyası başarıyla oluşturuldu "{{file}}"',
-  },
 });

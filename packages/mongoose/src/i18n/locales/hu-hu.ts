@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Még nem támogatott {{validator}}',
   },
-  migration: {
-    create: 'Hozzon létre migrációs fájlt',
-    up: 'Végezze el az áttelepítést',
-    down: 'Visszagörgetés',
-    file_not_found: 'A „{{file}}” migrációs fájl nem létezik',
-    input_file_name: 'Adja meg a migrációs fájl nevét:',
-    file_created: 'A migrációs fájl sikeresen létrejött "{{file}}"',
-  },
 });

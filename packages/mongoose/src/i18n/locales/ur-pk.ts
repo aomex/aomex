@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: '{{validator}} ابھی تک تعاون یافتہ نہیں ہے۔',
   },
-  migration: {
-    create: 'مائیگریشن فائل بنائیں',
-    up: 'ہجرت پر عمل کریں۔',
-    down: 'رول بیک ہجرت',
-    file_not_found: 'منتقلی کی فائل "{{file}}" موجود نہیں ہے۔',
-    input_file_name: 'براہ کرم منتقلی فائل کا نام درج کریں:',
-    file_created: 'منتقلی فائل "{{file}}" کامیابی کے ساتھ بنائی گئی تھی۔',
-  },
 });

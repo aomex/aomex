@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: '{{validator}} ಇನ್ನೂ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ',
   },
-  migration: {
-    create: 'ವಲಸೆ ಫೈಲ್ ರಚಿಸಿ',
-    up: 'ವಲಸೆಯನ್ನು ಕಾರ್ಯಗತಗೊಳಿಸಿ',
-    down: 'ರೋಲ್ಬ್ಯಾಕ್ ವಲಸೆ',
-    file_not_found: '"{{file}}" ವಲಸೆ ಫೈಲ್ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ',
-    input_file_name: 'ದಯವಿಟ್ಟು ವಲಸೆ ಫೈಲ್ ಹೆಸರನ್ನು ನಮೂದಿಸಿ:',
-    file_created: 'ವಲಸೆ ಫೈಲ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ "{{file}}" ರಚಿಸಲಾಗಿದೆ',
-  },
 });

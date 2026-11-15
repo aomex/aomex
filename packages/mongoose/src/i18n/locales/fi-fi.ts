@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Ei vielä tuettu {{validator}}',
   },
-  migration: {
-    create: 'Luo siirtotiedosto',
-    up: 'Suorita siirto',
-    down: 'Siirron palautus',
-    file_not_found: 'Siirtotiedostoa "{{file}}" ei ole olemassa',
-    input_file_name: 'Anna siirtotiedoston nimi:',
-    file_created: 'Siirtotiedosto luotiin onnistuneesti "{{file}}"',
-  },
 });

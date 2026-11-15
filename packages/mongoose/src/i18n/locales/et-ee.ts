@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Pole veel toetatud. {{validator}}',
   },
-  migration: {
-    create: 'Looge migratsioonifail',
-    up: 'Käivitage migratsioon',
-    down: 'Tagasipööramine',
-    file_not_found: 'Migratsioonifaili "{{file}}" pole olemas',
-    input_file_name: 'Sisestage migratsioonifaili nimi:',
-    file_created: 'Migratsioonifail loodi edukalt "{{file}}"',
-  },
 });

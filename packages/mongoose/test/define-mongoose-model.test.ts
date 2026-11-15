@@ -4,7 +4,6 @@ import { afterEach, beforeEach, expect, test } from 'vitest';
 import { defineMongooseModel } from '../src';
 import { rule } from '@aomex/common';
 import { getMongoBinary } from './helper/get-mongo-binary';
-import { MigrationModel } from '../src/models/migration.model';
 
 let mongod!: MongoMemoryServer;
 
@@ -31,12 +30,7 @@ test('模型名称和集合名称一致', async () => {
   await model1.syncIndexes();
   await model2.syncIndexes();
   const collections = await mongoose.connection.listCollections();
-  expect(
-    collections
-      .map((item) => item.name)
-      .filter((item) => item !== MigrationModel.collection.name)
-      .sort(),
-  ).toMatchInlineSnapshot(`
+  expect(collections.map((item) => item.name).sort()).toMatchInlineSnapshot(`
     [
       "admin",
       "user",

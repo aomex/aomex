@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: '暫不支援 {{validator}}',
   },
-  migration: {
-    create: '創建遷移檔案',
-    up: '執行遷移',
-    down: '回滾遷移',
-    file_not_found: '遷移檔案「{{file}}」不存在',
-    input_file_name: '請輸入遷移檔案名：',
-    file_created: '遷移檔案創建成功「{{file}}」',
-  },
 });

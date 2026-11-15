@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: '{{validator}} هنوز پشتیبانی نمی شود',
   },
-  migration: {
-    create: 'فایل مهاجرت ایجاد کنید',
-    up: 'مهاجرت را اجرا کنید',
-    down: 'مهاجرت برگشتی',
-    file_not_found: 'فایل انتقال "{{file}}" وجود ندارد',
-    input_file_name: 'لطفا نام فایل مهاجرت را وارد کنید:',
-    file_created: 'فایل مهاجرت با موفقیت ایجاد شد "{{file}}"',
-  },
 });

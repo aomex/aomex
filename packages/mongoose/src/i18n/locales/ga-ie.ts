@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Gan tacaíocht fós {{validator}}',
   },
-  migration: {
-    create: 'Cruthaigh comhad imirce',
-    up: 'Imirce a rith',
-    down: 'Imirce ais-rolladh',
-    file_not_found: 'Níl an comhad imirce "{{file}}" ann',
-    input_file_name: 'Cuir isteach ainm an chomhaid aistrithe:',
-    file_created: 'Cruthaíodh an comhad aistrithe go rathúil "{{file}}"',
-  },
 });

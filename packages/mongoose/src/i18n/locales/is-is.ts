@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Ekki studd enn {{validator}}',
   },
-  migration: {
-    create: 'Búðu til flutningsskrá',
-    up: 'Framkvæma flutning',
-    down: 'Flutningur til baka',
-    file_not_found: 'Flutningaskráin „{{file}}“ er ekki til',
-    input_file_name: 'Vinsamlega sláðu inn nafn flutningsskrárinnar:',
-    file_created: 'Flutningaskráin var búin til "{{file}}"',
-  },
 });

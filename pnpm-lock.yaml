@@ -579,9 +579,6 @@ importers:
       '@aomex/common':
         specifier: workspace:^
         version: link:../common
-      '@aomex/console':
-        specifier: workspace:^
-        version: link:../console
       '@aomex/internal-tools':
         specifier: workspace:^
         version: link:../internal-tools

@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Zatiaľ nie je podporované {{validator}}',
   },
-  migration: {
-    create: 'Vytvorte migračný súbor',
-    up: 'Vykonajte migráciu',
-    down: 'Rollback migrácia',
-    file_not_found: 'Migračný súbor "{{file}}" neexistuje',
-    input_file_name: 'Zadajte názov súboru migrácie:',
-    file_created: 'Migračný súbor bol úspešne vytvorený "{{file}}"',
-  },
 });

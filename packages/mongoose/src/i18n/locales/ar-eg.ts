@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'غير معتمد حتى الآن {{validator}}',
   },
-  migration: {
-    create: 'إنشاء ملف الهجرة',
-    up: 'تنفيذ الترحيل',
-    down: 'الهجرة التراجعية',
-    file_not_found: 'ملف الترحيل "{{file}}" غير موجود',
-    input_file_name: 'الرجاء إدخال اسم ملف الترحيل:',
-    file_created: 'تم إنشاء ملف الترحيل بنجاح "{{file}}"',
-  },
 });

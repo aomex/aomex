@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Še ni podprto {{validator}}',
   },
-  migration: {
-    create: 'Ustvari selitveno datoteko',
-    up: 'Izvedi selitev',
-    down: 'Povratna selitev',
-    file_not_found: 'Selitvena datoteka "{{file}}" ne obstaja',
-    input_file_name: 'Vnesite ime datoteke za selitev:',
-    file_created: 'Datoteka za selitev je bila uspešno ustvarjena "{{file}}"',
-  },
 });

@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Пока не поддерживается {{validator}}',
   },
-  migration: {
-    create: 'Создать файл миграции',
-    up: 'Выполнить миграцию',
-    down: 'Откат миграции',
-    file_not_found: 'Файл миграции «{{file}}» не существует.',
-    input_file_name: 'Введите имя файла миграции:',
-    file_created: 'Файл миграции успешно создан «{{file}}».',
-  },
 });

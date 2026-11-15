@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Vēl netiek atbalstīts {{validator}}',
   },
-  migration: {
-    create: 'Izveidojiet migrācijas failu',
-    up: 'Veiciet migrāciju',
-    down: 'Atcelšanas migrācija',
-    file_not_found: 'Migrācijas fails "{{file}}" neeksistē',
-    input_file_name: 'Lūdzu, ievadiet migrācijas faila nosaukumu:',
-    file_created: 'Migrācijas fails tika veiksmīgi izveidots "{{file}}"',
-  },
 });

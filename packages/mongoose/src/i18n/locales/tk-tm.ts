@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Entek goldanok {{validator}}',
   },
-  migration: {
-    create: 'Migrasiýa faýly dörediň',
-    up: 'Migrasiýa ýerine ýetiriň',
-    down: 'Yza gaýdyp gelmek',
-    file_not_found: '"{{file}}" göçürme faýly ýok',
-    input_file_name: 'Migrasiýa faýlynyň adyny giriziň:',
-    file_created: 'Migrasiýa faýly üstünlikli "{{file}}" döredildi',
-  },
 });

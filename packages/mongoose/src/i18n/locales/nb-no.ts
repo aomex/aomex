@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Ikke støttet ennå {{validator}}',
   },
-  migration: {
-    create: 'Opprett migreringsfil',
-    up: 'Utfør migrering',
-    down: 'Tilbakestillingsmigrering',
-    file_not_found: 'Migreringsfilen "{{file}}" eksisterer ikke',
-    input_file_name: 'Skriv inn navnet på migreringsfilen:',
-    file_created: 'Migreringsfilen ble opprettet "{{file}}"',
-  },
 });

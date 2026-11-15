@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: '{{validator}} अझै समर्थित छैन',
   },
-  migration: {
-    create: 'माइग्रेसन फाइल सिर्जना गर्नुहोस्',
-    up: 'माइग्रेसन कार्यान्वयन गर्नुहोस्',
-    down: 'रोलब्याक माइग्रेसन',
-    file_not_found: 'माइग्रेसन फाइल "{{file}}" अवस्थित छैन',
-    input_file_name: 'कृपया माइग्रेसन फाइल नाम प्रविष्ट गर्नुहोस्:',
-    file_created: 'माइग्रेसन फाइल "{{file}}" सफलतापूर्वक सिर्जना गरियो।',
-  },
 });

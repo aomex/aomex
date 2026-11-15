@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: '{{validator}} хараахан дэмжигдээгүй байна',
   },
-  migration: {
-    create: 'Шилжилтийн файл үүсгэх',
-    up: 'Шилжүүлгийг гүйцэтгэх',
-    down: 'Буцах шилжилт',
-    file_not_found: '"{{file}}" шилжих файл байхгүй байна',
-    input_file_name: 'Шилжүүлэх файлын нэрийг оруулна уу:',
-    file_created: '"{{file}}" шилжих файлыг амжилттай үүсгэсэн.',
-  },
 });

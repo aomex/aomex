@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: "Hozircha {{validator}} qo'llab-quvvatlanmaydi",
   },
-  migration: {
-    create: 'Migratsiya faylini yarating',
-    up: 'Migratsiyani amalga oshirish',
-    down: "Orqaga ko'chirish",
-    file_not_found: '"{{file}}" migratsiya fayli mavjud emas',
-    input_file_name: 'Migratsiya fayli nomini kiriting:',
-    file_created: 'Migratsiya fayli muvaffaqiyatli yaratildi "{{file}}"',
-  },
 });

@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'עדיין לא נתמך {{validator}}',
   },
-  migration: {
-    create: 'צור קובץ הגירה',
-    up: 'בצע הגירה',
-    down: 'העברה לאחור',
-    file_not_found: 'קובץ ההעברה "{{file}}" אינו קיים',
-    input_file_name: 'נא להזין את שם קובץ ההעברה:',
-    file_created: 'קובץ ההעברה נוצר בהצלחה "{{file}}"',
-  },
 });

@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: 'Сè уште не е поддржано {{validator}}',
   },
-  migration: {
-    create: 'Креирајте датотека за миграција',
-    up: 'Извршете миграција',
-    down: 'Повратна миграција',
-    file_not_found: 'Датотеката за миграција „{{file}}“ не постои',
-    input_file_name: 'Ве молиме внесете го името на датотеката за миграција:',
-    file_created: 'Датотеката за миграција беше успешно креирана „{{file}}“',
-  },
 });

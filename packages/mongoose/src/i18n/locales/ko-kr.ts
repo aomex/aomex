@@ -14,12 +14,4 @@ export default I18n.satisfies(zh).define({
   mongoose: {
     unsupported_validator: '아직 지원되지 않습니다 {{validator}}',
   },
-  migration: {
-    create: '마이그레이션 파일 생성',
-    up: '마이그레이션 실행',
-    down: '롤백 마이그레이션',
-    file_not_found: '마이그레이션 파일 "{{file}}"가 존재하지 않습니다.',
-    input_file_name: '마이그레이션 파일 이름을 입력하십시오:',
-    file_created: '마이그레이션 파일 "{{file}}"이(가) 성공적으로 생성되었습니다.',
-  },
 });
