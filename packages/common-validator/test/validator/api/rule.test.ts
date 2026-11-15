@@ -8,6 +8,7 @@ import {
   BooleanValidator,
   BufferValidator,
   DateValidator,
+  DecimalValidator,
   EmailValidator,
   EnumValidator,
   HashValidator,
@@ -87,6 +88,10 @@ test('buffer', () => {
 
 test('date', () => {
   expect(rule.date()).toBeInstanceOf(DateValidator);
+});
+
+test('decimal', () => {
+  expect(rule.decimal()).toBeInstanceOf(DecimalValidator);
 });
 
 test('email', () => {

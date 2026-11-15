@@ -27,6 +27,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: '{{label}} turi būti skaičius',
       must_be_integer: '{{label}} turi būti sveikas skaičius',
       must_be_bigint: '{{label}} turi būti BigInt',
+      must_be_decimal: '{{label}} turi būti Decimal',
       not_in_range: '{{label}} viršija leistiną verčių diapazoną',
     },
     string: {

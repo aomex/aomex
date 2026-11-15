@@ -27,6 +27,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: '{{label}} тоо байх ёстой',
       must_be_integer: '{{label}} бүхэл тоо байх ёстой',
       must_be_bigint: '{{label}} нь BigInt байх ёстой',
+      must_be_decimal: '{{label}} нь Decimal байх ёстой',
       not_in_range: '{{label}} зөвшөөрөгдсөн утгын хязгаараас хэтэрсэн байна',
     },
     string: {

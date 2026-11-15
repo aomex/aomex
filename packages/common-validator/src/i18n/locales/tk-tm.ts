@@ -27,6 +27,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: '{{label}} san bolmaly',
       must_be_integer: '{{label}} bitewi san bolmaly',
       must_be_bigint: '{{label}} BigInt bolmaly',
+      must_be_decimal: '{{label}} Decimal bolmaly',
       not_in_range: '{{label}} rugsat edilen bahadan ýokary',
     },
     string: {

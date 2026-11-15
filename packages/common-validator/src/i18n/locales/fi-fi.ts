@@ -27,6 +27,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: '{{label}} on oltava numero',
       must_be_integer: '{{label}} on oltava kokonaisluku',
       must_be_bigint: '{{label}}:n on oltava BigInt',
+      must_be_decimal: '{{label}}:n on oltava Decimal',
       not_in_range: '{{label}} ylittää sallitun arvoalueen',
     },
     string: {

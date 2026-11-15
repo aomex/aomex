@@ -28,6 +28,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: 'Το {{label}} πρέπει να είναι αριθμός',
       must_be_integer: 'Το {{label}} πρέπει να είναι ακέραιος',
       must_be_bigint: 'Το {{label}} πρέπει να είναι BigInt',
+      must_be_decimal: 'Το {{label}} πρέπει να είναι Decimal',
       not_in_range: 'Το {{label}} υπερβαίνει το επιτρεπόμενο εύρος τιμών',
     },
     string: {

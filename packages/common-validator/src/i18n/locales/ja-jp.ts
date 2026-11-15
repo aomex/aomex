@@ -27,6 +27,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: '{{label}} は数字でなければなりません',
       must_be_integer: '{{label}} は整数でなければなりません',
       must_be_bigint: '{{label}} は BigInt でなければなりません',
+      must_be_decimal: '{{label}} は Decimal でなければなりません',
       not_in_range: '{{label}} が許容値の範囲を超えています',
     },
     string: {

@@ -6,6 +6,7 @@ export * from './bigInt';
 export * from './boolean';
 export * from './buffer';
 export * from './date';
+export * from './decimal';
 export * from './email';
 export * from './enum';
 export * from './hash';

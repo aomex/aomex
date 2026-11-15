@@ -27,6 +27,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: '{{label}} අංකයක් විය යුතුය',
       must_be_integer: '{{label}} පූර්ණ සංඛ්‍යාවක් විය යුතුය',
       must_be_bigint: '{{label}} BigInt එකක් විය යුතුය',
+      must_be_decimal: '{{label}} Decimal එකක් විය යුතුය',
       not_in_range: '{{label}} අවසර ලත් අගය පරාසය ඉක්මවයි',
     },
     string: {

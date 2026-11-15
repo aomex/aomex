@@ -8,6 +8,7 @@ import {
   BooleanValidator,
   BufferValidator,
   DateValidator,
+  DecimalValidator,
   EmailValidator,
   EnumValidator,
   enumLikeToRanges,
@@ -133,6 +134,15 @@ export class Rule {
    */
   date(...formats: string[]): DateValidator<Date> {
     return new DateValidator(formats);
+  }
+
+  /**
+   * 高精度小数（decimal.js）
+   *
+   * 注意：非严格模式下，`number` 和 `string` 会尝试被转换成 `Decimal` 类型
+   */
+  decimal() {
+    return new DecimalValidator();
   }
 
   email() {

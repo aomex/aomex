@@ -31,6 +31,7 @@
   "license": "MIT",
   "dependencies": {
     "@aomex/internal-tools": "workspace:^",
+    "decimal.js": "^10.6.0",
     "email-validator": "^2.0.4",
     "luxon": "^3.5.0"
   },

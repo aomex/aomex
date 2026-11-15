@@ -26,6 +26,7 @@ export const zh = I18n.define({
       must_be_number: '{{label}}必须为数字',
       must_be_integer: '{{label}}必须为整数',
       must_be_bigint: '{{label}}必须为 BigInt',
+      must_be_decimal: '{{label}}必须为 Decimal',
       not_in_range: '{{label}}超出允许的数值范围',
     },
     string: {

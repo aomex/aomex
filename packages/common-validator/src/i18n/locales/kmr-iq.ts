@@ -27,6 +27,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: '{{label}} divê jimarek be',
       must_be_integer: '{{label}} divê jimarek bêkêmasî be',
       must_be_bigint: '{{label}} divê BigInt be',
+      must_be_decimal: '{{label}} divê Decimal be',
       not_in_range: '{{label}} ji rêza nirxa destûr derbas dibe',
     },
     string: {

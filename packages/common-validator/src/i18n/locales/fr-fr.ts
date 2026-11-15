@@ -28,6 +28,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: '{{label}} doit être un nombre',
       must_be_integer: '{{label}} doit être un entier',
       must_be_bigint: '{{label}} doit être un BigInt',
+      must_be_decimal: '{{label}} doit être un Decimal',
       not_in_range: '{{label}} dépasse la plage de valeurs autorisée',
     },
     string: {

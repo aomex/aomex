@@ -27,6 +27,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: 'ЗЗ0ЗЗ мора бити број',
       must_be_integer: 'ЗЗ0ЗЗ мора бити цео број',
       must_be_bigint: 'ЗЗ0ЗЗ мора бити БигИнт',
+      must_be_decimal: '{{label}} must be a Decimal',
       not_in_range: 'ЗЗ0ЗЗ прелази дозвољени опсег вредности',
     },
     string: {

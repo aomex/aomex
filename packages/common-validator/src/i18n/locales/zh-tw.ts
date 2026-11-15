@@ -28,6 +28,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: '{{label}}必須為數字',
       must_be_integer: '{{label}}必須為整數',
       must_be_bigint: '{{label}}必須為 BigInt',
+      must_be_decimal: '{{label}}必須為 Decimal',
       not_in_range: '{{label}}超出允許的數值範圍',
     },
     string: {

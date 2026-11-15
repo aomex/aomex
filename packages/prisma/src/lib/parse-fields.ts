@@ -25,6 +25,8 @@ export const parseFields = (fields: readonly DMMF.Field[], isInput: boolean) => 
           validator = 'rule.' + field.type.toLowerCase() + '()';
           break;
         case 'Decimal':
+          validator = 'rule.decimal()';
+          break;
         case 'Float':
           validator = 'rule.number()';
           break;

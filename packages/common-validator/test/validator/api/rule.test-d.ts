@@ -7,6 +7,7 @@ import {
   BooleanValidator,
   BufferValidator,
   DateValidator,
+  DecimalValidator,
   EmailValidator,
   EnumValidator,
   HashValidator,
@@ -25,6 +26,7 @@ import {
   schema,
 } from '../../../src';
 import { expectType, type TypeEqual } from 'ts-expect';
+import type Decimal from 'decimal.js';
 
 // any：宽联合 Infer
 {
@@ -328,6 +330,13 @@ import { expectType, type TypeEqual } from 'ts-expect';
 {
   const v = rule.bigint();
   expectType<TypeEqual<BigIntValidator<bigint>, typeof v>>(true);
+}
+
+// decimal
+{
+  const v = rule.decimal();
+  expectType<TypeEqual<DecimalValidator<Decimal>, typeof v>>(true);
+  expectType<TypeEqual<Decimal, Validator.Infer<typeof v>>>(true);
 }
 
 // boolean

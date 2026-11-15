@@ -27,6 +27,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: 'Caithfidh {{label}} a bheith ina uimhir',
       must_be_integer: 'Ní mór {{label}} a bheith ina slánuimhir',
       must_be_bigint: 'Caithfidh {{label}} a bheith ina BigInt',
+      must_be_decimal: 'Caithfidh {{label}} a bheith ina Decimal',
       not_in_range: 'Sáraíonn {{label}} an raon luach ceadaithe',
     },
     string: {

@@ -27,6 +27,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: '{{label}} nömrə olmalıdır',
       must_be_integer: '{{label}} tam ədəd olmalıdır',
       must_be_bigint: '{{label}} BigInt olmalıdır',
+      must_be_decimal: '{{label}} Decimal olmalıdır',
       not_in_range: '{{label}} icazə verilən dəyər diapazonunu keçir',
     },
     string: {

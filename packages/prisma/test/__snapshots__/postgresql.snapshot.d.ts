@@ -116,19 +116,19 @@ declare const prismaInput: {
      *
      * 数据库默认值：
      */
-    deci: NumberValidator<number>;
+    deci: DecimalValidator<Decimal>;
     /**
      * Prisma类型：`Decimal?`
      *
      * 数据库默认值：
      */
-    deci_nu: NumberValidator<number | Validator.TOptional | null>;
+    deci_nu: DecimalValidator<Validator.TOptional | Decimal | null>;
     /**
      * Prisma类型：`Decimal`
      *
      * 数据库默认值：`100`
      */
-    deci_de: NumberValidator<number | Validator.TOptional>;
+    deci_de: DecimalValidator<Validator.TOptional | Decimal>;
     /**
      * Prisma类型：`Float`
      *
@@ -473,19 +473,19 @@ declare const prismaOutput: {
      *
      * 数据库默认值：
      */
-    deci: NumberValidator<number>;
+    deci: DecimalValidator<Decimal>;
     /**
      * Prisma类型：`Decimal?`
      *
      * 数据库默认值：
      */
-    deci_nu: NumberValidator<number | null>;
+    deci_nu: DecimalValidator<Decimal | null>;
     /**
      * Prisma类型：`Decimal`
      *
      * 数据库默认值：`100`
      */
-    deci_de: NumberValidator<number>;
+    deci_de: DecimalValidator<Decimal>;
     /**
      * Prisma类型：`Float`
      *
@@ -747,6 +747,8 @@ import type {
   BooleanValidator,
   BufferValidator,
   DateValidator,
+  Decimal,
+  DecimalValidator,
   EnumValidator,
   IntValidator,
   NumberValidator,

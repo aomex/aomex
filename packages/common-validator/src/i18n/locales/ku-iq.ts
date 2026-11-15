@@ -27,6 +27,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: '{{label}} دەبێت ژمارەیەک بێت',
       must_be_integer: '{{label}} دەبێت ژمارەیەکی تەواو بێت',
       must_be_bigint: '{{label}} دەبێت BigInt بێت',
+      must_be_decimal: '{{label}} دەبێت Decimal بێت',
       not_in_range: '{{label}} مەودای بەهای ڕێگەپێدراو تێدەپەڕێنێت',
     },
     string: {

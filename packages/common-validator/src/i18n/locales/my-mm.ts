@@ -28,6 +28,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: '{{label}} သည် နံပါတ်တစ်ခု ဖြစ်ရပါမည်။',
       must_be_integer: '{{label}} သည် ကိန်းပြည့်ဖြစ်ရပါမည်။',
       must_be_bigint: '{{label}} သည် BigInt ဖြစ်ရမည်။',
+      must_be_decimal: '{{label}} သည် Decimal ဖြစ်ရမည်။',
       not_in_range: '{{label}} သည် ခွင့်ပြုထားသော တန်ဖိုးဘောင်ကို ကျော်လွန်နေပါသည်။',
     },
     string: {

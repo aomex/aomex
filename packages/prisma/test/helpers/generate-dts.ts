@@ -21,6 +21,9 @@ export const generateDTS = (source: string) => {
     for (const matched of matchImports) {
       imports.add(toValidatorName(matched[1]!));
     }
+    if (imports.has('DecimalValidator')) {
+      imports.add('Decimal');
+    }
     source += `\nimport type { ${Array.from(imports).sort().join(',')} } from "@aomex/common";`;
   }
 
@@ -65,6 +68,9 @@ export const generateDTS = (source: string) => {
       // schema() 的声明会落到定义包；生成物对外只依赖 @aomex/common
       .replaceAll(`'@aomex/common-validator'`, `'@aomex/common'`)
       .replaceAll(`"@aomex/common-validator"`, `"@aomex/common"`)
+      // Decimal 已从 @aomex/common 导入，避免内联 import('decimal.js').Decimal
+      .replaceAll(`import('decimal.js').Decimal`, 'Decimal')
+      .replaceAll(`import("decimal.js").Decimal`, 'Decimal')
       .replaceAll(/(export\sdeclare\s)/gm, '\n$1'),
   );
 };

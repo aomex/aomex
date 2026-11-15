@@ -78,19 +78,19 @@ const userInputColumns = {
    *
    * 数据库默认值：
    */
-  deci: rule.number(),
+  deci: rule.decimal(),
   /**
    * Prisma类型：`Decimal?`
    *
    * 数据库默认值：
    */
-  deci_nu: rule.number().optional().nullable(),
+  deci_nu: rule.decimal().optional().nullable(),
   /**
    * Prisma类型：`Decimal`
    *
    * 数据库默认值：`100`
    */
-  deci_de: rule.number().optional(),
+  deci_de: rule.decimal().optional(),
   /**
    * Prisma类型：`Float`
    *
@@ -332,19 +332,19 @@ const userOutputColumns = {
    *
    * 数据库默认值：
    */
-  deci: rule.number(),
+  deci: rule.decimal(),
   /**
    * Prisma类型：`Decimal?`
    *
    * 数据库默认值：
    */
-  deci_nu: rule.number().nullable(),
+  deci_nu: rule.decimal().nullable(),
   /**
    * Prisma类型：`Decimal`
    *
    * 数据库默认值：`100`
    */
-  deci_de: rule.number(),
+  deci_de: rule.decimal(),
   /**
    * Prisma类型：`Float`
    *

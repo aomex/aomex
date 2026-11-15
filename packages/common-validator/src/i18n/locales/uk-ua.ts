@@ -27,6 +27,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: '{{label}} має бути числом',
       must_be_integer: '{{label}} має бути цілим числом',
       must_be_bigint: '{{label}} має бути BigInt',
+      must_be_decimal: '{{label}} має бути Decimal',
       not_in_range: '{{label}} перевищує допустимий діапазон значень',
     },
     string: {

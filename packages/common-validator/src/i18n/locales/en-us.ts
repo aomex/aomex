@@ -27,6 +27,7 @@ export const en = I18n.satisfies(zh).define({
       must_be_number: '{{label}} must be a number',
       must_be_integer: '{{label}} must be an integer',
       must_be_bigint: '{{label}} must be a BigInt',
+      must_be_decimal: '{{label}} must be a Decimal',
       not_in_range: '{{label}} is outside the allowed numeric range',
     },
     string: {

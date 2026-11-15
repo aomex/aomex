@@ -27,6 +27,7 @@ export default I18n.satisfies(zh).define({
       must_be_number: '{{label}} verður að vera tala',
       must_be_integer: '{{label}} verður að vera heil tala',
       must_be_bigint: '{{label}} verður að vera BigInt',
+      must_be_decimal: '{{label}} verður að vera Decimal',
       not_in_range: '{{label}} fer yfir leyfilegt gildissvið',
     },
     string: {
