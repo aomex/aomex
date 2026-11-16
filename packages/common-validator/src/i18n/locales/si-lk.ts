@@ -67,8 +67,7 @@ export default I18n.satisfies(zh).define({
     },
     url: {
       must_be_url: '{{label}} URL ආකෘතියෙන් තිබිය යුතුය',
-      unsupported_scheme:
-        '{{label}} හි සහාය නොදක්වන URL ප්‍රොටෝකෝලයක් අඩංගු වේ: {{scheme}}',
+      unsupported_scheme: '{{label}} හි සහාය නොදක්වන URL ප්‍රොටෝකෝලයක් අඩංගු වේ: {{scheme}}',
     },
   },
 });

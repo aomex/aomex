@@ -24,7 +24,10 @@ export class RateLimitRedisStore extends RateLimitStore {
       .zremrangebyscore(key, 0, startTime)
       .zcard(key)
       .zadd(key, now, now)
+      // ioredis@6.0 生成类型漏了 stop: number（#2162 / #2163，修在 6.1.0-beta.1）
+      // @ts-expect-error stop 运行时仍接受 number
       .zrange(key, 0, 0)
+      // @ts-expect-error stop 运行时仍接受 number
       .zrange(key, -maxRequest, -maxRequest)
       .zremrangebyrank(key, 0, -(maxRequest + 1))
       .pexpire(key, duration)

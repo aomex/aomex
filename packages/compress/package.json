@@ -41,6 +41,6 @@
   "devDependencies": {
     "@aomex/common": "workspace:^",
     "@aomex/web": "workspace:^",
-    "@types/compressible": "^2.0.0"
+    "@types/compressible": "^2.0.3"
   }
 }

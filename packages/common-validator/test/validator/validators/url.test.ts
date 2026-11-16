@@ -50,7 +50,7 @@ test('扩展协议', async () => {
     .toMatchInlineSnapshot(`
     {
       "errors": [
-        "LABEL包含不支持的URL协议ftp",
+        "LABEL包含不支持的 URL 协议：ftp",
       ],
     }
   `);

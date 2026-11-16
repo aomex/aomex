@@ -372,7 +372,9 @@ describe('vary', () => {
       mount: [
         cors({ allowMethods: undefined }),
         middleware.web((ctx) => {
+          // 5xx 默认不暴露 message；本用例要断言正文，需显式 expose
           ctx.throw(500, 'Oops', {
+            expose: true,
             headers: {
               Vary: 'Accept-Encoding',
             },
@@ -393,6 +395,7 @@ describe('vary', () => {
         cors({ allowMethods: undefined }),
         middleware.web((ctx) => {
           ctx.throw(500, 'Oops', {
+            expose: true,
             headers: {
               Vary: '*',
             },
@@ -413,6 +416,7 @@ describe('vary', () => {
         cors({ allowMethods: undefined }),
         middleware.web((ctx) => {
           ctx.throw(500, 'Oops', {
+            expose: true,
             headers: {
               Vary: 'Origin, Accept-Encoding',
             },

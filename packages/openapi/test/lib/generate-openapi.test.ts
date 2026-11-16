@@ -29,6 +29,7 @@ test('指定基础文档', async () => {
 test('手动修复文档', async () => {
   const result = await generateOpenapi({
     routers: [],
+    docs: { info: { title: 'aomex', version: '1.2.3' } },
     fix(data) {
       data.info.description = ' desc foo bar';
       data.tags ||= [];
@@ -39,8 +40,8 @@ test('手动修复文档', async () => {
     {
       "info": {
         "description": " desc foo bar",
-        "title": "@aomex/openapi",
-        "version": "3.30.7",
+        "title": "aomex",
+        "version": "1.2.3",
       },
       "openapi": "3.0.3",
       "paths": {},

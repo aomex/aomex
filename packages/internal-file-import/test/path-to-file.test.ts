@@ -72,3 +72,61 @@ test('支持相对路径', async () => {
     ]
   `);
 });
+
+test('默认忽略 *.d.ts / *.d.mts', async () => {
+  await expect(findFiles(join(__dir, 'with-decls'))).resolves.toMatchInlineSnapshot(`
+    [
+      "with-decls/a.ts",
+    ]
+  `);
+});
+
+test('默认忽略 node_modules', async () => {
+  await expect(findFiles(join(__dir, 'with-node-modules'))).resolves
+    .toMatchInlineSnapshot(`
+    [
+      "with-node-modules/app.ts",
+    ]
+  `);
+});
+
+test('自定义 ignore', async () => {
+  await expect(
+    findFiles({
+      pattern: [join(__dir, 'normal', '**')],
+      ignore: ['**/*.txt', '**/*.cjs'],
+    }),
+  ).resolves.toMatchInlineSnapshot(`
+    [
+      "normal/a.js",
+      "normal/a.mjs",
+      "normal/a.mts",
+      "normal/a.ts",
+    ]
+  `);
+});
+
+test('花括号模式走 hasMagic(magicalBraces) 分支', async () => {
+  await expect(
+    findFiles({
+      pattern: [join(__dir, 'normal', '*.{js,ts}')],
+    }),
+  ).resolves.toMatchInlineSnapshot(`
+    [
+      "normal/a.js",
+      "normal/a.ts",
+    ]
+  `);
+});
+
+test('返回绝对路径且去重排序', async () => {
+  const { pathToFiles } = await import('../src');
+  const files = await pathToFiles([
+    join(__dir, 'normal', 'a.ts'),
+    join(__dir, 'normal', 'a.ts'),
+    join(__dir, 'normal', 'a.js'),
+  ]);
+  expect(files.every((file) => path.isAbsolute(file))).toBe(true);
+  expect(files).toEqual([...files].sort());
+  expect(files).toHaveLength(2);
+});

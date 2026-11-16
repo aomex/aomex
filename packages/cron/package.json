@@ -38,9 +38,9 @@
     "@aomex/cache": "workspace:^",
     "@aomex/internal-file-import": "workspace:^",
     "@aomex/internal-tools": "workspace:^",
-    "cron-parser": "^5.2.0",
-    "format-duration": "^3.0.2",
-    "pidusage": "^4.0.0"
+    "cron-parser": "^5.10.6",
+    "format-duration": "^4.0.0",
+    "pidusage": "^4.1.0"
   },
   "devDependencies": {
     "@aomex/common": "workspace:^",

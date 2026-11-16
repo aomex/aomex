@@ -24,3 +24,4 @@ expectType<string>(request.querystring);
 expectType<string>(request.search);
 expectType<boolean>(request.secure);
 expectType<string | null>(request.matchContentType(''));
+expectType<string | null>(request.matchContentType('json', 'urlencoded'));

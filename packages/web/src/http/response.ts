@@ -15,13 +15,16 @@ import destroy from 'destroy';
 import { HttpError } from '../utils';
 import type { WebContext } from './context';
 import type { WebRequest } from './request';
-import contentDisposition from 'content-disposition';
-import { extname } from 'node:path';
+import { create as createContentDisposition } from 'content-disposition';
+import { basename, extname } from 'node:path';
 import { createReadStream } from 'node:fs';
 import vary from 'vary';
 import typeIs from 'type-is';
 import type { OutgoingHttpHeaders } from 'node:http';
-import cookie, { type SerializeOptions as CookieSerializeOptions } from 'cookie';
+import {
+  stringifySetCookie,
+  type SerializeOptions as CookieSerializeOptions,
+} from 'cookie';
 import { MIMEType } from 'node:util';
 import { i18n } from '../i18n';
 import { applyResponseEnvelope } from './envelope';
@@ -138,7 +141,11 @@ export class WebResponse extends ServerResponse {
     type: 'attachment' | 'inline' = 'attachment',
   ): Promise<void> {
     this.contentType = extname(filePath);
-    this.setHeader('content-disposition', contentDisposition(filePath, { type }));
+    // content-disposition@2+ 不再 basename，绝对路径会原样进 filename 造成路径泄露
+    this.setHeader(
+      'content-disposition',
+      createContentDisposition(basename(filePath), { type }),
+    );
     this.body = createReadStream(filePath);
     return finished(this);
   }
@@ -287,15 +294,21 @@ export class WebResponse extends ServerResponse {
   }
 
   setCookie(name: string, value: string, options?: CookieSerializeOptions) {
+    const { encode, ...attrs } = options ?? {};
     const cookies = this.getHeader('Set-Cookie') || [];
     cookies.push(
-      cookie.serialize(name, value, {
-        path: '/',
-        sameSite: true,
-        httpOnly: true,
-        secure: this.req.secure,
-        ...options,
-      }),
+      stringifySetCookie(
+        {
+          name,
+          value,
+          path: '/',
+          sameSite: true,
+          httpOnly: true,
+          secure: this.req.secure,
+          ...attrs,
+        },
+        encode ? { encode } : undefined,
+      ),
     );
     this.setHeader('Set-Cookie', cookies);
   }

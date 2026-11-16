@@ -57,7 +57,6 @@ test('索引', async () => {
         "v": 2,
       },
       {
-        "background": true,
         "key": {
           "bar": 1,
           "foo": 1,
@@ -66,7 +65,6 @@ test('索引', async () => {
         "v": 2,
       },
       {
-        "background": true,
         "key": {
           "foo": -1,
         },
@@ -428,8 +426,14 @@ test('数组', async () => {
     `);
   }
 
-  await expect(() => model.create({ arr1: 'abc' })).rejects.toThrow(Error);
-  await expect(() => model.create({ arr1: ['abc'] })).rejects.toThrow(Error);
+  await expect(() =>
+    // @ts-expect-error 非法：元素应为对象
+    model.create({ arr1: 'abc' }),
+  ).rejects.toThrow(Error);
+  await expect(() =>
+    // @ts-expect-error 非法：元素应为对象
+    model.create({ arr1: ['abc'] }),
+  ).rejects.toThrow(Error);
 });
 
 test('空数组可填充任意数据', async () => {
@@ -480,7 +484,10 @@ test('对象', async () => {
     `);
   }
 
-  await expect(() => model.create({ obj: 'abc' })).rejects.toThrow(Error);
+  await expect(() =>
+    // @ts-expect-error 非法：应为对象
+    model.create({ obj: 'abc' }),
+  ).rejects.toThrow(Error);
   await expect(() => model.create({ obj: { hello: 'foo' } })).rejects.toThrow(Error);
 });
 
@@ -548,7 +555,10 @@ test('任意类型', async () => {
   }
 
   {
-    const result = await model.create({ any: new mongo.Decimal128('1234') });
+    // mongoose@9：create 入参收紧后 Mixed/any 不再直接收 Decimal128/ObjectId，运行时仍可写入
+    const result = await model.create({
+      any: new mongo.Decimal128('1234') as any,
+    });
     const json = result.toJSON();
     Reflect.deleteProperty(json, '_id');
     expect(json.any).toBeInstanceOf(mongo.Decimal128);
@@ -563,7 +573,7 @@ test('任意类型', async () => {
 
   {
     const result = await model.create({
-      any: new mongo.ObjectId('67e4c72dd163c5dbf922b752'),
+      any: new mongo.ObjectId('67e4c72dd163c5dbf922b752') as any,
     });
     const json = result.toJSON();
     Reflect.deleteProperty(json, '_id');

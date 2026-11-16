@@ -8,7 +8,7 @@ import typeIs from 'type-is';
 import fresh from 'fresh';
 import accepts, { type Accepts } from 'accepts';
 import type { WebContext } from './context';
-import cookie from 'cookie';
+import { parseCookie } from 'cookie';
 import { MIMEType } from 'node:util';
 
 export class WebRequest extends IncomingMessage {
@@ -51,7 +51,7 @@ export class WebRequest extends IncomingMessage {
    * 返回从`headers['cookie']`解析后的cookie列表
    */
   get cookies(): { readonly [key: string]: string | undefined } {
-    return (this._cookies ||= cookie.parse(this.headers['cookie'] || ''));
+    return (this._cookies ||= parseCookie(this.headers['cookie'] || ''));
   }
 
   /**

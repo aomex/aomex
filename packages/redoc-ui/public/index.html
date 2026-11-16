@@ -16,14 +16,14 @@
       }
     </style>
     #headTags#
-    <script src="#prefix#/redoc.standalone.js"></script>
   </head>
   <body>
     <div id="redoc-ui"></div>
-    <script>
-      Redoc.init(
+    <script type="module">
+      import { init } from '#prefix#/redoc.standalone.js';
+      init(
         '#prefix#/openapi.json',
-        { expandResponses: '200' },
+        { disableTelemetry: true },
         document.getElementById('redoc-ui'),
       );
     </script>

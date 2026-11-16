@@ -12,7 +12,10 @@ test.each(['mysql', 'postgresql', 'mongodb', 'sqlite', 'table-name'])(
   'transform %s',
   async (provider) => {
     const schemaPath = path.join(fixtures, `${provider}.prisma`);
-    const schema = await getSchemaWithPath(schemaPath);
+    // @prisma/internals ≥7.10：入参改为 { schemaPath: SchemaPathInput }
+    const schema = await getSchemaWithPath({
+      schemaPath: { cliProvidedPath: schemaPath },
+    });
     const dmmf = await getDMMF({ datamodel: schema.schemas });
     const tsContent = await transform(dmmf);
 

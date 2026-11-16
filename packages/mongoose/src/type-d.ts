@@ -1,8 +1,11 @@
 import type { Validator } from '@aomex/common';
 import type { Model, mongo, SchemaOptions } from 'mongoose';
 
-export type ModelInput<M extends Model<any, any, any, any, any, any>> =
-  M extends Model<any, any, any, any, any, infer T extends Record<string, Validator>>
+/** mongoose@9：`Model` 含第 7 泛型 `TLeanResultType`（`.lean()` 结果） */
+type AnyModel = Model<any, any, any, any, any, any, any>;
+
+export type ModelInput<M extends AnyModel> =
+  M extends Model<any, any, any, any, any, infer T extends Record<string, Validator>, any>
     ? {
         -readonly [
           K in keyof T as true extends IsInputRequired<T[K]> ? K : never
@@ -33,20 +36,21 @@ type IsInputRequired<T> =
         ? false
         : true;
 
-export type ModelOutput<M extends Model<any, any, any, any, any, any>> = {
+export type ModelOutput<M extends AnyModel> = {
   _id: mongo.ObjectId;
-} & (M extends Model<infer R, any, any, any, any, any> ? R : never);
+} & (M extends Model<infer R, any, any, any, any, any, any> ? R : never);
 
+/**
+ * mongoose@9：`versionKey` 仅为 `string | false`（不再接受 `true`；默认开启等价于省略或 `'__v'`）
+ */
 export type VersionKeySetting<Ver extends SchemaOptions['versionKey']> =
   undefined extends Ver
     ? { __v: number }
-    : Ver extends true
-      ? { __v: number }
-      : Ver extends false
-        ? {}
-        : Ver extends infer R extends string
-          ? { [K in R]: number }
-          : {};
+    : Ver extends false
+      ? {}
+      : Ver extends infer R extends string
+        ? { [K in R]: number }
+        : {};
 
 export type TimestampSetting<Time extends SchemaOptions['timestamps']> =
   undefined extends Time

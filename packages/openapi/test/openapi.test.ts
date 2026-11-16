@@ -31,13 +31,20 @@ test('执行指令', async () => {
   tempFiles.push(file);
 
   const app = new TestConsoleApp({
-    mount: [openapi({ routers: [], saveToFile: file })],
+    mount: [
+      openapi({
+        routers: [],
+        saveToFile: file,
+        // 测试进程 cwd 常为 monorepo 根；显式传入，避免读到根 package.json
+        docs: { info: { title: 'aomex', version: '1.2.3' } },
+      }),
+    ],
   });
 
   const code = await app.run('openapi');
   expect(code).toBe(0);
   expect(readFileSync(file, 'utf8')).toMatchInlineSnapshot(
-    `"{"openapi":"3.0.3","tags":[],"info":{"title":"@aomex/openapi","version":"3.30.7"},"paths":{}}"`,
+    `"{"info":{"title":"aomex","version":"1.2.3"},"openapi":"3.0.3","tags":[],"paths":{}}"`,
   );
 });
 

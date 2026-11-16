@@ -35,7 +35,7 @@ vitest.mock('@sentry/node', () => ({
   withScope: sentryMocks.withScope,
 }));
 
-const { SentryTransport, toSentrySeverity } = await import('../src');
+const { SentryTransport, DEFAULT_SENTRY_DATA_COLLECTION } = await import('../src');
 
 const DSN = 'https://examplePublicKey@o0.ingest.sentry.io/0';
 
@@ -51,6 +51,8 @@ afterEach(() => {
 });
 
 test('toSentrySeverity 映射', () => {
+  const t = new SentryTransport({ dsn: DSN });
+  const toSentrySeverity = t['toSentrySeverity'].bind(t);
   expect(toSentrySeverity('trace')).toBe('debug');
   expect(toSentrySeverity('debug')).toBe('debug');
   expect(toSentrySeverity('info')).toBe('info');
@@ -124,9 +126,51 @@ test('flush 调用 Sentry.flush', async () => {
   expect(sentryMocks.flush).toHaveBeenCalledWith(1234);
 });
 
-test('构造时用 dsn 调用 Sentry.init', () => {
+test('构造时默认关闭 dataCollection', () => {
   new SentryTransport({ dsn: DSN });
+  expect(sentryMocks.init).toHaveBeenCalledWith({
+    dsn: DSN,
+    dataCollection: DEFAULT_SENTRY_DATA_COLLECTION,
+  });
+});
+
+test('dataCollection: false 与默认相同', () => {
+  new SentryTransport({ dsn: DSN, dataCollection: false });
+  expect(sentryMocks.init).toHaveBeenCalledWith({
+    dsn: DSN,
+    dataCollection: DEFAULT_SENTRY_DATA_COLLECTION,
+  });
+});
+
+test('dataCollection: true 不传收紧配置，走 SDK 默认', () => {
+  new SentryTransport({ dsn: DSN, dataCollection: true });
   expect(sentryMocks.init).toHaveBeenCalledWith({ dsn: DSN });
+});
+
+test('dataCollection 对象浅合并覆盖关闭默认', () => {
+  new SentryTransport({
+    dsn: DSN,
+    dataCollection: { cookies: true, userInfo: true },
+  });
+  expect(sentryMocks.init).toHaveBeenCalledWith({
+    dsn: DSN,
+    dataCollection: {
+      ...DEFAULT_SENTRY_DATA_COLLECTION,
+      cookies: true,
+      userInfo: true,
+    },
+  });
+});
+
+test('resolveDataCollection', () => {
+  const resolve = SentryTransport['resolveDataCollection'];
+  expect(resolve(undefined)).toEqual(DEFAULT_SENTRY_DATA_COLLECTION);
+  expect(resolve(false)).toEqual(DEFAULT_SENTRY_DATA_COLLECTION);
+  expect(resolve(true)).toBeUndefined();
+  expect(resolve({ cookies: true })).toEqual({
+    ...DEFAULT_SENTRY_DATA_COLLECTION,
+    cookies: true,
+  });
 });
 
 test('exception.type 为空时回退 Error', async () => {

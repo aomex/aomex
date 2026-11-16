@@ -7,8 +7,7 @@ export default I18n.satisfies(zh).define({
     required: '{{label}} လိုအပ်သည်။',
     array: {
       must_be_array: '{{label}} သည် array တစ်ခု ဖြစ်ရပါမည်။',
-      length_not_in_range:
-        '{{label}} အခင်းအကျင်း အရှည်သည် သတ်မှတ်ထားသည့် အပိုင်းအခြားအတွင်း မရှိပါ။',
+      length_not_in_range: '{{label}} အခင်းအကျင်း အရှည်သည် သတ်မှတ်ထားသည့် အပိုင်းအခြားအတွင်း မရှိပါ။',
       not_unique: '{{label}} အခင်းအကျင်း အစိတ်အပိုင်းများကို ထပ်၍မရနိုင်ပါ။',
     },
     boolean: {
@@ -48,16 +47,13 @@ export default I18n.satisfies(zh).define({
       not_in_range: '{{label}} သည် စာရင်းကောက်ခြင်းအပိုင်းတွင် မရှိပါ။',
       only_support_string_number_boolean:
         'စာရင်းကောက်တန်ဖိုးများသည် စာကြောင်းများ၊ နံပါတ်များနှင့် Boolean တန်ဖိုးများသာ ဖြစ်နိုင်ပါသည်။',
-      value_can_not_be_empty:
-        'စာရင်းကောက်တန်ဖိုးသည် အချည်းနှီးတန်ဖိုး "{{item}}" မဖြစ်ရပါ။',
+      value_can_not_be_empty: 'စာရင်းကောက်တန်ဖိုးသည် အချည်းနှီးတန်ဖိုး "{{item}}" မဖြစ်ရပါ။',
       ranges_can_not_be_empty: 'စာရင်းကောက်ခြင်းအပိုင်းအခြားသည် ဗလာမဖြစ်ရပါ။',
-      default_not_in_range:
-        'မူရင်းတန်ဖိုး "{{item}}" သည် စာရင်းကောက်သည့်အပိုင်းတွင် မရှိပါ။',
+      default_not_in_range: 'မူရင်းတန်ဖိုး "{{item}}" သည် စာရင်းကောက်သည့်အပိုင်းတွင် မရှိပါ။',
     },
     literal: {
       not_match: '{{label}} သည် သတ်မှတ်ထားသောတန်ဖိုးမဟုတ်ပါ။',
-      unsupported_value:
-        'လိုင်းများ၊ နံပါတ်များ၊ booleans နှင့် null များကိုသာ ပံ့ပိုးပေးသည်။',
+      unsupported_value: 'လိုင်းများ၊ နံပါတ်များ၊ booleans နှင့် null များကိုသာ ပံ့ပိုးပေးသည်။',
     },
     one_of: {
       not_match_rule: '{{label}} သည် စည်းကမ်းများကို မလိုက်နာပါ။',
@@ -71,8 +67,7 @@ export default I18n.satisfies(zh).define({
     },
     url: {
       must_be_url: '{{label}} သည် URL ဖော်မတ်ဖြစ်ရပါမည်။',
-      unsupported_scheme:
-        '{{label}} တွင် ပံ့ပိုးမထားသော URL ပရိုတိုကော ပါရှိသည်- {{scheme}}',
+      unsupported_scheme: '{{label}} တွင် ပံ့ပိုးမထားသော URL ပရိုတိုကော ပါရှိသည်- {{scheme}}',
     },
   },
 });

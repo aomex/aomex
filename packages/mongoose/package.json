@@ -31,7 +31,7 @@
   "license": "MIT",
   "peerDependencies": {
     "@aomex/common": "^3",
-    "mongoose": ">=8"
+    "mongoose": "^9"
   },
   "dependencies": {
     "@aomex/internal-file-import": "workspace:^",
@@ -42,6 +42,6 @@
     "@aomex/internal-tools": "workspace:^",
     "@types/lodash.snakecase": "^4.1.9",
     "mongodb-memory-server": "^11.3.0",
-    "mongoose": "^8.13.2"
+    "mongoose": "^9.12.1"
   }
 }

@@ -53,8 +53,7 @@ export default I18n.satisfies(zh).define({
     },
     literal: {
       not_match: '{{label}} നിർദ്ദിഷ്ട മൂല്യമല്ല',
-      unsupported_value:
-        'സ്ട്രിംഗുകൾ, അക്കങ്ങൾ, ബൂലിയൻസ്, നൾ എന്നിവ മാത്രം പിന്തുണയ്ക്കുന്നു',
+      unsupported_value: 'സ്ട്രിംഗുകൾ, അക്കങ്ങൾ, ബൂലിയൻസ്, നൾ എന്നിവ മാത്രം പിന്തുണയ്ക്കുന്നു',
     },
     one_of: {
       not_match_rule: '{{label}} നിയമങ്ങൾ പാലിക്കുന്നില്ല',

@@ -45,8 +45,7 @@ export default I18n.satisfies(zh).define({
     },
     enum: {
       not_in_range: '{{label}} ไม่อยู่ในช่วงแจงนับ',
-      only_support_string_number_boolean:
-        'ค่าการแจงนับต้องเป็นสตริง ตัวเลข และค่าบูลีนเท่านั้น',
+      only_support_string_number_boolean: 'ค่าการแจงนับต้องเป็นสตริง ตัวเลข และค่าบูลีนเท่านั้น',
       value_can_not_be_empty: 'ค่าแจงนับไม่สามารถเป็นค่าว่าง "{{item}}"',
       ranges_can_not_be_empty: 'ช่วงการแจงนับต้องไม่เว้นว่าง',
       default_not_in_range: 'ค่าเริ่มต้น "{{item}}" ไม่อยู่ในช่วงแจงนับ',

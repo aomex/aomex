@@ -107,12 +107,29 @@ import type { ModelInput } from '../src/type-d';
   {
     const model = defineMongooseModel('foo', {
       schemas: { foo: rule.string() },
+      versionKey: '__v',
+    });
+    type ModelType = ModelOutput<typeof model>;
+    expectType<TypeEqual<ModelType['__v'], number>>(true);
+  }
+
+  {
+    const model = defineMongooseModel('foo', {
+      schemas: { foo: rule.string() },
       versionKey: 'VVV',
     });
     type ModelType = ModelOutput<typeof model>;
     expectType<TypeEqual<ModelType['VVV'], number>>(true);
     // @ts-expect-error
     expectType<TypeEqual<ModelType['__v'], number>>(true);
+  }
+
+  {
+    defineMongooseModel('foo', {
+      schemas: { foo: rule.string() },
+      // @ts-expect-error mongoose@9 不再接受 versionKey: true
+      versionKey: true,
+    });
   }
 }
 
@@ -291,7 +308,7 @@ import type { ModelInput } from '../src/type-d';
       withDefault: rule.string().default('abc'),
     },
     timestamps: true,
-    versionKey: true,
+    // mongoose@9：versionKey 不再接受 true；省略即默认 '__v'
   });
   type ModelType = ModelInput<typeof model>;
   expectType<
@@ -316,7 +333,6 @@ import type { ModelInput } from '../src/type-d';
       baz: rule.string().nullable(),
     },
     timestamps: true,
-    versionKey: true,
   });
   function test(data: ModelInput<typeof model>) {
     console.log(data);

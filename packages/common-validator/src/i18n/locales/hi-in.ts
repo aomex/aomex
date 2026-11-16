@@ -67,8 +67,7 @@ export default I18n.satisfies(zh).define({
     },
     url: {
       must_be_url: '{{label}} URL प्रारूप में होना चाहिए',
-      unsupported_scheme:
-        '{{label}} में एक असमर्थित यूआरएल प्रोटोकॉल शामिल है: {{scheme}}',
+      unsupported_scheme: '{{label}} में एक असमर्थित यूआरएल प्रोटोकॉल शामिल है: {{scheme}}',
     },
   },
 });

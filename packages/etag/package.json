@@ -40,6 +40,6 @@
   "devDependencies": {
     "@aomex/common": "workspace:^",
     "@aomex/web": "workspace:^",
-    "@types/etag": "^1.8.1"
+    "@types/etag": "^1.8.4"
   }
 }

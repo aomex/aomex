@@ -47,15 +47,13 @@ export default I18n.satisfies(zh).define({
       not_in_range: '{{label}} கணக்கீட்டு வரம்பில் இல்லை',
       only_support_string_number_boolean:
         'எண்ணியல் மதிப்புகள் சரங்கள், எண்கள் மற்றும் பூலியன் மதிப்புகளாக மட்டுமே இருக்க முடியும்',
-      value_can_not_be_empty:
-        'கணக்கீட்டு மதிப்பு "{{item}}" என்ற பூஜ்ய மதிப்பாக இருக்கக்கூடாது',
+      value_can_not_be_empty: 'கணக்கீட்டு மதிப்பு "{{item}}" என்ற பூஜ்ய மதிப்பாக இருக்கக்கூடாது',
       ranges_can_not_be_empty: 'கணக்கீட்டு வரம்பு காலியாக இருக்கக்கூடாது',
       default_not_in_range: 'இயல்புநிலை மதிப்பு "{{item}}" கணக்கீட்டு வரம்பில் இல்லை',
     },
     literal: {
       not_match: '{{label}} என்பது குறிப்பிடப்பட்ட மதிப்பு அல்ல',
-      unsupported_value:
-        'சரங்கள், எண்கள், பூலியன்கள் மற்றும் பூஜ்யத்தை மட்டுமே ஆதரிக்கிறது',
+      unsupported_value: 'சரங்கள், எண்கள், பூலியன்கள் மற்றும் பூஜ்யத்தை மட்டுமே ஆதரிக்கிறது',
     },
     one_of: {
       not_match_rule: '{{label}} விதிகளுக்கு இணங்கவில்லை',
@@ -69,8 +67,7 @@ export default I18n.satisfies(zh).define({
     },
     url: {
       must_be_url: '{{label}} URL வடிவத்தில் இருக்க வேண்டும்',
-      unsupported_scheme:
-        '{{label}} ஆதரிக்கப்படாத URL நெறிமுறையைக் கொண்டுள்ளது: {{scheme}}',
+      unsupported_scheme: '{{label}} ஆதரிக்கப்படாத URL நெறிமுறையைக் கொண்டுள்ளது: {{scheme}}',
     },
   },
 });

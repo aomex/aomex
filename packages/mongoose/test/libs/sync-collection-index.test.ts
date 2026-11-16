@@ -43,7 +43,6 @@ describe('单机', () => {
           "v": 2,
         },
         {
-          "background": true,
           "key": {
             "str": 1,
           },
@@ -78,7 +77,6 @@ describe('单机', () => {
           "v": 2,
         },
         {
-          "background": true,
           "key": {
             "str": 1,
           },
@@ -129,7 +127,6 @@ describe('副本集', () => {
           "v": 2,
         },
         {
-          "background": true,
           "key": {
             "str": 1,
           },
@@ -164,7 +161,6 @@ describe('副本集', () => {
           "v": 2,
         },
         {
-          "background": true,
           "key": {
             "str": 1,
           },

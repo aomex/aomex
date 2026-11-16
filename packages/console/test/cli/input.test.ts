@@ -46,3 +46,23 @@ test('别名', () => {
     z: '9',
   });
 });
+
+test('parse-numbers 关闭时数字形参数保持字符串', () => {
+  const input = new ConsoleInput(app, ['cmd', '--port', '3000', '-n', '01']);
+  expect(input.parseArgv()).toStrictEqual({
+    port: '3000',
+    n: '01',
+  });
+  expect(input.options).toStrictEqual({
+    port: '3000',
+    n: '01',
+  });
+});
+
+test('布尔开关与 --no- 取反', () => {
+  const input = new ConsoleInput(app, ['cmd', '--verbose', '--no-color']);
+  expect(input.parseArgv()).toStrictEqual({
+    verbose: true,
+    color: false,
+  });
+});

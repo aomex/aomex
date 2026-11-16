@@ -35,8 +35,8 @@ test('未传入指令时输出全局消息', async () => {
     "aomex [命令] [选项]
 
     选项：
-      -v, --version  显示 aomex 的版本号                                              [布尔]
-      -h, --help     显示帮助信息                                                     [布尔]"
+      -v, --version  显示 aomex 的版本号                                      [布尔]
+      -h, --help     显示帮助信息                                             [布尔]"
   `);
 });
 
@@ -62,8 +62,8 @@ test('自定义指令', async () => {
       aomex bar  im bar
 
     选项：
-      -v, --version  显示 aomex 的版本号                                              [布尔]
-      -h, --help     显示帮助信息                                                     [布尔]"
+      -v, --version  显示 aomex 的版本号                                      [布尔]
+      -h, --help     显示帮助信息                                             [布尔]"
   `);
 });
 
@@ -121,8 +121,8 @@ test('设置show=false禁止显示用法', async () => {
       aomex foo  foooooo
 
     选项：
-      -v, --version  显示 aomex 的版本号                                              [布尔]
-      -h, --help     显示帮助信息                                                     [布尔]"
+      -v, --version  显示 aomex 的版本号                                      [布尔]
+      -h, --help     显示帮助信息                                             [布尔]"
   `);
 
   app.removeAllListeners('error');
@@ -174,9 +174,9 @@ test('指令参数', async () => {
     im foo
 
     选项：
-          --keya        传入一个键，有用                                               [字符串]
-      -b, --keyb, --bb                                                          [数字]
-          --keyc                                [deprecated] [布尔] [默认值: "xxxyyyzzz"]"
+          --keya        传入一个键，有用                                    [字符串]
+      -b, --keyb, --bb                                                        [数字]
+          --keyc                           [deprecated] [布尔] [默认值: "xxxyyyzzz"]"
   `);
 });
 

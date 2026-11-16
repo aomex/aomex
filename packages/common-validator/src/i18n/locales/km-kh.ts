@@ -45,8 +45,7 @@ export default I18n.satisfies(zh).define({
     },
     enum: {
       not_in_range: '{{label}} មិនស្ថិតនៅក្នុងជួររាប់បញ្ចូលទេ។',
-      only_support_string_number_boolean:
-        'តម្លៃរាប់បញ្ចូលអាចជាខ្សែអក្សរ លេខ និងតម្លៃប៊ូលីន',
+      only_support_string_number_boolean: 'តម្លៃរាប់បញ្ចូលអាចជាខ្សែអក្សរ លេខ និងតម្លៃប៊ូលីន',
       value_can_not_be_empty: 'តម្លៃនៃការរាប់បញ្ចូលមិនអាចជាតម្លៃទទេ "{{item}}"',
       ranges_can_not_be_empty: 'ជួរ​រាប់​មិន​អាច​ទទេ',
       default_not_in_range: 'តម្លៃលំនាំដើម "{{item}}" មិនស្ថិតក្នុងជួររាប់បញ្ចូលទេ។',

@@ -51,12 +51,13 @@ test('并发达上限', { timeout: 10_000 }, async () => {
   await expect(task1.win()).resolves.toBe('lose');
 });
 
-test('任务结束后可补充排队中的任务', { timeout: 20_000 }, async () => {
+test('任务结束后可补充排队中的任务', { timeout: 30_000 }, async () => {
+  const waitingTimeout = 3_000;
   const cron = createCron({
     commanders: '',
     command: '',
     concurrent: 2,
-    waitingTimeout: 3_000,
+    waitingTimeout,
   });
 
   const task1 = new Task(cron, 10_000, 20_000);
@@ -66,10 +67,10 @@ test('任务结束后可补充排队中的任务', { timeout: 20_000 }, async ()
   const won1 = expectWon(await task1.win());
   expectWon(await task2.win());
   const pong = task1.ping(won1.slot, won1.token);
-  await sleep(3_000);
-  const result = task3.win();
+  // ping() 在 waitingTimeout+5s 内仍占槽；等锁定期过后再释放，空位才能被新任务抢走
+  await sleep(waitingTimeout + 5_000);
   await pong();
-  expectWon(await result);
+  expectWon(await task3.win());
   await expect(task4.win()).resolves.toBe('lose');
   await expect(task1.win()).resolves.toBe('lose');
 });

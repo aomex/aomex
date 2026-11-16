@@ -45,11 +45,12 @@ export interface CronTimeObject {
 export interface CronTimeString {
   /**
    * 如果想验证时间表达式，可访问 https://crontab.guru
-   * 
-   类似linux下cron的时间格式，并支持秒级时间
+   *
+   * 类似 linux 下 cron 的时间格式，并支持秒级时间。必须是 **5 段**（分起）或 **6 段**（含秒）；
+   * 更短的写法会被拒绝（cron-parser 会静默前补导致语义错乱）。
     ```
       ┌────────────── second (optional)
-      │ ┌──────────── minute 
+      │ ┌──────────── minute
       │ │ ┌────────── hour
       │ │ │ ┌──────── day of month
       │ │ │ │ ┌────── month

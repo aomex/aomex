@@ -39,6 +39,14 @@ export class Cron {
             options.dayOfWeek ?? '*',
           ].join(' ');
 
+    // cron-parser ≥5.10 会对 <5 段表达式从秒位前补，语义会完全跑偏（如 `*/2` → `0 * * * * */2`）
+    if ('time' in options) {
+      const fieldCount = scheduleTime.trim().split(/\s+/).filter(Boolean).length;
+      if (fieldCount < 5 || fieldCount > 6) {
+        throw new Error(i18n.t('invalid_cron_time', { time: scheduleTime }));
+      }
+    }
+
     try {
       this.cronExpression = cronParser.CronExpressionParser.parse(scheduleTime);
       this.cronExpressionForNext = cronParser.CronExpressionParser.parse(scheduleTime);

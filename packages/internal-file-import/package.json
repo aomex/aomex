@@ -31,6 +31,6 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "dependencies": {
-    "glob": "^10.3.10"
+    "glob": "^14.0.6"
   }
 }

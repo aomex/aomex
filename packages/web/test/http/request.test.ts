@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { mockServer } from '../fixture/mock-server';
+import { ensureFiles } from '../fixture/ensure-files';
 import { dirname, join } from 'path';
 import { PersistentFile } from 'formidable';
 import accepts from 'accepts';
@@ -133,6 +134,32 @@ describe('query', async () => {
     `);
     res.end();
   });
+
+  // qs ≥6.14.1：默认 arrayLimit=20，同时约束 a[]= 与 a[n]=；超限不再保证是数组
+  test('[] 重复次数在 arrayLimit 内仍为数组', async () => {
+    const pairs = Array.from({ length: 20 }, (_, i) => `a[]=${i}`).join('&');
+    const { req, res } = await mockServer((agent) => agent.get(`/test/api?${pairs}`));
+    expect(Array.isArray(req.query['a'])).toBe(true);
+    expect(req.query['a']).toHaveLength(20);
+    res.end();
+  });
+
+  test('[] 超过 arrayLimit 时退化为对象形态', async () => {
+    const pairs = Array.from({ length: 21 }, (_, i) => `a[]=${i}`).join('&');
+    const { req, res } = await mockServer((agent) => agent.get(`/test/api?${pairs}`));
+    expect(Array.isArray(req.query['a'])).toBe(false);
+    expect(req.query['a']).toMatchObject({ '0': '0', '20': '20' });
+    res.end();
+  });
+
+  test('索引下标超过 arrayLimit 时为对象而非稀疏数组', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent.get('/test/api?a[100]=b&a[0]=c'),
+    );
+    expect(Array.isArray(req.query['a'])).toBe(false);
+    expect(req.query['a']).toEqual({ '0': 'c', '100': 'b' });
+    res.end();
+  });
 });
 
 test('search', async () => {
@@ -154,12 +181,14 @@ describe('matchContentType', () => {
     );
     expect(req1.matchContentType('*/*')).toBe('application/json');
     expect(req1.matchContentType('application/*')).toBe('application/json');
+    expect(req1.matchContentType('json')).toBe('json');
     expect(req1.matchContentType('multipart/*')).toBeNull();
 
     const { req: req2, res: res2 } = await mockServer((agent) =>
       agent.post('/test/api').send('abc'),
     );
     expect(req2.matchContentType('*/*')).toBe('application/x-www-form-urlencoded');
+    expect(req2.matchContentType('urlencoded')).toBe('urlencoded');
 
     res1.end();
     res2.end();
@@ -170,6 +199,19 @@ describe('matchContentType', () => {
     expect(req.matchContentType('multipart/*', 'text/*', 'application/*')).toBe(
       'application/json',
     );
+    res.end();
+  });
+
+  test('精确类型与后缀匹配', async () => {
+    const { req, res } = await mockServer((agent) =>
+      agent.post('/test/api').set('Content-Type', 'application/vnd.api+json').send('{}'),
+    );
+    expect(req.matchContentType('application/vnd.api+json')).toBe(
+      'application/vnd.api+json',
+    );
+    expect(req.matchContentType('application/*+json')).toBe('application/vnd.api+json');
+    expect(req.matchContentType('+json')).toBe('application/vnd.api+json');
+    expect(req.matchContentType('text/*')).toBeNull();
     res.end();
   });
 });
@@ -199,8 +241,11 @@ describe('body', () => {
   });
 
   test('获取FormData', async () => {
-    const { req, res } = await mockServer((agent) =>
-      agent.post('/test/api').field('test1', 'a').field('test2', 'b'),
+    const { req, res } = await mockServer(
+      (agent) => agent.post('/test/api').field('test1', 'a').field('test2', 'b'),
+      undefined,
+      // multipart 需经 internalEnsureBody 才解析（空白名单：只收字段）
+      [ensureFiles()],
     );
     expect(req.matchContentType('*/*')).toBe('multipart/form-data');
     expect(req.body).toStrictEqual({
@@ -212,12 +257,15 @@ describe('body', () => {
 
   test('接收文件', async () => {
     const dir = dirname(import.meta.dirname);
-    const { req, res } = await mockServer((agent) =>
-      agent
-        .post('/test/api')
-        .attach('file1', join(dir, 'fixture/upload-1.txt'))
-        .attach('file2', join(dir, 'fixture/upload-2.txt'))
-        .field('test1', 'a'),
+    const { req, res } = await mockServer(
+      (agent) =>
+        agent
+          .post('/test/api')
+          .attach('file1', join(dir, 'fixture/upload-1.txt'))
+          .attach('file2', join(dir, 'fixture/upload-2.txt'))
+          .field('test1', 'a'),
+      undefined,
+      [ensureFiles('file1', 'file2')],
     );
 
     const data = req.body as {
@@ -298,7 +346,8 @@ describe('ip', () => {
         .set('forwarded-for', '9.9.9.9')
         .set('cf-pseudo-ipv4', '8.8.8.8'),
     );
-    expect(req.ip).toBe('::ffff:127.0.0.1');
+    // superagent≥10.4 / 本机 Node 常以 IPv4 直连，remoteAddress 可能是 127.0.0.1 或 ::ffff:127.0.0.1
+    expect(req.ip).toBe(req.socket.remoteAddress);
     res.end();
   });
 
@@ -306,7 +355,7 @@ describe('ip', () => {
     const { req, res } = await mockServer((agent) =>
       agent.get('/test/api').set('x-real-ip', 'not-an-ip'),
     );
-    expect(req.ip).toBe('::ffff:127.0.0.1');
+    expect(req.ip).toBe(req.socket.remoteAddress);
     res.end();
   });
 
@@ -367,7 +416,7 @@ describe('ip', () => {
       (agent) => agent.get('/test/api').set('x-forwarded-for', 'unknown, not-an-ip'),
       { proxyIP: { mode: 'specify', header: 'x-forwarded-for', hops: 2 } },
     );
-    expect(req.ip).toBe('::ffff:127.0.0.1');
+    expect(req.ip).toBe(req.socket.remoteAddress);
     res.end();
   });
 
@@ -411,7 +460,7 @@ describe('ip', () => {
       (agent) => agent.get('/test/api').set('x-real-ip', 'not-an-ip'),
       { proxyIP: { mode: 'specify', hops: 1, header: 'x-real-ip' } },
     );
-    expect(req.ip).toBe('::ffff:127.0.0.1');
+    expect(req.ip).toBe(req.socket.remoteAddress);
     res.end();
   });
 
@@ -430,7 +479,7 @@ describe('ip', () => {
       (agent) => agent.get('/test/api').set('x-forwarded-for', '1.2.3.4'),
       { proxyIP: { mode: 'specify', header: 'x-forwarded-for', hops: 0 } },
     );
-    expect(req.ip).toBe('::ffff:127.0.0.1');
+    expect(req.ip).toBe(req.socket.remoteAddress);
     res.end();
   });
 
@@ -477,7 +526,7 @@ describe('ip', () => {
       (agent) => agent.get('/test/api').set('x-forwarded-for', ''),
       { proxyIP: { mode: 'specify', header: 'x-forwarded-for', hops: 1 } },
     );
-    expect(req.ip).toBe('::ffff:127.0.0.1');
+    expect(req.ip).toBe(req.socket.remoteAddress);
     res.end();
   });
 });
@@ -590,7 +639,7 @@ test('accept', async () => {
 test('cookies', async () => {
   {
     const { req, res } = await mockServer((agent) => agent.get('/test/api'));
-    expect(req.cookies).toStrictEqual(Object.create(null));
+    expect(Object.keys(req.cookies)).toEqual([]);
     res.end();
   }
 
@@ -605,6 +654,22 @@ test('cookies', async () => {
         "test1": "foo",
         "test2": "bar",
         "test3": "#",
+      }
+    `);
+    // getter 结果缓存，二次读取同一引用
+    expect(req.cookies).toBe(req.cookies);
+    res.end();
+  }
+
+  {
+    // cookie@2：同名键保留先出现的值
+    const { req, res } = await mockServer((agent) =>
+      agent.get('/test/api').set('Cookie', 'a=1; a=2; b='),
+    );
+    expect(req.cookies).toMatchInlineSnapshot(`
+      {
+        "a": "1",
+        "b": "",
       }
     `);
     res.end();

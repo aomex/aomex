@@ -82,6 +82,24 @@ test('删除样式', () => {
   expect(terminal.stripStyle(styleText('red', '放学别跑'))).toBe('放学别跑');
 });
 
+test('createSession 可刷新并持久化输出', async () => {
+  const writes: string[] = [];
+  const spy = vitest.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
+    writes.push(String(chunk));
+    return true;
+  });
+
+  const session = terminal.createSession();
+  session.update('hello');
+  expect(writes.some((chunk) => chunk.includes('hello'))).toBeTruthy();
+
+  session.update('%success% done');
+  session.commit();
+  expect(terminal.stripStyle(writes.join(''))).toContain('done');
+
+  spy.mockRestore();
+});
+
 describe('流程动画', () => {
   test('正常流程', async () => {
     const result = await terminal.runTasks<{ value: string }>([

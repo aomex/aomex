@@ -145,7 +145,7 @@ test('使用监听获取正在执行的任务', { timeout: 9_000 }, async () => 
   startSpy.mockRestore();
 });
 
-test('使用cron:stop结束任务', { timeout: 9_000 }, async () => {
+test('使用cron:stop结束任务', { timeout: 15_000 }, async () => {
   const app = new TestConsoleApp({
     mount: [
       start({

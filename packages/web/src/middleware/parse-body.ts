@@ -202,9 +202,9 @@ export const mergeUploadCeilings = (
     formData.maxFileSize !== undefined
       ? Math.max(
           0,
-          (typeof formData.maxFileSize === 'number'
+          typeof formData.maxFileSize === 'number'
             ? formData.maxFileSize
-            : bytes(formData.maxFileSize)) ?? 0,
+            : bytes(formData.maxFileSize),
         )
       : undefined;
   const ceilingFiles =

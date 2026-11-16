@@ -43,10 +43,10 @@
   "dependencies": {
     "@aomex/internal-file-import": "workspace:^",
     "@aomex/internal-tools": "workspace:^",
-    "@stoplight/spectral-core": "^1.19.1",
-    "@stoplight/spectral-rulesets": "^1.20.2",
+    "@stoplight/spectral-core": "^1.24.1",
+    "@stoplight/spectral-rulesets": "^1.23.1",
     "lodash.snakecase": "^4.1.1",
-    "yaml": "^2.8.0"
+    "yaml": "^2.9.1"
   },
   "devDependencies": {
     "@aomex/common": "workspace:^",

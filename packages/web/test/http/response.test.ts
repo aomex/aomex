@@ -258,12 +258,30 @@ describe('content-type', () => {
   });
 });
 
-test('matchContentType', async () => {
-  const { res } = await mockServer((agent) => agent.get('/'));
-  expect(res.matchContentType('*/*')).toBeNull();
-  res.body = {};
-  expect(res.matchContentType('*/*')).toBe('application/json');
-  res.flush();
+describe('matchContentType', () => {
+  test('未设置 Content-Type 时返回 null', async () => {
+    const { res } = await mockServer((agent) => agent.get('/'));
+    expect(res.matchContentType('*/*')).toBeNull();
+    res.flush();
+  });
+
+  test('通配返回实际类型，快捷名返回规则串', async () => {
+    const { res } = await mockServer((agent) => agent.get('/'));
+    res.body = {};
+    expect(res.matchContentType('*/*')).toBe('application/json');
+    expect(res.matchContentType('application/*')).toBe('application/json');
+    expect(res.matchContentType('json')).toBe('json');
+    expect(res.matchContentType('text/*')).toBeNull();
+    res.flush();
+  });
+
+  test('文本类型', async () => {
+    const { res } = await mockServer((agent) => agent.get('/'));
+    res.body = 'hello';
+    expect(res.matchContentType('text/*', 'application/*')).toBe('text/plain');
+    expect(res.matchContentType('text/plain')).toBe('text/plain');
+    res.flush();
+  });
 });
 
 describe('状态码', async () => {
@@ -302,20 +320,64 @@ describe('状态码', async () => {
   });
 });
 
-test('下载', async () => {
-  const { res } = await mockServer((agent) => agent.get('/'));
-  const done = res.download(join(dir, 'fixture', 'upload-1.txt'));
-  expect(res.body).toBeInstanceOf(Stream);
-  expect(res.getHeader('Content-Disposition')).toBe(
-    'attachment; filename="upload-1.txt"',
-  );
-  expect(res.contentType).toBe('text/plain');
-  const rm = vitest.fn();
-  const cleanup = done.finally(rm);
-  expect(rm).not.toHaveBeenCalled();
-  res.flush();
-  await cleanup;
-  expect(rm).toHaveBeenCalledOnce();
+describe('下载', () => {
+  test('默认 attachment，且只用 basename', async () => {
+    const { res } = await mockServer((agent) => agent.get('/'));
+    const filePath = join(dir, 'fixture', 'upload-1.txt');
+    const done = res.download(filePath);
+    expect(res.body).toBeInstanceOf(Stream);
+    expect(res.getHeader('Content-Disposition')).toBe(
+      'attachment; filename=upload-1.txt',
+    );
+    // 绝对路径不得出现在 Content-Disposition（防路径泄露）
+    expect(String(res.getHeader('Content-Disposition'))).not.toContain(dir);
+    expect(res.contentType).toBe('text/plain');
+    const rm = vitest.fn();
+    const cleanup = done.finally(rm);
+    expect(rm).not.toHaveBeenCalled();
+    res.flush();
+    await cleanup;
+    expect(rm).toHaveBeenCalledOnce();
+  });
+
+  test('type=inline', async () => {
+    const { res } = await mockServer((agent) => agent.get('/'));
+    const done = res.download(join(dir, 'fixture', 'upload-1.txt'), 'inline');
+    expect(res.getHeader('Content-Disposition')).toBe('inline; filename=upload-1.txt');
+    res.flush();
+    await done;
+  });
+
+  test('含目录穿越形态的路径也只暴露文件名', async () => {
+    const { res } = await mockServer((agent) => agent.get('/'));
+    const filePath = join(dir, 'fixture', '..', 'fixture', 'upload-1.txt');
+    const done = res.download(filePath);
+    expect(res.getHeader('Content-Disposition')).toBe(
+      'attachment; filename=upload-1.txt',
+    );
+    expect(String(res.getHeader('Content-Disposition'))).not.toMatch(/\.\.|fixture/);
+    res.flush();
+    await done;
+  });
+
+  test('非 ASCII 文件名走 filename* 扩展字段', async () => {
+    const { mkdtemp, writeFile, rm } = await import('node:fs/promises');
+    const { tmpdir } = await import('node:os');
+    const tmp = await mkdtemp(join(tmpdir(), 'aomex-download-'));
+    const filePath = join(tmp, '中文文件.txt');
+    await writeFile(filePath, 'hello');
+    try {
+      const { res } = await mockServer((agent) => agent.get('/'));
+      const done = res.download(filePath);
+      expect(res.getHeader('Content-Disposition')).toBe(
+        'attachment; filename="????.txt"; filename*=UTF-8\'\'%E4%B8%AD%E6%96%87%E6%96%87%E4%BB%B6.txt',
+      );
+      res.flush();
+      await done;
+    } finally {
+      await rm(tmp, { recursive: true, force: true });
+    }
+  });
 });
 
 test('vary', async () => {
@@ -485,6 +547,93 @@ describe('cookie', () => {
       [
         "test1=foo; Max-Age=300; Path=/path/to",
         "test1=; Path=/path/to; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Strict",
+      ]
+    `);
+    res.flush();
+  });
+
+  test('自定义 encode', async () => {
+    const { res } = await mockServer((agent) => agent.get('/'));
+    res.setCookie('test1', 'a b', {
+      encode: (value) => value.replaceAll(' ', '_'),
+      sameSite: false,
+      httpOnly: false,
+    });
+    expect(res.getHeader('Set-Cookie')).toMatchInlineSnapshot(`
+      [
+        "test1=a_b; Path=/",
+      ]
+    `);
+    res.flush();
+  });
+
+  test('https 请求默认带 Secure', async () => {
+    const { res } = await mockServer((agent) =>
+      agent.get('/').set('X-Forwarded-Proto', 'https'),
+    );
+    res.setCookie('test1', 'foo');
+    expect(res.getHeader('Set-Cookie')).toMatchInlineSnapshot(`
+      [
+        "test1=foo; Path=/; HttpOnly; Secure; SameSite=Strict",
+      ]
+    `);
+    res.flush();
+  });
+
+  test('可覆盖默认 Secure', async () => {
+    const { res } = await mockServer((agent) =>
+      agent.get('/').set('X-Forwarded-Proto', 'https'),
+    );
+    res.setCookie('test1', 'foo', { secure: false });
+    expect(res.getHeader('Set-Cookie')).toMatchInlineSnapshot(`
+      [
+        "test1=foo; Path=/; HttpOnly; SameSite=Strict",
+      ]
+    `);
+    res.flush();
+  });
+
+  test('删除时未指定 path 回落到 /', async () => {
+    const { res } = await mockServer((agent) => agent.get('/'));
+    res.removeCookie('test1');
+    expect(res.getHeader('Set-Cookie')).toMatchInlineSnapshot(`
+      [
+        "test1=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Strict",
+      ]
+    `);
+    res.flush();
+  });
+
+  test('透传 domain / sameSite / maxAge / expires', async () => {
+    const { res } = await mockServer((agent) => agent.get('/'));
+    res.setCookie('test1', 'foo', {
+      domain: 'example.com',
+      sameSite: 'none',
+      maxAge: 60,
+      expires: new Date('2030-01-01T00:00:00.000Z'),
+      secure: true,
+    });
+    res.setCookie('test2', 'bar', {
+      sameSite: 'strict',
+      httpOnly: false,
+    });
+    expect(res.getHeader('Set-Cookie')).toMatchInlineSnapshot(`
+      [
+        "test1=foo; Max-Age=60; Domain=example.com; Path=/; Expires=Tue, 01 Jan 2030 00:00:00 GMT; HttpOnly; Secure; SameSite=None",
+        "test2=bar; Path=/; SameSite=Strict",
+      ]
+    `);
+    res.flush();
+  });
+
+  test('默认 encode：纯 cookie-octet 保留，含非法字符整段编码', async () => {
+    const { res } = await mockServer((agent) => agent.get('/'));
+    res.setCookie('safe', 'a#b', { sameSite: false, httpOnly: false });
+    res.setCookie('mixed', 'a b#c', { sameSite: false, httpOnly: false });
+    expect(res.getHeader('Set-Cookie')).toMatchInlineSnapshot(`
+      [
+        "safe=a#b; Path=/",
+        "mixed=a%20b%23c; Path=/",
       ]
     `);
     res.flush();

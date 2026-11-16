@@ -41,12 +41,12 @@
     "prisma": ">=6"
   },
   "dependencies": {
-    "@prisma/generator-helper": "^7.0.0",
-    "prettier": "^3.9.10"
+    "@prisma/generator-helper": "^7.10.1",
+    "prettier": "^3.10.1"
   },
   "devDependencies": {
     "@aomex/common": "workspace:^",
-    "@prisma/internals": "^7.0.0",
-    "prisma": "^7.0.0"
+    "@prisma/internals": "^7.10.1",
+    "prisma": "^7.10.1"
   }
 }

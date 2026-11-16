@@ -54,6 +54,7 @@ test('时间', () => {
     }).time,
   ).toMatchInlineSnapshot(`"0 5 * * * *"`);
 
+  // 短于 5 段：拒绝（避免 cron-parser 前补导致 `*/2` → `0 * * * * */2`）
   expect(
     () =>
       createCron({
@@ -62,6 +63,24 @@ test('时间', () => {
         commanders: '',
       }).time,
   ).toThrowErrorMatchingInlineSnapshot(`[Error: 无效的 Cron 表达式：*/2]`);
+
+  expect(
+    () =>
+      createCron({
+        time: '* *',
+        command: '',
+        commanders: '',
+      }).time,
+  ).toThrowErrorMatchingInlineSnapshot(`[Error: 无效的 Cron 表达式：* *]`);
+
+  expect(
+    () =>
+      createCron({
+        time: 'not-a-cron',
+        command: '',
+        commanders: '',
+      }).time,
+  ).toThrowErrorMatchingInlineSnapshot(`[Error: 无效的 Cron 表达式：not-a-cron]`);
 
   expect(
     () =>

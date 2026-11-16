@@ -55,14 +55,14 @@ test('获取html', async () => {
               }
             </style>
             <link rel="shortcut icon" type="image/x-icon" href="http://host/favicon.ico" />
-            <script src="./redoc/redoc.standalone.js"></script>
           </head>
           <body>
             <div id="redoc-ui"></div>
-            <script>
-              Redoc.init(
+            <script type="module">
+              import { init } from './redoc/redoc.standalone.js';
+              init(
                 './redoc/openapi.json',
-                { expandResponses: '200' },
+                { disableTelemetry: true },
                 document.getElementById('redoc-ui'),
               );
             </script>
@@ -178,14 +178,14 @@ test('动态返回openapi文档', async () => {
               }
             </style>
             
-            <script src="./redoc/redoc.standalone.js"></script>
           </head>
           <body>
             <div id="redoc-ui"></div>
-            <script>
-              Redoc.init(
+            <script type="module">
+              import { init } from './redoc/redoc.standalone.js';
+              init(
                 './redoc/openapi.json',
-                { expandResponses: '200' },
+                { disableTelemetry: true },
                 document.getElementById('redoc-ui'),
               );
             </script>
@@ -224,14 +224,14 @@ test('yaml文档', async () => {
               }
             </style>
             
-            <script src="./redoc/redoc.standalone.js"></script>
           </head>
           <body>
             <div id="redoc-ui"></div>
-            <script>
-              Redoc.init(
+            <script type="module">
+              import { init } from './redoc/redoc.standalone.js';
+              init(
                 './redoc/openapi.json',
-                { expandResponses: '200' },
+                { disableTelemetry: true },
                 document.getElementById('redoc-ui'),
               );
             </script>
@@ -270,14 +270,14 @@ test('yml文档', async () => {
               }
             </style>
             
-            <script src="./redoc/redoc.standalone.js"></script>
           </head>
           <body>
             <div id="redoc-ui"></div>
-            <script>
-              Redoc.init(
+            <script type="module">
+              import { init } from './redoc/redoc.standalone.js';
+              init(
                 './redoc/openapi.json',
-                { expandResponses: '200' },
+                { disableTelemetry: true },
                 document.getElementById('redoc-ui'),
               );
             </script>

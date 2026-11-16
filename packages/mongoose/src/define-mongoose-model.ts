@@ -58,7 +58,15 @@ export const defineMongooseModel = <
     readonly timestamps?: Time;
     readonly versionKey?: Ver;
   } & Omit<SchemaOptions, 'timestamps' | 'versionKey'>,
-): Model<Output, {}, {}, {}, HydratedDocument<Output>, NormalizeFieldTable<Schema>> => {
+): Model<
+  Output,
+  {},
+  {},
+  {},
+  HydratedDocument<Output>,
+  NormalizeFieldTable<Schema>
+  // 第 7 参 TLeanResultType 用 mongoose 默认：Default__v<Require_id<Output>>
+> => {
   const { schemas: rawSchemas, indexes, ...schemaOptions } = opts;
   const schemas = normalizeFieldTable(rawSchemas);
 
