@@ -104,7 +104,7 @@ export class Router<
   ): any {
     options.docs = { ...this.docs, ...options.docs };
     const builder = new Builder(this.prefix, uri, methods, options);
-    options.disable !== true && this.builders.push(builder);
+    options.disabled !== true && this.builders.push(builder);
   }
 
   protected collect() {

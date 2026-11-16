@@ -51,7 +51,7 @@ export interface BuilderOptions<
   /**
    * 禁用当前路由。默认 `false`
    */
-  disable?: boolean;
+  disabled?: boolean;
   mount?: T;
   docs?: Builder.Docs;
   action: (ctx: Builder.Context<Props, T>) => any;
