@@ -31,7 +31,7 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@aomex/common": "^3.0.0"
+    "@aomex/common": "^4.0.0"
   },
   "devDependencies": {
     "@aomex/common": "workspace:^",

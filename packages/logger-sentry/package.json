@@ -30,7 +30,7 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@aomex/logger": "^3.0.0"
+    "@aomex/logger": "^4.0.0"
   },
   "dependencies": {
     "@sentry/node": "^11.12.0"

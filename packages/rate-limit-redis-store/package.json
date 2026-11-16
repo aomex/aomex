@@ -31,7 +31,7 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@aomex/rate-limit": "^3.0.0",
+    "@aomex/rate-limit": "^4.0.0",
     "ioredis": ">=5"
   },
   "devDependencies": {

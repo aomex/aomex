@@ -30,8 +30,8 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@aomex/common": "^3.0.0",
-    "@aomex/logger": "^3.0.0"
+    "@aomex/common": "^4.0.0",
+    "@aomex/logger": "^4.0.0"
   },
   "dependencies": {
     "@grammyjs/auto-retry": "^2.0.2",

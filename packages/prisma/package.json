@@ -37,7 +37,7 @@
     }
   },
   "peerDependencies": {
-    "@aomex/common": "^3.0.0",
+    "@aomex/common": "^4.0.0",
     "prisma": ">=6"
   },
   "dependencies": {

@@ -31,9 +31,9 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "peerDependencies": {
-    "@aomex/common": "^3.0.0",
-    "@aomex/console": "^3.2.0",
-    "@aomex/web": "^3.0.0"
+    "@aomex/common": "^4.0.0",
+    "@aomex/console": "^4.0.0",
+    "@aomex/web": "^4.0.0"
   },
   "peerDependenciesMeta": {
     "@aomex/console": {

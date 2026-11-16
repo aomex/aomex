@@ -35,8 +35,8 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "peerDependencies": {
-    "@aomex/common": "^3.0.0",
-    "@aomex/logger": "^3.0.0"
+    "@aomex/common": "^4.0.0",
+    "@aomex/logger": "^4.0.0"
   },
   "dependencies": {
     "@aomex/internal-file-import": "workspace:^",
