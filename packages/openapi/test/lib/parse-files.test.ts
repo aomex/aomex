@@ -194,10 +194,8 @@ test('文档生成顺序', async () => {
 test('全局 mount 注入到每个接口', async () => {
   const file = join(import.meta.dirname, '..', 'fixtures', 'routers', 'a.router.ts');
   const document = await initializeDocument();
-  await parseFiles(
-    document,
-    [file],
-    [
+  await parseFiles(document, [file], {
+    mount: [
       formatError({
         content: {
           code: rule.string(),
@@ -228,7 +226,7 @@ test('全局 mount 注入到每个接口', async () => {
       // mixin 无 openapi，应被过滤
       middleware.mixin(() => {}),
     ],
-  );
+  });
 
   expect(document.components).toMatchInlineSnapshot(`
     {
@@ -311,7 +309,7 @@ test('全局 mount 先于路由中间件执行', async () => {
   });
 
   const document = await initializeDocument();
-  await parseFiles(document, [file], [globalMd]);
+  await parseFiles(document, [file], { mount: [globalMd] });
 
   // /bar: 全局+3 路由；/baz: 全局+1 路由。各钩子内全局排在对应接口路由 md 之前
   // onDocument: G111G1；onPath: g222g2；… 依此类推

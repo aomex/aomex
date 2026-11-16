@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'lưu vào tập tin',
   validate: 'Xác minh tài liệu',
   help_summary: 'Trình tạo tài liệu OpenAPI v3',
+  help_app_listen_tip:
+    'Khi truyền app, hãy tách new WebApp khỏi app.listen (hoặc chỉ listen trong tệp entry) để CLI import không khởi động máy chủ như tác dụng phụ',
   has_error: 'Lỗi {{error_count}}, cảnh báo {{warning_count}}',
   no_error: 'không có lỗi',
 });

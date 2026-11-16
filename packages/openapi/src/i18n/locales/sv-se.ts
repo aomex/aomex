@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'spara till fil',
   validate: 'Verifiera dokumentet',
   help_summary: 'OpenAPI v3 dokumentationsgenerator',
+  help_app_listen_tip:
+    'När du skickar app, håll new WebApp åtskild från app.listen (eller lyssna bara i startfilen) så att CLI-import inte startar servern som bieffekt',
   has_error: '{{error_count}}-fel, {{warning_count}}-varningar',
   no_error: 'inga fel',
 });

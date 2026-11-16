@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'dosyaya kaydet',
   validate: 'Belgeyi doğrulayın',
   help_summary: 'OpenAPI v3 dokümantasyon oluşturucu',
+  help_app_listen_tip:
+    'app geçirirken new WebApp ile app.listen’i ayırın (veya yalnızca giriş dosyasında listen edin); böylece CLI import’u sunucuyu yan etki olarak başlatmaz',
   has_error: '{{error_count}} hataları, {{warning_count}} uyarıları',
   no_error: 'hata yok',
 });

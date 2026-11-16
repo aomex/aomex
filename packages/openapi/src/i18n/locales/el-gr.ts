@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'αποθήκευση στο αρχείο',
   validate: 'Επαλήθευση εγγράφου',
   help_summary: 'Πρόγραμμα δημιουργίας τεκμηρίωσης OpenAPI v3',
+  help_app_listen_tip:
+    'Όταν περνάτε το app, διαχωρίστε το new WebApp από το app.listen (ή κάντε listen μόνο στο αρχείο εισόδου), ώστε το CLI import να μην εκκινεί τον διακομιστή ως παρενέργεια',
   has_error: 'Σφάλματα {{error_count}}, προειδοποιήσεις {{warning_count}}',
   no_error: 'κανένα λάθη',
 });

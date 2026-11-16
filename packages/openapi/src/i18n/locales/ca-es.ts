@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'desar al fitxer',
   validate: 'Verificar el document',
   help_summary: 'Generador de documentació OpenAPI v3',
+  help_app_listen_tip:
+    'En passar app, separeu new WebApp d’app.listen (o feu listen només al fitxer d’entrada) per evitar que l’import del CLI iniciï el servidor com a efecte secundari',
   has_error: 'Errors {{error_count}}, avisos {{warning_count}}',
   no_error: 'sense errors',
 });

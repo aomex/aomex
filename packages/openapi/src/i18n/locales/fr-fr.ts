@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'enregistrer dans un fichier',
   validate: 'Vérifier le document',
   help_summary: 'Générateur de documentation OpenAPI v3',
+  help_app_listen_tip:
+    'Lorsque vous passez app, séparez new WebApp et app.listen (ou n’écoutez que dans le fichier d’entrée) pour éviter de démarrer le serveur en effet de bord lors d’un import CLI',
   has_error: 'Erreurs {{error_count}}, avertissements {{warning_count}}',
   no_error: 'aucune erreur',
 });

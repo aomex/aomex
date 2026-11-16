@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'ფაილში შენახვა',
   validate: 'გადაამოწმეთ დოკუმენტი',
   help_summary: 'OpenAPI v3 დოკუმენტაციის გენერატორი',
+  help_app_listen_tip:
+    'app-ის გადაცემისას გამოყავით new WebApp და app.listen (ან listen გააკეთეთ მხოლოდ შესვლის ფაილში), რომ CLI import-მა სერვერი გვერდითი ეფექტით არ გაუშვას',
   has_error: '{{error_count}} შეცდომები, {{warning_count}} გაფრთხილებები',
   no_error: 'შეცდომების გარეშე',
 });

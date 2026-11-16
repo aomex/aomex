@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'uložit do souboru',
   validate: 'Ověřte dokument',
   help_summary: 'Generátor dokumentace OpenAPI v3',
+  help_app_listen_tip:
+    'Při předání app oddělte new WebApp a app.listen (nebo naslouchejte jen ve vstupním souboru), aby CLI import nespouštěl server jako vedlejší efekt',
   has_error: 'Chyby {{error_count}}, varování {{warning_count}}',
   no_error: 'žádné chyby',
 });

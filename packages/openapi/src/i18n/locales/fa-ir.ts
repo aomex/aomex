@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'ذخیره در فایل',
   validate: 'تایید سند',
   help_summary: 'مولد اسناد OpenAPI v3',
+  help_app_listen_tip:
+    'هنگام ارسال app، new WebApp را از app.listen جدا کنید (یا فقط در فایل ورودی listen کنید) تا import مربوط به CLI سرور را به‌عنوان اثر جانبی راه‌اندازی نکند',
   has_error: 'خطاهای {{error_count}}، هشدارهای {{warning_count}}',
   no_error: 'بدون خطا',
 });

@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'پاشەکەوت بکە بۆ فایل',
   validate: 'بەڵگەنامە پشتڕاست بکەرەوە',
   help_summary: 'مۆلیدەی بەڵگەنامەی OpenAPI v3',
+  help_app_listen_tip:
+    'کاتێک app دەنێریت، new WebApp و app.listen جیا بکەوە (یان تەنها لە فایلی دەروازە listen بکە) بۆ ئەوەی importی CLI سێرڤەر وەک کاریگەری لاوەکی دەستپێنەکات',
   has_error: 'هەڵەکانی {{error_count}}، ئاگادارکردنەوەکانی {{warning_count}}',
   no_error: 'هیچ هەڵەیەک نییە',
 });

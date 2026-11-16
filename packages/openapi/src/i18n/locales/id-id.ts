@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'simpan ke file',
   validate: 'Verifikasi dokumen',
   help_summary: 'Generator dokumentasi OpenAPI v3',
+  help_app_listen_tip:
+    'Saat meneruskan app, pisahkan new WebApp dari app.listen (atau listen hanya di file entri) agar impor CLI tidak menjalankan server sebagai efek samping',
   has_error: 'Kesalahan {{error_count}}, peringatan {{warning_count}}',
   no_error: 'tidak ada kesalahan',
 });

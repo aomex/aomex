@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'shrani v datoteko',
   validate: 'Preveri dokument',
   help_summary: 'Generator dokumentacije OpenAPI v3',
+  help_app_listen_tip:
+    'Ob posredovanju app ločite new WebApp in app.listen (ali poslušajte samo v vstopni datoteki), da CLI uvoz ne zažene strežnika kot stranski učinek',
   has_error: '{{error_count}} napake, {{warning_count}} opozorila',
   no_error: 'brez napak',
 });

@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'ফাইলে সংরক্ষণ করুন',
   validate: 'নথি যাচাই করুন',
   help_summary: 'OpenAPI v3 ডকুমেন্টেশন জেনারেটর',
+  help_app_listen_tip:
+    'app পাস করার সময় new WebApp ও app.listen আলাদা রাখুন (অথবা শুধু এন্ট্রি ফাইলে listen করুন), যাতে CLI import পার্শ্বপ্রতিক্রিয়া হিসেবে সার্ভার চালু না করে',
   has_error: '{{error_count}} ত্রুটি, {{warning_count}} সতর্কতা',
   no_error: 'কোনো ত্রুটি নেই',
 });

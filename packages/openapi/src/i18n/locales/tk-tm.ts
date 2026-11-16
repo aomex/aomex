@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'faýla ýazdyryň',
   validate: 'Resminamany barlaň',
   help_summary: 'OpenAPI v3 resminama generatory',
+  help_app_listen_tip:
+    'app geçirilende new WebApp bilen app.listen-i aýryň (ýa-da diňe giriş faýlynda listen ediň), CLI importy serweri goşmaça täsir hökmünde işe goýmazlygy üçin',
   has_error: '{{error_count}} ýalňyşlyklary, {{warning_count}} duýduryşlary',
   no_error: 'ýalňyşlyk ýok',
 });

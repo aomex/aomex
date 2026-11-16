@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'រក្សាទុកក្នុងឯកសារ',
   validate: 'ផ្ទៀងផ្ទាត់ឯកសារ',
   help_summary: 'កម្មវិធីបង្កើតឯកសារ OpenAPI v3',
+  help_app_listen_tip:
+    'នៅពេលបញ្ជូន app សូមបំបែក new WebApp ពី app.listen (ឬ listen តែនៅក្នុងឯកសារចូល) ដើម្បីជៀសវាងការ import របស់ CLI ចាប់ផ្តើមម៉ាស៊ីនមេជាផលប៉ះពាល់ចំហៀង',
   has_error: 'កំហុស {{error_count}} ការព្រមាន {{warning_count}}',
   no_error: 'គ្មាន​កំហុស',
 });

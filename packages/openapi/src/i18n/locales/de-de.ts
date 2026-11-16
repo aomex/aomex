@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'in Datei speichern',
   validate: 'Dokument überprüfen',
   help_summary: 'OpenAPI v3-Dokumentationsgenerator',
+  help_app_listen_tip:
+    'Wenn Sie app übergeben, trennen Sie new WebApp und app.listen (oder listen nur in der Einstiegsdatei), damit CLI-Imports den Server nicht als Nebeneffekt starten',
   has_error: '{{error_count}}-Fehler, {{warning_count}}-Warnungen',
   no_error: 'keine Fehler',
 });

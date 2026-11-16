@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'запишете във файл',
   validate: 'Потвърдете документа',
   help_summary: 'OpenAPI v3 генератор на документация',
+  help_app_listen_tip:
+    'Когато подавате app, разделете new WebApp и app.listen (или слушайте само във входния файл), за да не стартира CLI import сървъра като страничен ефект',
   has_error: '{{error_count}} грешки, {{warning_count}} предупреждения',
   no_error: 'няма грешки',
 });

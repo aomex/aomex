@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'gem til fil',
   validate: 'Bekræft dokumentet',
   help_summary: 'OpenAPI v3 dokumentationsgenerator',
+  help_app_listen_tip:
+    'Når du sender app, skal du adskille new WebApp og app.listen (eller kun lytte i indgangsfilen), så CLI-import ikke starter serveren som bivirkning',
   has_error: '{{error_count}} fejl, {{warning_count}} advarsler',
   no_error: 'ingen fejl',
 });

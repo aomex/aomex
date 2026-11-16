@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'файлға сақтаңыз',
   validate: 'Құжатты растау',
   help_summary: 'OpenAPI v3 құжаттама генераторы',
+  help_app_listen_tip:
+    'app бергенде new WebApp пен app.listen-ті бөліңіз (немесе тек кіріс файлда listen етіңіз), CLI import серверді жанама әсер ретінде іске қоспауы үшін',
   has_error: '{{error_count}} қателері, {{warning_count}} ескертулері',
   no_error: 'қателер жоқ',
 });

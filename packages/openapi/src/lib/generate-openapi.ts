@@ -1,6 +1,6 @@
 import { OpenAPI } from '@aomex/common';
 import { pathToFiles, type GlobPathOptions } from '@aomex/internal-file-import';
-import type { WebMiddlewareToken } from '@aomex/web';
+import type { WebApp } from '@aomex/web';
 import { methodParameterToPathParameter } from './hoist-parameter';
 import { hoistSchemaRef } from './hoist-schema-ref';
 import { initializeDocument } from './initialize-document';
@@ -13,19 +13,30 @@ export interface GenerateOpenapiOptions {
    */
   routers: GlobPathOptions;
   /**
-   * Web 全局中间件（与 `WebApp` 的 `mount` 对应）。
-   * 用于收集鉴权、错误格式化等全局中间件写入的 OpenAPI 信息。
+   * `WebApp` 实例：读取全局 `mount` 与 `envelope`，作为 OpenAPI 注入的单一真源。
+   *
+   * CLI / 测试会 `import` 该模块时，请把 `new WebApp(...)` 与 `app.listen(...)` 拆开
+   *（或仅在入口文件 listen），避免副作用起服。
    *
    * ```ts
-   * import { middlewares } from './middleware/web.js';
+   * // app.ts —— 只创建并导出
+   * export const app = new WebApp({
+   *   envelope: { content: { ... } },
+   *   mount: [formatError({ ... })],
+   *   // services / logger / ...
+   * });
+   *
+   * // main.ts —— 进程入口才听端口
+   * import { app } from './app.js';
+   * app.listen(3000);
    *
    * generateOpenapi({
    *   routers: './src/routers',
-   *   mount: middlewares,
+   *   app,
    * });
    * ```
    */
-  mount?: WebMiddlewareToken[];
+  app?: WebApp;
   /**
    * Openapi基础信息
    */
@@ -47,7 +58,11 @@ export const generateOpenapi = async (
 ): Promise<OpenAPI.Document> => {
   const document = await initializeDocument(config.docs);
   const files = await pathToFiles(config.routers);
-  const usedTags = await parseFiles(document, files, config.mount);
+  const app = config.app;
+  const usedTags = await parseFiles(document, files, {
+    mount: app?.['middlewareList'],
+    envelope: app?.['options'].envelope,
+  });
   appendTag(document, usedTags);
   await config.fix?.(document);
   hoistSchemaRef(document);

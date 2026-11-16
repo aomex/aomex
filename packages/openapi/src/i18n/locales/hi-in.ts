@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'फ़ाइल में सहेजें',
   validate: 'दस्तावेज़ सत्यापित करें',
   help_summary: 'OpenAPI v3 दस्तावेज़ जनरेटर',
+  help_app_listen_tip:
+    'app पास करते समय new WebApp और app.listen को अलग रखें (या केवल एंट्री फ़ाइल में listen करें), ताकि CLI import साइड इफ़ेक्ट के रूप में सर्वर शुरू न करे',
   has_error: '{{error_count}} त्रुटियाँ, {{warning_count}} चेतावनियाँ',
   no_error: 'कोई त्रुटि नहीं',
 });

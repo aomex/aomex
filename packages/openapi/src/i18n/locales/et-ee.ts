@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'faili salvestada',
   validate: 'Kinnitage dokument',
   help_summary: 'OpenAPI v3 dokumentatsiooni generaator',
+  help_app_listen_tip:
+    'App’i edastamisel eraldage new WebApp ja app.listen (või kuulake ainult sisenemisfailis), et CLI import ei käivitaks serverit kõrvalmõjuna',
   has_error: '{{error_count}} vead, {{warning_count}} hoiatused',
   no_error: 'vigu pole',
 });

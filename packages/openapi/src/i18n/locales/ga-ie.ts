@@ -12,6 +12,8 @@ export default I18n.satisfies(zh).define({
   save_to_file: 'shábháil i gcomhad',
   validate: 'Fíoraigh doiciméad',
   help_summary: 'Gineadóir doiciméadú OpenAPI v3',
+  help_app_listen_tip:
+    'Nuair a thugann tú app, coinnigh new WebApp scartha ó app.listen (nó déan listen sa chomhad iontrála amháin) ionas nach dtosóidh import CLI an freastalaí mar fho-éifeacht',
   has_error: 'Earráidí {{error_count}}, rabhaidh {{warning_count}}',
   no_error: 'aon earráidí',
 });

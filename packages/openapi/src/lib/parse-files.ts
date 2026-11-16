@@ -4,6 +4,8 @@ import {
   Router,
   WebMiddleware,
   WebRequest,
+  createEnvelopeOpenApiInjector,
+  type EnvelopeOptions,
   type OpenApiInjector,
   type WebMiddlewareToken,
 } from '@aomex/web';
@@ -11,11 +13,22 @@ import path from 'node:path';
 import { methodToVerb } from './method-to-verb';
 import snakeCase from 'lodash.snakecase';
 
+export interface ParseFilesOptions {
+  /** 全局中间件（与 `WebApp` 的 `mount` 对应） */
+  mount?: WebMiddlewareToken[];
+  /** 响应体套壳（与 `WebApp.envelope` 对应）；在全部中间件 `postMethod` 之后收口 */
+  envelope?: EnvelopeOptions;
+}
+
 export const parseFiles = async (
   document: OpenAPI.Document,
   files: string[],
-  mount: WebMiddlewareToken[] = [],
+  options: ParseFilesOptions = {},
 ) => {
+  const mount = options.mount ?? [];
+  const envelopeInjector = options.envelope
+    ? createEnvelopeOpenApiInjector(options.envelope)
+    : undefined;
   const usedTags: string[] = [];
 
   const data: {
@@ -24,6 +37,16 @@ export const parseFiles = async (
     methodName: `${Lowercase<WebRequest['method']>}`;
     methodItem: OpenAPI.OperationObject;
     injector: OpenApiInjector;
+    file: string;
+    uri: string;
+  }[] = [];
+
+  /** 每个 operation 只出现一次，供 envelope 收口与标签补齐 */
+  const operations: {
+    pathName: string;
+    pathItem: OpenAPI.PathItemObject;
+    methodName: `${Lowercase<WebRequest['method']>}`;
+    methodItem: OpenAPI.OperationObject;
     file: string;
     uri: string;
   }[] = [];
@@ -57,6 +80,15 @@ export const parseFiles = async (
           const methodItem: OpenAPI.OperationObject = (pathItem[methodName] = {
             ...builder.docs,
             responses: {},
+          });
+
+          operations.push({
+            pathItem,
+            pathName,
+            methodItem,
+            methodName,
+            file,
+            uri,
           });
 
           data.push(
@@ -99,6 +131,17 @@ export const parseFiles = async (
       methodName,
     });
   }
+  // envelope 不在 mount 里，等价于最外层：全部中间件 postMethod 之后再收成 200
+  if (envelopeInjector?.postMethod) {
+    for (const { pathItem, pathName, methodItem, methodName } of operations) {
+      envelopeInjector.postMethod(methodItem, {
+        document,
+        pathItem,
+        pathName,
+        methodName,
+      });
+    }
+  }
   for (const { injector, pathItem, pathName } of data) {
     injector.postPath?.(pathItem, { document, pathName });
   }
@@ -106,7 +149,7 @@ export const parseFiles = async (
     injector.postDocument?.(document);
   }
 
-  for (const { methodItem, methodName, file, uri } of data) {
+  for (const { methodItem, methodName, file, uri } of operations) {
     methodItem.tags ||= [getTagByFilename(file)];
     methodItem.operationId ||= snakeCase(
       methodToVerb(methodName, uri) + ' ' + uri.replaceAll(':', '_by_'),
