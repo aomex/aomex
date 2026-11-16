@@ -1,4 +1,4 @@
-import { middleware } from '@aomex/common';
+import { middleware, type MixinMiddleware } from '@aomex/common';
 import { asyncTrace, type AsyncTraceRecord } from './async-trace';
 
 export interface AsyncTraceMiddlewareProps {
@@ -11,10 +11,11 @@ export interface AsyncTraceMiddlewareProps {
 /**
  * 追踪中间件从开始到结束的总链路
  */
+// 显式返回 MixinMiddleware：否则 tsdown 会把该类内联进 .d.ts，与 web mount 不兼容
 export const traceMiddleware = (
   label: string,
   callback?: (record: AsyncTraceRecord, ctx: any) => any,
-) => {
+): MixinMiddleware<AsyncTraceMiddlewareProps> => {
   return middleware.mixin<AsyncTraceMiddlewareProps>(async (ctx, next) => {
     let traceId!: string;
     try {

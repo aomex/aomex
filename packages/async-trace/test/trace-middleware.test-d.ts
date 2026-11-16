@@ -1,9 +1,21 @@
+import { MixinMiddleware } from '@aomex/common';
 import { WebContext } from '@aomex/web';
 import { TestWebApp } from '../../web/src/testing';
 import { ConsoleContext } from '@aomex/console';
 import { TestConsoleApp } from '../../console/src/testing';
-import { traceMiddleware, type AsyncTraceRecord } from '../src';
+import {
+  traceMiddleware,
+  type AsyncTraceMiddlewareProps,
+  type AsyncTraceRecord,
+} from '../src';
 import { expectType, type TypeEqual } from 'ts-expect';
+
+expectType<
+  TypeEqual<
+    MixinMiddleware<AsyncTraceMiddlewareProps>,
+    ReturnType<typeof traceMiddleware>
+  >
+>(true);
 
 new TestWebApp({
   mount: [
