@@ -10,7 +10,7 @@ export interface HttpAccessLogOptions {
   /**
    * 是否禁用请求日志。默认：`false`
    */
-  disable?: boolean;
+  disabled?: boolean;
   /**
    * 响应输出格式，建议使用 **HttpAccessLogToken** 拼接。默认值：`[ip] [method] [url] [statusCode] [duration] [contentLength]`
    */
@@ -44,7 +44,7 @@ class HttpAccessLogService extends BaseLoggerService {
 }
 
 export const httpAccessLog = (options: HttpAccessLogOptions = {}): WebMiddleware => {
-  const { disable = false, customTokens } = options;
+  const { disabled = false, customTokens } = options;
   const format =
     options.format ||
     `${HttpAccessLogToken.ip} ${HttpAccessLogToken.method} ${HttpAccessLogToken.url} ${HttpAccessLogToken.statusCode} ${HttpAccessLogToken.duration} ${HttpAccessLogToken.contentLength}`;
@@ -59,7 +59,7 @@ export const httpAccessLog = (options: HttpAccessLogOptions = {}): WebMiddleware
   );
 
   return middleware.web(async (ctx, next) => {
-    if (disable) return next();
+    if (disabled) return next();
 
     const start = process.hrtime();
     const tokens = customTokens

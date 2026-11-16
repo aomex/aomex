@@ -137,7 +137,7 @@ test('禁用日志', async () => {
   const app = new TestWebApp({
     mount: [
       httpAccessLog({
-        disable: true,
+        disabled: true,
         transports,
       }),
       middleware.web((ctx) => {
@@ -155,7 +155,7 @@ test('不存在消费实例也相当于禁用日志', async () => {
   const app = new TestWebApp({
     mount: [
       httpAccessLog({
-        disable: true,
+        disabled: true,
         transports: [],
       }),
       middleware.web((ctx) => {
