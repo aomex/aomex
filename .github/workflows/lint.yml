@@ -1,6 +1,11 @@
 name: Lint
 
-on: [push]
+on:
+  push:
+    branches-ignore:
+      - main
+      - develop
+  workflow_call:
 
 jobs:
   git-commit:
@@ -16,8 +21,8 @@ jobs:
       - run: pnpm install
       - if: github.event_name == 'pull_request'
         run: pnpm exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
-      - if: github.event_name == 'push'
-        run: echo "${{ github.event.head_commit.message }}" | pnpm exec commitlint --verbose
+      - if: github.event_name != 'pull_request'
+        run: git log -1 --pretty=%B | pnpm exec commitlint --verbose
   type-checking:
     runs-on: ubuntu-latest
     strategy:
