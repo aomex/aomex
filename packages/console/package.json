@@ -39,8 +39,8 @@
     "@aomex/logger": "^4.0.0"
   },
   "dependencies": {
-    "@aomex/internal-file-import": "workspace:^",
-    "@aomex/internal-tools": "workspace:^",
+    "@aomex/internal-file-import": "workspace:*",
+    "@aomex/internal-tools": "workspace:*",
     "ansi-escapes": "^7.3.0",
     "glob": "^14.0.6",
     "is-unicode-supported": "^2.1.0",
@@ -52,8 +52,8 @@
     "yargs-parser": "^22.0.0"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:^",
-    "@aomex/logger": "workspace:^",
+    "@aomex/common": "workspace:*",
+    "@aomex/logger": "workspace:*",
     "@types/yargs": "^17.0.35",
     "@types/yargs-parser": "^21.0.3"
   }

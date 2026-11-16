@@ -1,0 +1,29 @@
+name: Publish Next
+
+on:
+  push:
+    branches:
+      - develop
+
+concurrency:
+  group: publish-next
+  cancel-in-progress: false
+
+env:
+  CI: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: pnpm/setup@v3
+        with:
+          cache: true
+          install: false
+      - run: pnpm install
+      - run: |
+          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
+          npx lerna publish --canary --dist-tag next --pre-dist-tag next --force-publish --yes

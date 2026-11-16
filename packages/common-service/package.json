@@ -30,6 +30,6 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "dependencies": {
-    "@aomex/internal-tools": "workspace:^"
+    "@aomex/internal-tools": "workspace:*"
   }
 }

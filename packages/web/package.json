@@ -37,8 +37,8 @@
     "@aomex/logger": "^4.0.0"
   },
   "dependencies": {
-    "@aomex/internal-file-import": "workspace:^",
-    "@aomex/internal-tools": "workspace:^",
+    "@aomex/internal-file-import": "workspace:*",
+    "@aomex/internal-tools": "workspace:*",
     "@types/accepts": "^1.3.7",
     "@types/formidable": "^3.5.1",
     "@types/statuses": "^2.0.6",
@@ -58,8 +58,8 @@
     "vary": "^1.1.2"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:^",
-    "@aomex/logger": "workspace:^",
+    "@aomex/common": "workspace:*",
+    "@aomex/logger": "workspace:*",
     "@types/co-body": "^6.1.3",
     "@types/destroy": "^1.0.3",
     "@types/fresh": "^0.5.3",

@@ -39,8 +39,8 @@
     "jsonwebtoken": "^9.0.3"
   },
   "devDependencies": {
-    "@aomex/auth": "workspace:^",
-    "@aomex/common": "workspace:^",
-    "@aomex/web": "workspace:^"
+    "@aomex/auth": "workspace:*",
+    "@aomex/common": "workspace:*",
+    "@aomex/web": "workspace:*"
   }
 }

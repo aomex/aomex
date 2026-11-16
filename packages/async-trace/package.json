@@ -34,8 +34,8 @@
     "@aomex/common": "^4.0.0"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:^",
-    "@aomex/console": "workspace:^",
-    "@aomex/web": "workspace:^"
+    "@aomex/common": "workspace:*",
+    "@aomex/console": "workspace:*",
+    "@aomex/web": "workspace:*"
   }
 }

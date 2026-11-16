@@ -231,22 +231,22 @@ importers:
   packages/async-trace:
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/console':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../console
       '@aomex/web':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../web
 
   packages/auth:
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/web':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../web
 
   packages/auth-jwt-strategy:
@@ -259,29 +259,29 @@ importers:
         version: 9.0.3
     devDependencies:
       '@aomex/auth':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../auth
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/web':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../web
 
   packages/cache:
     dependencies:
       '@aomex/async-trace':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../async-trace
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
 
   packages/cache-redis-adapter:
     devDependencies:
       '@aomex/cache':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../cache
       ioredis:
         specifier: ^6.0.0
@@ -290,16 +290,16 @@ importers:
   packages/common:
     dependencies:
       '@aomex/common-middleware':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common-middleware
       '@aomex/common-service':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common-service
       '@aomex/common-validator':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common-validator
       '@aomex/internal-tools':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-tools
       typescript:
         specifier: '>=7'
@@ -308,19 +308,19 @@ importers:
   packages/common-middleware:
     dependencies:
       '@aomex/internal-tools':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-tools
 
   packages/common-service:
     dependencies:
       '@aomex/internal-tools':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-tools
 
   packages/common-validator:
     dependencies:
       '@aomex/internal-tools':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-tools
       decimal.js:
         specifier: ^10.6.0
@@ -339,17 +339,17 @@ importers:
   packages/compress:
     dependencies:
       '@aomex/internal-tools':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-tools
       compressible:
         specifier: ^2.0.18
         version: 2.0.18
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/web':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../web
       '@types/compressible':
         specifier: ^2.0.3
@@ -358,10 +358,10 @@ importers:
   packages/console:
     dependencies:
       '@aomex/internal-file-import':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-file-import
       '@aomex/internal-tools':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-tools
       ansi-escapes:
         specifier: ^7.3.0
@@ -392,10 +392,10 @@ importers:
         version: 22.0.0
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/logger':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../logger
       '@types/yargs':
         specifier: ^17.0.35
@@ -411,10 +411,10 @@ importers:
         version: 1.1.2
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/web':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../web
       '@types/vary':
         specifier: ^1.1.3
@@ -423,13 +423,13 @@ importers:
   packages/cron:
     dependencies:
       '@aomex/cache':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../cache
       '@aomex/internal-file-import':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-file-import
       '@aomex/internal-tools':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-tools
       cron-parser:
         specifier: ^5.10.6
@@ -442,10 +442,10 @@ importers:
         version: 4.1.0
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/console':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../console
       '@types/pidusage':
         specifier: ^2.0.5
@@ -458,10 +458,10 @@ importers:
         version: 1.8.1
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/web':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../web
       '@types/etag':
         specifier: ^1.8.4
@@ -474,29 +474,29 @@ importers:
         version: 8.3.0
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/web':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../web
 
   packages/http-access-log:
     dependencies:
       '@aomex/internal-tools':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-tools
       '@aomex/logger':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../logger
       pretty-time:
         specifier: ^1.1.0
         version: 1.1.0
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/web':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../web
       '@types/pretty-time':
         specifier: ^1.1.5
@@ -526,7 +526,7 @@ importers:
   packages/logger:
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
 
   packages/logger-sentry:
@@ -536,7 +536,7 @@ importers:
         version: 11.12.0(rollup@4.45.1)
     devDependencies:
       '@aomex/logger':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../logger
 
   packages/logger-telegram:
@@ -549,26 +549,26 @@ importers:
         version: 1.46.0(encoding@0.1.13)(supports-color@7.2.0)
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/logger':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../logger
 
   packages/mongoose:
     dependencies:
       '@aomex/internal-file-import':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-file-import
       lodash.snakecase:
         specifier: ^4.1.1
         version: 4.1.1
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/internal-tools':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-tools
       '@types/lodash.snakecase':
         specifier: ^4.1.9
@@ -583,10 +583,10 @@ importers:
   packages/openapi:
     dependencies:
       '@aomex/internal-file-import':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-file-import
       '@aomex/internal-tools':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-tools
       '@stoplight/spectral-core':
         specifier: ^1.24.1
@@ -602,13 +602,13 @@ importers:
         version: 2.9.1
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/console':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../console
       '@aomex/web':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../web
       '@types/lodash.snakecase':
         specifier: ^4.1.9
@@ -624,10 +624,10 @@ importers:
         version: 3.1.0
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/web':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../web
       '@types/streaming-json-stringify':
         specifier: ^3.1.5
@@ -643,7 +643,7 @@ importers:
         version: 3.10.1
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@prisma/internals':
         specifier: ^7.10.1
@@ -655,16 +655,16 @@ importers:
   packages/rate-limit:
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/web':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../web
 
   packages/rate-limit-redis-store:
     devDependencies:
       '@aomex/rate-limit':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../rate-limit
       ioredis:
         specifier: ^6.0.0
@@ -673,17 +673,17 @@ importers:
   packages/redoc-ui:
     dependencies:
       '@aomex/serve-static':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../serve-static
       yaml:
         specifier: ^2.9.1
         version: 2.9.1
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/web':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../web
       redoc:
         specifier: ^3.1.0
@@ -692,35 +692,35 @@ importers:
   packages/response-time:
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/web':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../web
 
   packages/serve-static:
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/web':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../web
 
   packages/swagger-ui:
     dependencies:
       '@aomex/serve-static':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../serve-static
       yaml:
         specifier: ^2.9.1
         version: 2.9.1
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/web':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../web
       swagger-ui:
         specifier: ^5.35.0
@@ -729,10 +729,10 @@ importers:
   packages/web:
     dependencies:
       '@aomex/internal-file-import':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-file-import
       '@aomex/internal-tools':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../internal-tools
       '@types/accepts':
         specifier: ^1.3.7
@@ -787,10 +787,10 @@ importers:
         version: 1.1.2
     devDependencies:
       '@aomex/common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../common
       '@aomex/logger':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../logger
       '@types/co-body':
         specifier: ^6.1.3

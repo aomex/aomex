@@ -38,7 +38,7 @@
     "grammy": "^1.46.0"
   },
   "devDependencies": {
-    "@aomex/common": "workspace:^",
-    "@aomex/logger": "workspace:^"
+    "@aomex/common": "workspace:*",
+    "@aomex/logger": "workspace:*"
   }
 }

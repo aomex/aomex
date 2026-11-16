@@ -35,7 +35,7 @@
     "ioredis": ">=5"
   },
   "devDependencies": {
-    "@aomex/cache": "workspace:^",
+    "@aomex/cache": "workspace:*",
     "ioredis": "^6.0.0"
   }
 }
