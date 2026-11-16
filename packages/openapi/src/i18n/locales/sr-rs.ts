@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'Верификујте документ',
   help_summary: 'ОпенАПИ в3 генератор документације',
   help_app_listen_tip:
-    'При прослеђивању app одвојите new WebApp и app.listen (или слушајте само у улазној датотеци) како CLI import не би покренуо сервер као споредни ефекат',
+    'Одвојите new WebApp и app.listen (или слушајте само у улазној датотеци) како CLI import не би покренуо сервер као споредни ефекат',
   has_error: 'ЗЗ0ЗЗ грешке, ЗЗ1ЗЗ упозорења',
   no_error: 'нема грешака',
 });

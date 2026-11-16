@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'दस्तऐवज सत्यापित करा',
   help_summary: 'OpenAPI v3 दस्तऐवजीकरण जनरेटर',
   help_app_listen_tip:
-    'app पास करताना new WebApp आणि app.listen वेगळे ठेवा (किंवा फक्त एंट्री फाइलमध्ये listen करा), जेणेकरून CLI import साइड इफेक्ट म्हणून सर्व्हर सुरू करणार नाही',
+    'new WebApp आणि app.listen वेगळे ठेवा (किंवा फक्त एंट्री फाइलमध्ये listen करा), जेणेकरून CLI import साइड इफेक्ट म्हणून सर्व्हर सुरू करणार नाही',
   has_error: '{{error_count}} त्रुटी, {{warning_count}} चेतावणी',
   no_error: 'कोणत्याही त्रुटी नाहीत',
 });

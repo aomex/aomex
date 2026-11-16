@@ -36,7 +36,7 @@ export interface GenerateOpenapiOptions {
    * });
    * ```
    */
-  app?: WebApp;
+  app: WebApp;
   /**
    * Openapi基础信息
    */
@@ -60,8 +60,8 @@ export const generateOpenapi = async (
   const files = await pathToFiles(config.routers);
   const app = config.app;
   const usedTags = await parseFiles(document, files, {
-    mount: app?.['middlewareList'],
-    envelope: app?.['options'].envelope,
+    mount: app['middlewareList'],
+    envelope: app['options'].envelope,
   });
   appendTag(document, usedTags);
   await config.fix?.(document);

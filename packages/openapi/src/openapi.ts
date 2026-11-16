@@ -16,7 +16,7 @@ export interface OpenapiOptions extends GenerateOpenapiWithSpinnerOptions {
 /**
  * Console 中间件：生成 OpenAPI 文档。
  *
- * 传入 `app` 时请把 `new WebApp(...)` 与 `app.listen(...)` 拆开（或仅在入口 listen），
+ * 请把 `new WebApp(...)` 与 `app.listen(...)` 拆开（或仅在入口 listen），
  * 否则 CLI `import` 同一模块会副作用起服、抢端口。
  *
  * ```ts

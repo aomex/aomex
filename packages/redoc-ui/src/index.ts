@@ -30,8 +30,7 @@ export interface RedocUIOptions {
    *   openapi: async () => {
    *     return generateOpenapi({
    *       routers: './src/routers',
-   *       // 与 WebApp.mount 同源，用于收集全局中间件的 OpenAPI 信息
-   *       mount: [formatError(...), auth(...)],
+   *       app, // 与运行时同一 WebApp 实例
    *     });
    *   }
    * });

@@ -11,7 +11,7 @@ export const zh = I18n.define({
   validate: '验证文档',
   help_summary: 'OpenAPI v3 文档生成器',
   help_app_listen_tip:
-    '传入 app 时请将 new WebApp 与 app.listen 拆开（或仅在入口 listen），避免 CLI import 时副作用起服',
+    '请将 new WebApp 与 app.listen 拆开（或仅在入口 listen），避免 CLI import 时副作用起服',
   has_error: '{{error_count}} 个错误，{{warning_count}} 条警告',
   no_error: '没有错误',
 });

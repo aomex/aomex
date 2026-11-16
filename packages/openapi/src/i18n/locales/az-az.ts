@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'Sənədi yoxlayın',
   help_summary: 'OpenAPI v3 sənədləşdirmə generatoru',
   help_app_listen_tip:
-    'app ötürərkən new WebApp ilə app.listen-i ayırın (və ya yalnız giriş faylında listen edin), ki CLI importu serveri yan təsir kimi işə salmasın',
+    'new WebApp ilə app.listen-i ayırın (və ya yalnız giriş faylında listen edin), ki CLI importu serveri yan təsir kimi işə salmasın',
   has_error: '{{error_count}} səhvləri, {{warning_count}} xəbərdarlıqları',
   no_error: 'səhvlər yoxdur',
 });

@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'Igazolja a dokumentumot',
   help_summary: 'OpenAPI v3 dokumentáció generátor',
   help_app_listen_tip:
-    'Az app átadásakor válassza szét a new WebApp-et és az app.listen-t (vagy csak a belépési fájlban listen-eljen), hogy a CLI import ne indítsa el a szervert mellékhatásként',
+    'Válassza szét a new WebApp-et és az app.listen-t (vagy csak a belépési fájlban listen-eljen), hogy a CLI import ne indítsa el a szervert mellékhatásként',
   has_error: '{{error_count}} hibák, {{warning_count}} figyelmeztetések',
   no_error: 'nincsenek hibák',
 });

@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'Sahkan dokumen',
   help_summary: 'Penjana dokumentasi OpenAPI v3',
   help_app_listen_tip:
-    'Apabila menghantar app, asingkan new WebApp daripada app.listen (atau listen hanya dalam fail entri) supaya import CLI tidak memulakan pelayan sebagai kesan sampingan',
+    'Asingkan new WebApp daripada app.listen (atau listen hanya dalam fail entri) supaya import CLI tidak memulakan pelayan sebagai kesan sampingan',
   has_error: 'Ralat {{error_count}}, amaran {{warning_count}}',
   no_error: 'tiada ralat',
 });

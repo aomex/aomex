@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'Баримт бичгийг баталгаажуулах',
   help_summary: 'OpenAPI v3 баримтжуулалт үүсгэгч',
   help_app_listen_tip:
-    'app дамжуулахдаа new WebApp болон app.listen-ийг салга (эсвэл зөвхөн орох файлд listen хий), CLI import серверийг гаж нөлөөгөөр эхлүүлэхгүй байхын тулд',
+    'new WebApp болон app.listen-ийг салга (эсвэл зөвхөн орох файлд listen хий), CLI import серверийг гаж нөлөөгөөр эхлүүлэхгүй байхын тулд',
   has_error: '{{error_count}} алдаа, {{warning_count}} анхааруулга',
   no_error: 'алдаа байхгүй',
 });

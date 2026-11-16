@@ -2,6 +2,7 @@ import type { GenerateOpenapiOptions } from '../../src';
 import { TestWebApp } from '../../../web/src/testing';
 
 {
+  // @ts-expect-error app 必填
   const opts: GenerateOpenapiOptions = {
     routers: [],
   };
@@ -28,6 +29,7 @@ import { TestWebApp } from '../../../web/src/testing';
 {
   const opts: GenerateOpenapiOptions = {
     routers: [],
+    app: new TestWebApp(),
     // @ts-expect-error 已移除 mount，请传 app
     mount: [],
   };

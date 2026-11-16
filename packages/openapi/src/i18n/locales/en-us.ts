@@ -12,7 +12,7 @@ export const en = I18n.satisfies(zh).define({
   validate: 'validate document',
   help_summary: 'OpenAPI v3 documentation generator',
   help_app_listen_tip:
-    'When passing app, keep new WebApp separate from app.listen (or listen only in the entry file) so CLI imports do not start the server as a side effect',
+    'Keep new WebApp separate from app.listen (or listen only in the entry file) so CLI imports do not start the server as a side effect',
   has_error: '{{error_count}} errors, {{warning_count}} warnings',
   no_error: 'No errors',
 });

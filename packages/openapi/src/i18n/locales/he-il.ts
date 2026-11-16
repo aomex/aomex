@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'אמת את המסמך',
   help_summary: 'מחולל תיעוד OpenAPI v3',
   help_app_listen_tip:
-    'כשמעבירים app, הפרידו בין new WebApp ל־app.listen (או בצעו listen רק בקובץ הכניסה) כדי שייבוא ה־CLI לא יפעיל את השרת כתופעת לוואי',
+    'הפרידו בין new WebApp ל־app.listen (או בצעו listen רק בקובץ הכניסה) כדי שייבוא ה־CLI לא יפעיל את השרת כתופעת לוואי',
   has_error: 'שגיאות {{error_count}}, אזהרות {{warning_count}}',
   no_error: 'ללא שגיאות',
 });

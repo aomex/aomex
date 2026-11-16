@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: '文書を確認する',
   help_summary: 'OpenAPI v3 ドキュメント ジェネレーター',
   help_app_listen_tip:
-    'app を渡す場合は new WebApp と app.listen を分けてください（またはエントリでのみ listen）。CLI の import 時にサーバーが副作用で起動するのを防ぎます',
+    'new WebApp と app.listen を分けてください（またはエントリでのみ listen）。CLI の import 時にサーバーが副作用で起動するのを防ぎます',
   has_error: '{{error_count}} エラー、{{warning_count}} 警告',
   no_error: 'エラーはありません',
 });

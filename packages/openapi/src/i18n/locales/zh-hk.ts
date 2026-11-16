@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: '驗證文檔',
   help_summary: 'OpenAPI v3 文檔生成器',
   help_app_listen_tip:
-    '傳入 app 時請將 new WebApp 與 app.listen 拆開（或僅在入口 listen），避免 CLI import 時副作用起服',
+    '請將 new WebApp 與 app.listen 拆開（或僅在入口 listen），避免 CLI import 時副作用起服',
   has_error: '{{error_count}} 個錯誤，{{warning_count}} 條警告',
   no_error: '沒有錯誤',
 });

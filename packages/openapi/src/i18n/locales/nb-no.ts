@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'Bekreft dokumentet',
   help_summary: 'OpenAPI v3 dokumentasjonsgenerator',
   help_app_listen_tip:
-    'Når du sender app, skill new WebApp og app.listen (eller lytt bare i inngangsfilen), så CLI-import ikke starter serveren som bivirkning',
+    'Skill new WebApp og app.listen (eller lytt bare i inngangsfilen), så CLI-import ikke starter serveren som bivirkning',
   has_error: '{{error_count}} feil, {{warning_count}} advarsler',
   no_error: 'ingen feil',
 });

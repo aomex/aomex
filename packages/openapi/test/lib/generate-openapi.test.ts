@@ -8,6 +8,7 @@ import { generateOpenapi } from '../../src';
 test('指定基础文档', async () => {
   const result = await generateOpenapi({
     routers: [],
+    app: new TestWebApp(),
     docs: {
       openapi: '3.0.2',
       info: { version: '1.2.3', title: 'abc' },
@@ -29,6 +30,7 @@ test('指定基础文档', async () => {
 test('手动修复文档', async () => {
   const result = await generateOpenapi({
     routers: [],
+    app: new TestWebApp(),
     docs: { info: { title: 'aomex', version: '1.2.3' } },
     fix(data) {
       data.info.description = ' desc foo bar';
@@ -83,7 +85,7 @@ test('通过 app.mount 收集全局中间件文档', async () => {
   expect(result.paths['/baz']).toBeUndefined();
 });
 
-test('app 缺省与空 mount 等价于不挂载', async () => {
+test('空 mount 的 app 可正常生成', async () => {
   const routers = join(
     import.meta.dirname,
     '..',
@@ -91,9 +93,8 @@ test('app 缺省与空 mount 等价于不挂载', async () => {
     'routers',
     'empty.router.ts',
   );
-  const without = await generateOpenapi({ routers });
   const empty = await generateOpenapi({ routers, app: new TestWebApp({ mount: [] }) });
-  expect(without).toEqual(empty);
+  expect(empty.paths).toEqual({});
 });
 
 test('app.envelope 在文档侧收成 200 套壳', async () => {

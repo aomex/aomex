@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'دستاویز کی تصدیق کریں۔',
   help_summary: 'OpenAPI v3 دستاویزی جنریٹر',
   help_app_listen_tip:
-    'app پاس کرتے وقت new WebApp اور app.listen کو الگ رکھیں (یا صرف انٹری فائل میں listen کریں)، تاکہ CLI import ضمنی اثر کے طور پر سرور شروع نہ کرے',
+    'new WebApp اور app.listen کو الگ رکھیں (یا صرف انٹری فائل میں listen کریں)، تاکہ CLI import ضمنی اثر کے طور پر سرور شروع نہ کرے',
   has_error: '{{error_count}} غلطیاں، {{warning_count}} انتباہات',
   no_error: 'کوئی غلطیاں نہیں',
 });

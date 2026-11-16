@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'ตรวจสอบเอกสาร',
   help_summary: 'เครื่องมือสร้างเอกสาร OpenAPI v3',
   help_app_listen_tip:
-    'เมื่อส่ง app ให้แยก new WebApp ออกจาก app.listen (หรือ listen เฉพาะในไฟล์ทางเข้า) เพื่อไม่ให้การ import ของ CLI สตาร์ทเซิร์ฟเวอร์เป็นผลข้างเคียง',
+    'แยก new WebApp ออกจาก app.listen (หรือ listen เฉพาะในไฟล์ทางเข้า) เพื่อไม่ให้การ import ของ CLI สตาร์ทเซิร์ฟเวอร์เป็นผลข้างเคียง',
   has_error: 'ข้อผิดพลาด {{error_count}} คำเตือน {{warning_count}}',
   no_error: 'ไม่มีข้อผิดพลาด',
 });

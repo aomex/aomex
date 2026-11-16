@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'ஆவணத்தை சரிபார்க்கவும்',
   help_summary: 'OpenAPI v3 ஆவணப்படுத்தல் ஜெனரேட்டர்',
   help_app_listen_tip:
-    'app அனுப்பும்போது new WebApp மற்றும் app.listen ஐ பிரிக்கவும் (அல்லது நுழைவு கோப்பில் மட்டும் listen செய்யவும்), CLI import பக்க விளைவாக சேவையகத்தை தொடங்காதபடி',
+    'new WebApp மற்றும் app.listen ஐ பிரிக்கவும் (அல்லது நுழைவு கோப்பில் மட்டும் listen செய்யவும்), CLI import பக்க விளைவாக சேவையகத்தை தொடங்காதபடி',
   has_error: '{{error_count}} பிழைகள், {{warning_count}} எச்சரிக்கைகள்',
   no_error: 'பிழைகள் இல்லை',
 });

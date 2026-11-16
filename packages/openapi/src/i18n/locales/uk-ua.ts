@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'Підтвердити документ',
   help_summary: 'Генератор документації OpenAPI v3',
   help_app_listen_tip:
-    'Передаючи app, розділіть new WebApp і app.listen (або слухайте лише у вхідному файлі), щоб CLI import не запускав сервер як побічний ефект',
+    'Розділіть new WebApp і app.listen (або слухайте лише у вхідному файлі), щоб CLI import не запускав сервер як побічний ефект',
   has_error: 'Помилки {{error_count}}, попередження {{warning_count}}',
   no_error: 'немає помилок',
 });

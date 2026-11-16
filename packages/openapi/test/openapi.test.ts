@@ -23,7 +23,9 @@ afterEach(() => {
 });
 
 test('中间件', async () => {
-  expect(openapi({ routers: [] })).toBeInstanceOf(ConsoleMiddleware);
+  expect(openapi({ routers: [], app: new TestWebApp() })).toBeInstanceOf(
+    ConsoleMiddleware,
+  );
 });
 
 test('执行指令', async () => {
@@ -34,6 +36,7 @@ test('执行指令', async () => {
     mount: [
       openapi({
         routers: [],
+        app: new TestWebApp(),
         saveToFile: file,
         // 测试进程 cwd 常为 monorepo 根；显式传入，避免读到根 package.json
         docs: { info: { title: 'aomex', version: '1.2.3' } },
@@ -120,7 +123,7 @@ test('CLI 传入 app 时读取 mount 与 envelope', async () => {
 test('未命中则继续执行中间件', async () => {
   const spy = vitest.fn();
   const app = new TestConsoleApp({
-    mount: [openapi({ routers: [] }), middleware.console(spy)],
+    mount: [openapi({ routers: [], app: new TestWebApp() }), middleware.console(spy)],
   });
 
   await app.run('openapi');
@@ -133,7 +136,9 @@ test('未命中则继续执行中间件', async () => {
 
 test('自定义指令名称', async () => {
   const app = new TestConsoleApp({
-    mount: [openapi({ commandName: 'openapi:admin', routers: [] })],
+    mount: [
+      openapi({ commandName: 'openapi:admin', routers: [], app: new TestWebApp() }),
+    ],
   });
 
   await expect(app.run('openapi')).resolves.toBe(1);

@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'Verificar o documento',
   help_summary: 'Xerador de documentación OpenAPI v3',
   help_app_listen_tip:
-    'Ao pasar app, separe new WebApp de app.listen (ou escoite só no ficheiro de entrada) para evitar que o import do CLI inicie o servidor como efecto secundario',
+    'Separe new WebApp de app.listen (ou escoite só no ficheiro de entrada) para evitar que o import do CLI inicie o servidor como efecto secundario',
   has_error: 'Erros {{error_count}}, avisos {{warning_count}}',
   no_error: 'sen erros',
 });

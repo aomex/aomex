@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'Staðfestu skjal',
   help_summary: 'OpenAPI v3 skjöl rafall',
   help_app_listen_tip:
-    'Þegar þú sendir app skaltu aðskilja new WebApp og app.listen (eða hlusta aðeins í inngangstölunni) svo CLI-innflutningur ræsi ekki þjóninn sem aukaverkun',
+    'Aðskiljið new WebApp og app.listen (eða hlustaðu aðeins í inngangstölunni) svo CLI-innflutningur ræsi ekki þjóninn sem aukaverkun',
   has_error: '{{error_count}} villur, {{warning_count}} viðvaranir',
   no_error: 'engar villur',
 });

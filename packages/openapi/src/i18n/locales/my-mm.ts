@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'စာရွက်စာတမ်းကို အတည်ပြုပါ။',
   help_summary: 'OpenAPI v3 စာရွက်စာတမ်းထုတ်ပေးသည့်မီးစက်',
   help_app_listen_tip:
-    'app ပေးပို့သည့်အခါ new WebApp နှင့် app.listen ကို ခွဲထားပါ (သို့မဟုတ် entry ဖိုင်တွင်သာ listen လုပ်ပါ)၊ CLI import က ဘေးထွက်အကျိုးသက်ရောက်မှုအဖြစ် ဆာဗာကို စတင်မည်မဟုတ်စေရန်',
+    'new WebApp နှင့် app.listen ကို ခွဲထားပါ (သို့မဟုတ် entry ဖိုင်တွင်သာ listen လုပ်ပါ)၊ CLI import က ဘေးထွက်အကျိုးသက်ရောက်မှုအဖြစ် ဆာဗာကို စတင်မည်မဟုတ်စေရန်',
   has_error: '{{error_count}} အမှားအယွင်းများ၊ {{warning_count}} သတိပေးချက်များ',
   no_error: 'အမှားအယွင်းမရှိပါ။',
 });

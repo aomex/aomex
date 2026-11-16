@@ -23,6 +23,7 @@ afterEach(() => {
 test('指定基础文档', async () => {
   const result = await generateOpenapiWithSpinner({
     routers: [],
+    app: new TestWebApp(),
     docs: {
       openapi: '3.0.2',
       info: { version: '1.2.3', title: 'abc' },
@@ -44,6 +45,7 @@ test('指定基础文档', async () => {
 test('手动修复文档', async () => {
   const result = await generateOpenapiWithSpinner({
     routers: [],
+    app: new TestWebApp(),
     docs: { info: { title: 'aomex', version: '1.2.3' } },
     fix(data) {
       data.info.description = ' desc foo bar';

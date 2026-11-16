@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'Belge piştrast bikin',
   help_summary: 'OpenAPI v3 hilberînerê belgekirinê',
   help_app_listen_tip:
-    'Dema app derbas dikî, new WebApp û app.listen cuda bike (an jî tenê di pela têketinê de listen bike) da ku importa CLI-ê serverê wekî bandora alîkar nedestpê bike',
+    'new WebApp û app.listen cuda bike (an jî tenê di pela têketinê de listen bike) da ku importa CLI-ê serverê wekî bandora alîkar nedestpê bike',
   has_error: 'Çewtiyên {{error_count}}, hişyariyên {{warning_count}}',
   no_error: 'tu çewtî',
 });

@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'ලේඛනය තහවුරු කරන්න',
   help_summary: 'OpenAPI v3 ලේඛන උත්පාදක යන්ත්රය',
   help_app_listen_tip:
-    'app යැවීමේදී new WebApp සහ app.listen වෙන් කරන්න (නැතහොත් ප්‍රවේශ ගොනුවේ පමණක් listen කරන්න), CLI import අතුරු ඵලයක් ලෙස සර්වරය ආරම්භ නොකරන ලෙස',
+    'new WebApp සහ app.listen වෙන් කරන්න (නැතහොත් ප්‍රවේශ ගොනුවේ පමණක් listen කරන්න), CLI import අතුරු ඵලයක් ලෙස සර්වරය ආරම්භ නොකරන ලෙස',
   has_error: '{{error_count}} දෝෂ, {{warning_count}} අනතුරු ඇඟවීම්',
   no_error: 'දෝෂ නොමැත',
 });

@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'Tarkista asiakirja',
   help_summary: 'OpenAPI v3 -dokumentaatiogeneraattori',
   help_app_listen_tip:
-    'Kun välität app-parametrin, erota new WebApp ja app.listen (tai kuuntele vain entry-tiedostossa), jotta CLI-import ei käynnistä palvelinta sivuvaikutuksena',
+    'Erota new WebApp ja app.listen (tai kuuntele vain entry-tiedostossa), jotta CLI-import ei käynnistä palvelinta sivuvaikutuksena',
   has_error: '{{error_count}}-virheet, {{warning_count}}-varoitukset',
   no_error: 'ei virheitä',
 });

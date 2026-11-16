@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'Verifica documento',
   help_summary: 'Generatore di documentazione OpenAPI v3',
   help_app_listen_tip:
-    'Quando passi app, separa new WebApp da app.listen (o fai listen solo nel file di ingresso) per evitare che l’import CLI avvii il server come effetto collaterale',
+    'Separa new WebApp da app.listen (o fai listen solo nel file di ingresso) per evitare che l’import CLI avvii il server come effetto collaterale',
   has_error: 'Errori {{error_count}}, avvisi {{warning_count}}',
   no_error: 'nessun errore',
 });

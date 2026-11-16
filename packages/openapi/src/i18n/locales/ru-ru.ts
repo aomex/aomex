@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'Проверить документ',
   help_summary: 'Генератор документации OpenAPI v3',
   help_app_listen_tip:
-    'При передаче app разделите new WebApp и app.listen (или слушайте только в точке входа), чтобы CLI import не запускал сервер как побочный эффект',
+    'Разделите new WebApp и app.listen (или слушайте только в точке входа), чтобы CLI import не запускал сервер как побочный эффект',
   has_error: 'Ошибки {{error_count}}, предупреждения {{warning_count}}',
   no_error: 'нет ошибок',
 });

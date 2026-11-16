@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'التحقق من الوثيقة',
   help_summary: 'مولد وثائق OpenAPI v3',
   help_app_listen_tip:
-    'عند تمرير app، افصل new WebApp عن app.listen (أو نفّذ listen فقط في ملف الدخول) لتجنب تشغيل الخادم كأثر جانبي عند استيراد CLI',
+    'افصل new WebApp عن app.listen (أو نفّذ listen فقط في ملف الدخول) لتجنب تشغيل الخادم كأثر جانبي عند استيراد CLI',
   has_error: 'أخطاء {{error_count}}، تحذيرات {{warning_count}}',
   no_error: 'لا توجد أخطاء',
 });

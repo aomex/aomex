@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'ಡಾಕ್ಯುಮೆಂಟ್ ಪರಿಶೀಲಿಸಿ',
   help_summary: 'OpenAPI v3 ದಸ್ತಾವೇಜನ್ನು ಜನರೇಟರ್',
   help_app_listen_tip:
-    'app ರವಾನಿಸುವಾಗ new WebApp ಮತ್ತು app.listen ಅನ್ನು ಬೇರ್ಪಡಿಸಿ (ಅಥವಾ ಕೇವಲ ಎಂಟ್ರಿ ಫೈಲ್‌ನಲ್ಲಿ listen ಮಾಡಿ), CLI import ಪಕ್ಷಪರಿಣಾಮವಾಗಿ ಸರ್ವರ್ ಪ್ರಾರಂಭಿಸದಂತೆ',
+    'new WebApp ಮತ್ತು app.listen ಅನ್ನು ಬೇರ್ಪಡಿಸಿ (ಅಥವಾ ಕೇವಲ ಎಂಟ್ರಿ ಫೈಲ್‌ನಲ್ಲಿ listen ಮಾಡಿ), CLI import ಪಕ್ಷಪರಿಣಾಮವಾಗಿ ಸರ್ವರ್ ಪ್ರಾರಂಭಿಸದಂತೆ',
   has_error: '{{error_count}} ದೋಷಗಳು, {{warning_count}} ಎಚ್ಚರಿಕೆಗಳು',
   no_error: 'ಯಾವುದೇ ದೋಷಗಳಿಲ್ಲ',
 });

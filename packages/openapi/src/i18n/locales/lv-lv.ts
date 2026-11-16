@@ -13,7 +13,7 @@ export default I18n.satisfies(zh).define({
   validate: 'Apstipriniet dokumentu',
   help_summary: 'OpenAPI v3 dokumentācijas ģenerators',
   help_app_listen_tip:
-    'Nododot app, atdaliet new WebApp un app.listen (vai klausieties tikai ieejas failā), lai CLI imports palaistu serveri kā blakusefektu',
+    'Atdaliet new WebApp un app.listen (vai klausieties tikai ieejas failā), lai CLI imports palaistu serveri kā blakusefektu',
   has_error: '{{error_count}} kļūdas, {{warning_count}} brīdinājumi',
   no_error: 'nekādu kļūdu',
 });
