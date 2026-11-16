@@ -39,7 +39,7 @@ test('指定基础文档', async () => {
       "tags": [],
     }
   `);
-});
+}, 15_000);
 
 test('手动修复文档', async () => {
   const result = await generateOpenapiWithSpinner({

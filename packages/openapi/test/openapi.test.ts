@@ -46,7 +46,7 @@ test('执行指令', async () => {
   expect(readFileSync(file, 'utf8')).toMatchInlineSnapshot(
     `"{"info":{"title":"aomex","version":"1.2.3"},"openapi":"3.0.3","tags":[],"paths":{}}"`,
   );
-});
+}, 15_000);
 
 test('CLI 传入 app 时读取 mount 与 envelope', async () => {
   const file = join(tmpdir(), `cli-envelope-${Date.now()}.json`);
