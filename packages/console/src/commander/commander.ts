@@ -28,7 +28,7 @@ export class Commander<
     options: BuilderOptions<Props, T>,
   ): Builder.Interface<Props, T> {
     const builder = new Builder(this.prefix, toArray(commandName), options);
-    options.disable !== true && this.builders.push(builder);
+    options.disabled !== true && this.builders.push(builder);
     return undefined as any;
   }
 
