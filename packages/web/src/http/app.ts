@@ -299,7 +299,7 @@ export class WebApp<
 
   callback(): http.RequestListener<any, any> {
     const fn = compose([
-      middleware.mixin(async (ctx: WebContext, next) => {
+      middleware.web(async (ctx, next) => {
         const language = this.resolveLanguage(ctx);
         await ensureI18nLanguage(language);
         return I18n.provider(language, next);

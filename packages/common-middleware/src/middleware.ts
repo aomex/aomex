@@ -5,16 +5,50 @@ export declare namespace Middleware {
   export type Infer<T> =
     T extends Middleware<infer R>
       ? R
-      : T extends (...args: any[]) => Middleware<infer R>
-        ? R
+      : T extends (...args: any[]) => infer Return
+        ? Awaited<Return> extends Middleware<infer R>
+          ? R
+          : never
         : never;
+
+  /** 合并依赖；默认 `object` 不参与交叉 */
+  export type MergeDeps<
+    Current extends object,
+    Next extends object,
+  > = object extends Current
+    ? object extends Next
+      ? Current
+      : Next
+    : object extends Next
+      ? Current
+      : Flatten<Current & Next>;
+
+  export type Flatten<T extends object> = { [K in keyof T]: T[K] } & {};
+
+  /** 把 Deps 叠到平台上下文上 */
+  export type WithDeps<Ctx extends object, Deps extends object> = object extends Deps
+    ? Ctx
+    : object extends Ctx
+      ? Flatten<Deps>
+      : Ctx & Flatten<Deps>;
 
   export type Fn<Ctx = any> = (ctx: Ctx, next: Next) => any;
 
   export type CollectArrayType<T> = T extends Middleware<infer R> ? R : unknown;
 }
 
-export interface MiddlewarePlatform {}
+export interface MiddlewarePlatform<Deps extends object = object> {
+  /**
+   * 仅用于类型提示：假定上游已挂载对应中间件，不实际执行。
+   * 可无限链式调用。
+   */
+  readonly dependsOn: <
+    T extends
+      Middleware<any> | ((...args: any[]) => Middleware<any> | Promise<Middleware<any>>),
+  >(
+    _middleware: T,
+  ) => MiddlewarePlatform<Middleware.MergeDeps<Deps, Middleware.Infer<T>>>;
+}
 
 /**
  * 中间件基类
@@ -45,7 +79,7 @@ export abstract class Middleware<Props extends object = object> {
    * 注册中间件
    */
   static register(
-    platform: keyof MiddlewarePlatform,
+    platform: Exclude<keyof MiddlewarePlatform, 'dependsOn'>,
     SubMiddleware: new (...args: any[]) => Middleware,
   ) {
     Object.defineProperty(middleware, platform, {
@@ -56,4 +90,8 @@ export abstract class Middleware<Props extends object = object> {
   }
 }
 
-export const middleware: MiddlewarePlatform = {} as any;
+export const middleware: MiddlewarePlatform = {
+  dependsOn() {
+    return middleware;
+  },
+} as any;

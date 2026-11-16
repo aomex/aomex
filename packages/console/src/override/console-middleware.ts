@@ -7,10 +7,16 @@ export type ConsoleMiddlewareToken<P extends object = object> =
   ConsoleMiddleware<P> | MixinMiddleware<P>;
 
 declare module '@aomex/common' {
-  export interface MiddlewarePlatform {
+  export interface MiddlewarePlatform<Deps extends object = object> {
     readonly console: <Props extends object = object>(
-      fn: ConsoleMiddlewareArguments<Props>['fn'] | ConsoleMiddlewareArguments<Props>,
-    ) => ConsoleMiddleware<Props>;
+      fn:
+        | ConsoleMiddlewareArguments<Middleware.MergeDeps<Props, Deps>>['fn']
+        | ConsoleMiddlewareArguments<Middleware.MergeDeps<Props, Deps>>,
+    ) => object extends Deps
+      ? ConsoleMiddleware<Props>
+      : ConsoleMiddleware<Props> & {
+          _contextType: Middleware.WithDeps<ConsoleContext, Deps>;
+        };
   }
 }
 
@@ -117,6 +123,7 @@ interface ConsoleMiddlewareArguments<T extends object> {
 }
 
 export class ConsoleMiddleware<Props extends object = object> extends Middleware<Props> {
+  declare public _contextType: ConsoleContext;
   declare protected _console_middleware_: 'console-middleware';
   private readonly helpInjector: ConsoleHelpInjector;
 

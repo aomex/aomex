@@ -6,10 +6,16 @@ export type WebMiddlewareToken<P extends object = object> =
   WebMiddleware<P> | MixinMiddleware<P>;
 
 declare module '@aomex/common' {
-  export interface MiddlewarePlatform {
+  export interface MiddlewarePlatform<Deps extends object = object> {
     readonly web: <Props extends object = object>(
-      fn: WebMiddlewareArguments<Props>['fn'] | WebMiddlewareArguments<Props>,
-    ) => WebMiddleware<Props>;
+      fn:
+        | WebMiddlewareArguments<Middleware.MergeDeps<Props, Deps>>['fn']
+        | WebMiddlewareArguments<Middleware.MergeDeps<Props, Deps>>,
+    ) => object extends Deps
+      ? WebMiddleware<Props>
+      : WebMiddleware<Props> & {
+          _contextType: Middleware.WithDeps<WebContext, Deps>;
+        };
   }
 }
 

@@ -72,3 +72,42 @@ test('注册时可传递多个参数', () => {
   const md = middleware[key](1, 2, 3, 4, 5) as MyMiddleware;
   expect(md.args).toStrictEqual([1, 2, 3, 4, 5]);
 });
+
+describe('dependsOn', () => {
+  test('返回同一 middleware 引用并可链式', () => {
+    const md = middleware.mixin(() => {});
+    expect(middleware.dependsOn(md)).toBe(middleware);
+    expect(middleware.dependsOn(md).dependsOn(md)).toBe(middleware);
+  });
+
+  test('不执行被 dependsOn 的中间件', async () => {
+    const otherSpy = vitest.fn((_, next: Next) => next());
+    const fnSpy = vitest.fn((_, next: Next) => next());
+    const other = middleware.mixin(otherSpy);
+    const md = middleware.dependsOn(other).mixin(fnSpy);
+
+    await compose([md])({});
+    expect(otherSpy).toHaveBeenCalledTimes(0);
+    expect(fnSpy).toHaveBeenCalledTimes(1);
+  });
+
+  test('工厂入参不会被调用', async () => {
+    const factory = vitest.fn(() => middleware.mixin(() => {}));
+    const fnSpy = vitest.fn((_, next: Next) => next());
+    const md = middleware.dependsOn(factory).mixin(fnSpy);
+
+    await compose([md])({});
+    expect(factory).toHaveBeenCalledTimes(0);
+    expect(fnSpy).toHaveBeenCalledTimes(1);
+  });
+
+  test('async 工厂入参不会被调用', async () => {
+    const factory = vitest.fn(async () => middleware.mixin(() => {}));
+    const fnSpy = vitest.fn((_, next: Next) => next());
+    const md = middleware.dependsOn(factory).mixin(fnSpy);
+
+    await compose([md])({});
+    expect(factory).toHaveBeenCalledTimes(0);
+    expect(fnSpy).toHaveBeenCalledTimes(1);
+  });
+});
