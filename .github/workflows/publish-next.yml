@@ -30,6 +30,8 @@ jobs:
           cache: true
           install: false
       - run: pnpm install
+      # lerna publish 不会应用 publishConfig.exports，改用 version + pnpm publish
+      - run: npx lerna version prerelease --preid "alpha.$(git rev-parse --short HEAD)" --force-publish --yes --no-push --no-git-tag-version --no-changelog --allow-branch develop
       - run: |
           npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
-          npx lerna publish --canary --dist-tag next --pre-dist-tag next --force-publish --yes
+          pnpm --recursive publish --tag next --no-git-checks
