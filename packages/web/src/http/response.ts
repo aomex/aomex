@@ -24,6 +24,7 @@ import type { OutgoingHttpHeaders } from 'node:http';
 import cookie, { type SerializeOptions as CookieSerializeOptions } from 'cookie';
 import { MIMEType } from 'node:util';
 import { i18n } from '../i18n';
+import { applyResponseEnvelope } from './envelope';
 import { ServerSentEvents } from './sse';
 
 export type Body = string | object | Stream | Buffer | null;
@@ -169,6 +170,10 @@ export class WebResponse extends ServerResponse {
 
   flush(): void {
     if (!this.writable || this.headersSent) return;
+
+    // 成功 / onError 最终都走这里；套壳须在 null→文案 转换之前
+    const envelope = this.app['options'].envelope;
+    if (envelope) applyResponseEnvelope(this, envelope);
 
     // null需要转换成字符串
     if (this.body === null) {

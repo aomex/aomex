@@ -21,6 +21,7 @@ import type { HttpError } from '../utils';
 import type { WebMiddlewareToken } from '../override';
 import { toArray, type Union2Intersection } from '@aomex/internal-tools';
 import { parseBody, type ParseBodyOptions } from '../middleware/parse-body';
+import type { EnvelopeOptions } from './envelope';
 
 export namespace WebApp {
   export type Logger = PromisifiedService<BaseLoggerService>;
@@ -47,6 +48,27 @@ export namespace WebApp {
      * ```
      */
     mount?: T;
+    /**
+     * 响应体套壳：在 `flush` 写出前包进声明结构，固定 HTTP `200`。
+     * 成功与错误（含无 `formatError` 的默认纯文本）都经 `flush` 统一套壳。
+     *
+     * ```ts
+     * import { envelope } from '@aomex/web';
+     *
+     * new WebApp({
+     *   envelope: {
+     *     content: {
+     *       success: envelope.success,
+     *       data: envelope.payload,
+     *       statusCode: envelope.statusCode,
+     *     },
+     *   },
+     *   mount: [formatError({ ... })],
+     *   // ...
+     * });
+     * ```
+     */
+    envelope?: EnvelopeOptions;
     /**
      * `combineServices` 的返回值（单个或数组）。
      * 关停：SIGINT/SIGTERM → `server.close()` → 再 await 销毁已加载服务。
