@@ -20,7 +20,7 @@ test('bin 入口 glob：magicalBraces 可匹配 cli.{ts,js,...}', async () => {
       magicalBraces: true,
       cwd: dir,
     });
-    expect(files.sort()).toEqual(['cli.ts', 'src/cli.mjs']);
+    expect(files.sort()).toEqual(['cli.ts', join('src', 'cli.mjs')]);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }

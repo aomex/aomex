@@ -1,10 +1,10 @@
 import { expect, test } from 'vitest';
 import { FileTransport } from '../../src/transports/file-transport';
 import { i18n } from '../../src/i18n';
-import { join } from 'path';
-import { tmpdir } from 'os';
-import { readFileSync, rmSync } from 'fs';
-import { styleText } from 'util';
+import { join, normalize } from 'node:path';
+import { tmpdir } from 'node:os';
+import { readFileSync, rmSync } from 'node:fs';
+import { styleText } from 'node:util';
 
 test('默认按日分目录、按等级切文件', () => {
   const t = new FileTransport();
@@ -14,7 +14,7 @@ test('默认按日分目录、按等级切文件', () => {
       timestamp: new Date(1730296983321),
       level: 'info',
     }),
-  ).toBe('logs/2024-10-30/info.log');
+  ).toBe(normalize('logs/2024-10-30/info.log'));
 });
 
 test('路径占位符支持 level', () => {
@@ -27,7 +27,7 @@ test('路径占位符支持 level', () => {
       timestamp: new Date(1730296983321),
       level: 'warn',
     }),
-  ).toBe('out/2024/warn-22.log');
+  ).toBe(normalize('out/2024/warn-22.log'));
 });
 
 test('输出到文件', async () => {

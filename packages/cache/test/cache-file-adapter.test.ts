@@ -44,15 +44,33 @@ const runMultiProcessOp = (filename: string, op: string, count: number) =>
   });
 
 const tempDirs: string[] = [];
+const openStores: CacheFileAdapter[] = [];
+
+/** Windows 上 SQLite 关闭后句柄释放可能略有延迟，删除目录需重试 */
+const removeDirWithRetry = async (dir: string) => {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      rmSync(dir, { recursive: true, force: true });
+      return;
+    } catch (error) {
+      if (attempt >= 20) throw error;
+      await sleep(50);
+    }
+  }
+};
 
 afterEach(async () => {
+  await Promise.all(openStores.splice(0).map((store) => store.disconnect()));
   while (tempDirs.length) {
-    const dir = tempDirs.pop()!;
-    rmSync(dir, { recursive: true, force: true });
+    await removeDirWithRetry(tempDirs.pop()!);
   }
 });
 
-const createStore = (filename = ':memory:') => new CacheFileAdapter({ filename });
+const createStore = (filename = ':memory:') => {
+  const store = new CacheFileAdapter({ filename });
+  if (filename !== ':memory:') openStores.push(store);
+  return store;
+};
 
 const createFileStore = () => {
   const dir = mkdtempSync(join(tmpdir(), 'aomex-cache-file-'));
@@ -338,11 +356,11 @@ test('文件库可持久化并自动创建目录', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'aomex-cache-file-'));
   tempDirs.push(dir);
   const filename = join(dir, 'nested', 'cache.sqlite');
-  const store = new CacheFileAdapter({ filename });
+  const store = createStore(filename);
   await store.setValue('foo', 'bar');
   await store.disconnect();
 
-  const store2 = new CacheFileAdapter({ filename });
+  const store2 = createStore(filename);
   await expect(store2.getValue('foo')).resolves.toBe('bar');
   await store2.disconnect();
 });
@@ -371,6 +389,7 @@ test('自定义 timeout 与绝对路径', () => {
     filename: join(dir, './cache.sqlite'),
     timeout: 1000,
   });
+  openStores.push(store);
   expect(store.filename).toBe(filename);
   expect(store['timeout']).toBe(1000);
 });
@@ -537,7 +556,7 @@ describe('多进程原子性', () => {
       Array.from({ length: processes * perProcess }, (_, i) => i + 1),
     );
 
-    const reader = new CacheFileAdapter({ filename });
+    const reader = createStore(filename);
     await expect(reader.getValue('counter')).resolves.toBe(
       String(processes * perProcess),
     );
@@ -559,7 +578,7 @@ describe('多进程原子性', () => {
     expect(results.filter(Boolean)).toHaveLength(1);
     expect(results.filter((item) => item === false)).toHaveLength(7);
 
-    const reader = new CacheFileAdapter({ filename });
+    const reader = createStore(filename);
     await expect(reader.existsKey('nx-key')).resolves.toBeTruthy();
     await reader.disconnect();
   }, 60_000);
@@ -578,7 +597,7 @@ describe('多进程原子性', () => {
       ),
     );
 
-    const reader = new CacheFileAdapter({ filename });
+    const reader = createStore(filename);
     const values: string[] = [];
     for (;;) {
       const item = await reader.rightPopValue('list');
