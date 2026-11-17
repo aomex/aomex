@@ -31,11 +31,12 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@aomex/rate-limit": "^4.0.0",
-    "ioredis": ">=5"
+    "@aomex/rate-limit": "^4.0.0"
+  },
+  "dependencies": {
+    "ioredis": "^6.0.0"
   },
   "devDependencies": {
-    "@aomex/rate-limit": "workspace:*",
-    "ioredis": "^6.0.0"
+    "@aomex/rate-limit": "workspace:*"
   }
 }

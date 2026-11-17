@@ -1,6 +1,8 @@
 import { RateLimitStore, type RateLimitState } from '@aomex/rate-limit';
 import { Redis, type RedisOptions } from 'ioredis';
 
+export type { RedisOptions };
+
 export class RateLimitRedisStore extends RateLimitStore {
   protected readonly redis: Redis;
 

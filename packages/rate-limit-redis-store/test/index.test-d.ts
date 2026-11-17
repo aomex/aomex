@@ -1,5 +1,5 @@
-import { Redis, type RedisOptions } from 'ioredis';
-import { RateLimitRedisStore } from '../src';
+import { Redis } from 'ioredis';
+import { RateLimitRedisStore, type RedisOptions } from '../src';
 
 const opts = {} as RedisOptions;
 new RateLimitRedisStore(opts);

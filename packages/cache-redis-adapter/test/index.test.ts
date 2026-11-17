@@ -1,8 +1,7 @@
-import type { RedisOptions } from 'ioredis';
 import RedisMemoryServer from 'redis-memory-server';
 import { afterAll, afterEach, beforeAll, describe, expect, test, vitest } from 'vitest';
 import { getRedisBinary } from './helper/get-redis-binary';
-import { CacheRedisAdapter } from '../src';
+import { CacheRedisAdapter, type RedisOptions } from '../src';
 import sleep from 'sleep-promise';
 
 let redisServer: RedisMemoryServer;

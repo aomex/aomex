@@ -31,11 +31,12 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "peerDependencies": {
-    "@aomex/cache": "^4.0.0",
-    "ioredis": ">=5"
+    "@aomex/cache": "^4.0.0"
+  },
+  "dependencies": {
+    "ioredis": "^6.0.0"
   },
   "devDependencies": {
-    "@aomex/cache": "workspace:*",
-    "ioredis": "^6.0.0"
+    "@aomex/cache": "workspace:*"
   }
 }
