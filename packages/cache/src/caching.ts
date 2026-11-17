@@ -1,4 +1,5 @@
 import { CacheAdapter } from './cache-adapter';
+import { CacheKey } from './cache-key';
 
 export namespace Caching {
   export type Types =
@@ -12,6 +13,9 @@ export namespace Caching {
     | Set<any>
     | bigint
     | Date;
+
+  /** 缓存键：字符串或 `CacheKey` */
+  export type Key = string | CacheKey;
 }
 
 const CACHING_TYPE = '_$caching_type$_';
@@ -23,9 +27,9 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   /**
    * 查看缓存是否存在
    */
-  async exists(key: string): Promise<boolean> {
+  async exists(key: Caching.Key): Promise<boolean> {
     await this.adapter.connect();
-    return this.adapter.existsKey(key);
+    return this.adapter.existsKey(this.resolveKey(key));
   }
 
   /**
@@ -36,15 +40,15 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * await cache.get('key', 'my-value'); // my-value
    * ```
    */
-  async get<T>(key: string, defaultValue: T): Promise<T>;
+  async get<T>(key: Caching.Key, defaultValue: T): Promise<T>;
   async get<T extends Caching.Types>(
-    key: string,
+    key: Caching.Key,
     defaultValue: T | null | undefined,
   ): Promise<T | null>;
-  async get<T extends Caching.Types>(key: string): Promise<T | null>;
-  async get(key: string, defaultValue?: Caching.Types | null): Promise<any> {
+  async get<T extends Caching.Types>(key: Caching.Key): Promise<T | null>;
+  async get(key: Caching.Key, defaultValue?: Caching.Types | null): Promise<any> {
     await this.adapter.connect();
-    const result = await this.adapter.getValue(key);
+    const result = await this.adapter.getValue(this.resolveKey(key));
     return this.decodeValue(result, defaultValue);
   }
 
@@ -56,9 +60,17 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * await cache.set('key', 'value', 3600);
    * ```
    */
-  async set(key: string, value: Caching.Types, durationMs?: number): Promise<boolean> {
+  async set(
+    key: Caching.Key,
+    value: Caching.Types,
+    durationMs?: number,
+  ): Promise<boolean> {
     await this.adapter.connect();
-    return this.adapter.setValue(key, this.encodeValue(value), durationMs);
+    return this.adapter.setValue(
+      this.resolveKey(key),
+      this.encodeValue(value),
+      durationMs,
+    );
   }
 
   /**
@@ -69,9 +81,17 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * await cache.setNX('foo', 'baz'); // false
    * ```
    */
-  async setNX(key: string, value: Caching.Types, durationMs?: number): Promise<boolean> {
+  async setNX(
+    key: Caching.Key,
+    value: Caching.Types,
+    durationMs?: number,
+  ): Promise<boolean> {
     await this.adapter.connect();
-    return this.adapter.setNotExistValue(key, this.encodeValue(value), durationMs);
+    return this.adapter.setNotExistValue(
+      this.resolveKey(key),
+      this.encodeValue(value),
+      durationMs,
+    );
   }
 
   /**
@@ -82,11 +102,11 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * await cache.leftPush('foo', 'b', 'c'); // ['b', 'c', 'a']
    * ```
    */
-  async leftPush(key: string, ...values: Caching.Types[]): Promise<boolean> {
+  async leftPush(key: Caching.Key, ...values: Caching.Types[]): Promise<boolean> {
     if (!values.length) return false;
     await this.adapter.connect();
     return this.adapter.leftPushValue(
-      key,
+      this.resolveKey(key),
       ...values.map((value) => this.encodeValue(value)),
     );
   }
@@ -94,9 +114,9 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   /**
    * 移除列表的最后一个元素，返回值为被移除的元素
    */
-  async rightPop<T extends Caching.Types>(key: string): Promise<T | null> {
+  async rightPop<T extends Caching.Types>(key: Caching.Key): Promise<T | null> {
     await this.adapter.connect();
-    const result = await this.adapter.rightPopValue(key);
+    const result = await this.adapter.rightPopValue(this.resolveKey(key));
     return this.decodeValue(result);
   }
 
@@ -109,17 +129,17 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * await cache.increment('foo'); // 3
    * ```
    */
-  async increment(key: string): Promise<number> {
+  async increment(key: Caching.Key): Promise<number> {
     await this.adapter.connect();
-    return this.adapter.increaseValue(key);
+    return this.adapter.increaseValue(this.resolveKey(key));
   }
 
   /**
    * 重新设置缓存时间。如果key不存在，则返回`false`
    */
-  async expire(key: string, durationMs: number): Promise<boolean> {
+  async expire(key: Caching.Key, durationMs: number): Promise<boolean> {
     await this.adapter.connect();
-    return this.adapter.expireKey(key, durationMs);
+    return this.adapter.expireKey(this.resolveKey(key), durationMs);
   }
 
   /**
@@ -136,25 +156,25 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * await cache.ttl('foo');          // 59000
    * ```
    */
-  async ttl(key: string): Promise<number> {
+  async ttl(key: Caching.Key): Promise<number> {
     await this.adapter.connect();
-    return this.adapter.ttlKey(key);
+    return this.adapter.ttlKey(this.resolveKey(key));
   }
 
   /**
    * 将key中储存的数字值减一。如果key不存在，那么key的值会先被初始化为0，然后再执行操作。如果值包含错误的类型，或字符串类型的值不能表示为数字，那么返回一个错误
    */
-  async decrement(key: string): Promise<number> {
+  async decrement(key: Caching.Key): Promise<number> {
     await this.adapter.connect();
-    return this.adapter.decreaseValue(key);
+    return this.adapter.decreaseValue(this.resolveKey(key));
   }
 
   /**
    * 删除指定缓存
    */
-  async delete(key: string): Promise<boolean> {
+  async delete(key: Caching.Key): Promise<boolean> {
     await this.adapter.connect();
-    return this.adapter.deleteValue(key);
+    return this.adapter.deleteValue(this.resolveKey(key));
   }
 
   /**
@@ -163,6 +183,10 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   async deleteAll(): Promise<boolean> {
     await this.adapter.connect();
     return this.adapter.deleteAllValues();
+  }
+
+  protected resolveKey(key: Caching.Key): string {
+    return typeof key === 'string' ? key : key['value'];
   }
 
   protected encodeValue(value: Caching.Types) {

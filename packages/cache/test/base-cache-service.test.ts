@@ -1,6 +1,7 @@
 import { combineServices, internalDestroyServices } from '@aomex/common';
+import { createHash } from 'node:crypto';
 import { afterEach, expect, test, vitest } from 'vitest';
-import { BaseCacheService, createRemember, type CacheAdapter } from '../src';
+import { BaseCacheService, CacheKey, createRemember, type CacheAdapter } from '../src';
 import { CacheMemoryAdapter } from '../src/adapters/cache-memory-adapter';
 
 afterEach(() => {
@@ -49,7 +50,7 @@ test('onDestroy 调用 adapter.disconnect', async () => {
   expect(disconnect).toHaveBeenCalledOnce();
 });
 
-test('业务方法可通过 this.cache 读写', async () => {
+test('业务方法可通过 this.cache 读写 CacheKey', async () => {
   class DemoCacheService extends BaseCacheService {
     protected createAdapter() {
       return new CacheMemoryAdapter();
@@ -71,7 +72,7 @@ test('业务方法可通过 this.cache 读写', async () => {
   await expect(services.cache.load(1)).resolves.toEqual({ id: 1 });
 });
 
-test('key 用冒号拼接片段', async () => {
+test('key / keyHash 直接生成 CacheKey', async () => {
   class DemoCacheService extends BaseCacheService {
     protected createAdapter() {
       return new CacheMemoryAdapter();
@@ -79,34 +80,44 @@ test('key 用冒号拼接片段', async () => {
     build(...parts: Array<string | number>) {
       return this.key(...parts);
     }
-  }
-
-  const services = await combineServices({
-    cache: async () => DemoCacheService,
-  });
-  await expect(services.cache.build('item', 1)).resolves.toBe('item:1');
-  await expect(services.cache.build('a', 'b', 'c')).resolves.toBe('a:b:c');
-  await expect(services.cache.build('only')).resolves.toBe('only');
-  await expect(services.cache.build()).resolves.toBe('');
-});
-
-test('hash 返回 md5 hex', async () => {
-  class DemoCacheService extends BaseCacheService {
-    protected createAdapter() {
-      return new CacheMemoryAdapter();
+    hashed(...parts: Array<string | number>) {
+      return this.keyHash(...parts);
     }
-    md5(key: string | number) {
-      return this.hash(key);
+    viaBuilder(...parts: Array<string | number>) {
+      return this.key().key(...parts);
+    }
+    raw() {
+      return this.key();
     }
   }
 
   const services = await combineServices({
     cache: async () => DemoCacheService,
   });
-  await expect(services.cache.md5('hello')).resolves.toBe(
+  const built = await services.cache.build('item', 1);
+  expect(built).toBeInstanceOf(CacheKey);
+  expect(built['value']).toBe('item:1');
+  await expect(services.cache.build('a', 'b', 'c').then((k) => k['value'])).resolves.toBe(
+    'a:b:c',
+  );
+  await expect(services.cache.build('only').then((k) => k['value'])).resolves.toBe(
+    'only',
+  );
+  await expect(services.cache.build().then((k) => k['value'])).resolves.toBe('');
+  await expect(
+    services.cache.viaBuilder('item', 1).then((k) => k['value']),
+  ).resolves.toBe('item:1');
+
+  await expect(services.cache.hashed('user', 1).then((k) => k['value'])).resolves.toBe(
+    createHash('md5').update('user:1').digest('hex'),
+  );
+  await expect(services.cache.hashed().then((k) => k['value'])).resolves.toBe(
+    createHash('md5').update('').digest('hex'),
+  );
+  await expect(services.cache.hashed('hello').then((k) => k['value'])).resolves.toBe(
     '5d41402abc4b2a76b9719d911017c592',
   );
-  await expect(services.cache.md5(123)).resolves.toBe('202cb962ac59075b964b07152d234b70');
+  await expect(services.cache.raw()).resolves.toBeInstanceOf(CacheKey);
 });
 
 test('ttl 提供分钟到年的毫秒常量', async () => {

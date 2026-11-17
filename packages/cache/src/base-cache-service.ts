@@ -1,6 +1,6 @@
-import { createHash } from 'node:crypto';
 import { Service } from '@aomex/common';
 import { CacheAdapter } from './cache-adapter';
+import { CacheKey } from './cache-key';
 import { Caching } from './caching';
 import { attachRememberScopes, detachRememberScopes } from './remember';
 
@@ -64,13 +64,31 @@ export abstract class BaseCacheService<
     return CACHE_TTL;
   }
 
-  /** 用 `:` 拼接缓存 key 片段，如 `key('user', 1)` → `'user:1'` */
-  protected key(...keys: Array<string | number>): string {
-    return keys.join(':');
+  /**
+   * 用 `:` 拼接片段，得到可读的缓存键（可继续链式调用）。
+   *
+   * ```typescript
+   * this.key('user', 1);              // user:1
+   * this.key('user').key(1);          // 同上
+   * this.key('user').keyHash(1);      // user:<md5('1')>  前缀保留，只哈希新片段
+   * this.key('user', 1).toHash();     // <md5('user:1')>  整键再哈希
+   * await this.cache.get(this.key('user', 1));
+   * ```
+   */
+  protected key(...keys: Array<string | number>): CacheKey {
+    return keys.length === 0 ? new CacheKey() : new CacheKey().key(...keys);
   }
 
-  /** 对 key 做 MD5，适合过长或不规则片段 */
-  protected hash(key: string | number): string {
-    return createHash('md5').update(String(key)).digest('hex');
+  /**
+   * 将片段用 `:` 拼接后整体 MD5（无可读前缀）。
+   * 等价于 `this.key(...keys).toHash()`。
+   *
+   * ```typescript
+   * this.keyHash('user', 1);          // <md5('user:1')>
+   * this.key('user').keyHash(1);      // 不是这个：那是「前缀 + 哈希段」
+   * ```
+   */
+  protected keyHash(...keys: Array<string | number>): CacheKey {
+    return new CacheKey().keyHash(...keys);
   }
 }

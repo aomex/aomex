@@ -1,7 +1,9 @@
 import { type TypeEqual, expectType } from 'ts-expect';
+import { CacheKey } from '../src/cache-key';
 import { Caching } from '../src/caching';
 
 let caching!: Caching;
+const cacheKey = new CacheKey().key('foo', 1);
 
 // get
 {
@@ -13,6 +15,12 @@ let caching!: Caching;
 
   const result3 = await caching.get<string>('');
   expectType<TypeEqual<string | null, typeof result3>>(true);
+
+  const result4 = await caching.get(cacheKey);
+  expectType<TypeEqual<Caching.Types | null, typeof result4>>(true);
+
+  const result5 = await caching.get(cacheKey, 1);
+  expectType<TypeEqual<number, typeof result5>>(true);
 }
 
 // set
@@ -23,8 +31,12 @@ let caching!: Caching;
   await caching.set('', []);
   await caching.set('', false);
   await caching.set('', '', 100);
+  await caching.set(cacheKey, 'v');
+  await caching.set(cacheKey, 'v', 100);
   // @ts-expect-error
   await caching.set('', '', '100');
+  // @ts-expect-error
+  await caching.set(1, '');
 }
 
 // add
@@ -35,6 +47,7 @@ let caching!: Caching;
   await caching.setNX('', []);
   await caching.setNX('', false);
   await caching.setNX('', '', 100);
+  await caching.setNX(cacheKey, 'v');
   // @ts-expect-error
   await caching.setNX('', '', '100');
 }
@@ -42,6 +55,7 @@ let caching!: Caching;
 // delete
 {
   expectType<boolean>(await caching.delete(''));
+  expectType<boolean>(await caching.delete(cacheKey));
   // @ts-expect-error
   await caching.delete('', '');
 }
@@ -56,24 +70,36 @@ let caching!: Caching;
 // exists
 {
   expectType<boolean>(await caching.exists(''));
+  expectType<boolean>(await caching.exists(cacheKey));
 }
 
 // increase
 {
   const result = await caching.increment('a');
   expectType<TypeEqual<number, typeof result>>(true);
+  expectType<TypeEqual<number, Awaited<ReturnType<typeof caching.increment>>>>(true);
+  await caching.increment(cacheKey);
 }
 
 // decrease
 {
   const result = await caching.decrement('a');
   expectType<TypeEqual<number, typeof result>>(true);
+  await caching.decrement(cacheKey);
 }
 
 // expires
 {
   const result = await caching.expire('', 20);
   expectType<TypeEqual<boolean, typeof result>>(true);
+  await caching.expire(cacheKey, 20);
+}
+
+// ttl / leftPush / rightPop 接受 CacheKey
+{
+  await caching.ttl(cacheKey);
+  await caching.leftPush(cacheKey, 'a');
+  await caching.rightPop(cacheKey);
 }
 
 // 手动指定类型

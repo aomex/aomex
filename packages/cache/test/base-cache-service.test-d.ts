@@ -1,6 +1,6 @@
 import { combineServices, type PromisifiedService } from '@aomex/common';
 import { type TypeEqual, expectType } from 'ts-expect';
-import { BaseCacheService, CacheAdapter, Caching } from '../src';
+import { BaseCacheService, CacheAdapter, CacheKey, Caching } from '../src';
 import { CacheMemoryAdapter } from '../src/adapters/cache-memory-adapter';
 
 class DemoCacheService extends BaseCacheService {
@@ -17,7 +17,15 @@ class DemoCacheService extends BaseCacheService {
   }
 
   keyOf(id: number) {
-    return this.key('item', this.hash(id));
+    return this.keyHash('item', id);
+  }
+
+  hashedOf(id: number) {
+    return this.keyHash('item', id);
+  }
+
+  builder() {
+    return this.key();
   }
 
   dayMs() {
@@ -36,15 +44,19 @@ class DemoCacheService extends BaseCacheService {
   expectType<TypeEqual<(id: number) => Promise<boolean>, typeof services.cache.save>>(
     true,
   );
-  expectType<TypeEqual<(id: number) => Promise<string>, typeof services.cache.keyOf>>(
+  expectType<TypeEqual<(id: number) => Promise<CacheKey>, typeof services.cache.keyOf>>(
     true,
   );
+  expectType<
+    TypeEqual<(id: number) => Promise<CacheKey>, typeof services.cache.hashedOf>
+  >(true);
+  expectType<TypeEqual<() => Promise<CacheKey>, typeof services.cache.builder>>(true);
   expectType<TypeEqual<() => Promise<86_400_000>, typeof services.cache.dayMs>>(true);
 
   expectType<TypeEqual<never, keyof typeof services.cache & 'cache'>>(true);
   expectType<TypeEqual<never, keyof typeof services.cache & 'createAdapter'>>(true);
   expectType<TypeEqual<never, keyof typeof services.cache & 'key'>>(true);
-  expectType<TypeEqual<never, keyof typeof services.cache & 'hash'>>(true);
+  expectType<TypeEqual<never, keyof typeof services.cache & 'keyHash'>>(true);
   expectType<TypeEqual<never, keyof typeof services.cache & 'ttl'>>(true);
   // @ts-expect-error
   services.cache.cache;
@@ -53,11 +65,13 @@ class DemoCacheService extends BaseCacheService {
   // @ts-expect-error
   services.cache.key;
   // @ts-expect-error
-  services.cache.hash;
+  services.cache.keyHash;
   // @ts-expect-error
   services.cache.ttl;
   // @ts-expect-error
   services.cache.onInit;
+  // @ts-expect-error 已移除独立 hash
+  services.cache.hash;
 }
 
 {
@@ -115,22 +129,39 @@ class DemoCacheService extends BaseCacheService {
     ok() {
       return this.key('a', 1, 'b');
     }
+    okBuilder() {
+      return this.key().key('a', 1, 'b');
+    }
+    hashed() {
+      return this.keyHash('a', 1);
+    }
+    hashedBuilder() {
+      return this.key().keyHash('a', 1);
+    }
     badBool() {
       // @ts-expect-error 不接受 boolean
       return this.key(true);
     }
-    hashOk() {
-      return this.hash('x');
+    badHashKey() {
+      // @ts-expect-error 不接受 boolean
+      return this.keyHash(true);
     }
-    hashBad() {
-      // @ts-expect-error 不接受 object
-      return this.hash({ a: 1 });
+    badHashConcat() {
+      // @ts-expect-error 不接受 boolean
+      return this.key().keyHash(true);
+    }
+    removedHash() {
+      // @ts-expect-error 已移除 hash
+      return this.key().hash('x');
     }
     ttlShape() {
       return this.ttl;
     }
   }
-  expectType<TypeEqual<string, ReturnType<Typed['ok']>>>(true);
+  expectType<TypeEqual<CacheKey, ReturnType<Typed['ok']>>>(true);
+  expectType<TypeEqual<CacheKey, ReturnType<Typed['okBuilder']>>>(true);
+  expectType<TypeEqual<CacheKey, ReturnType<Typed['hashed']>>>(true);
+  expectType<TypeEqual<CacheKey, ReturnType<Typed['hashedBuilder']>>>(true);
   expectType<
     TypeEqual<
       {
@@ -158,4 +189,6 @@ class DemoCacheService extends BaseCacheService {
   type Public = PromisifiedService<DemoCacheService>;
   expectType<TypeEqual<never, keyof Public & 'cache'>>(true);
   expectType<TypeEqual<never, keyof Public & keyof CacheAdapter>>(true);
+  expectType<TypeEqual<never, keyof Public & 'key'>>(true);
+  expectType<TypeEqual<never, keyof Public & 'keyHash'>>(true);
 }

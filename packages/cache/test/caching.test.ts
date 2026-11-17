@@ -1,6 +1,6 @@
 import { describe, expect, test, vitest } from 'vitest';
 import { MockStore } from './mock/caching.mock';
-import { Caching } from '../src';
+import { CacheKey, Caching } from '../src';
 
 const caching = new Caching(new MockStore());
 
@@ -23,6 +23,10 @@ test('设置值', async () => {
   await caching.set('foo', 'bar', 20);
   expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', 20);
 
+  const key = new CacheKey().key('ns', 'foo');
+  await caching.set(key, 'bar', 30);
+  expect(spy).toHaveBeenLastCalledWith('ns:foo', '"bar"', 30);
+
   spy.mockRestore();
 });
 
@@ -30,10 +34,13 @@ test('获取值', async () => {
   const spy = vitest
     .spyOn(MockStore.prototype, 'getValue')
     .mockImplementationOnce(async () => null)
-    .mockImplementationOnce(async () => '"bar"');
+    .mockImplementationOnce(async () => '"bar"')
+    .mockImplementationOnce(async () => '"baz"');
 
   await expect(caching.get('foo')).resolves.toBeNull();
   await expect(caching.get('foo')).resolves.toBe('bar');
+  await expect(caching.get(new CacheKey().key('foo'))).resolves.toBe('baz');
+  expect(spy).toHaveBeenLastCalledWith('foo');
 
   spy.mockRestore();
 });
@@ -67,12 +74,17 @@ test('判断存在', async () => {
   const spy = vitest
     .spyOn(MockStore.prototype, 'existsKey')
     .mockImplementationOnce(async () => true)
-    .mockImplementationOnce(async () => false);
+    .mockImplementationOnce(async () => false)
+    .mockImplementationOnce(async () => true);
 
   await expect(caching.exists('foo1')).resolves.toBeTruthy();
   expect(spy).toHaveBeenLastCalledWith('foo1');
   await expect(caching.exists('foo2')).resolves.toBeFalsy();
   expect(spy).toHaveBeenLastCalledWith('foo2');
+  const hashed = new CacheKey().keyHash('a', 1);
+  await expect(caching.exists(hashed)).resolves.toBeTruthy();
+  expect(spy).toHaveBeenLastCalledWith(hashed['value']);
+  expect(hashed['value']).toMatch(/^[a-f0-9]{32}$/);
 
   spy.mockRestore();
 });
@@ -151,7 +163,18 @@ test('删除', async () => {
   await expect(caching.delete('foo')).resolves.toBeTruthy();
   expect(spy).toHaveBeenCalledWith('foo');
 
+  await expect(caching.delete(new CacheKey().key('bar', 2))).resolves.toBeTruthy();
+  expect(spy).toHaveBeenLastCalledWith('bar:2');
+
   spy.mockRestore();
+});
+
+test('resolveKey 将 CacheKey 转为字符串', () => {
+  expect(caching['resolveKey']('plain')).toBe('plain');
+  expect(caching['resolveKey'](new CacheKey().key('a', 1))).toBe('a:1');
+  expect(caching['resolveKey'](new CacheKey().keyHash('x'))).toBe(
+    '9dd4e461268c8034f5c8564e155c67a6',
+  );
 });
 
 test('删除全部', async () => {
