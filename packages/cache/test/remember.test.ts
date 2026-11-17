@@ -30,16 +30,18 @@ let setNxSpy: MockInstance;
 beforeEach(async () => {
   cacheService = await createCacheService();
   caching = cacheService['_cache'];
-  deleteSpy = vitest.spyOn(caching, 'delete').mockResolvedValue(true);
+  // 跟随 remember 流程：winner 删除 waiting key 后，waiter 才能结束轮询
+  // 不可用 wall-clock sleep 改 mock——会泄漏到后续用例并产生竞态
   existSpy = vitest.spyOn(caching, 'exists').mockResolvedValue(true);
+  const currentExistSpy = existSpy;
+  deleteSpy = vitest.spyOn(caching, 'delete').mockImplementation(async () => {
+    currentExistSpy.mockResolvedValue(false);
+    return true;
+  });
   setNxSpy = vitest
     .spyOn(caching, 'setNX')
     .mockResolvedValueOnce(true)
     .mockResolvedValue(false);
-
-  sleep(2_000).then(() => {
-    existSpy.mockReset().mockResolvedValue(false);
-  });
 });
 
 afterEach(async () => {
@@ -191,22 +193,22 @@ test('有缓存时直接用缓存', async () => {
 
 test('并发调用时，只获取一次数据源', async () => {
   const getSpy = vitest.spyOn(caching, 'get').mockResolvedValue(null);
-  const setSpy = vitest.spyOn(caching, 'set').mockResolvedValue(true);
+  // winner 写入缓存后，waiter 再 get 应读到缓存值（用固定值模拟其它客户端写入）
+  const setSpy = vitest.spyOn(caching, 'set').mockImplementation(async () => {
+    getSpy.mockResolvedValue('a-foo');
+    return true;
+  });
   const spy = vitest.fn();
 
   class MyClass {
     @remember({ key: 'key', duration: 1000 })
     async getData() {
-      await sleep(1500);
+      await sleep(50);
       spy();
       return 'foo-bar';
     }
   }
   const my = new MyClass();
-
-  sleep(1500).then(() => {
-    getSpy.mockReset().mockResolvedValue('a-foo');
-  });
 
   const result = await Promise.all([my.getData(), my.getData(), my.getData()]);
 
@@ -220,30 +222,29 @@ test('并发调用时，只获取一次数据源', async () => {
 
 test('不同客户端并发调用时，只获取一次数据源', async () => {
   const getSpy = vitest.spyOn(caching, 'get').mockResolvedValue(null);
-  const setSpy = vitest.spyOn(caching, 'set').mockResolvedValue(true);
+  const setSpy = vitest.spyOn(caching, 'set').mockImplementation(async () => {
+    getSpy.mockResolvedValue('a-foo');
+    return true;
+  });
   const spy1 = vitest.fn();
   const spy2 = vitest.fn();
 
   class MyClass {
     @remember({ key: 'key', duration: 1000 })
     async getData() {
-      await sleep(1500);
+      await sleep(50);
       spy1();
       return 'foo-bar';
     }
 
     @remember({ key: 'key', duration: 1200 })
     async getData1() {
-      await sleep(1500);
+      await sleep(50);
       spy2();
       return 'bar';
     }
   }
   const my = new MyClass();
-
-  sleep(1500).then(() => {
-    getSpy.mockReset().mockResolvedValue('a-foo');
-  });
 
   const result = await Promise.all([
     my.getData(),
