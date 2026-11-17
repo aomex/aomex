@@ -55,7 +55,7 @@ test('业务方法可通过 this.cache 读写', async () => {
       return new CacheMemoryAdapter();
     }
     async load(id: number) {
-      const key = this.concat('item', id);
+      const key = this.key('item', id);
       const hit = await this.cache.get<{ id: number }>(key);
       if (hit) return hit;
       const value = { id };
@@ -71,13 +71,13 @@ test('业务方法可通过 this.cache 读写', async () => {
   await expect(services.cache.load(1)).resolves.toEqual({ id: 1 });
 });
 
-test('concat 用冒号拼接片段', async () => {
+test('key 用冒号拼接片段', async () => {
   class DemoCacheService extends BaseCacheService {
     protected createAdapter() {
       return new CacheMemoryAdapter();
     }
     build(...parts: Array<string | number>) {
-      return this.concat(...parts);
+      return this.key(...parts);
     }
   }
 

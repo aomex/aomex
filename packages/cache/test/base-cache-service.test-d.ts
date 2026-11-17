@@ -9,15 +9,15 @@ class DemoCacheService extends BaseCacheService {
   }
 
   async load(id: number) {
-    return this.cache.get<{ id: number }>(this.concat('item', id));
+    return this.cache.get<{ id: number }>(this.key('item', id));
   }
 
   async save(id: number) {
-    return this.cache.set(this.concat('item', id), { id }, this.ttl.DAY);
+    return this.cache.set(this.key('item', id), { id }, this.ttl.DAY);
   }
 
   keyOf(id: number) {
-    return this.concat('item', this.hash(id));
+    return this.key('item', this.hash(id));
   }
 
   dayMs() {
@@ -43,7 +43,7 @@ class DemoCacheService extends BaseCacheService {
 
   expectType<TypeEqual<never, keyof typeof services.cache & 'cache'>>(true);
   expectType<TypeEqual<never, keyof typeof services.cache & 'createAdapter'>>(true);
-  expectType<TypeEqual<never, keyof typeof services.cache & 'concat'>>(true);
+  expectType<TypeEqual<never, keyof typeof services.cache & 'key'>>(true);
   expectType<TypeEqual<never, keyof typeof services.cache & 'hash'>>(true);
   expectType<TypeEqual<never, keyof typeof services.cache & 'ttl'>>(true);
   // @ts-expect-error
@@ -51,7 +51,7 @@ class DemoCacheService extends BaseCacheService {
   // @ts-expect-error
   services.cache.createAdapter;
   // @ts-expect-error
-  services.cache.concat;
+  services.cache.key;
   // @ts-expect-error
   services.cache.hash;
   // @ts-expect-error
@@ -113,11 +113,11 @@ class DemoCacheService extends BaseCacheService {
       return this.cache;
     }
     ok() {
-      return this.concat('a', 1, 'b');
+      return this.key('a', 1, 'b');
     }
     badBool() {
       // @ts-expect-error 不接受 boolean
-      return this.concat(true);
+      return this.key(true);
     }
     hashOk() {
       return this.hash('x');

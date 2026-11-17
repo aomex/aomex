@@ -64,8 +64,8 @@ export abstract class BaseCacheService<
     return CACHE_TTL;
   }
 
-  /** 用 `:` 拼接缓存 key 片段，如 `concat('user', 1)` → `'user:1'` */
-  protected concat(...keys: Array<string | number>): string {
+  /** 用 `:` 拼接缓存 key 片段，如 `key('user', 1)` → `'user:1'` */
+  protected key(...keys: Array<string | number>): string {
     return keys.join(':');
   }
 
