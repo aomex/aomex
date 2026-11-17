@@ -1,11 +1,12 @@
 import type { CombinedServices } from './types';
 import { serviceRegistries } from './combine-services';
+import { internalDestroyLifecycles } from './lifecycle';
 
 const destroyed = new WeakSet<object>();
 const destroying = new WeakMap<object, Promise<void>>();
 
 /**
- * 销毁已加载实例（触发 `onDestroy`）。仅接受数组；幂等。
+ * 销毁已加载服务实例，并执行 `registerLifecycle` 登记的 `onDestroy`（随后移除登记）。仅接受数组；幂等。
  *
  * 业务代码不要调用：把 `combineServices` 结果交给 `WebApp` / `ConsoleApp` 的 `services`，由框架在关停时调用。
  *
@@ -16,8 +17,8 @@ const destroying = new WeakMap<object, Promise<void>>();
 export const internalDestroyServices = async (
   services: CombinedServices[],
 ): Promise<void> => {
-  await Promise.all(
-    services.map(async (item) => {
+  await Promise.all([
+    ...services.map(async (item) => {
       if (destroyed.has(item)) return;
 
       const pending = destroying.get(item);
@@ -42,5 +43,6 @@ export const internalDestroyServices = async (
       destroying.set(item, task);
       return task;
     }),
-  );
+    internalDestroyLifecycles(),
+  ]);
 };

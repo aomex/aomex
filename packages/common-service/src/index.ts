@@ -10,3 +10,4 @@ export {
   type ServiceLoader,
 } from './combine-services';
 export { internalDestroyServices } from './destroy-services';
+export { registerLifecycle, type LifecycleHooks } from './lifecycle';
