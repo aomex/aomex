@@ -3,6 +3,10 @@ import { RateLimitStore, type RateLimitState } from './store';
 export class RateLimitMemoryStore extends RateLimitStore {
   private store = new Map<string, { expires: number; records: number[] }>();
 
+  override async onDestroy(): Promise<void> {
+    this.store.clear();
+  }
+
   override async getAndSet(data: {
     key: string;
     maxRequest: number;

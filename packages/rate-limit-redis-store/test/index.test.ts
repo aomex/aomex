@@ -3,7 +3,6 @@ import { afterAll, afterEach, beforeAll, expect, test } from 'vitest';
 import { getRedisBinary } from '../../cache-redis-adapter/test/helper/get-redis-binary';
 import { RateLimitRedisStore } from '../src';
 import sleep from 'sleep-promise';
-import { Redis } from 'ioredis';
 
 let redisServer: RedisMemoryServer;
 let store: RateLimitRedisStore;
@@ -17,6 +16,7 @@ beforeAll(async () => {
     host: await redisServer.getHost(),
     port: await redisServer.getPort(),
   });
+  await store.onInit();
 }, 60_000 /* start redis */);
 
 afterEach(async () => {
@@ -24,7 +24,7 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
-  await store['redis'].quit();
+  await store.onDestroy();
   await redisServer.stop();
 });
 
@@ -108,9 +108,14 @@ test('超过次数后，延长重置次数', async () => {
   expect(resetAt4).toBeGreaterThan(resetAt3);
 });
 
-test('允许传入redis实例', () => {
-  const redis = new Redis();
-  const store = new RateLimitRedisStore(redis);
-  expect(store['redis']).toBe(redis);
-  redis.disconnect();
+test('onInit 连接，onDestroy 可幂等', async () => {
+  const local = new RateLimitRedisStore({
+    host: await redisServer.getHost(),
+    port: await redisServer.getPort(),
+  });
+  expect(local['redis'].status).toBe('wait');
+  await local.onInit();
+  expect(local['redis'].status).toBe('ready');
+  await expect(local.onDestroy()).resolves.toBeUndefined();
+  await expect(local.onDestroy()).resolves.toBeUndefined();
 });

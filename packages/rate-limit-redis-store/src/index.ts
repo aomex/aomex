@@ -4,9 +4,19 @@ import { Redis, type RedisOptions } from 'ioredis';
 export class RateLimitRedisStore extends RateLimitStore {
   protected readonly redis: Redis;
 
-  constructor(opts: Redis | RedisOptions) {
+  constructor(opts: RedisOptions) {
     super();
-    this.redis = opts instanceof Redis ? opts : new Redis(opts);
+    this.redis = new Redis({ ...opts, lazyConnect: true });
+  }
+
+  override async onInit(): Promise<void> {
+    if (this.redis.status === 'wait') {
+      await this.redis.connect();
+    }
+  }
+
+  override async onDestroy(): Promise<void> {
+    this.redis.disconnect();
   }
 
   override async getAndSet(data: {

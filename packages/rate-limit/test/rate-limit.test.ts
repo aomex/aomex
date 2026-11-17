@@ -1,10 +1,16 @@
 import { TestWebApp } from '../../web/src/testing';
-import { middleware } from '@aomex/common';
-import { expect, test, vitest } from 'vitest';
+import { internalDestroyServices, middleware } from '@aomex/common';
+import { afterEach, expect, test, vitest } from 'vitest';
 import { rateLimit } from '../src/rate-limit';
 import supertest from 'supertest';
-import { RateLimitMemoryStore } from '../src/memory-store';
+import { RateLimitMemoryStore } from '@aomex/rate-limit/memory';
+import { RateLimitStore } from '../src/store';
 import sleep from 'sleep-promise';
+
+afterEach(async () => {
+  await internalDestroyServices([]);
+});
+
 test('设置黑名单', async () => {
   const app = new TestWebApp({
     mount: [
@@ -148,4 +154,25 @@ test('定制报错信息', async () => {
   });
   await supertest(app.listen()).get('/').expect(404);
   await supertest(app.listen()).get('/').expect(429, 'Wait a minute');
+});
+
+test('rateLimit 自动登记 store 生命周期', async () => {
+  const order: string[] = [];
+  class TrackingStore extends RateLimitStore {
+    override async onInit() {
+      order.push('init');
+    }
+    override async onDestroy() {
+      order.push('destroy');
+    }
+    override async getAndSet() {
+      return { key: 'k', remaining: 1, resetAt: 0 };
+    }
+  }
+
+  rateLimit({ store: new TrackingStore() });
+  await sleep(20);
+  expect(order).toEqual(['init']);
+  await internalDestroyServices([]);
+  expect(order).toEqual(['init', 'destroy']);
 });

@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { RateLimitMemoryStore } from '../src/memory-store';
+import { RateLimitMemoryStore } from '@aomex/rate-limit/memory';
 import sleep from 'sleep-promise';
 
 test('输出', async () => {
@@ -85,4 +85,13 @@ test('超过次数后，延长重置次数', async () => {
   expect(resetAt1).toBe(resetAt2);
   expect(resetAt3).toBeGreaterThan(resetAt2);
   expect(resetAt4).toBeGreaterThan(resetAt3);
+});
+
+test('onDestroy 清空内存记录', async () => {
+  const store = new RateLimitMemoryStore();
+  await store.getAndSet({ key: 'foo', maxRequest: 10, duration: 1000 });
+  expect(store['store'].size).toBe(1);
+  await store.onDestroy();
+  expect(store['store'].size).toBe(0);
+  await store.onDestroy();
 });

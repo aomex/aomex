@@ -1,11 +1,11 @@
-import { middleware } from '@aomex/common';
+import { middleware, registerLifecycle } from '@aomex/common';
 import { statuses, type WebContext, type WebMiddleware } from '@aomex/web';
 import type { RateLimitStore } from './store';
 import { RateLimitMemoryStore } from './memory-store';
 
 export interface RateLimitOptions {
   /**
-   * 存储和共享请求记录。默认值：`RateLimitMemoryStore`
+   * 存储和共享请求记录。默认：`RateLimitMemoryStore`（`@aomex/rate-limit/memory`）
    */
   store?: RateLimitStore;
 
@@ -70,6 +70,11 @@ export const rateLimit = (options: RateLimitOptions = {}): WebMiddleware => {
     denyList = () => false,
     allowList = () => false,
   } = options;
+
+  void registerLifecycle({
+    onInit: () => store.onInit(),
+    onDestroy: () => store.onDestroy(),
+  });
 
   return middleware.web(async (ctx, next) => {
     if (await denyList(ctx)) ctx.throw(403, 'denied');
