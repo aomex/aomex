@@ -5,4 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'მნიშვნელობა არასწორი ტიპისაა',
   not_integer: 'მნიშვნელობა არ არის მთელი რიცხვი',
+  cache_service_destroyed: 'ქეშის სერვისი განადგურდა',
 });

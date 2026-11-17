@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { Service } from '@aomex/common';
 import { CacheAdapter } from './cache-adapter';
 import { Caching } from './caching';
+import { attachRememberScopes, detachRememberScopes } from './remember';
 
 const CACHE_TTL = {
   SECOND: 1_000,
@@ -20,12 +21,15 @@ const CACHE_TTL = {
  *
  * ```typescript
  * import { CacheMemoryAdapter } from '@aomex/cache/memory';
+ * import { createRemember } from '@aomex/cache';
  *
  * class CacheService extends BaseCacheService {
  *   protected createAdapter() {
  *     return new CacheMemoryAdapter();
  *   }
  * }
+ *
+ * export const remember = createRemember(CacheService);
  * ```
  */
 export abstract class BaseCacheService<
@@ -41,10 +45,17 @@ export abstract class BaseCacheService<
 
   protected override async onInit(): Promise<void> {
     this._cache = new Caching(this.createAdapter());
-    await this._cache.adapter.connect();
+    try {
+      await this._cache.adapter.connect();
+      attachRememberScopes(this);
+    } catch (e) {
+      detachRememberScopes(this);
+      throw e;
+    }
   }
 
   protected override async onDestroy(): Promise<void> {
+    detachRememberScopes(this);
     await this._cache?.adapter.disconnect();
   }
 

@@ -1,7 +1,6 @@
 import { type TypeEqual, expectType } from 'ts-expect';
 import { BaseCacheService } from '../src/base-cache-service';
-import { Caching } from '../src/caching';
-import { remember, type Remember } from '../src/remember';
+import { createRemember, type Remember } from '../src/remember';
 import { CacheMemoryAdapter } from '../src/adapters/cache-memory-adapter';
 
 {
@@ -10,14 +9,28 @@ import { CacheMemoryAdapter } from '../src/adapters/cache-memory-adapter';
       return new CacheMemoryAdapter();
     }
   }
-  const service = new DemoCacheService();
-  remember.setInstance(service);
 
-  // @ts-expect-error 只接收 BaseCacheService
-  remember.setInstance(new Caching(new CacheMemoryAdapter()));
+  const remember = createRemember(DemoCacheService);
+  expectType<Remember>(remember);
+
+  // @ts-expect-error 不能传入 BaseCacheService 本身
+  createRemember(BaseCacheService);
+
+  // @ts-expect-error 需要 BaseCacheService 子类构造函数
+  createRemember(class {});
+
+  // @ts-expect-error 不能传入实例
+  createRemember(new DemoCacheService());
 }
 
 {
+  class DemoCacheService extends BaseCacheService {
+    protected createAdapter() {
+      return new CacheMemoryAdapter();
+    }
+  }
+  const remember = createRemember(DemoCacheService);
+
   class MyClass {
     @remember(1)
     async getDataByMs(id: number) {
@@ -112,22 +125,10 @@ import { CacheMemoryAdapter } from '../src/adapters/cache-memory-adapter';
   const withoutDefault = await host.getDate7();
   expectType<string | null>(withoutDefault);
 
+  // @ts-expect-error 不再暴露 setInstance
   remember.setInstance;
+  // @ts-expect-error 不再暴露 deleteInstance
   remember.deleteInstance;
+  // @ts-expect-error 不再暴露 fork
   remember.fork;
-
-  const rememberB = remember.fork();
-  expectType<Remember>(rememberB);
-  expectType<Remember>(remember);
-  rememberB.setInstance;
-  rememberB.deleteInstance;
-  rememberB.fork;
-
-  class Forked {
-    @rememberB(1)
-    async getData(n: number) {
-      return n;
-    }
-  }
-  expectType<TypeEqual<(n: number) => Promise<number>, Forked['getData']>>(true);
 }

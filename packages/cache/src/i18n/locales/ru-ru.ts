@@ -5,4 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'Значение неверного типа',
   not_integer: 'значение не является целым числом',
+  cache_service_destroyed: 'Сервис кэша уничтожен',
 });

@@ -1,6 +1,6 @@
 import { combineServices, internalDestroyServices } from '@aomex/common';
 import { afterEach, expect, test, vitest } from 'vitest';
-import { BaseCacheService, remember, type CacheAdapter } from '../src';
+import { BaseCacheService, createRemember, type CacheAdapter } from '../src';
 import { CacheMemoryAdapter } from '../src/adapters/cache-memory-adapter';
 
 afterEach(() => {
@@ -147,25 +147,18 @@ test('未加载实例时 destroy 不报错', async () => {
 });
 
 test('eager 预初始化后 remember 可立即使用', async () => {
-  remember.deleteInstance();
   let builds = 0;
 
   class CacheService extends BaseCacheService {
     protected createAdapter() {
       return new CacheMemoryAdapter();
     }
-    protected override async onInit() {
-      await super.onInit();
-      remember.setInstance(this);
-    }
-    protected override async onDestroy() {
-      remember.deleteInstance();
-      await super.onDestroy();
-    }
     async touch() {
       return true;
     }
   }
+
+  const remember = createRemember(CacheService);
 
   class Report {
     @remember({ key: 'report', duration: 60_000 })
@@ -183,5 +176,5 @@ test('eager 预初始化后 remember 可立即使用', async () => {
   await expect(new Report().build()).resolves.toEqual({ ok: true });
   expect(builds).toBe(1);
   await internalDestroyServices([services]);
-  remember.deleteInstance();
+  await expect(new Report().build()).rejects.toThrow();
 });

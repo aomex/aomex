@@ -2,6 +2,7 @@ import { traceBlock } from '@aomex/async-trace';
 import { sleep } from '@aomex/common';
 import type { BaseCacheService } from './base-cache-service';
 import type { Caching } from './caching';
+import { i18n } from './i18n';
 
 export type RememberOptions<
   R extends Caching.Types | null = Caching.Types | null,
@@ -17,8 +18,8 @@ export type RememberOptions<
 };
 
 /**
- * 可调用的方法装饰器，并携带独立的 `BaseCacheService` 作用域。
- * `fork()` 会得到一份新的 remember（各自的 setInstance / deleteInstance 互不影响）。
+ * 可调用的方法装饰器，由 `createRemember(CacheService)` 创建。
+ * 绑定到指定缓存服务类；实例 `onInit` 完成前调用会等待就绪，`onDestroy` 后调用会抛错。
  */
 export interface Remember {
   (
@@ -34,17 +35,89 @@ export interface Remember {
   >(
     opts: RememberOptions<R, P, Q>,
   ): (originalMethod: P, context: ClassMethodDecoratorContext) => P;
-  /** 登记本作用域唯一的 `BaseCacheService`；重复传入同一实例为幂等，传入不同实例则抛错 */
-  setInstance(service: BaseCacheService): void;
-  /** 清除本作用域的 `BaseCacheService` 登记 */
-  deleteInstance(): void;
-  /** 派生一份独立作用域的 remember */
-  fork(): Remember;
 }
 
-function createRemember(): Remember {
-  let service: BaseCacheService | undefined;
+/** 任意 `BaseCacheService` 构造函数（含基类，供内部挂载使用） */
+export type CacheServiceCtor = abstract new (...args: any[]) => BaseCacheService;
 
+/**
+ * 具体缓存服务子类构造函数。传入 `BaseCacheService` 本身时类型为 `never`。
+ */
+export type ConcreteCacheServiceCtor<C extends CacheServiceCtor = CacheServiceCtor> =
+  BaseCacheService extends InstanceType<C> ? never : C;
+
+type CtorState = {
+  cache: Caching | undefined;
+  /** 已经 onDestroy，且尚未再次 onInit */
+  destroyed: boolean;
+  ready: PromiseWithResolvers<Caching>;
+};
+
+/** 每个服务类一份：当前 `Caching` + 未就绪时的等待 Promise */
+const stateByCtor = new WeakMap<CacheServiceCtor, CtorState>();
+
+function getState(ctor: CacheServiceCtor): CtorState {
+  const existing = stateByCtor.get(ctor);
+  if (existing) return existing;
+
+  const state: CtorState = {
+    cache: undefined,
+    destroyed: false,
+    ready: Promise.withResolvers<Caching>(),
+  };
+  stateByCtor.set(ctor, state);
+  return state;
+}
+
+async function ensureCache(ctor: CacheServiceCtor): Promise<Caching> {
+  const state = getState(ctor);
+  if (state.destroyed) {
+    throw new Error(i18n.t('cache_service_destroyed'));
+  }
+  if (state.cache) return state.cache;
+
+  await state.ready.promise;
+  // attach resolve 与 await 恢复之间可能已经 onDestroy
+  if (state.destroyed || !state.cache) {
+    throw new Error(i18n.t('cache_service_destroyed'));
+  }
+  return state.cache;
+}
+
+/** 供 `BaseCacheService.onInit` 挂载；包外请勿直接调用 */
+export function attachRememberScopes(service: BaseCacheService): void {
+  const ctor = service.constructor as CacheServiceCtor;
+  const cache = service['_cache'];
+  const state = getState(ctor);
+  state.destroyed = false;
+  state.cache = cache;
+  state.ready.resolve(cache);
+}
+
+/** 供 `BaseCacheService.onDestroy` / `onInit` 失败时卸载；包外请勿直接调用 */
+export function detachRememberScopes(service: BaseCacheService): void {
+  const ctor = service.constructor as CacheServiceCtor;
+  const state = stateByCtor.get(ctor);
+  if (!state) return;
+  // 已有其它实例挂载时，非当前挂载者不处理；尚未 attach（如 connect 失败）时仍要 reject 等待者
+  if (state.cache !== undefined && state.cache !== service['_cache']) return;
+  // 先标 destroyed，避免并发 ensureCache 在清 cache 后误走已 settle 的 ready
+  state.destroyed = true;
+  state.cache = undefined;
+  state.ready.reject(new Error(i18n.t('cache_service_destroyed')));
+}
+
+/**
+ * 创建绑定到指定 `BaseCacheService` 子类的 remember 装饰器。
+ * 必须传入具体子类，不能传入 `BaseCacheService` 本身。
+ *
+ * ```typescript
+ * export const remember = createRemember(CacheService);
+ * ```
+ */
+export function createRemember<C extends CacheServiceCtor>(
+  ctor: ConcreteCacheServiceCtor<C>,
+): Remember {
   const remember = (<
     R extends Caching.Types | null = Caching.Types | null,
     P extends (...args: any[]) => Promise<R> = (...args: any[]) => Promise<R>,
@@ -60,12 +133,7 @@ function createRemember(): Remember {
 
     return (originalMethod: P, context: ClassMethodDecoratorContext) => {
       return async function (this: object, ...args: Parameters<P>): Promise<any> {
-        if (!service) {
-          throw new Error(
-            'Cache service is not registered; call remember.setInstance(service) first',
-          );
-        }
-        const cache = service['_cache'];
+        const cache = await ensureCache(ctor);
 
         const dataKey =
           getKey === undefined
@@ -117,61 +185,5 @@ function createRemember(): Remember {
     };
   }) as Remember;
 
-  remember.setInstance = (next: BaseCacheService): void => {
-    if (service !== undefined && service !== next) {
-      throw new Error('Only one cache service is allowed');
-    }
-    service = next;
-  };
-
-  remember.deleteInstance = (): void => {
-    service = undefined;
-  };
-
-  remember.fork = (): Remember => createRemember();
-
   return remember;
 }
-
-/**
- * 方法装饰器：自动获取缓存，未命中则执行原方法并写入；并发相同 key 会截流共享首个请求。
- * 每个 remember（含 `fork()` 产物）各自只允许登记一个 `BaseCacheService`。
- *
- * ```typescript
- * class CacheService extends BaseCacheService {
- *   protected createAdapter() {
- *     return new CacheRedisAdapter({ host: '127.0.0.1' });
- *   }
- *
- *   protected override async onInit() {
- *     await super.onInit();
- *     remember.setInstance(this);
- *   }
- *
- *   protected override async onDestroy() {
- *     remember.deleteInstance();
- *     await super.onDestroy();
- *   }
- * }
- *
- * await combineServices(
- *   {
- *     cache: () => import('./cache.service.js'),
- *     report: () => import('./report.service.js'),
- *   },
- *   { eager: ['cache'] },
- * );
- *
- * class Report {
- *   @remember(60_000)
- *   async build() {
- *     return { ok: true };
- *   }
- * }
- *
- * // 另一套缓存作用域
- * const rememberB = remember.fork();
- * rememberB.setInstance(otherCacheService);
- * ```
- */
-export const remember = createRemember();

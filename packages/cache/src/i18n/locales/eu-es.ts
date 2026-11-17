@@ -5,4 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'Balioa okerrekoa da',
   not_integer: 'balioa ez da zenbaki oso bat',
+  cache_service_destroyed: 'Cache zerbitzua suntsitu da',
 });

@@ -5,4 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'တန်ဖိုးသည် အမျိုးအစားမမှန်ပါ။',
   not_integer: 'တန်ဖိုးသည် ကိန်းပြည့်မဟုတ်ပါ။',
+  cache_service_destroyed: 'ကက်ရှ်ဝန်ဆောင်မှုကို ဖျက်ဆီးလိုက်ပြီ',
 });

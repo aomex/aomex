@@ -5,4 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'بەها لە جۆری هەڵەیە',
   not_integer: '.\nبەها ژمارەیەکی تەواو نییە',
+  cache_service_destroyed: 'Karûbarê cache hat hilweşandin',
 });

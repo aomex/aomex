@@ -5,4 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'Gildi er af rangri gerð',
   not_integer: 'gildi er ekki heiltala',
+  cache_service_destroyed: 'Skyndiminniþjónustan hefur verið eyðilögð',
 });

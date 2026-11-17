@@ -5,4 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'Вредност је нетачног типа',
   not_integer: 'вредност није цео број',
+  cache_service_destroyed: 'Услуга кеша је уништена',
 });

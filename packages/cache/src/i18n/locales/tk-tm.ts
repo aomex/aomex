@@ -5,4 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'Bahasy nädogry görnüşde',
   not_integer: 'baha bitewi san däl',
+  cache_service_destroyed: 'Keş hyzmaty ýok edildi',
 });

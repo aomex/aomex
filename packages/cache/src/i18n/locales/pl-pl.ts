@@ -5,4 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'Wartość jest nieprawidłowego typu',
   not_integer: 'wartość nie jest liczbą całkowitą',
+  cache_service_destroyed: 'Usługa pamięci podręcznej została zniszczona',
 });
