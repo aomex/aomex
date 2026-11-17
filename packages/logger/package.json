@@ -1,6 +1,6 @@
 {
   "name": "@aomex/logger",
-  "version": "3.30.7",
+  "version": "4.0.0",
   "description": "aomex日志收集",
   "scripts": {
     "prepublishOnly": "tsdown"

@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/aomex/aomex/compare/v3.30.7...v4.0.0) (2026-11-17)
+
+* chore!: 升级依赖至最新 ([9a679fa](https://github.com/aomex/aomex/commit/9a679faf0a4e2b313e8ce9081c1ecc65356b844c))
+* chore!: 升级至 TypeScript 7 并将构建工具迁移到 tsdown ([a111409](https://github.com/aomex/aomex/commit/a111409021e2ee81ee5fb20ccc75480c9b5fa4c0))
+
+### Bug Fixes
+
+* **openapi:** 生成文档时webapp必填 ([189eedd](https://github.com/aomex/aomex/commit/189eedd863a6f0567694f4216d330af687e71ea2))
+
+### Features
+
+* **openapi:** generateOpenapi 支持挂载 Web 全局中间件 ([3310e3e](https://github.com/aomex/aomex/commit/3310e3eb75e88ad31c6658337ff3f84ce4c4a1f2))
+* **openapi:** 将 schema 提升为 components 中的 $ref ([5ab3757](https://github.com/aomex/aomex/commit/5ab37579b795b27bf29d860b667a7ae2ddd623b7))
+* **validator:** 验证器规则入口支持传入schema ([7f0be2e](https://github.com/aomex/aomex/commit/7f0be2e027ad8e527989850ca331cde1d31830e0))
+
+### BREAKING CHANGES
+
+* mongoose 最低版本为v9
+* Node.js 最低版本提升至 `>=24.0.0`。
+* 最低 TypeScript 版本为 7。
+
+
 ## [3.30.7](https://github.com/aomex/aomex/compare/v3.30.6...v3.30.7) (2026-11-01)
 
 **Note:** Version bump only for package @aomex/openapi

@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/aomex/aomex/compare/v3.30.7...v4.0.0) (2026-11-17)
+
+* chore!: 升级依赖至最新 ([9a679fa](https://github.com/aomex/aomex/commit/9a679faf0a4e2b313e8ce9081c1ecc65356b844c))
+* chore!: 升级至 TypeScript 7 并将构建工具迁移到 tsdown ([a111409](https://github.com/aomex/aomex/commit/a111409021e2ee81ee5fb20ccc75480c9b5fa4c0))
+
+### Bug Fixes
+
+* **openapi:** 生成文档时webapp必填 ([189eedd](https://github.com/aomex/aomex/commit/189eedd863a6f0567694f4216d330af687e71ea2))
+
+### Features
+
+* **openapi:** generateOpenapi 支持挂载 Web 全局中间件 ([3310e3e](https://github.com/aomex/aomex/commit/3310e3eb75e88ad31c6658337ff3f84ce4c4a1f2))
+
+### BREAKING CHANGES
+
+* mongoose 最低版本为v9
+* Node.js 最低版本提升至 `>=24.0.0`。
+* 最低 TypeScript 版本为 7。
+
+
 ## [3.30.7](https://github.com/aomex/aomex/compare/v3.30.6...v3.30.7) (2026-11-01)
 
 

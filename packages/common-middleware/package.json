@@ -1,6 +1,6 @@
 {
   "name": "@aomex/common-middleware",
-  "version": "3.30.7",
+  "version": "4.0.0",
   "description": "aomex中间件",
   "scripts": {
     "prepublishOnly": "tsdown && node scripts/post-build.mjs"

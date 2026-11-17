@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/aomex/aomex/compare/v3.30.7...v4.0.0) (2026-11-17)
+
+* feat(logger)!: 引入 BaseLoggerService ([4c2657a](https://github.com/aomex/aomex/commit/4c2657aae21d3fcbe139d4de3477a6415d901b2c))
+* feat(prisma)!: 生成 schema 并通过 definePrismaSchema 作为唯一业务入口 ([7dad8a4](https://github.com/aomex/aomex/commit/7dad8a478eaf3a9b4953aca19c5a2294986a7e36))
+* chore!: 升级至 TypeScript 7 并将构建工具迁移到 tsdown ([a111409](https://github.com/aomex/aomex/commit/a111409021e2ee81ee5fb20ccc75480c9b5fa4c0))
+
+### BREAKING CHANGES
+
+* http-logger 重命名为 http-access-log
+* logger需绑定到service中使用
+* Node.js 最低版本提升至 `>=24.0.0`。
+* 最低 TypeScript 版本为 7。
+* 请改用 definePrismaSchema(generated) 获取 prismaInput/prismaOutput/prismaEnum
+
+
 ## [3.30.7](https://github.com/aomex/aomex/compare/v3.30.6...v3.30.7) (2026-11-01)
 
 **Note:** Version bump only for package @aomex/logger

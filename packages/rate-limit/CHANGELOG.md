@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/aomex/aomex/compare/v3.30.7...v4.0.0) (2026-11-17)
+
+* chore!: 升级至 TypeScript 7 并将构建工具迁移到 tsdown ([a111409](https://github.com/aomex/aomex/commit/a111409021e2ee81ee5fb20ccc75480c9b5fa4c0))
+
+### Features
+
+* **rate-limit:** 为存储介质设置生命周期 ([7406462](https://github.com/aomex/aomex/commit/740646275a6d7a751f59c556481f5c914503b162))
+
+### BREAKING CHANGES
+
+* Node.js 最低版本提升至 `>=24.0.0`。
+* 最低 TypeScript 版本为 7。
+
+
 ## [3.30.7](https://github.com/aomex/aomex/compare/v3.30.6...v3.30.7) (2026-11-01)
 
 **Note:** Version bump only for package @aomex/rate-limit

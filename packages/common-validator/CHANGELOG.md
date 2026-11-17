@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/aomex/aomex/compare/v3.30.7...v4.0.0) (2026-11-17)
+
+* chore!: 升级依赖至最新 ([9a679fa](https://github.com/aomex/aomex/commit/9a679faf0a4e2b313e8ce9081c1ecc65356b844c))
+* feat(prisma)!: 生成 schema 并通过 definePrismaSchema 作为唯一业务入口 ([7dad8a4](https://github.com/aomex/aomex/commit/7dad8a478eaf3a9b4953aca19c5a2294986a7e36))
+* chore!: 升级至 TypeScript 7 并将构建工具迁移到 tsdown ([a111409](https://github.com/aomex/aomex/commit/a111409021e2ee81ee5fb20ccc75480c9b5fa4c0))
+
+### Features
+
+* **validator:** rule.enum 支持传入 TS enum / 枚举对象 ([c9ba327](https://github.com/aomex/aomex/commit/c9ba327c52d53a0339ed9d8f6795a4d843f8635b))
+* **validator:** schema 增加 required 方法 ([003745d](https://github.com/aomex/aomex/commit/003745d655b955d951190a5bac45d189a51ef863))
+* **validator:** validate 支持 throwOnError: false 返回 data/errors ([64975c7](https://github.com/aomex/aomex/commit/64975c7d61287009aade8b32183b6738d841715b))
+* **validator:** 增加 rule.record 别名 ([2a70fdf](https://github.com/aomex/aomex/commit/2a70fdf07fd9ba9f2ecb1c129d6e2833d2edcb8a))
+* **validator:** 抽出 toDocument 并为 object schema 写入 x-ref ([3dceddc](https://github.com/aomex/aomex/commit/3dceddc675eb9c15ab96794fbea744ab95d1576a))
+* **validator:** 数组验证器增加唯一性验证 ([b0b0e4e](https://github.com/aomex/aomex/commit/b0b0e4e6e31e429881fa8c5a94eb2519b5a7c9c6))
+* **validator:** 新增 decimal 验证器 ([defac31](https://github.com/aomex/aomex/commit/defac314df697cf5b5cc061ea4ef6ceef1a5186d))
+* **validator:** 新增 schema() 以支持字段集派生与复用 ([83ff898](https://github.com/aomex/aomex/commit/83ff8982c81521242bd1a2835c68dd09b3175ed2))
+* **validator:** 新增 Validator.has 探测是否包含指定验证器 ([6dc867c](https://github.com/aomex/aomex/commit/6dc867c78cda9fca7f760398f0290870ab13800c))
+* **validator:** 添加 enum 验证器的 pick 和 omit 方法以支持值的选择与排除 ([6473fde](https://github.com/aomex/aomex/commit/6473fde4d640af7c00078b17ca3d1ed1623970f4))
+* **validator:** 添加 LiteralValidator 支持字面量验证 ([bd50533](https://github.com/aomex/aomex/commit/bd505331c08784e974b6f0f10c877141add8c7fb))
+* **validator:** 规则允许深度嵌套对象字面量 ([356495c](https://github.com/aomex/aomex/commit/356495cf73c0954986351bfb3f5e625f7f8fd6ff))
+* **validator:** 验证器规则入口支持传入schema ([7f0be2e](https://github.com/aomex/aomex/commit/7f0be2e027ad8e527989850ca331cde1d31830e0))
+
+### BREAKING CHANGES
+
+* mongoose 最低版本为v9
+* Node.js 最低版本提升至 `>=24.0.0`。
+* 最低 TypeScript 版本为 7。
+* 请改用 definePrismaSchema(generated) 获取 prismaInput/prismaOutput/prismaEnum
+
+
 ## [3.30.7](https://github.com/aomex/aomex/compare/v3.30.6...v3.30.7) (2026-11-01)
 
 **Note:** Version bump only for package @aomex/common-validator

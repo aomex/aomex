@@ -3,6 +3,79 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/aomex/aomex/compare/v3.30.7...v4.0.0) (2026-11-17)
+
+* chore!: 升级依赖至最新 ([9a679fa](https://github.com/aomex/aomex/commit/9a679faf0a4e2b313e8ce9081c1ecc65356b844c))
+* feat(auth)!: 增加api-key策略 ([43a453c](https://github.com/aomex/aomex/commit/43a453cbb96ba50228fbdebdf96f34a820bbf9a0))
+* feat(cache)!: 新增文件缓存，适配器改为子路径导出并移除工厂函数 ([943b243](https://github.com/aomex/aomex/commit/943b2432ebc97db8f4f199ff0ee8fa2c2dc04bfd))
+* feat(logger)!: 引入 BaseLoggerService ([4c2657a](https://github.com/aomex/aomex/commit/4c2657aae21d3fcbe139d4de3477a6415d901b2c))
+* feat(cache)!: 引入BaseCacheService服务和remember装饰器 ([f48dba5](https://github.com/aomex/aomex/commit/f48dba555e6ddfaa4cc5b240b30cea6e4b39a0c1))
+* feat(service)!: 服务改为懒加载代理 ([6e68e80](https://github.com/aomex/aomex/commit/6e68e80ffc33ff3cdc11216bbdb50badaf485566))
+* feat(prisma)!: 生成 schema 并通过 definePrismaSchema 作为唯一业务入口 ([7dad8a4](https://github.com/aomex/aomex/commit/7dad8a478eaf3a9b4953aca19c5a2294986a7e36))
+* chore!: 升级至 TypeScript 7 并将构建工具迁移到 tsdown ([a111409](https://github.com/aomex/aomex/commit/a111409021e2ee81ee5fb20ccc75480c9b5fa4c0))
+
+### Bug Fixes
+
+* **auth:** signature 改用 randomBytes 生成令牌 ([d855f07](https://github.com/aomex/aomex/commit/d855f075d3bd24891a9f21860a6efbc20c8dc7c8))
+* **openapi:** 生成文档时webapp必填 ([189eedd](https://github.com/aomex/aomex/commit/189eedd863a6f0567694f4216d330af687e71ea2))
+* **trace-async,response-time:** 函数指定返回类型防止打包后内联import ([13a28e5](https://github.com/aomex/aomex/commit/13a28e5cf6e1cf67499182677fb1f43af62dc803))
+* **web:** 升级 path-to-regexp 到 8.4.2 以修复潜在漏洞 ([a0ac817](https://github.com/aomex/aomex/commit/a0ac8173d8a477b36d322f15ab8ee6134e50ed7e))
+* **web:** 补充法语语言包字段 ([e668d44](https://github.com/aomex/aomex/commit/e668d4458ca04c3dbb4ca135f45f40e152dcc80f))
+* **web:** 请求响应后未及时清理上传的附件 ([f06d3e6](https://github.com/aomex/aomex/commit/f06d3e6245cf96a4e01fbe46d61aa61b6b7682da))
+* **web:** 限制 multipart 上传文件数量并拒绝空文件 ([058a285](https://github.com/aomex/aomex/commit/058a285a85b12f4d1bc9a3cec426413a143e910d))
+
+### Features
+
+* **cache:** 引入CacheKey类以增强缓存键管理功能 ([3d94097](https://github.com/aomex/aomex/commit/3d940976219585f63336675a037c46656ba29b55))
+* **common:** 中间件 skip 支持直接传 boolean ([ce870bf](https://github.com/aomex/aomex/commit/ce870bf7fcb0a1e83c3fdc3bb5ce8655df8a15ee))
+* **middleware:** 新增 dependsOn 借用上游中间件类型提示 ([8066ac0](https://github.com/aomex/aomex/commit/8066ac0a92bf740e17f75a2c39033c9ff807eefb))
+* **openapi:** generateOpenapi 支持挂载 Web 全局中间件 ([3310e3e](https://github.com/aomex/aomex/commit/3310e3eb75e88ad31c6658337ff3f84ce4c4a1f2))
+* **openapi:** 将 schema 提升为 components 中的 $ref ([5ab3757](https://github.com/aomex/aomex/commit/5ab37579b795b27bf29d860b667a7ae2ddd623b7))
+* **rate-limit:** 为存储介质设置生命周期 ([7406462](https://github.com/aomex/aomex/commit/740646275a6d7a751f59c556481f5c914503b162))
+* **service:** 增加registerLifecycle管理第三方服务的生命周期 ([62ef5ac](https://github.com/aomex/aomex/commit/62ef5ac8497b466a5b76c3bc396ec34f84773a97))
+* **service:** 添加 eager 选项以支持服务的预初始化 ([f60d847](https://github.com/aomex/aomex/commit/f60d847df05d0e8d83c1204e957c16f3ffc74cee))
+* **validator:** rule.enum 支持传入 TS enum / 枚举对象 ([c9ba327](https://github.com/aomex/aomex/commit/c9ba327c52d53a0339ed9d8f6795a4d843f8635b))
+* **validator:** schema 增加 required 方法 ([003745d](https://github.com/aomex/aomex/commit/003745d655b955d951190a5bac45d189a51ef863))
+* **validator:** validate 支持 throwOnError: false 返回 data/errors ([64975c7](https://github.com/aomex/aomex/commit/64975c7d61287009aade8b32183b6738d841715b))
+* **validator:** 增加 rule.record 别名 ([2a70fdf](https://github.com/aomex/aomex/commit/2a70fdf07fd9ba9f2ecb1c129d6e2833d2edcb8a))
+* **validator:** 抽出 toDocument 并为 object schema 写入 x-ref ([3dceddc](https://github.com/aomex/aomex/commit/3dceddc675eb9c15ab96794fbea744ab95d1576a))
+* **validator:** 数组验证器增加唯一性验证 ([b0b0e4e](https://github.com/aomex/aomex/commit/b0b0e4e6e31e429881fa8c5a94eb2519b5a7c9c6))
+* **validator:** 新增 decimal 验证器 ([defac31](https://github.com/aomex/aomex/commit/defac314df697cf5b5cc061ea4ef6ceef1a5186d))
+* **validator:** 新增 schema() 以支持字段集派生与复用 ([83ff898](https://github.com/aomex/aomex/commit/83ff8982c81521242bd1a2835c68dd09b3175ed2))
+* **validator:** 新增 Validator.has 探测是否包含指定验证器 ([6dc867c](https://github.com/aomex/aomex/commit/6dc867c78cda9fca7f760398f0290870ab13800c))
+* **validator:** 添加 enum 验证器的 pick 和 omit 方法以支持值的选择与排除 ([6473fde](https://github.com/aomex/aomex/commit/6473fde4d640af7c00078b17ca3d1ed1623970f4))
+* **validator:** 添加 LiteralValidator 支持字面量验证 ([bd50533](https://github.com/aomex/aomex/commit/bd505331c08784e974b6f0f10c877141add8c7fb))
+* **validator:** 规则允许深度嵌套对象字面量 ([356495c](https://github.com/aomex/aomex/commit/356495cf73c0954986351bfb3f5e625f7f8fd6ff))
+* **validator:** 验证器规则入口支持传入schema ([7f0be2e](https://github.com/aomex/aomex/commit/7f0be2e027ad8e527989850ca331cde1d31830e0))
+* **web:** body中间件允许验证基础数据类型 ([b7d44f4](https://github.com/aomex/aomex/commit/b7d44f40b317d7e72bdc2737c11e0453956daa5d))
+* **web:** multipart 按校验器收紧上传配额，并以文件签名校验类型 ([c29a331](https://github.com/aomex/aomex/commit/c29a331231f0f90984da87475e3be69cf78423cc))
+* **web:** webApp 退出时支持超时强制断开 ([cba07c3](https://github.com/aomex/aomex/commit/cba07c3345a6e6604e3bfd898dfe147d89621857))
+* **web:** 传参中间件支持传入schema ([9534123](https://github.com/aomex/aomex/commit/953412380e6b9a6d01954e737371b94a5b50887c))
+* **web:** 修改下载方法以返回 Promise，确保响应结束后清理临时文件 ([59eb9ee](https://github.com/aomex/aomex/commit/59eb9eeafb13cae06864deb75ed3b07184badee0))
+* **web:** 响应支持SSE消息类型 ([ffbcf87](https://github.com/aomex/aomex/commit/ffbcf875b5d88270bb22b556fd0f75e49241e052))
+* **web:** 引入 formatError 中间件响应异常内容 ([9adec57](https://github.com/aomex/aomex/commit/9adec5751648635332528871ef9570dd40e38805))
+* **web:** 新增响应体套壳 envelope，统一为 HTTP 200 与声明式结构 ([e691a27](https://github.com/aomex/aomex/commit/e691a2725811149302c9c51a95d608eda94a7bef))
+* **web:** 添加 clusterListen 函数以支持多进程监听端口 ([1030873](https://github.com/aomex/aomex/commit/1030873adbdb28d13ef27dece6ca109328843ae2))
+* **web:** 添加客户端 IP 解析支持，允许配置代理头和跳转层数 ([9f94acd](https://github.com/aomex/aomex/commit/9f94acd62f8e90ff8aa2dc5f81202dfdfbf4a5b6))
+
+### BREAKING CHANGES
+
+* `destroyServices` 改为内部 API
+* bearer策略从`@aomex/auth/bearer`导入
+* combineServices 仅接受 `() => import(...)` 工厂，不再直接传 Class
+* http-logger 重命名为 http-access-log
+* logger需绑定到service中使用
+* mongoose 最低版本为v9
+* Node.js 最低版本提升至 `>=24.0.0`。
+* 最低 TypeScript 版本为 7。
+* 对外服务方法一律返回 Promise；字段不再对外暴露
+* 服务生命周期 `init`/`destroy` 重命名为 `onInit`/`onDestroy`
+* 移除 `memoryAdapter` / `redisAdapter`，改为直接new Class
+* 移除 Service 构造注入的 `services`，类内互调改为直接 import
+* 装饰器从 Caching.decorate 改为 remember
+* 请改用 definePrismaSchema(generated) 获取 prismaInput/prismaOutput/prismaEnum
+
+
 ## [3.30.7](https://github.com/aomex/aomex/compare/v3.30.6...v3.30.7) (2026-11-01)
 
 

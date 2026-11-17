@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/aomex/aomex/compare/v3.30.7...v4.0.0) (2026-11-17)
+
+* chore!: 升级依赖至最新 ([9a679fa](https://github.com/aomex/aomex/commit/9a679faf0a4e2b313e8ce9081c1ecc65356b844c))
+* feat(logger)!: 引入 BaseLoggerService ([4c2657a](https://github.com/aomex/aomex/commit/4c2657aae21d3fcbe139d4de3477a6415d901b2c))
+* feat(service)!: 服务改为懒加载代理 ([6e68e80](https://github.com/aomex/aomex/commit/6e68e80ffc33ff3cdc11216bbdb50badaf485566))
+* chore!: 升级至 TypeScript 7 并将构建工具迁移到 tsdown ([a111409](https://github.com/aomex/aomex/commit/a111409021e2ee81ee5fb20ccc75480c9b5fa4c0))
+
+### BREAKING CHANGES
+
+* `destroyServices` 改为内部 API
+* combineServices 仅接受 `() => import(...)` 工厂，不再直接传 Class
+* http-logger 重命名为 http-access-log
+* logger需绑定到service中使用
+* mongoose 最低版本为v9
+* Node.js 最低版本提升至 `>=24.0.0`。
+* 最低 TypeScript 版本为 7。
+* 对外服务方法一律返回 Promise；字段不再对外暴露
+* 服务生命周期 `init`/`destroy` 重命名为 `onInit`/`onDestroy`
+* 移除 Service 构造注入的 `services`，类内互调改为直接 import
+
+
 ## [3.30.7](https://github.com/aomex/aomex/compare/v3.30.6...v3.30.7) (2026-11-01)
 
 **Note:** Version bump only for package @aomex/internal-tools
