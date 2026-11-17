@@ -91,8 +91,8 @@ new ConsoleApp({});
       expectType<TypeEqual<number, typeof level>>(true);
     });
 
-    // @ts-expect-error
-    app.on('error1', () => {});
+    // @ts-expect-error 监听器参数类型须匹配 error 事件
+    app.on('error', (err: string) => {});
   }
 
   // 执行

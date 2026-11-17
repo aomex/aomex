@@ -1,5 +1,5 @@
 import { execSync } from 'node:child_process';
-import { mkdirSync, rmdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { afterEach, beforeEach, expect, test } from 'vitest';
@@ -18,7 +18,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  rmdirSync(dir, { recursive: true });
+  rmSync(dir, { recursive: true, force: true });
 });
 
 test('找不到入口文件报错', async () => {

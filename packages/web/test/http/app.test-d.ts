@@ -372,8 +372,8 @@ const proxyIP = { mode: 'detect' } as const;
       return { code: err.code };
     },
   });
-  // @ts-expect-error
-  app.on('data', () => {});
+  // @ts-expect-error 监听器参数类型须匹配 error 事件
+  app.on('error', (err: string) => {});
 
   const ctx = null as unknown as WebContext;
   expectType<WebApp.Logger>(ctx.logger);
