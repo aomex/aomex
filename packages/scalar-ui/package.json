@@ -1,0 +1,47 @@
+{
+  "name": "@aomex/scalar-ui",
+  "version": "4.0.0",
+  "description": "Scalar文档展示UI",
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "prepublishOnly": "tsdown && sh scripts/copy-ui.sh"
+  },
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "files": [
+    "dist",
+    "public",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@aomex/common": "^4.0.0",
+    "@aomex/web": "^4.0.0"
+  },
+  "dependencies": {
+    "@aomex/serve-static": "workspace:*",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@aomex/common": "workspace:*",
+    "@aomex/web": "workspace:*",
+    "@scalar/api-reference": "^1.80.0"
+  }
+}

@@ -15,3 +15,4 @@ allowBuilds:
   redis-memory-server: false
   tree-sitter: false
   tree-sitter-json: false
+  vue-demi: false

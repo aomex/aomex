@@ -84,6 +84,7 @@ npx create-aomex@latest
 | [openapi](./packages/openapi)                           | ![npm](https://img.shields.io/npm/v/@aomex/openapi)    | 根据接口生成 openapi{.json,.yaml} 文件                   |
 | [swagger-ui](./packages/swagger-ui)                     | ![npm](https://img.shields.io/npm/v/@aomex/swagger-ui) | swagger 文档渲染网页                                     |
 | [redoc-ui](./packages/redoc-ui)                         | ![npm](https://img.shields.io/npm/v/@aomex/redoc-ui)   | redoc 文档渲染网页                                       |
+| [scalar-ui](./packages/scalar-ui)                       | ![npm](https://img.shields.io/npm/v/@aomex/scalar-ui)  | scalar 文档渲染网页                                      |
 | [foca-openapi](https://github.com/foca-js/foca-openapi) | ![npm](https://img.shields.io/npm/v/foca-openapi)      | 根据 openapi{.json,.yaml} 文件生成 TypeScript 请求客户端 |
 
 # 数据
