@@ -126,6 +126,8 @@ export const applyResponseEnvelope = (
 
   // 原 string 等可能已带 text/plain；套壳后必须是 JSON
   res.removeHeader('Content-Type');
+  // body 已变，原 ETag 不再对应写出内容
+  res.removeHeader('ETag');
   res.body = resolveRuntimeNode(options.content, vars) as Body;
   res.statusCode = ENVELOPE_HTTP_STATUS;
 };

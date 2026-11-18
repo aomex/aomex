@@ -129,6 +129,27 @@ describe('envelope runtime', () => {
     expect(res.body).toEqual({ success: true, data: 'hello' });
   });
 
+  test('套壳时删除原 ETag', async () => {
+    const app = new TestWebApp({
+      envelope: baseEnvelope,
+      mount: [
+        middleware.web((ctx) => {
+          ctx.response.setHeader('ETag', '"raw-body"');
+          ctx.send({ id: 1 });
+        }),
+      ],
+    });
+
+    const res = await get(app);
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      success: true,
+      statusCode: 200,
+      data: { id: 1 },
+    });
+    expect(res.headers).not.toHaveProperty('etag');
+  });
+
   test('3xx 重定向不套壳', async () => {
     const app = new TestWebApp({
       envelope: {
