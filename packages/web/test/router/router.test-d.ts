@@ -76,41 +76,6 @@ const app = new TestWebApp({
   });
 }
 
-// Data Transfer Object (DTO)
-{
-  const router = new Router({
-    mount: [middleware.web<{ x: { y: 'z' } }>(() => {})],
-  });
-
-  class Test {
-    declare test1: number;
-  }
-
-  const dto = router.get('/', {
-    mount: [
-      response({ statusCode: 200 }),
-      middleware.web<{ a: Test }>(() => {}),
-      middleware.web<{ b: string | undefined }>(() => {}),
-    ],
-    action: () => {},
-  });
-
-  (function (_: typeof dto.a) {});
-
-  dto.a;
-  dto['a'];
-  dto['b'];
-  // @ts-expect-error
-  dto['send'];
-  // @ts-expect-error
-  dto['throw'];
-  // @ts-expect-error
-  dto['redirect'];
-
-  expectType<TypeEqual<Test, (typeof dto)['a']>>(true);
-  expectType<string | undefined>(dto.b);
-}
-
 // 响应方法定制
 {
   const router = new Router();

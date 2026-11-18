@@ -75,25 +75,3 @@ const app = new TestConsoleApp({
     action: () => {},
   });
 }
-
-// Data Transfer Object (DTO)
-{
-  const commander = new Commander({
-    mount: [middleware.console<{ x: { y: 'z' } }>(() => {})],
-  });
-
-  class Test {
-    declare test1: number;
-  }
-
-  const dto = commander.create('/', {
-    mount: [
-      middleware.console<{ a: Test }>(() => {}),
-      middleware.console<{ b: string | undefined }>(() => {}),
-    ],
-    action: () => {},
-  });
-
-  expectType<TypeEqual<Test, (typeof dto)['a']>>(true);
-  expectType<string | undefined>(dto.b);
-}

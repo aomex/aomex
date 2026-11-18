@@ -32,8 +32,8 @@ export class Router<
   public get<T extends WebMiddlewareToken[] | []>(
     uri: string,
     options: BuilderOptions<Props, T>,
-  ): Builder.DTO<Props, T> {
-    return this.create(uri, ['GET'], options);
+  ): void {
+    this.create(uri, ['GET'], options);
   }
 
   /**
@@ -42,8 +42,8 @@ export class Router<
   public post<T extends WebMiddlewareToken[] | []>(
     uri: string,
     options: BuilderOptions<Props, T>,
-  ): Builder.DTO<Props, T> {
-    return this.create(uri, ['POST'], options);
+  ): void {
+    this.create(uri, ['POST'], options);
   }
 
   /**
@@ -52,8 +52,8 @@ export class Router<
   public put<T extends WebMiddlewareToken[] | []>(
     uri: string,
     options: BuilderOptions<Props, T>,
-  ): Builder.DTO<Props, T> {
-    return this.create(uri, ['PUT'], options);
+  ): void {
+    this.create(uri, ['PUT'], options);
   }
 
   /**
@@ -62,8 +62,8 @@ export class Router<
   public patch<T extends WebMiddlewareToken[] | []>(
     uri: string,
     options: BuilderOptions<Props, T>,
-  ): Builder.DTO<Props, T> {
-    return this.create(uri, ['PATCH'], options);
+  ): void {
+    this.create(uri, ['PATCH'], options);
   }
 
   /**
@@ -72,8 +72,8 @@ export class Router<
   public delete<T extends WebMiddlewareToken[] | []>(
     uri: string,
     options: BuilderOptions<Props, T>,
-  ): Builder.DTO<Props, T> {
-    return this.create(uri, ['DELETE'], options);
+  ): void {
+    this.create(uri, ['DELETE'], options);
   }
 
   /**
@@ -82,8 +82,8 @@ export class Router<
   public all<T extends WebMiddlewareToken[] | []>(
     uri: string,
     options: BuilderOptions<Props, T>,
-  ): Builder.DTO<Props, T> {
-    return this.create(uri, Builder.METHODS, options);
+  ): void {
+    this.create(uri, Builder.METHODS, options);
   }
 
   /**
@@ -93,15 +93,15 @@ export class Router<
     methods: (typeof Builder.METHODS)[number][],
     uri: string,
     options: BuilderOptions<Props, T>,
-  ): Builder.DTO<Props, T> {
-    return this.create(uri, methods, options);
+  ): void {
+    this.create(uri, methods, options);
   }
 
   protected create(
     uri: string,
     methods: readonly (typeof Builder.METHODS)[number][],
     options: BuilderOptions<Props, any[]>,
-  ): any {
+  ): void {
     options.docs = { ...this.docs, ...options.docs };
     const builder = new Builder(this.prefix, uri, methods, options);
     options.disabled !== true && this.builders.push(builder);

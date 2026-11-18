@@ -4,11 +4,6 @@ import { Middleware, middleware } from '@aomex/common';
 import type { Union2Intersection } from '@aomex/internal-tools';
 
 export declare namespace Builder {
-  export type Interface<
-    Props extends object | unknown,
-    T extends ConsoleMiddlewareToken[] | [],
-  > = Props & Union2Intersection<Middleware.CollectArrayType<T[number]>>;
-
   export type Context<
     Props extends object | unknown,
     T extends ConsoleMiddlewareToken[] | [],

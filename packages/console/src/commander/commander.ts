@@ -26,10 +26,9 @@ export class Commander<
   public create<T extends ConsoleMiddlewareToken<object>[] | []>(
     commandName: string | string[],
     options: BuilderOptions<Props, T>,
-  ): Builder.Interface<Props, T> {
+  ): void {
     const builder = new Builder(this.prefix, toArray(commandName), options);
     options.disabled !== true && this.builders.push(builder);
-    return undefined as any;
   }
 
   protected toMiddleware(): ConsoleMiddleware {

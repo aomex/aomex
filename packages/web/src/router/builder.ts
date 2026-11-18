@@ -5,14 +5,6 @@ import type { WebMiddlewareToken } from '../override';
 import type { WebContext } from '../http';
 
 export declare namespace Builder {
-  export type DTO<
-    Props extends object | unknown,
-    T extends WebMiddlewareToken[] | [],
-  > = Omit<
-    Props & Union2Intersection<Middleware.CollectArrayType<T[number]>>,
-    ResponseMethods
-  >;
-
   export type Interface<
     Props extends object | unknown,
     T extends WebMiddlewareToken[] | [],
