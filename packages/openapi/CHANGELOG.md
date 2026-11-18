@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/aomex/aomex/compare/v4.0.0...v4.1.0) (2026-11-18)
+
+### Features
+
+* **web:** 支持 skipEnvelope 跳过响应套壳 ([738bd27](https://github.com/aomex/aomex/commit/738bd271255230a63a0e9d60ee848b1da281fbd3))
+
+
 # [4.0.0](https://github.com/aomex/aomex/compare/v3.30.7...v4.0.0) (2026-11-17)
 
 * chore!: 升级依赖至最新 ([9a679fa](https://github.com/aomex/aomex/commit/9a679faf0a4e2b313e8ce9081c1ecc65356b844c))

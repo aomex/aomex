@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/aomex/aomex/compare/v4.0.0...v4.1.0) (2026-11-18)
+
+**Note:** Version bump only for package @aomex/auth
+
+
+
+
+
 # [4.0.0](https://github.com/aomex/aomex/compare/v3.30.7...v4.0.0) (2026-11-17)
 
 * feat(auth)!: 增加api-key策略 ([43a453c](https://github.com/aomex/aomex/commit/43a453cbb96ba50228fbdebdf96f34a820bbf9a0))

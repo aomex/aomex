@@ -1,6 +1,6 @@
 {
   "name": "@aomex/common-service",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "aomex服务层",
   "scripts": {
     "prepublishOnly": "tsdown"

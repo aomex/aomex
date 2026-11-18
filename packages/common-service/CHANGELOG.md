@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/aomex/aomex/compare/v4.0.0...v4.1.0) (2026-11-18)
+
+**Note:** Version bump only for package @aomex/common-service
+
+
+
+
+
 # [4.0.0](https://github.com/aomex/aomex/compare/v3.30.7...v4.0.0) (2026-11-17)
 
 * feat(cache)!: 引入BaseCacheService服务和remember装饰器 ([f48dba5](https://github.com/aomex/aomex/commit/f48dba555e6ddfaa4cc5b240b30cea6e4b39a0c1))

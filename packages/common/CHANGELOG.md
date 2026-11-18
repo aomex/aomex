@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/aomex/aomex/compare/v4.0.0...v4.1.0) (2026-11-18)
+
+### Features
+
+* **common:** 新增 AOMEX_RUNTIME 环境变量，同时弃用 AOMEX_CLI_MODE ([7fd8d86](https://github.com/aomex/aomex/commit/7fd8d864fb5a98131b9316abefce222615134938))
+
+
 # [4.0.0](https://github.com/aomex/aomex/compare/v3.30.7...v4.0.0) (2026-11-17)
 
 * chore!: 升级至 TypeScript 7 并将构建工具迁移到 tsdown ([a111409](https://github.com/aomex/aomex/commit/a111409021e2ee81ee5fb20ccc75480c9b5fa4c0))

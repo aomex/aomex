@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/aomex/aomex/compare/v4.0.0...v4.1.0) (2026-11-18)
+
+### Bug Fixes
+
+* **web:** 删除响应中的ETag头以确保内容一致性 ([b539c15](https://github.com/aomex/aomex/commit/b539c159192361dcc434c2d4a5bfb5e4ea5b1efa))
+* **web:** 统一套壳时有部分场景会把JSON当成字符串填充 ([d5bac04](https://github.com/aomex/aomex/commit/d5bac04039691423f6c336fac8e5e21d87774e30))
+
+### Features
+
+* **common:** 新增 AOMEX_RUNTIME 环境变量，同时弃用 AOMEX_CLI_MODE ([7fd8d86](https://github.com/aomex/aomex/commit/7fd8d864fb5a98131b9316abefce222615134938))
+* **scalar-ui:** 增加文档UI ([185683a](https://github.com/aomex/aomex/commit/185683a04e3430b7a6c8bb478c2d487d03897c87))
+* **web:** 支持 skipEnvelope 跳过响应套壳 ([738bd27](https://github.com/aomex/aomex/commit/738bd271255230a63a0e9d60ee848b1da281fbd3))
+
+
 # [4.0.0](https://github.com/aomex/aomex/compare/v3.30.7...v4.0.0) (2026-11-17)
 
 * chore!: 升级依赖至最新 ([9a679fa](https://github.com/aomex/aomex/commit/9a679faf0a4e2b313e8ce9081c1ecc65356b844c))

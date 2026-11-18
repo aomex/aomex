@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/aomex/aomex/compare/v4.0.0...v4.1.0) (2026-11-18)
+
+**Note:** Version bump only for package @aomex/cache
+
+
+
+
+
 # [4.0.0](https://github.com/aomex/aomex/compare/v3.30.7...v4.0.0) (2026-11-17)
 
 * feat(cache)!: 新增文件缓存，适配器改为子路径导出并移除工厂函数 ([943b243](https://github.com/aomex/aomex/commit/943b2432ebc97db8f4f199ff0ee8fa2c2dc04bfd))

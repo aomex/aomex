@@ -1,6 +1,6 @@
 {
   "name": "@aomex/pretty-json",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "格式化JSON数据",
   "keywords": [
     "pretty",
