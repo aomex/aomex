@@ -117,10 +117,9 @@ export const applyResponseEnvelope = (
 
   const statusCode = res.statusCode;
   const bodyType = res['_bodyType'] as BodyType;
-  const payload = (bodyType === 'null' ? null : res.body) as object | string | null;
   const vars: EnvelopeVars = {
     success: statusCode < 400,
-    payload,
+    payload: resolveEnvelopePayload(res, bodyType),
     statusCode,
   };
 
@@ -130,6 +129,25 @@ export const applyResponseEnvelope = (
   res.removeHeader('ETag');
   res.body = resolveRuntimeNode(options.content, vars) as Body;
   res.statusCode = ENVELOPE_HTTP_STATUS;
+};
+
+/**
+ * 取出套壳用的内层 payload。
+ * `Content-Type` 已是 JSON 但 body 仍是字符串时（如手动 `JSON.stringify`），解析回对象/数组，避免 `data` 变成 JSON 文本。
+ */
+const resolveEnvelopePayload = (
+  res: WebResponse,
+  bodyType: BodyType,
+): object | string | null => {
+  if (bodyType === 'null') return null;
+  if (bodyType === 'string' && res.contentType === 'application/json') {
+    try {
+      return JSON.parse(res.body as string) as object | string;
+    } catch {
+      return res.body as string;
+    }
+  }
+  return res.body as object | string;
 };
 
 /**

@@ -129,6 +129,46 @@ describe('envelope runtime', () => {
     expect(res.body).toEqual({ success: true, data: 'hello' });
   });
 
+  test('Content-Type 为 json 且 body 为 JSON 字符串时，data 保持对象', async () => {
+    const app = new TestWebApp({
+      envelope: {
+        content: {
+          success: envelope.success,
+          data: envelope.payload,
+        },
+      },
+      mount: [
+        middleware.web((ctx) => {
+          ctx.response.contentType = 'json';
+          ctx.response.body = JSON.stringify({ id: 1 });
+        }),
+      ],
+    });
+    const res = await get(app);
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ success: true, data: { id: 1 } });
+    expect(typeof res.body.data).toBe('object');
+  });
+
+  test('Content-Type 为 json 但字符串非法 JSON 时，data 仍为原字符串', async () => {
+    const app = new TestWebApp({
+      envelope: {
+        content: {
+          success: envelope.success,
+          data: envelope.payload,
+        },
+      },
+      mount: [
+        middleware.web((ctx) => {
+          ctx.response.contentType = 'json';
+          ctx.response.body = '{broken';
+        }),
+      ],
+    });
+    const res = await get(app);
+    expect(res.body).toEqual({ success: true, data: '{broken' });
+  });
+
   test('套壳时删除原 ETag', async () => {
     const app = new TestWebApp({
       envelope: baseEnvelope,
