@@ -1,13 +1,8 @@
-import { middleware, OpenAPI, rule } from '@aomex/common';
+import { middleware, rule } from '@aomex/common';
 import { Readable } from 'node:stream';
 import { describe, expect, test } from 'vitest';
 import supertest from 'supertest';
-import {
-  createEnvelopeOpenApiInjector,
-  envelope,
-  formatError,
-  response,
-} from '../../src';
+import { envelope, formatError, response } from '../../src';
 import { TestWebApp } from '../../src/testing';
 
 const baseEnvelope = {
@@ -211,6 +206,165 @@ describe('envelope runtime', () => {
     expect(res.text === 'bin' || Buffer.from(res.body).toString() === 'bin').toBe(true);
   });
 
+  test('skipEnvelope 跳过套壳', async () => {
+    const app = new TestWebApp({
+      envelope: baseEnvelope,
+      mount: [
+        middleware.web((ctx) => {
+          ctx.response.skipEnvelope = true;
+          ctx.send(201, { id: 1 });
+        }),
+      ],
+    });
+
+    const res = await get(app);
+    expect(res.status).toBe(201);
+    expect(res.body).toEqual({ id: 1 });
+  });
+
+  test('skipEnvelope 对 string 响应同样生效', async () => {
+    const app = new TestWebApp({
+      envelope: baseEnvelope,
+      mount: [
+        middleware.web((ctx) => {
+          ctx.response.skipEnvelope = true;
+          ctx.send('<html></html>');
+          ctx.response.contentType = 'html';
+        }),
+      ],
+    });
+
+    const res = await get(app);
+    expect(res.status).toBe(200);
+    expect(res.text).toBe('<html></html>');
+    expect(res.headers['content-type']).toMatch(/text\/html/);
+  });
+
+  test('response({ skipEnvelope }) 仅跳过登记的状态码', async () => {
+    const app = new TestWebApp({
+      envelope: baseEnvelope,
+      mount: [
+        response({
+          statusCode: 200,
+          content: { id: rule.number() },
+          skipEnvelope: true,
+        }),
+        response({
+          statusCode: 400,
+          content: { message: rule.string() },
+        }),
+        middleware.web((ctx) => {
+          if (ctx.request.query['err']) {
+            ctx.send(400, { message: 'bad' });
+            return;
+          }
+          ctx.send({ id: 1 });
+        }),
+      ],
+    });
+
+    const ok = await get(app);
+    expect(ok.status).toBe(200);
+    expect(ok.body).toEqual({ id: 1 });
+
+    const err = await supertest(app.listen()).get('/?err=1');
+    expect(err.status).toBe(200);
+    expect(err.body).toEqual({
+      success: false,
+      statusCode: 400,
+      data: { message: 'bad' },
+    });
+  });
+
+  test('response({ skipEnvelope }) 可登记多个状态码', async () => {
+    const app = new TestWebApp({
+      envelope: baseEnvelope,
+      mount: [
+        response({
+          statusCode: 200,
+          content: { id: rule.number() },
+          skipEnvelope: true,
+        }),
+        response({
+          statusCode: 201,
+          content: { id: rule.number() },
+          skipEnvelope: true,
+        }),
+        middleware.web((ctx) => {
+          ctx.send(ctx.request.query['created'] ? 201 : 200, { id: 1 });
+        }),
+      ],
+    });
+
+    const created = await supertest(app.listen()).get('/?created=1');
+    expect(created.status).toBe(201);
+    expect(created.body).toEqual({ id: 1 });
+
+    const ok = await get(app);
+    expect(ok.status).toBe(200);
+    expect(ok.body).toEqual({ id: 1 });
+  });
+
+  test('response({ skipEnvelope: false }) 不登记，仍套壳', async () => {
+    const app = new TestWebApp({
+      envelope: baseEnvelope,
+      mount: [
+        response({
+          statusCode: 200,
+          content: { id: rule.number() },
+          skipEnvelope: false,
+        }),
+        middleware.web((ctx) => {
+          ctx.send({ id: 1 });
+        }),
+      ],
+    });
+
+    const res = await get(app);
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      success: true,
+      statusCode: 200,
+      data: { id: 1 },
+    });
+  });
+
+  test('仅登记 400 skip 时，400 裸响应、200 仍套壳', async () => {
+    const app = new TestWebApp({
+      envelope: baseEnvelope,
+      mount: [
+        response({
+          statusCode: 200,
+          content: { id: rule.number() },
+        }),
+        response({
+          statusCode: 400,
+          content: { message: rule.string() },
+          skipEnvelope: true,
+        }),
+        middleware.web((ctx) => {
+          if (ctx.request.query['err']) {
+            ctx.send(400, { message: 'bad' });
+            return;
+          }
+          ctx.send({ id: 1 });
+        }),
+      ],
+    });
+
+    const ok = await get(app);
+    expect(ok.status).toBe(200);
+    expect(ok.body).toEqual({
+      success: true,
+      statusCode: 200,
+      data: { id: 1 },
+    });
+
+    const err = await supertest(app.listen()).get('/?err=1');
+    expect(err.status).toBe(400);
+    expect(err.body).toEqual({ message: 'bad' });
+  });
+
   test('嵌套对象结构', async () => {
     const app = new TestWebApp({
       envelope: {
@@ -334,261 +488,5 @@ describe('envelope runtime', () => {
     expect(res.type).toMatch(/event-stream/);
     expect(res.text).toContain('data: {"hello":1}');
     expect(res.text).not.toContain('"success"');
-  });
-});
-
-describe('envelope openapi helper', () => {
-  const blankDoc = (): OpenAPI.Document => ({
-    openapi: '',
-    info: { title: '', version: '' },
-    paths: { '/': { get: { responses: {} } } },
-  });
-
-  const optsFor = (doc: OpenAPI.Document) => ({
-    document: doc,
-    pathName: '/',
-    pathItem: doc.paths['/']!,
-    methodName: 'get' as const,
-  });
-
-  const schema200 = (methodItem: OpenAPI.OperationObject) =>
-    (methodItem.responses['200'] as OpenAPI.ResponseObject).content!['application/json']!
-      .schema!;
-
-  test('将 2xx 与 default 收成 200 成败 oneOf，保留 3xx 与无内容状态码', () => {
-    const doc = blankDoc();
-    const env = createEnvelopeOpenApiInjector({
-      description: '统一响应体套壳',
-      content: baseEnvelope.content,
-    });
-    const err = formatError({
-      content: { code: rule.string(), message: rule.string() },
-      handler(err) {
-        return { code: err.code ?? 'ERR', message: err.message };
-      },
-    });
-    const ok = response({
-      statusCode: 200,
-      content: { id: rule.number() },
-    });
-    const redirect = response({
-      statusCode: 302,
-      description: '跳转',
-    });
-    const empty = response({
-      statusCode: 204,
-      description: '无内容',
-    });
-
-    const methodItem = doc.paths['/']!.get!;
-    const opts = optsFor(doc);
-
-    err['openapi']().onMethod?.(methodItem, opts);
-    ok['openapi']().onMethod?.(methodItem, opts);
-    redirect['openapi']().onMethod?.(methodItem, opts);
-    empty['openapi']().onMethod?.(methodItem, opts);
-
-    err['openapi']().postMethod?.(methodItem, opts);
-    ok['openapi']().postMethod?.(methodItem, opts);
-    redirect['openapi']().postMethod?.(methodItem, opts);
-    empty['openapi']().postMethod?.(methodItem, opts);
-    env.postMethod?.(methodItem, opts);
-
-    expect(methodItem.responses['302']).toMatchObject({ description: '跳转' });
-    expect(methodItem.responses['204']).toMatchObject({ description: '无内容' });
-    expect(methodItem.responses['default']).toBeUndefined();
-    expect(Object.keys(methodItem.responses!).sort()).toEqual(['200', '204', '302']);
-    expect(methodItem.responses['200']).toMatchObject({
-      description: '统一响应体套壳',
-      content: {
-        'application/json': {
-          schema: {
-            oneOf: [
-              {
-                type: 'object',
-                required: ['success', 'statusCode', 'data'],
-                properties: {
-                  success: { type: 'boolean', enum: [true] },
-                  statusCode: { type: 'integer' },
-                  data: {
-                    type: 'object',
-                    properties: { id: { type: 'number' } },
-                  },
-                },
-              },
-              {
-                type: 'object',
-                required: ['success', 'statusCode', 'data'],
-                properties: {
-                  success: { type: 'boolean', enum: [false] },
-                  statusCode: { type: 'integer' },
-                  data: {
-                    type: 'object',
-                    properties: {
-                      code: { type: 'string' },
-                      message: { type: 'string' },
-                    },
-                  },
-                },
-              },
-            ],
-          },
-        },
-      },
-    });
-  });
-
-  test('仅成功支：无 oneOf，success const true', () => {
-    const doc = blankDoc();
-    const env = createEnvelopeOpenApiInjector({
-      content: baseEnvelope.content,
-    });
-    const ok = response({
-      statusCode: 200,
-      content: rule.string(),
-    });
-    const methodItem = doc.paths['/']!.get!;
-    const opts = optsFor(doc);
-
-    ok['openapi']().onMethod?.(methodItem, opts);
-    env.postMethod?.(methodItem, opts);
-
-    expect(methodItem.responses['200']).toMatchObject({
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean', enum: [true] },
-              statusCode: { type: 'integer' },
-              data: { type: 'string' },
-            },
-          },
-        },
-      },
-    });
-    expect(schema200(methodItem)).not.toHaveProperty('oneOf');
-  });
-
-  test('仅失败支：无 oneOf，success const false', () => {
-    const doc = blankDoc();
-    const env = createEnvelopeOpenApiInjector({
-      content: baseEnvelope.content,
-    });
-    const err = formatError({
-      content: { code: rule.string() },
-      handler(err) {
-        return { code: err.code ?? 'ERR' };
-      },
-    });
-    const methodItem = doc.paths['/']!.get!;
-    const opts = optsFor(doc);
-
-    err['openapi']().onMethod?.(methodItem, opts);
-    err['openapi']().postMethod?.(methodItem, opts);
-    env.postMethod?.(methodItem, opts);
-
-    expect(methodItem.responses['default']).toBeUndefined();
-    expect(methodItem.responses['200']).toMatchObject({
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean', enum: [false] },
-              data: {
-                type: 'object',
-                properties: { code: { type: 'string' } },
-              },
-            },
-          },
-        },
-      },
-    });
-    expect(schema200(methodItem)).not.toHaveProperty('oneOf');
-  });
-
-  test('无任何 responses：骨架支，success 无 enum', () => {
-    const doc = blankDoc();
-    const env = createEnvelopeOpenApiInjector({
-      content: baseEnvelope.content,
-    });
-    const methodItem = doc.paths['/']!.get!;
-    const opts = optsFor(doc);
-
-    env.postMethod?.(methodItem, opts);
-
-    expect(methodItem.responses['200']).toMatchObject({
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              statusCode: { type: 'integer' },
-              data: {},
-            },
-          },
-        },
-      },
-    });
-    const schema = schema200(methodItem) as OpenAPI.SchemaObject;
-    expect(schema).not.toHaveProperty('oneOf');
-    expect(schema.properties!['success']).not.toHaveProperty('enum');
-  });
-
-  test('仅有无内容状态码时不虚构 200 套壳', () => {
-    const doc = blankDoc();
-    const env = createEnvelopeOpenApiInjector({
-      content: baseEnvelope.content,
-    });
-    const empty = response({
-      statusCode: 204,
-      description: '已删除',
-    });
-    const methodItem = doc.paths['/']!.get!;
-    const opts = optsFor(doc);
-
-    empty['openapi']().onMethod?.(methodItem, opts);
-    env.postMethod?.(methodItem, opts);
-
-    expect(methodItem.responses['204']).toMatchObject({ description: '已删除' });
-    expect(methodItem.responses['200']).toBeUndefined();
-    expect(Object.keys(methodItem.responses!)).toEqual(['204']);
-  });
-
-  test('自定义 slot 的 schema 写入文档', () => {
-    const doc = blankDoc();
-    const env = createEnvelopeOpenApiInjector({
-      content: {
-        success: envelope.success,
-        data: envelope.payload,
-        version: envelope.slot(rule.string(), () => '1'),
-      },
-    });
-    const ok = response({
-      statusCode: 200,
-      content: rule.number(),
-    });
-    const methodItem = doc.paths['/']!.get!;
-    const opts = optsFor(doc);
-
-    ok['openapi']().onMethod?.(methodItem, opts);
-    env.postMethod?.(methodItem, opts);
-
-    expect(methodItem.responses['200']).toMatchObject({
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean', enum: [true] },
-              data: { type: 'number' },
-              version: { type: 'string' },
-            },
-          },
-        },
-      },
-    });
   });
 });

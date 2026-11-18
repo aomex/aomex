@@ -154,12 +154,14 @@ export const redocUI = (opts: RedocUIOptions): WebMiddleware => {
 
     if (pathname === uriPrefix || pathname === htmlPath) {
       await loading();
+      ctx.response.skipEnvelope = true;
       ctx.send(html);
       return;
     }
 
     if (pathname === openapiPath) {
       await loading();
+      ctx.response.skipEnvelope = true;
       ctx.send(specs);
       ctx.response.contentType = 'json';
       return;

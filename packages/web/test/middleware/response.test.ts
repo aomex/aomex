@@ -2,6 +2,7 @@ import { OpenAPI, compose, rule } from '@aomex/common';
 import { describe, expect, test, vitest } from 'vitest';
 import {
   X_RESPONSE_FORMAT_DEFAULT,
+  X_SKIP_ENVELOPE,
   formatError,
   response,
   responseFormatKey,
@@ -17,6 +18,95 @@ test('包含next', async () => {
   await compose([response({ statusCode: 200 })])(ctx, spy);
   expect(spy).toHaveBeenCalledOnce();
   res.flush();
+});
+
+test('skipEnvelope 运行时登记对应状态码', async () => {
+  const { ctx, res } = await mockServer((agent) => agent.get('/'));
+
+  await compose([
+    response({
+      statusCode: 200,
+      content: rule.object({ id: rule.number() }),
+      skipEnvelope: true,
+    }),
+    response({
+      statusCode: 201,
+      content: rule.object({ id: rule.number() }),
+      skipEnvelope: true,
+    }),
+    response({ statusCode: 400, content: rule.object({ message: rule.string() }) }),
+  ])(ctx, async () => {});
+
+  expect([...ctx.response['skipEnvelopeStatuses']].sort()).toEqual([200, 201]);
+  expect(ctx.response.skipEnvelope).toBe(false);
+  res.flush();
+});
+
+test('skipEnvelope 写入 OpenAPI 临时标记', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: { '/': { get: { responses: {} } } },
+  };
+  const methodItem = doc.paths['/']!.get!;
+  const opts = {
+    document: doc,
+    pathName: '/',
+    pathItem: doc.paths['/']!,
+    methodName: 'get' as const,
+  };
+
+  response({
+    statusCode: 200,
+    content: { id: rule.number() },
+    skipEnvelope: true,
+  })
+    ['openapi']()
+    .onMethod?.(methodItem, opts);
+
+  response({
+    statusCode: 400,
+    content: { message: rule.string() },
+    skipEnvelope: true,
+  })
+    ['openapi']()
+    .onMethod?.(methodItem, opts);
+
+  // 同状态码再次声明不重复追加
+  response({
+    statusCode: 200,
+    content: { id: rule.number() },
+    skipEnvelope: true,
+  })
+    ['openapi']()
+    .onMethod?.(methodItem, opts);
+
+  expect((methodItem as Record<string, unknown>)[X_SKIP_ENVELOPE]).toEqual([200, 400]);
+  expect(methodItem.responses['200']).toBeDefined();
+  expect(methodItem.responses['400']).toBeDefined();
+});
+
+test('未开启 skipEnvelope 时不写临时标记', () => {
+  const doc: OpenAPI.Document = {
+    openapi: '',
+    info: { title: '', version: '' },
+    paths: { '/': { get: { responses: {} } } },
+  };
+  const methodItem = doc.paths['/']!.get!;
+
+  response({
+    statusCode: 200,
+    content: { id: rule.number() },
+  })
+    ['openapi']()
+    .onMethod?.(methodItem, {
+      document: doc,
+      pathName: '/',
+      pathItem: doc.paths['/']!,
+      methodName: 'get',
+    });
+
+  expect(methodItem).not.toHaveProperty(X_SKIP_ENVELOPE);
 });
 
 describe('content-type', () => {

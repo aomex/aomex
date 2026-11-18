@@ -3,7 +3,7 @@ import { expect, test } from 'vitest';
 import { sequenceFile } from '../fixtures/routers/sequence.router';
 import { appendFileSync, readFileSync, rmSync } from 'fs';
 import { middleware, rule } from '@aomex/common';
-import { formatError } from '@aomex/web';
+import { X_SKIP_ENVELOPE, formatError } from '@aomex/web';
 import { initializeDocument, parseFiles } from '../../src';
 
 test('解析文件', async () => {
@@ -311,9 +311,39 @@ test('全局 mount 先于路由中间件执行', async () => {
   const document = await initializeDocument();
   await parseFiles(document, [file], { mount: [globalMd] });
 
-  // /bar: 全局+3 路由；/baz: 全局+1 路由。各钩子内全局排在对应接口路由 md 之前
-  // onDocument: G111G1；onPath: g222g2；… 依此类推
+  // /bar: 全局+3 路由；/baz: 全局+1 路由
+  // on*：全局在前（G111G1…）；post*：倒序，路由在前、全局最后（444M4M…）
   expect(readFileSync(sequenceFile, 'utf8')).toMatchInlineSnapshot(
-    `"G111G1g222g2m333m3M444M4p555p5P666P6"`,
+    `"G111G1g222g2m333m3444M4M555p5p666P6P"`,
   );
+});
+
+test('无 envelope 时仍清理 x-skip-envelope 临时键', async () => {
+  const file = join(
+    import.meta.dirname,
+    '..',
+    'fixtures',
+    'routers',
+    'skip-envelope.router.ts',
+  );
+  const document = await initializeDocument();
+  await parseFiles(document, [file]);
+
+  for (const pathItem of Object.values(document.paths ?? {})) {
+    for (const method of Object.values(pathItem ?? {})) {
+      if (method && typeof method === 'object' && 'responses' in method) {
+        expect(method).not.toHaveProperty(X_SKIP_ENVELOPE);
+      }
+    }
+  }
+  expect(document.paths['/raw']!.get!.responses!['200']).toMatchObject({
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: { id: { type: 'number' } },
+        },
+      },
+    },
+  });
 });

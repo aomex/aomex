@@ -27,6 +27,28 @@ import { createReadStream } from 'node:fs';
   });
 }
 
+// skipEnvelope
+{
+  response({
+    statusCode: 200,
+    content: rule.object({ id: rule.number() }),
+    skipEnvelope: true,
+  });
+  response({
+    statusCode: 400,
+    content: rule.object({ message: rule.string() }),
+    skipEnvelope: true,
+  });
+  response({
+    statusCode: 200,
+    skipEnvelope: false,
+  });
+  // @ts-expect-error
+  response({ statusCode: 200, skipEnvelope: 1 });
+  // @ts-expect-error
+  response({ statusCode: 200, skipEnvelope: 'true' });
+}
+
 // 枚举状态码
 {
   response({ statusCode: 200 });

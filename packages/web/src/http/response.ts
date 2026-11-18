@@ -60,6 +60,19 @@ export class WebResponse extends ServerResponse {
   private _statusCode: number = 404;
   private _updatingContentType: boolean = false;
 
+  /**
+   * 为 `true` 时无条件跳过 `WebApp.envelope` 套壳。
+   * 用于文档页、裸 OpenAPI JSON 等基础设施响应。
+   * 业务路由请优先用 `response({ skipEnvelope: true })`，按状态码登记并同步 OpenAPI。
+   */
+  skipEnvelope = false;
+
+  /**
+   * 按状态码跳过套壳（由 `response({ skipEnvelope: true })` 登记）。
+   * 仅当最终 `statusCode` 落在集合内时跳过。
+   */
+  protected skipEnvelopeStatuses = new Set<number>();
+
   constructor(req: IncomingMessage) {
     super(req);
 

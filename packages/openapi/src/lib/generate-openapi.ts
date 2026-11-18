@@ -13,7 +13,8 @@ export interface GenerateOpenapiOptions {
    */
   routers: GlobPathOptions;
   /**
-   * `WebApp` 实例：读取全局 `mount` 与 `envelope`，作为 OpenAPI 注入的单一真源。
+   * `WebApp` 实例：读取全局 `middlewareList`（含用户 `mount` 与自动插入的 envelope），
+   * 作为 OpenAPI 注入的单一真源。
    *
    * CLI / 测试会 `import` 该模块时，请把 `new WebApp(...)` 与 `app.listen(...)` 拆开
    *（或仅在入口文件 listen），避免副作用起服。
@@ -61,7 +62,6 @@ export const generateOpenapi = async (
   const app = config.app;
   const usedTags = await parseFiles(document, files, {
     mount: app['middlewareList'],
-    envelope: app['options'].envelope,
   });
   appendTag(document, usedTags);
   await config.fix?.(document);

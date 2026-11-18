@@ -2,9 +2,10 @@ import { TestWebApp } from '../../web/src/testing';
 import { expect, test } from 'vitest';
 import { swaggerUI } from '../src';
 import path from 'path';
-import { WebMiddleware } from '@aomex/web';
+import { envelope, WebMiddleware } from '@aomex/web';
 import supertest from 'supertest';
 import { middleware } from '@aomex/common';
+import { readFileSync } from 'node:fs';
 const openapiJson = path.join(import.meta.dirname, 'fixtures', 'openapi.json');
 const openapiYAML = path.join(import.meta.dirname, 'fixtures', 'openapi.yaml');
 const openapiYML = path.join(import.meta.dirname, 'fixtures', 'openapi.yml');
@@ -284,5 +285,37 @@ test('访问openapi.json', async () => {
       expect(res.text).toMatchInlineSnapshot(
         `"{"version":"3.0.0","info":{"title":"foo","version":""},"paths":{}}"`,
       );
+    });
+});
+
+test('配置 envelope 时 html 与 openapi.json 不被套壳', async () => {
+  const app = new TestWebApp({
+    envelope: {
+      content: {
+        success: envelope.success,
+        data: envelope.payload,
+      },
+    },
+    mount: [swaggerUI({ openapi: openapiJson })],
+  });
+  const server = app.listen();
+
+  await supertest(server)
+    .get('/swagger')
+    .expect(200)
+    .expect('Content-Type', /text\/html/)
+    .expect((res) => {
+      expect(res.text).toContain('<!doctype html>');
+      expect(res.body).not.toEqual(expect.objectContaining({ success: true }));
+    });
+
+  const expected = JSON.parse(readFileSync(openapiJson, 'utf8'));
+  await supertest(server)
+    .get('/swagger/openapi.json')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+    .expect((res) => {
+      expect(res.body).toEqual(expected);
+      expect(res.body).not.toEqual(expect.objectContaining({ success: true }));
     });
 });

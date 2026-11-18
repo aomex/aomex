@@ -4,8 +4,7 @@ import {
   Router,
   WebMiddleware,
   WebRequest,
-  createEnvelopeOpenApiInjector,
-  type EnvelopeOptions,
+  X_SKIP_ENVELOPE,
   type OpenApiInjector,
   type WebMiddlewareToken,
 } from '@aomex/web';
@@ -14,10 +13,8 @@ import { methodToVerb } from './method-to-verb';
 import snakeCase from 'lodash.snakecase';
 
 export interface ParseFilesOptions {
-  /** 全局中间件（与 `WebApp` 的 `mount` 对应） */
+  /** 全局中间件（与 `WebApp` 的 `mount` / 自动插入的 envelope 对应） */
   mount?: WebMiddlewareToken[];
-  /** 响应体套壳（与 `WebApp.envelope` 对应）；在全部中间件 `postMethod` 之后收口 */
-  envelope?: EnvelopeOptions;
 }
 
 export const parseFiles = async (
@@ -26,27 +23,15 @@ export const parseFiles = async (
   options: ParseFilesOptions = {},
 ) => {
   const mount = options.mount ?? [];
-  const envelopeInjector = options.envelope
-    ? createEnvelopeOpenApiInjector(options.envelope)
-    : undefined;
   const usedTags: string[] = [];
 
-  const data: {
-    pathName: string;
-    pathItem: OpenAPI.PathItemObject;
-    methodName: `${Lowercase<WebRequest['method']>}`;
-    methodItem: OpenAPI.OperationObject;
-    injector: OpenApiInjector;
-    file: string;
-    uri: string;
-  }[] = [];
-
-  /** 每个 operation 只出现一次，供 envelope 收口与标签补齐 */
+  /** 每个 operation 及其中间件 injector（顺序与运行时一致：全局 → 组 → 接口） */
   const operations: {
     pathName: string;
     pathItem: OpenAPI.PathItemObject;
     methodName: `${Lowercase<WebRequest['method']>}`;
     methodItem: OpenAPI.OperationObject;
+    injectors: OpenApiInjector[];
     file: string;
     uri: string;
   }[] = [];
@@ -87,54 +72,29 @@ export const parseFiles = async (
             pathName,
             methodItem,
             methodName,
+            injectors: builderMiddlewareList.map((item) => item['openapi']()),
             file,
             uri,
           });
-
-          data.push(
-            ...builderMiddlewareList.map((item) => {
-              return {
-                injector: item['openapi'](),
-                pathItem,
-                pathName,
-                methodItem,
-                methodName,
-                file,
-                uri,
-              };
-            }),
-          );
         }
       }
     }
   }
 
-  for (const { injector } of data) {
-    injector.onDocument?.(document);
+  // on*：由外到内（与 mount 顺序一致）
+  for (const { injectors } of operations) {
+    for (const injector of injectors) {
+      injector.onDocument?.(document);
+    }
   }
-  for (const { injector, pathItem, pathName } of data) {
-    injector.onPath?.(pathItem, { document, pathName });
+  for (const { injectors, pathItem, pathName } of operations) {
+    for (const injector of injectors) {
+      injector.onPath?.(pathItem, { document, pathName });
+    }
   }
-  for (const { injector, pathItem, pathName, methodItem, methodName } of data) {
-    injector.onMethod?.(methodItem, {
-      document,
-      pathItem,
-      pathName,
-      methodName,
-    });
-  }
-  for (const { injector, pathItem, pathName, methodItem, methodName } of data) {
-    injector.postMethod?.(methodItem, {
-      document,
-      pathItem,
-      pathName,
-      methodName,
-    });
-  }
-  // envelope 不在 mount 里，等价于最外层：全部中间件 postMethod 之后再收成 200
-  if (envelopeInjector?.postMethod) {
-    for (const { pathItem, pathName, methodItem, methodName } of operations) {
-      envelopeInjector.postMethod(methodItem, {
+  for (const { injectors, pathItem, pathName, methodItem, methodName } of operations) {
+    for (const injector of injectors) {
+      injector.onMethod?.(methodItem, {
         document,
         pathItem,
         pathName,
@@ -142,11 +102,31 @@ export const parseFiles = async (
       });
     }
   }
-  for (const { injector, pathItem, pathName } of data) {
-    injector.postPath?.(pathItem, { document, pathName });
+
+  // post*：由内到外（倒序），保证最外层（如 envelope）最后收口
+  for (const { injectors, pathItem, pathName, methodItem, methodName } of operations) {
+    for (let i = injectors.length - 1; i >= 0; i--) {
+      injectors[i]!.postMethod?.(methodItem, {
+        document,
+        pathItem,
+        pathName,
+        methodName,
+      });
+    }
   }
-  for (const { injector } of data) {
-    injector.postDocument?.(document);
+  // 清理 response({ skipEnvelope }) 写入的临时键（无论是否配置 envelope）
+  for (const { methodItem } of operations) {
+    delete (methodItem as Record<string, unknown>)[X_SKIP_ENVELOPE];
+  }
+  for (const { injectors, pathItem, pathName } of operations) {
+    for (let i = injectors.length - 1; i >= 0; i--) {
+      injectors[i]!.postPath?.(pathItem, { document, pathName });
+    }
+  }
+  for (const { injectors } of operations) {
+    for (let i = injectors.length - 1; i >= 0; i--) {
+      injectors[i]!.postDocument?.(document);
+    }
   }
 
   for (const { methodItem, methodName, file, uri } of operations) {

@@ -11,6 +11,7 @@ import {
   type WebResponseMediaOptions,
 } from './response-media';
 import { responseFormatKey, X_RESPONSE_FORMAT_DEFAULT } from './format-error';
+import { X_SKIP_ENVELOPE } from '../http/envelope';
 
 export type {
   ClientErrorStatus,
@@ -28,6 +29,11 @@ export interface WebResponseOptions<
   Content extends ValidatorToken,
 > extends WebResponseMediaOptions<Content> {
   statusCode: Code;
+  /**
+   * 为 `true` 时，仅本 `statusCode` 跳过 `WebApp.envelope`（运行时与 OpenAPI 一致）。
+   * 其它状态码仍套壳。
+   */
+  skipEnvelope?: boolean;
 }
 
 export class WebResponseMiddleware<
@@ -92,14 +98,27 @@ export class WebResponseMiddleware<
             }
 > {
   constructor(protected readonly options: WebResponseOptions<Code, Content>) {
-    super(async (_, next) => next());
+    super(async (ctx, next) => {
+      if (options.skipEnvelope) {
+        ctx.response['skipEnvelopeStatuses'].add(options.statusCode);
+      }
+      return next();
+    });
   }
 
   protected override openapi(): OpenApiInjector {
     return {
       onMethod: (methodItem) => {
         methodItem.responses ||= {};
-        const { statusCode, content, headers, example } = this.options;
+        const { statusCode, content, headers, example, skipEnvelope } = this.options;
+        if (skipEnvelope) {
+          const ext = methodItem as Record<string, unknown>;
+          const list = Array.isArray(ext[X_SKIP_ENVELOPE])
+            ? (ext[X_SKIP_ENVELOPE] as number[])
+            : [];
+          if (!list.includes(statusCode)) list.push(statusCode);
+          ext[X_SKIP_ENVELOPE] = list;
+        }
         const prev = methodItem.responses[statusCode];
 
         // 无 content：整份借用 formatError 槽，再单点覆盖显式字段
@@ -168,6 +187,7 @@ export class WebResponseMiddleware<
  * 响应数据声明。多个状态码时请多次调用函数。
  * - 生成openapi文档
  * - 静态类型约束，以保证运行时和文档一致
+ * - `skipEnvelope: true` 时仅本 `statusCode` 跳过 `WebApp.envelope`（运行时 + 文档）
  *
  * 错误状态若只声明 `statusCode`、不写 `content`：整份借用
  * `x-response-format-{code}` / `default`（含 description、content、headers），

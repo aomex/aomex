@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { expect, test } from 'vitest';
-import { middleware, rule } from '@aomex/common';
+import { middleware, OpenAPI, rule } from '@aomex/common';
 import { envelope, formatError } from '@aomex/web';
 import { TestWebApp } from '../../../web/src/testing';
 import { generateOpenapi } from '../../src';
@@ -162,6 +162,105 @@ test('app.envelope 在文档侧收成 200 套壳', async () => {
               },
             },
           ],
+        },
+      },
+    },
+  });
+});
+
+test('response({ skipEnvelope }) 时该状态码不套壳且无临时扩展键', async () => {
+  const app = new TestWebApp({
+    envelope: {
+      content: {
+        success: envelope.success,
+        statusCode: envelope.statusCode,
+        data: envelope.payload,
+      },
+    },
+    mount: [],
+  });
+
+  const result = await generateOpenapi({
+    routers: join(
+      import.meta.dirname,
+      '..',
+      'fixtures',
+      'routers',
+      'skip-envelope.router.ts',
+    ),
+    app,
+  });
+
+  const raw = result.paths['/raw']!.get!;
+  expect(raw).not.toHaveProperty('x-skip-envelope');
+  // 仅声明了 skip 的 200、无其它需套壳状态时，保留裸 schema
+  expect(raw.responses!['200']).toMatchObject({
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: { id: { type: 'number' } },
+        },
+      },
+    },
+  });
+  expect(
+    (raw.responses!['200'] as OpenAPI.ResponseObject).content?.['application/json']
+      ?.schema,
+  ).not.toHaveProperty('oneOf');
+
+  const mixed = result.paths['/mixed']!.get!;
+  expect(mixed).not.toHaveProperty('x-skip-envelope');
+  expect(mixed.responses!['200']).toMatchObject({
+    content: {
+      'application/json': {
+        schema: {
+          oneOf: [
+            {
+              type: 'object',
+              properties: { id: { type: 'number' } },
+            },
+            {
+              type: 'object',
+              required: ['success', 'statusCode', 'data'],
+              properties: {
+                success: { type: 'boolean', enum: [false] },
+                data: {
+                  type: 'object',
+                  properties: { message: { type: 'string' } },
+                },
+              },
+            },
+          ],
+        },
+      },
+    },
+  });
+
+  const keepError = result.paths['/keep-error']!.get!;
+  expect(keepError.responses!['400']).toMatchObject({
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: { message: { type: 'string' } },
+        },
+      },
+    },
+  });
+  expect(keepError.responses!['200']).toMatchObject({
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          required: ['success', 'statusCode', 'data'],
+          properties: {
+            success: { type: 'boolean', enum: [true] },
+            data: {
+              type: 'object',
+              properties: { id: { type: 'number' } },
+            },
+          },
         },
       },
     },

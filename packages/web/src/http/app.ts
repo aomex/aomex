@@ -22,6 +22,7 @@ import type { WebMiddlewareToken } from '../override';
 import { toArray, type Union2Intersection } from '@aomex/internal-tools';
 import { parseBody, type ParseBodyOptions } from '../middleware/parse-body';
 import type { EnvelopeOptions } from './envelope';
+import { createEnvelopeMiddleware } from '../middleware/envelope';
 
 export namespace WebApp {
   export type Logger = PromisifiedService<BaseLoggerService>;
@@ -51,6 +52,7 @@ export namespace WebApp {
     /**
      * 响应体套壳：在 `flush` 写出前包进声明结构，固定 HTTP `200`。
      * 成功与错误（含无 `formatError` 的默认纯文本）都经 `flush` 统一套壳。
+     * 单次响应可设 `ctx.response.skipEnvelope = true` 跳过（如文档页、裸 OpenAPI JSON）。
      *
      * ```ts
      * import { envelope } from '@aomex/web';
@@ -227,8 +229,10 @@ export class WebApp<
 
   constructor(protected readonly options: WebApp.Option<T>) {
     super();
-    this.middlewareList = [];
-    this.middlewareList = options.mount || [];
+    // envelope 插在最外层：运行时空转；OpenAPI 靠 postMethod 倒序收口
+    this.middlewareList = options.envelope
+      ? [createEnvelopeMiddleware(options.envelope), ...(options.mount ?? [])]
+      : [...(options.mount ?? [])];
     this.logger = options.logger;
   }
 

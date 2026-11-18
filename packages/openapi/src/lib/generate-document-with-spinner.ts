@@ -70,7 +70,6 @@ export const generateOpenapiWithSpinner = async (
         const app = config.app;
         ctx.usedTags = await parseFiles(ctx.document, ctx.files, {
           mount: app?.['middlewareList'],
-          envelope: app?.['options'].envelope,
         });
         await sleep(500);
       },
