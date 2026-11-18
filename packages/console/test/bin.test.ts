@@ -54,9 +54,12 @@ test('执行.ts文件', async () => {
 test('环境变量', async () => {
   await writeFile(
     path.join(dir, 'src/cli.ts'),
-    'console.log(process.env.AOMEX_CLI_MODE)',
+    `
+    console.log(process.env.AOMEX_RUNTIME);
+    console.log(process.env.AOMEX_CLI_MODE);
+    `,
   );
-  expect(execSync(`node ${bin}`, { cwd: dir, encoding: 'utf8' })).toBe('1\n');
+  expect(execSync(`node ${bin}`, { cwd: dir, encoding: 'utf8' })).toBe('cli\n1\n');
 });
 
 test('允许import相对模块时缺省后缀', async () => {

@@ -18,6 +18,7 @@ if (!cliEntry) {
 }
 
 process.env['AOMEX_CLI_MODE'] = '1';
+process.env['AOMEX_RUNTIME'] = 'cli';
 
 enableCompileCache();
 
