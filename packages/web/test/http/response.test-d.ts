@@ -40,3 +40,20 @@ expectType<void>(res.removeCookie('a'));
 expectType<void>(res.removeCookie('a', { path: '/' }));
 // @ts-expect-error removeCookie 仅接受 path
 res.removeCookie('a', { domain: 'example.com' });
+
+expectType<WebResponse>(res.setHeader('ETag', '"x"'));
+expectType<WebResponse>(res.setHeader('TE', 'trailers'));
+expectType<WebResponse>(res.setHeader('DNT', '1'));
+expectType<WebResponse>(res.setHeader('Accept-Encoding', 'gzip'));
+expectType<WebResponse>(res.setHeader('Content-MD5', 'x'));
+expectType<WebResponse>(res.setHeader('Content-Security-Policy', "default-src 'self'"));
+expectType<WebResponse>(res.setHeader('Cross-Origin-Opener-Policy', 'same-origin'));
+expectType<WebResponse>(res.setHeader('Sec-Fetch-Site', 'none'));
+expectType<WebResponse>(res.setHeader('Sec-CH-UA', '"Chromium"'));
+expectType<WebResponse>(res.setHeader('X-Content-Type-Options', 'nosniff'));
+expectType<WebResponse>(res.setHeader('Last-Event-ID', '1'));
+expectType<WebResponse>(res.setHeader('X-Accel-Buffering', 'no'));
+expectType<WebResponse>(res.setHeader('Access-Control-Allow-Private-Network', 'true'));
+expectType<WebResponse>(res.setHeader('Set-Cookie', ['a=1']));
+expectType<string | undefined>(res.getHeader('ETag'));
+expectType<string[] | undefined>(res.getHeader('Set-Cookie'));

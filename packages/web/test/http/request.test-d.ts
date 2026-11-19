@@ -25,3 +25,19 @@ expectType<string>(request.search);
 expectType<boolean>(request.secure);
 expectType<string | null>(request.matchContentType(''));
 expectType<string | null>(request.matchContentType('json', 'urlencoded'));
+
+// LowerExternal 增强后的请求头推断
+expectType<string | undefined>(request.headers['x-forwarded-for']);
+expectType<string | undefined>(request.headers['cf-connecting-ip']);
+expectType<string | undefined>(request.headers['fastly-client-ip']);
+expectType<string | undefined>(request.headers['true-client-ip']);
+expectType<string | undefined>(request.headers['x-cluster-client-ip']);
+expectType<string | undefined>(request.headers['x-appengine-user-ip']);
+expectType<string | undefined>(request.headers['last-event-id']);
+expectType<string | undefined>(request.headers[':authority']);
+expectType<string | undefined>(request.headers['access-control-request-private-network']);
+expectType<string | undefined>(request.headers['dnt']);
+expectType<string | undefined>(request.headers['te']);
+expectType<string | undefined>(request.headers['early-data']);
+expectType<string | undefined>(request.headers['sec-ch-ua']);
+expectType<string | undefined>(request.headers['upgrade-insecure-requests']);

@@ -24,7 +24,7 @@ export const etag = (options: EtagOptions = {}): WebMiddleware => {
 
     if (statusCode < 200 || statusCode > 299) return;
     if (method !== 'GET' && method !== 'HEAD') return;
-    if (body === null || response.hasHeader('Etag')) return;
+    if (body === null || response.hasHeader('ETag')) return;
 
     let entity: Parameters<typeof calculate>[0] | undefined;
     if (body instanceof Stream) {
@@ -39,7 +39,7 @@ export const etag = (options: EtagOptions = {}): WebMiddleware => {
 
     if (!entity) return;
 
-    response.setHeader('Etag', calculate(entity, options));
+    response.setHeader('ETag', calculate(entity, options));
     request.fresh && ctx.send(304, null);
   });
 };

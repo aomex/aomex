@@ -169,6 +169,8 @@ test('Last-Event-ID 空字符串为 undefined，数组取首项', async () => {
         const sse = ctx.sse({ heartbeat: false });
         ctx.request.headers['last-event-id'] = '';
         emptyId = sse.lastEventId;
+        // 模拟异常重复头（Node 正常会合并为 string）
+        // @ts-expect-error
         ctx.request.headers['last-event-id'] = ['a', 'b'];
         arrayId = sse.lastEventId;
         sse.close();

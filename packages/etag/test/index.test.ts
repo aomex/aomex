@@ -23,7 +23,7 @@ test('已经包含etag报文时，不再重新设置etag', async () => {
       etag(),
       middleware.web((ctx) => {
         ctx.send({ hi: 'etag' });
-        ctx.response.setHeader('Etag', '"foo"');
+        ctx.response.setHeader('ETag', '"foo"');
       }),
     ],
   });
