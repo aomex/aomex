@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
+import { enableCompileCache } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import { glob } from 'glob';
-import { enableCompileCache } from 'node:module';
+
+enableCompileCache();
 
 const fileName = 'cli.{ts,js,mts,mjs}';
 const files = await glob([fileName, `src/${fileName}`], { magicalBraces: true });
@@ -19,8 +21,6 @@ if (!cliEntry) {
 
 process.env['AOMEX_CLI_MODE'] = '1';
 process.env['AOMEX_RUNTIME'] = 'cli';
-
-enableCompileCache();
 
 if (cliEntry.endsWith('ts')) {
   const { tsImport } = await import('tsx/esm/api');
