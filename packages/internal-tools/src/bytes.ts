@@ -1,14 +1,5 @@
 import rawBytes from 'bytes';
-import { createI18n } from './i18n';
-
-const i18n = createI18n({
-  zh: {
-    invalid_bytes: '无效的字节大小：{{value}}',
-  },
-  en: {
-    invalid_bytes: 'Invalid byte size: {{value}}',
-  },
-});
+import { i18n } from './i18n';
 
 /** 与 `bytes` 包格式化选项一致（从 `format` 重载提取，避免 default 重载干扰） */
 export type BytesOptions = NonNullable<Parameters<(typeof rawBytes)['format']>[1]>;

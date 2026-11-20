@@ -5,12 +5,16 @@ export {
   OpenAPI,
   I18n,
   sleep,
+  parseDuration,
   createI18n,
   ensureI18nLanguage,
   resolveI18nLanguage,
   i18nLanguageAlias,
   I18N_LANGUAGES,
   type I18nLanguage,
+  type DurationInput,
+  type DurationString,
+  type DurationUnit,
 } from '@aomex/internal-tools';
 
 declare global {
