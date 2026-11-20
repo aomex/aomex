@@ -75,6 +75,7 @@ npx create-aomex@latest
 | [auth](./packages/auth)                                                 | ![npm](https://img.shields.io/npm/v/@aomex/auth)              | 身份认证统一入口    |
 | [auth-bearer](./packages/auth/src/strategies/auth-bearer-strategy.ts)   | `@aomex/auth/bearer`                                          | Bearer Token 策略   |
 | [auth-api-key](./packages/auth/src/strategies/auth-api-key-strategy.ts) | `@aomex/auth/api-key`                                         | API Key 策略        |
+| [auth-session](./packages/auth/src/strategies/auth-session-strategy.ts) | `@aomex/auth/session`                                         | Cookie 会话策略     |
 | [auth-jwt](./packages/auth-jwt-strategy)                                | ![npm](https://img.shields.io/npm/v/@aomex/auth-jwt-strategy) | Json Web Token 策略 |
 
 # 文档

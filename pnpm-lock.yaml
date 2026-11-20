@@ -242,6 +242,9 @@ importers:
 
   packages/auth:
     devDependencies:
+      '@aomex/cache':
+        specifier: workspace:*
+        version: link:../cache
       '@aomex/common':
         specifier: workspace:*
         version: link:../common

@@ -38,8 +38,10 @@ expectType<void>(res.setCookie('a', 'b', { sameSite: false }));
 res.setCookie('a', 'b', { sameSite: 'invalid' });
 expectType<void>(res.removeCookie('a'));
 expectType<void>(res.removeCookie('a', { path: '/' }));
-// @ts-expect-error removeCookie 仅接受 path
-res.removeCookie('a', { domain: 'example.com' });
+expectType<void>(res.removeCookie('a', { domain: 'example.com' }));
+expectType<void>(res.removeCookie('a', { path: '/', domain: 'example.com' }));
+// @ts-expect-error removeCookie 不接受 maxAge
+res.removeCookie('a', { maxAge: 1 });
 
 expectType<WebResponse>(res.setHeader('ETag', '"x"'));
 expectType<WebResponse>(res.setHeader('TE', 'trailers'));

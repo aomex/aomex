@@ -5,6 +5,7 @@ export default defineConfig({
     'src/index.ts',
     'src/strategies/auth-bearer-strategy.ts',
     'src/strategies/auth-api-key-strategy.ts',
+    'src/strategies/auth-session-strategy.ts',
   ],
   sourcemap: true,
   clean: true,

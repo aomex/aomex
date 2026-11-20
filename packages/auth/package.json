@@ -11,6 +11,7 @@
     ".": "./src/index.ts",
     "./bearer": "./src/strategies/auth-bearer-strategy.ts",
     "./api-key": "./src/strategies/auth-api-key-strategy.ts",
+    "./session": "./src/strategies/auth-session-strategy.ts",
     "./package.json": "./package.json"
   },
   "publishConfig": {
@@ -28,6 +29,10 @@
         "types": "./dist/strategies/auth-api-key-strategy.d.ts",
         "import": "./dist/strategies/auth-api-key-strategy.js"
       },
+      "./session": {
+        "types": "./dist/strategies/auth-session-strategy.d.ts",
+        "import": "./dist/strategies/auth-session-strategy.js"
+      },
       "./package.json": "./package.json"
     },
     "access": "public"
@@ -43,10 +48,17 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "peerDependencies": {
+    "@aomex/cache": "^4.0.0",
     "@aomex/common": "^4.0.0",
     "@aomex/web": "^4.0.0"
   },
+  "peerDependenciesMeta": {
+    "@aomex/cache": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@aomex/cache": "workspace:*",
     "@aomex/common": "workspace:*",
     "@aomex/web": "workspace:*"
   }

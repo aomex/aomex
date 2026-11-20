@@ -30,6 +30,9 @@ import { i18n } from '../i18n';
 import { applyResponseEnvelope } from './envelope';
 import { ServerSentEvents } from './sse';
 
+/** `setCookie` / `removeCookie` 使用的 Cookie 序列化选项（来自 `cookie` 包） */
+export type { CookieSerializeOptions };
+
 export type Body = string | object | Stream | Buffer | null;
 export type BodyType = 'string' | 'json' | 'stream' | 'buffer' | 'null';
 
@@ -288,7 +291,10 @@ export class WebResponse extends ServerResponse {
     }
   }
 
-  removeCookie(name: string, options?: Pick<CookieSerializeOptions, 'path'>) {
+  /**
+   * 删除 Cookie。浏览器按 `name` + `domain` + `path` 匹配，须与设置时一致才能清掉
+   */
+  removeCookie(name: string, options?: Pick<CookieSerializeOptions, 'path' | 'domain'>) {
     return this.setCookie(name, '', {
       ...options,
       maxAge: undefined,

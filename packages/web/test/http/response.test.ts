@@ -604,6 +604,24 @@ describe('cookie', () => {
     res.flush();
   });
 
+  test('删除时可指定 domain 与 path', async () => {
+    const { res } = await mockServer((agent) => agent.get('/'));
+    res.setCookie('test1', 'foo', {
+      domain: 'example.com',
+      path: '/app',
+      sameSite: false,
+      httpOnly: false,
+    });
+    res.removeCookie('test1', { domain: 'example.com', path: '/app' });
+    expect(res.getHeader('Set-Cookie')).toMatchInlineSnapshot(`
+      [
+        "test1=foo; Domain=example.com; Path=/app",
+        "test1=; Domain=example.com; Path=/app; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Strict",
+      ]
+    `);
+    res.flush();
+  });
+
   test('透传 domain / sameSite / maxAge / expires', async () => {
     const { res } = await mockServer((agent) => agent.get('/'));
     res.setCookie('test1', 'foo', {
