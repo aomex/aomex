@@ -118,6 +118,7 @@ describe('options.origin', function () {
   ])('禁用跨域', async (app) => {
     await request(app.listen())
       .get('/')
+      .set('Origin', 'https://aomex.js.org')
       .expect((res) => {
         expect(res.headers).not.toHaveProperty('access-control-allow-origin');
       });
@@ -135,6 +136,74 @@ describe('options.origin', function () {
     }),
   ])('设置 Access-Control-Allow-Origin 为 *', async (app) => {
     await request(app.listen()).get('/').expect('Access-Control-Allow-Origin', '*');
+  });
+
+  test('数组白名单命中时回写请求 Origin', async () => {
+    const app = new TestWebApp({
+      mount: [
+        cors({
+          origin: ['https://aomex.js.org', 'https://example.com'],
+        }),
+      ],
+    });
+    await request(app.listen())
+      .get('/')
+      .set('Origin', 'https://aomex.js.org')
+      .expect('Access-Control-Allow-Origin', 'https://aomex.js.org');
+    await request(app.listen())
+      .options('/')
+      .set('Origin', 'https://example.com')
+      .set('Access-Control-Request-Method', 'PUT')
+      .expect('Access-Control-Allow-Origin', 'https://example.com')
+      .expect(204);
+  });
+
+  test.each([
+    new TestWebApp({
+      mount: [cors({ origin: ['https://aomex.js.org'] })],
+    }),
+    new TestWebApp({
+      mount: [cors({ origin: [] })],
+    }),
+  ])('数组白名单未命中时不设置 Access-Control-Allow-Origin', async (app) => {
+    await request(app.listen())
+      .get('/')
+      .set('Origin', 'https://evil.example')
+      .expect((res) => {
+        expect(res.headers).not.toHaveProperty('access-control-allow-origin');
+      });
+    // 未命中白名单时不进入 CORS 预检短路，交由后续路由处理（此处无路由 → 404）
+    await request(app.listen())
+      .options('/')
+      .set('Origin', 'https://evil.example')
+      .set('Access-Control-Request-Method', 'PUT')
+      .expect((res) => {
+        expect(res.headers).not.toHaveProperty('access-control-allow-origin');
+      })
+      .expect(404);
+  });
+
+  test('数组白名单无请求 Origin 时不设置 Access-Control-Allow-Origin', async () => {
+    const app = new TestWebApp({
+      mount: [cors({ origin: ['https://aomex.js.org'] })],
+    });
+    await request(app.listen())
+      .get('/')
+      .expect((res) => {
+        expect(res.headers).not.toHaveProperty('access-control-allow-origin');
+      });
+  });
+
+  test('数组白名单不做子串匹配', async () => {
+    const app = new TestWebApp({
+      mount: [cors({ origin: ['https://aomex.js.org'] })],
+    });
+    await request(app.listen())
+      .get('/')
+      .set('Origin', 'https://aomex.js.org.evil.com')
+      .expect((res) => {
+        expect(res.headers).not.toHaveProperty('access-control-allow-origin');
+      });
   });
 });
 
@@ -211,27 +280,161 @@ describe('options.maxAge', function () {
 });
 
 describe('options.credentials', function () {
-  test.each([
-    new TestWebApp({
-      mount: [cors({ credentials: true })],
-    }),
-    new TestWebApp({
-      mount: [cors({ credentials: () => true })],
-    }),
-    new TestWebApp({
-      mount: [cors({ credentials: async () => true })],
-    }),
-  ])('[true] 不设置 Access-Control-Allow-Credentials', async (app) => {
+  test('凭证开启且静态 origin 为 * 时创建中间件即抛错', async () => {
+    const { i18n } = await import('../src/i18n');
+    expect(() => cors({ origin: '*', credentials: true })).toThrow(
+      i18n.t('credentials_with_wildcard_origin'),
+    );
+  });
+
+  test.each(<const>[
+    { origin: '*', credentials: (): true => true },
+    { origin: (): '*' => '*', credentials: true },
+    {
+      origin: async (): Promise<'*'> => '*',
+      credentials: async (): Promise<true> => true,
+    },
+  ])('凭证开启且动态解析为 * 时请求阶段抛错', async (opts) => {
+    const { i18n } = await import('../src/i18n');
+    let caught: unknown;
+    const app = new TestWebApp({
+      mount: [
+        middleware.web(async (_, next) => {
+          try {
+            await next();
+          } catch (err) {
+            caught = err;
+          }
+        }),
+        cors(opts),
+      ],
+    });
+    await request(app.listen()).get('/').set('Origin', 'https://aomex.js.org');
+    expect(caught).toBeInstanceOf(Error);
+    expect((caught as Error).message).toBe(i18n.t('credentials_with_wildcard_origin'));
+  });
+
+  test('凭证静态开启但未配置 origin 时创建中间件即抛错', async () => {
+    const { i18n } = await import('../src/i18n');
+    expect(() => cors({ credentials: true })).toThrow(
+      i18n.t('credentials_without_origin'),
+    );
+  });
+
+  test.each(<const>[
+    { credentials: (): true => true },
+    { credentials: async (): Promise<true> => true },
+  ])('凭证函数返回 true 但未配置 origin 时请求阶段抛错', async (opts) => {
+    const { i18n } = await import('../src/i18n');
+    let caught: unknown;
+    const app = new TestWebApp({
+      mount: [
+        middleware.web(async (_, next) => {
+          try {
+            await next();
+          } catch (err) {
+            caught = err;
+          }
+        }),
+        cors(opts),
+      ],
+    });
+    await request(app.listen()).get('/').set('Origin', 'https://aomex.js.org');
+    expect(caught).toBeInstanceOf(Error);
+    expect((caught as Error).message).toBe(i18n.t('credentials_without_origin'));
+  });
+
+  test('显式空白名单 + 凭证：未命中时不抛错且不设置 CORS', async () => {
+    const app = new TestWebApp({
+      mount: [cors({ origin: [], credentials: true })],
+    });
     await request(app.listen())
       .get('/')
       .set('Origin', 'https://aomex.js.org')
+      .expect((res) => {
+        expect(res.headers).not.toHaveProperty('access-control-allow-origin');
+        expect(res.headers).not.toHaveProperty('access-control-allow-credentials');
+      });
+  });
+
+  test.each(<const>[
+    { origin: '', credentials: true },
+    { origin: (): string => '', credentials: true },
+    { origin: async (): Promise<string> => '', credentials: true },
+  ])('显式空 origin + 凭证：禁用 CORS 且不反射', async (opts) => {
+    const app = new TestWebApp({
+      mount: [cors(opts)],
+    });
+    await request(app.listen())
+      .get('/')
+      .set('Origin', 'https://aomex.js.org')
+      .expect((res) => {
+        expect(res.headers).not.toHaveProperty('access-control-allow-origin');
+        expect(res.headers).not.toHaveProperty('access-control-allow-credentials');
+      });
+  });
+
+  test.each(<const>[
+    { origin: 'https://aomex.js.org', credentials: true },
+    { origin: 'https://aomex.js.org', credentials: (): true => true },
+    {
+      origin: (): string => 'https://aomex.js.org',
+      credentials: true,
+    },
+    {
+      origin: async (): Promise<string> => 'https://aomex.js.org',
+      credentials: async (): Promise<true> => true,
+    },
+  ])('凭证开启且显式具体来源时设置 Credentials', async (opts) => {
+    const app = new TestWebApp({
+      mount: [cors(opts)],
+    });
+    await request(app.listen())
+      .get('/')
+      .set('Origin', 'https://aomex.js.org')
+      .expect('Access-Control-Allow-Origin', 'https://aomex.js.org')
       .expect('Access-Control-Allow-Credentials', 'true');
     await request(app.listen())
       .options('/')
       .set('Origin', 'https://aomex.js.org')
       .set('Access-Control-Request-Method', 'DELETE')
+      .expect('Access-Control-Allow-Origin', 'https://aomex.js.org')
       .expect('Access-Control-Allow-Credentials', 'true')
       .expect(204);
+  });
+
+  test('凭证开启且数组白名单命中时设置 Credentials', async () => {
+    const app = new TestWebApp({
+      mount: [
+        cors({
+          origin: ['https://aomex.js.org', 'https://example.com'],
+          credentials: true,
+        }),
+      ],
+    });
+    await request(app.listen())
+      .get('/')
+      .set('Origin', 'https://aomex.js.org')
+      .expect('Access-Control-Allow-Origin', 'https://aomex.js.org')
+      .expect('Access-Control-Allow-Credentials', 'true');
+  });
+
+  test('凭证开启且数组白名单未命中时不设置 CORS', async () => {
+    const app = new TestWebApp({
+      mount: [
+        cors({
+          origin: ['https://aomex.js.org'],
+          credentials: true,
+        }),
+      ],
+    });
+    await request(app.listen())
+      .get('/')
+      .set('Origin', 'https://evil.example')
+      .expect((res) => {
+        expect(res.headers).not.toHaveProperty('access-control-allow-origin');
+        expect(res.headers).not.toHaveProperty('access-control-allow-credentials');
+      });
   });
 
   test.each([
@@ -252,7 +455,7 @@ describe('options.credentials', function () {
       .get('/')
       .set('Origin', 'https://aomex.js.org')
       .expect((res) => {
-        expect(res).not.not.toHaveProperty('access-control-allow-credentials');
+        expect(res.headers).not.toHaveProperty('access-control-allow-credentials');
       });
 
     await request(app.listen())
@@ -260,7 +463,7 @@ describe('options.credentials', function () {
       .set('Origin', 'https://aomex.js.org')
       .set('Access-Control-Request-Method', 'DELETE')
       .expect((res) => {
-        expect(res).not.not.toHaveProperty('access-control-allow-credentials');
+        expect(res.headers).not.toHaveProperty('access-control-allow-credentials');
       })
       .expect(204);
   });
