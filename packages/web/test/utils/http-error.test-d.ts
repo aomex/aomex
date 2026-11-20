@@ -1,5 +1,10 @@
 import { expectType } from 'ts-expect';
-import { HttpError, type HttpErrorProperties, type HttpErrorStatus } from '../../src';
+import {
+  HttpError,
+  type HttpErrorHeaderValue,
+  type HttpErrorProperties,
+  type HttpErrorStatus,
+} from '../../src';
 
 // HttpError 构造：仅 4xx/5xx
 {
@@ -8,10 +13,11 @@ import { HttpError, type HttpErrorProperties, type HttpErrorStatus } from '../..
   expectType<HttpErrorStatus>(a.statusCode);
   expectType<boolean>(a.expose);
   expectType<string | undefined>(a.code);
-  expectType<Record<string, string | number> | undefined>(a.headers);
+  expectType<Record<string, HttpErrorHeaderValue> | undefined>(a.headers);
 
   new HttpError(500, 'msg');
   new HttpError(400, 'msg', { expose: false, code: 'X', headers: { a: '1' } });
+  new HttpError(400, 'msg', { headers: { 'Set-Cookie': ['a=1', 'b=2'] } });
   // 合并状态表后保留的合法码
   new HttpError(411);
   // @ts-expect-error 已剔除的非法码
@@ -50,11 +56,21 @@ import { HttpError, type HttpErrorProperties, type HttpErrorStatus } from '../..
   // @ts-expect-error 禁止任意键
   const bad3: HttpErrorProperties = { foo: 1 };
   void bad3;
-  const headersOk: HttpErrorProperties = { headers: { a: '1', b: 2 } };
+  const headersOk: HttpErrorProperties = {
+    headers: { 'a': '1', 'b': 2, 'Set-Cookie': ['a=1'] },
+  };
   void headersOk;
-  // @ts-expect-error headers 值不可为数组
-  const bad4: HttpErrorProperties = { headers: { a: ['1'] } };
+  // 运行时仅 Set-Cookie 保留数组；类型上仍允许 readonly string[]（与 Node setHeader 一致）
+  const headersArrayDoc: HttpErrorProperties = {
+    headers: { 'Set-Cookie': ['a=1', 'b=2'] as const },
+  };
+  void headersArrayDoc;
+  // @ts-expect-error headers 值不可为 boolean
+  const bad4: HttpErrorProperties = { headers: { a: true } };
   void bad4;
+  // @ts-expect-error headers 数组元素必须是 string
+  const bad5: HttpErrorProperties = { headers: { a: [1] } };
+  void bad5;
 }
 
 // HttpError.from

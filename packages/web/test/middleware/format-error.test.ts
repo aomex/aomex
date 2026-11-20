@@ -239,6 +239,34 @@ describe('formatError', () => {
     expect(res.headers['x-limit']).toBe('100');
   });
 
+  test('err.headers 中 Set-Cookie 数组写入响应', async () => {
+    const app = new TestWebApp({
+      mount: [
+        formatError({
+          handler(err) {
+            return { code: err.code };
+          },
+        }),
+        middleware.web((ctx) => {
+          ctx.throw(403, {
+            code: 'CSRF',
+            headers: {
+              'Set-Cookie': ['csrfToken=abc; Path=/', 'sid=1; Path=/; HttpOnly'],
+            },
+          });
+        }),
+      ],
+    });
+
+    const res = await supertest(app.listen()).get('/');
+    expect(res.status).toBe(403);
+    expect(res.body).toEqual({ code: 'CSRF' });
+    expect(res.headers['set-cookie']).toEqual([
+      'csrfToken=abc; Path=/',
+      'sid=1; Path=/; HttpOnly',
+    ]);
+  });
+
   test('message 按 expose 净化', async () => {
     const app = new TestWebApp({
       mount: [

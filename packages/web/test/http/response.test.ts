@@ -473,6 +473,40 @@ describe('error', () => {
     `);
   });
 
+  test('err.headers 中 Set-Cookie 数组写入响应', async () => {
+    const { res, app } = await mockServer((agent) => agent.get('/'));
+    app.addListener('error', () => {});
+    await res.onError(
+      new HttpError(403, 'nope', {
+        headers: {
+          'Set-Cookie': ['csrfToken=abc; Path=/', 'sid=1; Path=/; HttpOnly'],
+        },
+      }),
+    );
+    expect(res.statusCode).toBe(403);
+    expect(res.getHeader('Set-Cookie')).toEqual([
+      'csrfToken=abc; Path=/',
+      'sid=1; Path=/; HttpOnly',
+    ]);
+  });
+
+  test('foreign error 的 Set-Cookie 数组经 from 写入响应', async () => {
+    const { res, app } = await mockServer((agent) => agent.get('/'));
+    app.addListener('error', () => {});
+    const raw = Object.assign(new Error('denied'), {
+      statusCode: 403,
+      expose: true,
+      headers: {
+        'Set-Cookie': ['csrfToken=from; Path=/'],
+        'x-a': '1',
+      },
+    });
+    await res.onError(raw);
+    expect(res.statusCode).toBe(403);
+    expect(res.getHeader('Set-Cookie')).toEqual(['csrfToken=from; Path=/']);
+    expect(res.getHeader('x-a')).toBe('1');
+  });
+
   test('ENOENT异常', async () => {
     const { res, app } = await mockServer((agent) => agent.get('/'));
     app.addListener('error', () => {});

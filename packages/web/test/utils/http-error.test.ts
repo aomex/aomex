@@ -152,13 +152,72 @@ describe('HttpError.from', () => {
     expect(HttpError.from(raw).statusCode).toBe(500);
   });
 
-  test('忽略无效 headers 值', () => {
+  test('忽略无效 headers 值；仅 Set-Cookie 保留 string[]', () => {
     const raw = Object.assign(new Error('x'), {
       statusCode: 400,
       expose: true,
-      headers: { a: '1', b: ['no'], c: { x: 1 }, d: 2 },
+      headers: {
+        'a': '1',
+        'b': ['ok'],
+        'c': { x: 1 },
+        'd': 2,
+        'e': [],
+        'f': [1],
+        'g': ['x', 2],
+        'Set-Cookie': ['csrf=1; Path=/'],
+      },
     });
-    expect(HttpError.from(raw).headers).toEqual({ a: '1', d: 2 });
+    expect(HttpError.from(raw).headers).toEqual({
+      'a': '1',
+      'd': 2,
+      'Set-Cookie': ['csrf=1; Path=/'],
+    });
+  });
+
+  test('构造时可带 Set-Cookie 数组', () => {
+    const err = new HttpError(403, 'nope', {
+      headers: { 'Set-Cookie': ['csrfToken=abc; Path=/'] },
+    });
+    expect(err.headers).toEqual({
+      'Set-Cookie': ['csrfToken=abc; Path=/'],
+    });
+  });
+
+  test('构造时丢弃非 Set-Cookie 的数组头', () => {
+    const err = new HttpError(400, 'x', {
+      headers: {
+        'a': '1',
+        'Link': ['</a>; rel=preload', '</b>; rel=prefetch'],
+        'Set-Cookie': ['a=1'],
+      },
+    });
+    expect(err.headers).toEqual({ 'a': '1', 'Set-Cookie': ['a=1'] });
+  });
+
+  test('from 保留 Set-Cookie 数组', () => {
+    const raw = Object.assign(new Error('x'), {
+      statusCode: 403,
+      expose: true,
+      headers: {
+        'Set-Cookie': ['csrfToken=from; Path=/', 'sid=1; Path=/'],
+      },
+    });
+    expect(HttpError.from(raw).headers).toEqual({
+      'Set-Cookie': ['csrfToken=from; Path=/', 'sid=1; Path=/'],
+    });
+  });
+
+  test('from 对 set-cookie 大小写不敏感', () => {
+    const raw = Object.assign(new Error('x'), {
+      statusCode: 403,
+      expose: true,
+      headers: {
+        'set-cookie': ['a=1; Path=/', 'b=2; Path=/'],
+      },
+    });
+    expect(HttpError.from(raw).headers).toEqual({
+      'set-cookie': ['a=1; Path=/', 'b=2; Path=/'],
+    });
   });
 });
 

@@ -57,8 +57,13 @@ let ctx!: WebContext;
     c: () => ctx.throw(new Error('')),
     d: () => {
       ctx.throw(404, {
-        // @ts-expect-error headers 不可为 string[]
-        headers: {} as Record<string, string[]>,
+        // @ts-expect-error headers 值不可为 boolean
+        headers: { a: true },
+      });
+    },
+    e: () => {
+      ctx.throw(404, {
+        headers: { 'Set-Cookie': ['a=1'] },
       });
     },
   };

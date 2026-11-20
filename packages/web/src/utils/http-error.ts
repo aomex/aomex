@@ -1,6 +1,12 @@
 import statuses from 'statuses';
 import type { HttpErrorStatus } from '../middleware/response-media';
 
+/**
+ * 错误响应可附带的报头值。
+ * 仅 `Set-Cookie` 可为 `string[]`（Fetch / Node 均不可合并）；其它头为标量。
+ */
+export type HttpErrorHeaderValue = string | number | readonly string[];
+
 export interface HttpErrorProperties {
   /**
    * 是否向客户端暴露 `message`。
@@ -9,8 +15,11 @@ export interface HttpErrorProperties {
   expose?: boolean;
   /** 业务/系统错误码，如 `ENOENT` */
   code?: string;
-  /** 写入响应的额外头（与 Node `setHeader` 一致，值为 string / number） */
-  headers?: Record<string, string | number>;
+  /**
+   * 写入响应的额外头。
+   * 仅 `Set-Cookie` 可用 `string[]`；其它头请用 `string` / `number`。
+   */
+  headers?: Record<string, HttpErrorHeaderValue>;
   cause?: unknown;
 }
 
@@ -32,7 +41,7 @@ export class HttpError extends Error {
   readonly statusCode: HttpErrorStatus;
   expose: boolean;
   code?: string;
-  headers?: Record<string, string | number>;
+  headers?: Record<string, HttpErrorHeaderValue>;
 
   constructor(
     statusCode: HttpErrorStatus,
@@ -57,7 +66,9 @@ export class HttpError extends Error {
     this.expose = props?.expose ?? resolved < 500;
 
     if (props?.code !== undefined) this.code = props.code;
-    if (props?.headers !== undefined) this.headers = props.headers;
+    if (props?.headers !== undefined) {
+      this.headers = HttpError.pickHeaders(props.headers);
+    }
 
     Error.captureStackTrace?.(this, new.target);
   }
@@ -142,13 +153,23 @@ export class HttpError extends Error {
 
   protected static pickHeaders(
     headers: unknown,
-  ): Record<string, string | number> | undefined {
+  ): Record<string, HttpErrorHeaderValue> | undefined {
     if (headers === null || typeof headers !== 'object' || Array.isArray(headers)) {
       return undefined;
     }
-    const out: Record<string, string | number> = {};
+    const out: Record<string, HttpErrorHeaderValue> = {};
     for (const [key, value] of Object.entries(headers)) {
       if (typeof value === 'string' || typeof value === 'number') {
+        out[key] = value;
+        continue;
+      }
+      // 仅 Set-Cookie 保留数组（Fetch / Node 均不可合并）；其它多值头忽略
+      if (
+        key.toLowerCase() === 'set-cookie' &&
+        Array.isArray(value) &&
+        value.length > 0 &&
+        value.every((item) => typeof item === 'string')
+      ) {
         out[key] = value;
       }
     }
