@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.2.0](https://github.com/aomex/aomex/compare/v4.1.0...v4.2.0) (2026-11-20)
+
+### Features
+
+* **auth:** 新增 Cookie Session 认证策略 ([9f31c1d](https://github.com/aomex/aomex/commit/9f31c1d591d3fe670d6c3d45c36bedbef595f9ce))
+* **web:** 增强 HttpError header支持，允许 Set-Cookie 数组类型 ([80b4971](https://github.com/aomex/aomex/commit/80b49713a08a68ae8c190ac9ea3020b83250450f))
+
+
 # [4.1.0](https://github.com/aomex/aomex/compare/v4.0.0...v4.1.0) (2026-11-18)
 
 ### Bug Fixes

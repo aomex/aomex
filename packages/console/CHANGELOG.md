@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.2.0](https://github.com/aomex/aomex/compare/v4.1.0...v4.2.0) (2026-11-20)
+
+### Performance Improvements
+
+* **console:** 在加载业务入口前启用模块编译缓存 ([2a3c6f1](https://github.com/aomex/aomex/commit/2a3c6f11f2db752eb8ae278c5a127d1333dfeb85))
+
+
 # [4.1.0](https://github.com/aomex/aomex/compare/v4.0.0...v4.1.0) (2026-11-18)
 
 ### Features

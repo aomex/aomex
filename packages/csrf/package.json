@@ -1,6 +1,6 @@
 {
   "name": "@aomex/csrf",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "CSRF 防护",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",

@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.2.0](https://github.com/aomex/aomex/compare/v4.1.0...v4.2.0) (2026-11-20)
+
+### Bug Fixes
+
+* **cors:** 禁止携带凭证场景默认反射 Origin ([521dd60](https://github.com/aomex/aomex/commit/521dd6081da95cc3c9e483e2582348726bcc4e29))
+
+### Features
+
+* **auth:** 新增 Cookie Session 认证策略 ([9f31c1d](https://github.com/aomex/aomex/commit/9f31c1d591d3fe670d6c3d45c36bedbef595f9ce))
+* **csrf:** 新增双提交 Cookie CSRF 防护中间件 ([be6dbd1](https://github.com/aomex/aomex/commit/be6dbd19e37dd8bedca4f2d6643d22442a6c0739))
+* **web:** 增强 HttpError header支持，允许 Set-Cookie 数组类型 ([80b4971](https://github.com/aomex/aomex/commit/80b49713a08a68ae8c190ac9ea3020b83250450f))
+
+### Performance Improvements
+
+* **console:** 在加载业务入口前启用模块编译缓存 ([2a3c6f1](https://github.com/aomex/aomex/commit/2a3c6f11f2db752eb8ae278c5a127d1333dfeb85))
+
+
 # [4.1.0](https://github.com/aomex/aomex/compare/v4.0.0...v4.1.0) (2026-11-18)
 
 ### Bug Fixes
