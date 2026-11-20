@@ -455,6 +455,15 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5
 
+  packages/csrf:
+    devDependencies:
+      '@aomex/common':
+        specifier: workspace:*
+        version: link:../common
+      '@aomex/web':
+        specifier: workspace:*
+        version: link:../web
+
   packages/etag:
     dependencies:
       etag:
