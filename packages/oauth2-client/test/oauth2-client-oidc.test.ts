@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { CacheMemoryAdapter } from '@aomex/cache/memory';
 import { Caching } from '@aomex/cache';
-import { middleware } from '@aomex/common';
+import { internalDestroyServices, middleware } from '@aomex/common';
 import { exportJWK, generateKeyPair, SignJWT } from 'jose';
 import supertest from 'supertest';
 import { afterEach, beforeAll, expect, test, vi } from 'vitest';
@@ -29,9 +29,10 @@ beforeAll(async () => {
   };
 });
 
-afterEach(() => {
+afterEach(async () => {
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
+  await internalDestroyServices([]);
 });
 
 /** OIDC Core：access_token ASCII 哈希左半段的 base64url（按 id_token alg） */

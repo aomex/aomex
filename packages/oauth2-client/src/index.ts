@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { CacheAdapter, Caching } from '@aomex/cache';
-import { parseDuration, type DurationInput } from '@aomex/common';
+import { parseDuration, registerLifecycle, type DurationInput } from '@aomex/common';
 import type { WebContext } from '@aomex/web';
 import { createRemoteJWKSet, jwtVerify, type JWTPayload } from 'jose';
 import { validate as validateOidcTokenHash } from 'oidc-token-hash';
@@ -115,7 +115,8 @@ export namespace OAuth2Client {
      */
     scopes?: readonly string[];
     /**
-     * 存放 state、PKCE verifier（及 OIDC nonce）
+     * 存放 state、PKCE verifier（及 OIDC nonce）。
+     * 构造时经 `registerLifecycle` 调用 `connect` / 关停时 `disconnect`
      */
     store: CacheAdapter;
     /**
@@ -268,6 +269,11 @@ export class OAuth2Client<
     this.stateTtlMs = ttl;
     this.pkce = opts.pkce !== false;
     this.tokenAuth = opts.tokenAuth ?? 'body';
+
+    void registerLifecycle({
+      onInit: () => opts.store.connect(),
+      onDestroy: () => opts.store.disconnect(),
+    });
   }
 
   /**

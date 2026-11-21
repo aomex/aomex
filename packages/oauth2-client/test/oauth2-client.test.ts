@@ -1,6 +1,6 @@
 import { CacheMemoryAdapter } from '@aomex/cache/memory';
 import { Caching } from '@aomex/cache';
-import { middleware } from '@aomex/common';
+import { internalDestroyServices, middleware } from '@aomex/common';
 import { createHash } from 'node:crypto';
 import supertest from 'supertest';
 import { afterEach, expect, test, vi } from 'vitest';
@@ -8,9 +8,10 @@ import { TestWebApp } from '../../web/src/testing';
 import { OAuth2Client } from '../src';
 import { i18n } from '../src/i18n';
 
-afterEach(() => {
+afterEach(async () => {
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
+  await internalDestroyServices([]);
 });
 
 function createClient(
@@ -1353,4 +1354,30 @@ test('revoke：tokenAuth=basic', async () => {
   const body = new URLSearchParams(String(capturedInit?.body));
   expect(body.get('token_type_hint')).toBe('access_token');
   expect(body.get('client_id')).toBeNull();
+});
+
+test('构造：自动登记 store 生命周期', async () => {
+  const order: string[] = [];
+  class TrackingAdapter extends CacheMemoryAdapter {
+    override async connect() {
+      order.push('init');
+    }
+    override async disconnect() {
+      order.push('destroy');
+    }
+  }
+
+  new OAuth2Client({
+    authorizationEndpoint: 'https://example.com/a',
+    tokenEndpoint: 'https://example.com/t',
+    clientId: 'cid',
+    clientSecret: 'csecret',
+    redirectUri: 'http://localhost/cb',
+    store: new TrackingAdapter(),
+    onProfile: async () => ({}),
+  });
+  await new Promise((r) => setTimeout(r, 20));
+  expect(order).toEqual(['init']);
+  await internalDestroyServices([]);
+  expect(order).toEqual(['init', 'destroy']);
 });
