@@ -13,6 +13,7 @@
   "js/ts.suggest.autoImports": true,
   "js/ts.experimental.useTsgo": true,
   "js/ts.tsdk.path": "./node_modules/typescript",
+  "json.schemaDownload.enable": true,
   "cSpell.words": [
     "openapi",
     "openapiv3",

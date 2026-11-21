@@ -605,6 +605,25 @@ importers:
         specifier: ^9.12.1
         version: 9.12.1
 
+  packages/oauth2-client:
+    dependencies:
+      jose:
+        specifier: ^6.2.0
+        version: 6.2.18
+      oidc-token-hash:
+        specifier: ^5.2.0
+        version: 5.2.0
+    devDependencies:
+      '@aomex/cache':
+        specifier: workspace:*
+        version: link:../cache
+      '@aomex/common':
+        specifier: workspace:*
+        version: link:../common
+      '@aomex/web':
+        specifier: workspace:*
+        version: link:../web
+
   packages/openapi:
     dependencies:
       '@aomex/internal-file-import':
@@ -4933,6 +4952,9 @@ packages:
     resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
     hasBin: true
 
+  jose@6.2.18:
+    resolution: {integrity: sha512-doV4thUwgkrycJH4yLeqwTGIIZphHl+pk7CPReuMIhYhncmgzdko85MaCG4YQFTxqMFr1/oEH32tZuKKovcDEg==}
+
   js-base64@3.9.6:
     resolution: {integrity: sha512-LjkzbLtU6Lx6fjXMYGEACEB7rdtqZtxkBe9aS1ZpDNUyWgUivw3yBEIhQ37OVygJYRt+C+9e9fVT8PpFzH2Hww==}
 
@@ -5857,6 +5879,10 @@ packages:
 
   ohash@2.0.11:
     resolution: {integrity: sha512-RdR9FQrFwNBNXAr4GixM8YaRZRJ5PUWbKYbE5eOsrwAjJW0q2REGcf79oYPsLyskQCZG1PLN+S/K1V00joZAoQ==}
+
+  oidc-token-hash@5.2.0:
+    resolution: {integrity: sha512-6gj2m8cJZ+iSW8bm0FXdGF0YhIQbKrfP4yWTNzxc31U6MOjfEmB1rHvlYvxI1B7t7BCi1F2vYTT6YhtQRG4hxw==}
+    engines: {node: ^10.13.0 || >=12.0.0}
 
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
@@ -12327,6 +12353,8 @@ snapshots:
 
   jiti@2.7.0: {}
 
+  jose@6.2.18: {}
+
   js-base64@3.9.6: {}
 
   js-file-download@0.4.12: {}
@@ -13436,6 +13464,8 @@ snapshots:
   obug@3.0.0: {}
 
   ohash@2.0.11: {}
+
+  oidc-token-hash@5.2.0: {}
 
   once@1.4.0:
     dependencies:
