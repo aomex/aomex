@@ -23,6 +23,27 @@ const cacheKey = new CacheKey().key('foo', 1);
   expectType<TypeEqual<number, typeof result5>>(true);
 }
 
+// getAndDelete
+{
+  const result1 = await caching.getAndDelete('');
+  expectType<TypeEqual<Caching.Types | null, typeof result1>>(true);
+
+  const result2 = await caching.getAndDelete('', 1);
+  expectType<TypeEqual<number, typeof result2>>(true);
+
+  const result3 = await caching.getAndDelete<string>('');
+  expectType<TypeEqual<string | null, typeof result3>>(true);
+
+  const result4 = await caching.getAndDelete(cacheKey);
+  expectType<TypeEqual<Caching.Types | null, typeof result4>>(true);
+
+  const result5 = await caching.getAndDelete(cacheKey, 1);
+  expectType<TypeEqual<number, typeof result5>>(true);
+
+  // @ts-expect-error
+  await caching.getAndDelete(1);
+}
+
 // set
 {
   expectType<boolean>(await caching.set('', ''));

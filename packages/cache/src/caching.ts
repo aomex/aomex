@@ -54,6 +54,30 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   }
 
   /**
+   * 原子地获取并删除缓存（对齐 Redis GETDEL）。
+   * 并发调用时只有一方能拿到值，其余得到 `null`（或默认值）。
+   *
+   * ```typescript
+   * await cache.getAndDelete('key'); // null
+   * await cache.getAndDelete('key', 'my-value'); // my-value
+   * ```
+   */
+  async getAndDelete<T>(key: Caching.Key, defaultValue: T): Promise<T>;
+  async getAndDelete<T extends Caching.Types>(
+    key: Caching.Key,
+    defaultValue: T | null | undefined,
+  ): Promise<T | null>;
+  async getAndDelete<T extends Caching.Types>(key: Caching.Key): Promise<T | null>;
+  async getAndDelete(
+    key: Caching.Key,
+    defaultValue?: Caching.Types | null,
+  ): Promise<any> {
+    await this.adapter.connect();
+    const result = await this.adapter.getAndDeleteValue(this.resolveKey(key));
+    return this.decodeValue(result, defaultValue);
+  }
+
+  /**
    * 设置缓存。可指定过期时间（毫秒数或可读时长，如 `'1 day'`、`'30m'`）
    *
    * ```typescript
@@ -194,7 +218,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   }
 
   protected resolveKey(key: Caching.Key): string {
-    return typeof key === 'string' ? key : key['value'];
+    return typeof key === 'string' ? key : key['toString']();
   }
 
   protected encodeValue(value: Caching.Types) {

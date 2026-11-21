@@ -5,7 +5,7 @@ const op = process.argv[3];
 const count = Number(process.argv[4] ?? '1');
 
 if (!filename || !op || !Number.isInteger(count) || count < 1) {
-  console.error('usage: multi-process-op.ts <filename> <incr|nx|lpush> <count>');
+  console.error('usage: multi-process-op.ts <filename> <incr|nx|lpush|getdel> <count>');
   process.exit(1);
 }
 
@@ -22,6 +22,9 @@ for (let i = 0; i < count; i++) {
       break;
     case 'lpush':
       results.push(await store.leftPushValue('list', `${process.pid}:${i}`));
+      break;
+    case 'getdel':
+      results.push(await store.getAndDeleteValue('once'));
       break;
     default:
       console.error(`unknown op: ${op}`);

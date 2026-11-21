@@ -13,6 +13,13 @@ export class CacheMemoryAdapter extends CacheAdapter {
     return value;
   }
 
+  override async getAndDeleteValue(key: string): Promise<string | null> {
+    const value = this.getValueSync(key, 'string');
+    if (value === null) return null;
+    this.data.delete(key);
+    return value;
+  }
+
   override async setValue(
     key: string,
     value: string,

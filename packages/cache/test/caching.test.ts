@@ -67,6 +67,33 @@ test('获取时携带默认值', async () => {
   spy.mockRestore();
 });
 
+test('原子获取并删除', async () => {
+  const spy = vitest
+    .spyOn(MockStore.prototype, 'getAndDeleteValue')
+    .mockImplementationOnce(async () => null)
+    .mockImplementationOnce(async () => '"bar"')
+    .mockImplementationOnce(async () => '"baz"');
+
+  await expect(caching.getAndDelete('foo')).resolves.toBeNull();
+  await expect(caching.getAndDelete('foo')).resolves.toBe('bar');
+  await expect(caching.getAndDelete(new CacheKey().key('foo'))).resolves.toBe('baz');
+  expect(spy).toHaveBeenLastCalledWith('foo');
+
+  spy.mockRestore();
+});
+
+test('原子获取并删除时携带默认值', async () => {
+  const spy = vitest
+    .spyOn(MockStore.prototype, 'getAndDeleteValue')
+    .mockImplementationOnce(async () => null)
+    .mockImplementationOnce(async () => '"bar"');
+
+  await expect(caching.getAndDelete('foo', 'default')).resolves.toBe('default');
+  await expect(caching.getAndDelete('foo', 'default')).resolves.toBe('bar');
+
+  spy.mockRestore();
+});
+
 test('不存在才设置', async () => {
   const spy = vitest
     .spyOn(MockStore.prototype, 'setNotExistValue')

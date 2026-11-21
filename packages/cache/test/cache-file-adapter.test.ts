@@ -506,6 +506,22 @@ describe('对齐 Redis', () => {
     await expect(store.deleteValue('missing')).resolves.toBeTruthy();
   });
 
+  test('GETDEL 取出后删除；缺失返回 null', async () => {
+    const store = createStore();
+    await store.setValue('foo', 'bar');
+    await expect(store.getAndDeleteValue('foo')).resolves.toBe('bar');
+    await expect(store.getAndDeleteValue('foo')).resolves.toBeNull();
+    await expect(store.existsKey('foo')).resolves.toBeFalsy();
+    await expect(store.getAndDeleteValue('missing')).resolves.toBeNull();
+  });
+
+  test('GETDEL 对 list 抛错且不删除', async () => {
+    const store = createStore();
+    await store.leftPushValue('foo', 'a');
+    await expect(store.getAndDeleteValue('foo')).rejects.toThrow();
+    await expect(store.rightPopValue('foo')).resolves.toBe('a');
+  });
+
   test('EXISTS 对 string/list 均为 true，过期后为 false', async () => {
     const store = createStore();
     await store.setValue('s', '1', 800);
@@ -580,6 +596,26 @@ describe('多进程原子性', () => {
 
     const reader = createStore(filename);
     await expect(reader.existsKey('nx-key')).resolves.toBeTruthy();
+    await reader.disconnect();
+  }, 60_000);
+
+  test('并发 GETDEL 只有一个拿到值', async () => {
+    const store = createFileStore();
+    const { filename } = store;
+    await store.setValue('once', 'payload');
+    await store.disconnect();
+
+    const results = (
+      await Promise.all(
+        Array.from({ length: 8 }, () => runMultiProcessOp(filename, 'getdel', 1)),
+      )
+    ).flat() as (string | null)[];
+
+    expect(results.filter((item) => item === 'payload')).toHaveLength(1);
+    expect(results.filter((item) => item === null)).toHaveLength(7);
+
+    const reader = createStore(filename);
+    await expect(reader.existsKey('once')).resolves.toBeFalsy();
     await reader.disconnect();
   }, 60_000);
 

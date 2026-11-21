@@ -242,6 +242,34 @@ describe('数组操作', () => {
   });
 });
 
+test('原子获取并删除', async () => {
+  const store = new CacheMemoryAdapter();
+
+  await store.setValue('foo', 'bar');
+  await expect(store.getAndDeleteValue('foo')).resolves.toBe('bar');
+  await expect(store.getAndDeleteValue('foo')).resolves.toBeNull();
+  await expect(store.existsKey('foo')).resolves.toBeFalsy();
+
+  await expect(store.getAndDeleteValue('missing')).resolves.toBeNull();
+});
+
+test('原子获取并删除：list 类型抛错且不删除', async () => {
+  const store = new CacheMemoryAdapter();
+  await store.leftPushValue('foo', 'a');
+  await expect(store.getAndDeleteValue('foo')).rejects.toThrow();
+  await expect(store.rightPopValue('foo')).resolves.toBe('a');
+});
+
+test('原子获取并删除：并发仅一方拿到值', async () => {
+  const store = new CacheMemoryAdapter();
+  await store.setValue('foo', 'once');
+  const results = await Promise.all(
+    Array.from({ length: 20 }, () => store.getAndDeleteValue('foo')),
+  );
+  expect(results.filter((v) => v === 'once')).toHaveLength(1);
+  expect(results.filter((v) => v === null)).toHaveLength(19);
+});
+
 test('删除缓存', async () => {
   const store = new CacheMemoryAdapter();
 

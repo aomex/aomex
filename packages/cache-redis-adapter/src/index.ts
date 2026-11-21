@@ -16,6 +16,11 @@ export class CacheRedisAdapter extends CacheAdapter {
     return this.redis.get(key);
   }
 
+  /** 对齐 Redis GETDEL（需 Redis ≥ 6.2） */
+  getAndDeleteValue(key: string): Promise<string | null> {
+    return this.redis.getdel(key);
+  }
+
   async setValue(
     key: string,
     value: string,

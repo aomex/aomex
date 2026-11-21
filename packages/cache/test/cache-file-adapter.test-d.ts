@@ -29,3 +29,6 @@ new CacheFileAdapter({ filename: ':memory:', timeout: '1' });
 
 expectType<string>(adapter.filename);
 expectType<TypeEqual<CacheFileAdapter['getValue'], CacheAdapter['getValue']>>(true);
+expectType<
+  TypeEqual<CacheFileAdapter['getAndDeleteValue'], CacheAdapter['getAndDeleteValue']>
+>(true);

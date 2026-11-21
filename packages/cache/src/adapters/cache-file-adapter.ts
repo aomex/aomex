@@ -76,6 +76,15 @@ export class CacheFileAdapter extends CacheAdapter {
     return this.getRow(key, 'string')?.value ?? null;
   }
 
+  override async getAndDeleteValue(key: string): Promise<string | null> {
+    return this.withImmediateTransaction(() => {
+      const row = this.getRow(key, 'string');
+      if (!row) return null;
+      this.stmts!.delete.run(key);
+      return row.value;
+    });
+  }
+
   override async setValue(
     key: string,
     value: string,

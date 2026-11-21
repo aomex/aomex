@@ -83,6 +83,9 @@ class DemoCacheService extends BaseCacheService {
     override getValue(): Promise<string | null> {
       return Promise.resolve(null);
     }
+    override getAndDeleteValue(): Promise<string | null> {
+      return Promise.resolve(null);
+    }
     override setValue(): Promise<boolean> {
       return Promise.resolve(true);
     }

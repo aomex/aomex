@@ -16,6 +16,9 @@ export class MockStore extends CacheAdapter {
   override getValue(): Promise<string | null> {
     throw new Error('Method not implemented.');
   }
+  override getAndDeleteValue(): Promise<string | null> {
+    throw new Error('Method not implemented.');
+  }
   override setValue(): Promise<boolean> {
     throw new Error('Method not implemented.');
   }

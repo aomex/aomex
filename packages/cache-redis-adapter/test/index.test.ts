@@ -197,6 +197,23 @@ describe('数组操作', () => {
   });
 });
 
+test('原子获取并删除', async () => {
+  await store.setValue('foo', 'bar');
+  await expect(store.getAndDeleteValue('foo')).resolves.toBe('bar');
+  await expect(store.getAndDeleteValue('foo')).resolves.toBeNull();
+  await expect(store.existsKey('foo')).resolves.toBeFalsy();
+  await expect(store.getAndDeleteValue('missing')).resolves.toBeNull();
+});
+
+test('原子获取并删除：并发仅一方拿到值', async () => {
+  await store.setValue('once', 'payload');
+  const results = await Promise.all(
+    Array.from({ length: 20 }, () => store.getAndDeleteValue('once')),
+  );
+  expect(results.filter((v) => v === 'payload')).toHaveLength(1);
+  expect(results.filter((v) => v === null)).toHaveLength(19);
+});
+
 test('删除缓存', async () => {
   await store.setValue('foo', '1');
   await store.setValue('bar', '2');
