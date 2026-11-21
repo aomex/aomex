@@ -1,3 +1,4 @@
+import { parseDuration, type DurationInput } from '@aomex/common';
 import { CacheAdapter } from './cache-adapter';
 import { CacheKey } from './cache-key';
 
@@ -53,23 +54,24 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   }
 
   /**
-   * 设置缓存。可以指定过期时间（毫秒）
+   * 设置缓存。可指定过期时间（毫秒数或可读时长，如 `'1 day'`、`'30m'`）
    *
    * ```typescript
    * await cache.set('key', 'value');
-   * await cache.set('key', 'value', 3600);
+   * await cache.set('key', 'value', 60_000);
+   * await cache.set('key', 'value', '1 minute');
    * ```
    */
   async set(
     key: Caching.Key,
     value: Caching.Types,
-    durationMs?: number,
+    duration?: DurationInput,
   ): Promise<boolean> {
     await this.adapter.connect();
     return this.adapter.setValue(
       this.resolveKey(key),
       this.encodeValue(value),
-      durationMs,
+      parseDuration(duration),
     );
   }
 
@@ -79,18 +81,19 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * ```typescript
    * await cache.setNX('foo', 'bar'); // true
    * await cache.setNX('foo', 'baz'); // false
+   * await cache.setNX('foo', 'bar', '20 seconds');
    * ```
    */
   async setNX(
     key: Caching.Key,
     value: Caching.Types,
-    durationMs?: number,
+    duration?: DurationInput,
   ): Promise<boolean> {
     await this.adapter.connect();
     return this.adapter.setNotExistValue(
       this.resolveKey(key),
       this.encodeValue(value),
-      durationMs,
+      parseDuration(duration),
     );
   }
 
@@ -135,11 +138,16 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   }
 
   /**
-   * 重新设置缓存时间。如果key不存在，则返回`false`
+   * 重新设置缓存时间。如果 key 不存在，则返回 `false`
+   *
+   * ```typescript
+   * await cache.expire('foo', 60_000);
+   * await cache.expire('foo', '1 minute');
+   * ```
    */
-  async expire(key: Caching.Key, durationMs: number): Promise<boolean> {
+  async expire(key: Caching.Key, duration: DurationInput): Promise<boolean> {
     await this.adapter.connect();
-    return this.adapter.expireKey(this.resolveKey(key), durationMs);
+    return this.adapter.expireKey(this.resolveKey(key), parseDuration(duration));
   }
 
   /**
@@ -152,7 +160,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * await cache.ttl('foo');          // -2
    * await cache.set('foo', 'bar');
    * await cache.ttl('foo');          // -1
-   * await cache.expire('foo', 60000);
+   * await cache.expire('foo', '1 minute');
    * await cache.ttl('foo');          // 59000
    * ```
    */

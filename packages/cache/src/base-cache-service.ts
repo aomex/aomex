@@ -59,7 +59,9 @@ export abstract class BaseCacheService<
     await this._cache?.adapter.disconnect();
   }
 
-  /** 常用过期时间（毫秒）：`this.ttl.DAY` */
+  /**
+   * @deprecated 请使用 DurationInput（如 `'1 day'`）代替
+   */
   protected get ttl() {
     return CACHE_TTL;
   }

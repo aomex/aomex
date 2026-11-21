@@ -2,13 +2,13 @@ import { i18n } from './i18n';
 
 const UNIT_MS = {
   ms: 1,
-  s: 1_000,
-  m: 60_000,
-  h: 3_600_000,
-  d: 86_400_000,
-  w: 604_800_000,
+  second: 1_000,
+  minute: 60_000,
+  hour: 3_600_000,
+  day: 86_400_000,
+  week: 604_800_000,
   month: 2_592_000_000, // 30 天
-  y: 31_536_000_000, // 365 天
+  year: 31_536_000_000, // 365 天
 } as const;
 
 /** 可读时长单位（与 `parseDuration` 一致） */
@@ -56,9 +56,14 @@ const DURATION_RE =
 
 /**
  * 将毫秒数或人类可读时长解析为毫秒。
- * `month` 按 30 天、`y`/`year` 按 365 天计。
+ * `month` 按 30 天、`year` 按 365 天计。
+ * 传入 `undefined` 时原样返回 `undefined`。
  */
-export function parseDuration(value: DurationInput): number {
+export function parseDuration(value: DurationInput): number;
+export function parseDuration(value?: DurationInput): number | undefined;
+export function parseDuration(value?: DurationInput): number | undefined {
+  if (value === undefined) return undefined;
+
   if (typeof value === 'number') {
     if (!Number.isFinite(value) || value < 0) {
       throw new RangeError(i18n.t('invalid_duration', { value: String(value) }));
@@ -89,34 +94,34 @@ function normalizeUnit(unit: string): keyof typeof UNIT_MS {
     case 'secs':
     case 'second':
     case 'seconds':
-      return 's';
+      return 'second';
     case 'm':
     case 'min':
     case 'mins':
     case 'minute':
     case 'minutes':
-      return 'm';
+      return 'minute';
     case 'h':
     case 'hr':
     case 'hrs':
     case 'hour':
     case 'hours':
-      return 'h';
+      return 'hour';
     case 'd':
     case 'day':
     case 'days':
-      return 'd';
+      return 'day';
     case 'w':
     case 'week':
     case 'weeks':
-      return 'w';
+      return 'week';
     case 'month':
     case 'months':
       return 'month';
     case 'y':
     case 'year':
     case 'years':
-      return 'y';
+      return 'year';
     default:
       throw new TypeError(i18n.t('invalid_duration', { value: unit }));
   }

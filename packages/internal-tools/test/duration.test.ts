@@ -6,6 +6,11 @@ test('数字毫秒原样返回', () => {
   expect(parseDuration(0)).toBe(0);
 });
 
+test('undefined 原样返回 undefined', () => {
+  expect(parseDuration(undefined)).toBeUndefined();
+  expect(parseDuration()).toBeUndefined();
+});
+
 test('解析人类可读时长', () => {
   expect(parseDuration('500ms')).toBe(500);
   expect(parseDuration('1 s')).toBe(1_000);

@@ -37,8 +37,18 @@ import { CacheMemoryAdapter } from '../src/adapters/cache-memory-adapter';
       return id;
     }
 
+    @remember('1 minute')
+    async getDataByDurationString(id: number) {
+      return id;
+    }
+
     @remember({ duration: 1 })
     async getData0() {
+      return 'ok';
+    }
+
+    @remember({ duration: '30m' })
+    async getData0s() {
       return 'ok';
     }
 
@@ -47,9 +57,20 @@ import { CacheMemoryAdapter } from '../src/adapters/cache-memory-adapter';
       return 'ok';
     }
 
-    // @ts-expect-error 不能传字符串 duration
+    @remember({ key: 'key', duration: '1 day' })
+    async getData1s() {
+      return 'ok';
+    }
+
+    // @ts-expect-error 无单位的数字字符串不是 DurationInput
     @remember('1')
     async getDataBadMs() {
+      return 'ok';
+    }
+
+    // @ts-expect-error
+    @remember({ key: 'key', duration: '1' })
+    async getDataBadDuration() {
       return 'ok';
     }
 

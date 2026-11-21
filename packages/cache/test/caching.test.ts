@@ -23,9 +23,19 @@ test('设置值', async () => {
   await caching.set('foo', 'bar', 20);
   expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', 20);
 
+  await caching.set('foo', 'bar', '1 minute');
+  expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', 60_000);
+
+  await caching.set('foo', 'bar', '500ms');
+  expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', 500);
+
   const key = new CacheKey().key('ns', 'foo');
   await caching.set(key, 'bar', 30);
   expect(spy).toHaveBeenLastCalledWith('ns:foo', '"bar"', 30);
+
+  await expect(caching.set('foo', 'bar', 'bad' as `${number}ms`)).rejects.toThrow(
+    /无效的时长/,
+  );
 
   spy.mockRestore();
 });
@@ -66,6 +76,8 @@ test('不存在才设置', async () => {
   expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', undefined);
   await expect(caching.setNX('foo', 'bar', 200)).resolves.toBeTruthy();
   expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', 200);
+  await expect(caching.setNX('foo', 'bar', '20 seconds')).resolves.toBeTruthy();
+  expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', 20_000);
 
   spy.mockRestore();
 });
@@ -118,6 +130,10 @@ test('设置过期时间', async () => {
 
   await expect(caching.expire('foo', 20)).resolves.toBeTruthy();
   expect(spy).toHaveBeenLastCalledWith('foo', 20);
+  await expect(caching.expire('foo', '1.5 hours')).resolves.toBeTruthy();
+  expect(spy).toHaveBeenLastCalledWith('foo', 5_400_000);
+  await expect(caching.expire('foo', '2 months')).resolves.toBeTruthy();
+  expect(spy).toHaveBeenLastCalledWith('foo', 5_184_000_000);
 
   spy.mockRestore();
 });

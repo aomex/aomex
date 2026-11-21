@@ -356,6 +356,36 @@ test('只传数字等同于 duration', async () => {
   setNxSpy.mockRestore();
 });
 
+test('只传时长字符串等同于 duration，options 亦可传字符串', async () => {
+  const getSpy = vitest.spyOn(caching, 'get').mockImplementation(async () => null);
+  const setSpy = vitest.spyOn(caching, 'set').mockImplementation(async () => true);
+  const setNxSpy = vitest
+    .spyOn(caching, 'setNX')
+    .mockResolvedValueOnce(true)
+    .mockResolvedValueOnce(true)
+    .mockResolvedValue(false);
+
+  class MyClass {
+    @remember('1 minute')
+    async byString() {
+      return 'a';
+    }
+    @remember({ key: 'k', duration: '30m' })
+    async byOpts() {
+      return 'b';
+    }
+  }
+  const my = new MyClass();
+  await expect(my.byString()).resolves.toBe('a');
+  expect(setSpy).toHaveBeenCalledWith('MyClass-byString-[]', 'a', '1 minute');
+  await expect(my.byOpts()).resolves.toBe('b');
+  expect(setSpy).toHaveBeenCalledWith('k', 'b', '30m');
+
+  getSpy.mockRestore();
+  setSpy.mockRestore();
+  setNxSpy.mockRestore();
+});
+
 test('onInit 的 connect 失败时，等待中的调用会收到 destroyed', async () => {
   class FailConnectCacheService extends BaseCacheService {
     protected createAdapter() {

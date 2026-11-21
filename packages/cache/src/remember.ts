@@ -1,5 +1,5 @@
 import { traceBlock } from '@aomex/async-trace';
-import { sleep } from '@aomex/common';
+import { sleep, type DurationInput } from '@aomex/common';
 import type { BaseCacheService } from './base-cache-service';
 import type { Caching } from './caching';
 import { i18n } from './i18n';
@@ -10,7 +10,8 @@ export type RememberOptions<
   Q extends NonNullable<R> = NonNullable<R>,
 > = {
   key?: string | ((this: any, ...args: Parameters<P>) => string);
-  duration: number;
+  /** 过期时间：毫秒数或可读时长（如 `'1 day'`、`'30m'`） */
+  duration: DurationInput;
   /**
    * 当数据源返回 null 或者 undefined 时，则返回默认值
    */
@@ -23,7 +24,7 @@ export type RememberOptions<
  */
 export interface Remember {
   (
-    durationMs: number,
+    duration: DurationInput,
   ): (
     originalMethod: (...args: any[]) => Promise<any>,
     context: ClassMethodDecoratorContext,
@@ -123,12 +124,12 @@ export function createRemember<C extends CacheServiceCtor>(
     P extends (...args: any[]) => Promise<R> = (...args: any[]) => Promise<R>,
     Q extends NonNullable<R> = NonNullable<R>,
   >(
-    optsOrDurationMs: number | RememberOptions<R, P, Q>,
+    optsOrDuration: DurationInput | RememberOptions<R, P, Q>,
   ) => {
     const opts: RememberOptions<R, P, Q> =
-      typeof optsOrDurationMs === 'number'
-        ? { duration: optsOrDurationMs }
-        : optsOrDurationMs;
+      typeof optsOrDuration === 'number' || typeof optsOrDuration === 'string'
+        ? { duration: optsOrDuration }
+        : optsOrDuration;
     const { key: getKey, duration, defaultValue = null } = opts;
 
     return (originalMethod: P, context: ClassMethodDecoratorContext) => {
@@ -147,7 +148,7 @@ export function createRemember<C extends CacheServiceCtor>(
               : getKey.apply(this, args);
         const waitingKey = dataKey + ':$#_waiting_#$';
 
-        const value = await traceBlock('Cache.get', () => cache.get<Q>(dataKey));
+        const value = await traceBlock('Remember.get', () => cache.get<Q>(dataKey));
         if (value !== null) return value;
 
         const win = await cache.setNX(waitingKey, 1, 20_000);
@@ -156,11 +157,11 @@ export function createRemember<C extends CacheServiceCtor>(
             cache.expire(waitingKey, 20_000);
           }, 5_000);
           try {
-            const result = await traceBlock('Cache.exec', async () => {
+            const result = await traceBlock('Remember.exec', async () => {
               return originalMethod.apply(this, args);
             });
             if (result !== null) {
-              await traceBlock('Cache.set', async () => {
+              await traceBlock('Remember.set', async () => {
                 await cache.set(dataKey, result!, duration);
               });
             }
@@ -170,7 +171,7 @@ export function createRemember<C extends CacheServiceCtor>(
             await cache.delete(waitingKey);
           }
         } else {
-          return traceBlock('Cache.wait', async () => {
+          return traceBlock('Remember.wait', async () => {
             while (true) {
               const waiting = await cache.exists(waitingKey);
               if (waiting) {

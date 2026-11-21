@@ -13,7 +13,7 @@ class DemoCacheService extends BaseCacheService {
   }
 
   async save(id: number) {
-    return this.cache.set(this.key('item', id), { id }, this.ttl.DAY);
+    return this.cache.set(this.key('item', id), { id }, '1 day');
   }
 
   keyOf(id: number) {
@@ -28,6 +28,7 @@ class DemoCacheService extends BaseCacheService {
     return this.key();
   }
 
+  /** @deprecated API 仍可用 */
   dayMs() {
     return this.ttl.DAY;
   }

@@ -60,7 +60,7 @@ test('业务方法可通过 this.cache 读写 CacheKey', async () => {
       const hit = await this.cache.get<{ id: number }>(key);
       if (hit) return hit;
       const value = { id };
-      await this.cache.set(key, value, this.ttl.MINUTE);
+      await this.cache.set(key, value, '1 minute');
       return value;
     }
   }
@@ -120,7 +120,7 @@ test('key / keyHash 直接生成 CacheKey', async () => {
   await expect(services.cache.raw()).resolves.toBeInstanceOf(CacheKey);
 });
 
-test('ttl 提供分钟到年的毫秒常量', async () => {
+test('deprecated ttl 仍提供分钟到年的毫秒常量', async () => {
   class DemoCacheService extends BaseCacheService {
     protected createAdapter() {
       return new CacheMemoryAdapter();

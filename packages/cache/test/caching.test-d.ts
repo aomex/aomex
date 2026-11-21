@@ -31,10 +31,19 @@ const cacheKey = new CacheKey().key('foo', 1);
   await caching.set('', []);
   await caching.set('', false);
   await caching.set('', '', 100);
+  await caching.set('', '', '1 day');
+  await caching.set('', '', '30m');
+  await caching.set('', '', '1.5 hours');
+  await caching.set('', '', '500ms');
   await caching.set(cacheKey, 'v');
   await caching.set(cacheKey, 'v', 100);
-  // @ts-expect-error
+  await caching.set(cacheKey, 'v', '1 week');
+  // @ts-expect-error 无单位的数字字符串不是 DurationInput
   await caching.set('', '', '100');
+  // @ts-expect-error
+  await caching.set('', '', 'abc');
+  // @ts-expect-error
+  await caching.set('', '', true);
   // @ts-expect-error
   await caching.set(1, '');
 }
@@ -47,9 +56,13 @@ const cacheKey = new CacheKey().key('foo', 1);
   await caching.setNX('', []);
   await caching.setNX('', false);
   await caching.setNX('', '', 100);
+  await caching.setNX('', '', '20 seconds');
   await caching.setNX(cacheKey, 'v');
+  await caching.setNX(cacheKey, 'v', '1 minute');
   // @ts-expect-error
   await caching.setNX('', '', '100');
+  // @ts-expect-error
+  await caching.setNX('', '', false);
 }
 
 // delete
@@ -93,6 +106,14 @@ const cacheKey = new CacheKey().key('foo', 1);
   const result = await caching.expire('', 20);
   expectType<TypeEqual<boolean, typeof result>>(true);
   await caching.expire(cacheKey, 20);
+  await caching.expire('', '1 minute');
+  await caching.expire(cacheKey, '2 months');
+  // @ts-expect-error
+  await caching.expire('', '100');
+  // @ts-expect-error
+  await caching.expire('', true);
+  // @ts-expect-error duration 必填
+  await caching.expire('');
 }
 
 // ttl / leftPush / rightPop 接受 CacheKey
