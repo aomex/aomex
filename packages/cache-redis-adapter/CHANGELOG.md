@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.3.0](https://github.com/aomex/aomex/compare/v4.2.0...v4.3.0) (2026-11-21)
+
+### Features
+
+* **cache:** 支持新操作方法 getAndDelete ([6f4deec](https://github.com/aomex/aomex/commit/6f4deecc4593e575caad2d5c04eb1873c0b12e46))
+
+
 # [4.2.0](https://github.com/aomex/aomex/compare/v4.1.0...v4.2.0) (2026-11-20)
 
 **Note:** Version bump only for package @aomex/cache-redis-adapter

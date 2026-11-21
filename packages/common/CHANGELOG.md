@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.3.0](https://github.com/aomex/aomex/compare/v4.2.0...v4.3.0) (2026-11-21)
+
+### Features
+
+* **common:** 新增duration字符串解析 ([c37c2ce](https://github.com/aomex/aomex/commit/c37c2ce3d4ac1f7ce3ea646ef66904afceb30ee9))
+
+
 # [4.2.0](https://github.com/aomex/aomex/compare/v4.1.0...v4.2.0) (2026-11-20)
 
 **Note:** Version bump only for package @aomex/common

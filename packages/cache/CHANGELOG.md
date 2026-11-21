@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.3.0](https://github.com/aomex/aomex/compare/v4.2.0...v4.3.0) (2026-11-21)
+
+### Bug Fixes
+
+* **cache:** memory适配器自增自减保留已有 TTL ([73bfc76](https://github.com/aomex/aomex/commit/73bfc765fa12321cdf304f7b8eae386e76b44341))
+
+### Features
+
+* **cache:** 支持新操作方法 getAndDelete ([6f4deec](https://github.com/aomex/aomex/commit/6f4deecc4593e575caad2d5c04eb1873c0b12e46))
+* **cache:** 设置缓存支持 DurationInput ([67321c0](https://github.com/aomex/aomex/commit/67321c01fd0536b1079889bd4ec49c91bb0848e9))
+
+
 # [4.2.0](https://github.com/aomex/aomex/compare/v4.1.0...v4.2.0) (2026-11-20)
 
 **Note:** Version bump only for package @aomex/cache

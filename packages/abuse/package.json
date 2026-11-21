@@ -1,6 +1,6 @@
 {
   "name": "@aomex/abuse",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "description": "滥用计数与封禁（蜜罐路径 / HTTP 错误 / IP·用户滥用）",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
