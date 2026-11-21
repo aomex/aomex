@@ -12,6 +12,14 @@
 - 包管理：`pnpm`
 - 仓库为 monorepo，改动尽量落在对应 `packages/*`，避免无必要跨包耦合
 
+## 存储与缓存
+
+有键值、TTL、计数、封禁态等存储需求时：**尽量复用 `@aomex/cache`**。
+
+- 公共 API 由调用方传入 `CacheAdapter`（常见配置名：`store` / `adapter`），包内用 `Caching` 封装读写
+- 禁止为本包再引入一套 Redis / 内存客户端，或自造平行的存储抽象
+- 仅当 `@aomex/cache` 能力明显不够、且扩展 adapter 也不合适时，才另开存储方案，并在实现与文档中说明原因
+
 ## TypeScript 类型提示（红线）
 
 **所有方案都必须以「暴露给用户的 API 有 100% TypeScript 类型提示」为核心原则，属于不可妥协的红线。**
@@ -97,6 +105,13 @@
 - 放宽公共 API 表面时（如由「字段表」扩到 `ValidatorToken`），必须按放开的每类形态补齐：object / array / string / number / boolean 等，不能只测其中一两种
 - 运行时（`*.test.ts`）与类型（`*.test-d.ts`）都要覆盖；OpenAPI/文档生成若受影响，快照与语义（如 `required`）也要回归
 - 改完后跑相关 vitest，并确认覆盖率相对改动面没有明显空洞；达不到逼近满覆盖时不得视为完成
+
+### HTTP 非成功响应（必用 throw）
+
+**4xx / 5xx 等非正常结局一律 `ctx.throw(...)` / `HttpError`，业务代码与测试夹具都适用。**
+
+- 禁止用 `ctx.send(404)`、只改 `statusCode`、或不挂路由依赖默认 `404` 来冒充错误路径——这些不会抛错，`await next()` 仍会正常返回，测不到真实业务
+- 中间件若在 `next()` 之后按状态码计数、改写或观测：实现必须能处理下游 `throw`（如 `try/catch`）；测试必须包含 `ctx.throw(status)` 用例，不能只覆盖「正常返回后读 `statusCode`」
 
 ## 文档与文案
 

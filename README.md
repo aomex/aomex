@@ -41,6 +41,7 @@ npx create-aomex@latest
 | [compress](./packages/compress)                             | ![npm](https://img.shields.io/npm/v/@aomex/compress)               | web         | 压缩响应内容         |
 | [cors](./packages/cors)                                     | ![npm](https://img.shields.io/npm/v/@aomex/cors)                   | web         | 跨域请求共享         |
 | [csrf](./packages/csrf)                                     | ![npm](https://img.shields.io/npm/v/@aomex/csrf)                   | web         | CSRF 防护            |
+| [abuse](./packages/abuse)                                   | ![npm](https://img.shields.io/npm/v/@aomex/abuse)                  | web         | 滥用计数与封禁       |
 | [helmet](./packages/helmet)                                 | ![npm](https://img.shields.io/npm/v/@aomex/helmet)                 | web         | 设置安全报文         |
 | [pretty-json](./packages/pretty-json)                       | ![npm](https://img.shields.io/npm/v/@aomex/pretty-json)            | web         | 美化响应输出         |
 | [serve-static](./packages/serve-static)                     | ![npm](https://img.shields.io/npm/v/@aomex/serve-static)           | web         | 静态文件服务         |

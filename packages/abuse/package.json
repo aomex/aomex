@@ -1,0 +1,42 @@
+{
+  "name": "@aomex/abuse",
+  "version": "4.2.0",
+  "description": "滥用计数与封禁（蜜罐路径 / HTTP 错误 / IP·用户滥用）",
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "prepublishOnly": "tsdown"
+  },
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "files": [
+    "dist",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@aomex/cache": "^4.0.0",
+    "@aomex/common": "^4.0.0",
+    "@aomex/web": "^4.0.0"
+  },
+  "devDependencies": {
+    "@aomex/cache": "workspace:*",
+    "@aomex/common": "workspace:*",
+    "@aomex/web": "workspace:*"
+  }
+}

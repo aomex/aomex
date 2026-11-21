@@ -228,6 +228,18 @@ importers:
         specifier: runtime:^24.0.0
         version: runtime:24.22.2
 
+  packages/abuse:
+    devDependencies:
+      '@aomex/cache':
+        specifier: workspace:*
+        version: link:../cache
+      '@aomex/common':
+        specifier: workspace:*
+        version: link:../common
+      '@aomex/web':
+        specifier: workspace:*
+        version: link:../web
+
   packages/async-trace:
     devDependencies:
       '@aomex/common':

@@ -1,0 +1,17 @@
+import { I18n } from '@aomex/common';
+import { zh } from './zh-cn';
+
+/** hi-IN */
+export default I18n.satisfies(zh).define({
+  unknown_user_abuse_reason: 'अज्ञात उपयोगकर्ता दुरुपयोग कारण: {{reason}}',
+  unknown_ip_abuse_reason: 'अज्ञात IP दुरुपयोग कारण: {{reason}}',
+  duplicate_user_abuse_reason: 'डुप्लिकेट उपयोगकर्ता दुरुपयोग कारण: {{reason}}',
+  duplicate_ip_abuse_reason: 'डुप्लिकेट IP दुरुपयोग कारण: {{reason}}',
+  missing_on_ban_user: 'user-abuse रणनीतियाँ कॉन्फ़िगर होने पर onBanUser आवश्यक है',
+  invalid_limit: 'limit धनात्मक पूर्णांक होना चाहिए, प्राप्त: {{limit}}',
+  invalid_window: 'window धनात्मक अवधि होनी चाहिए, प्राप्त: {{window}}',
+  invalid_block_for: 'blockFor धनात्मक अवधि होनी चाहिए, प्राप्त: {{blockFor}}',
+  invalid_ban_for: 'banFor धनात्मक अवधि होनी चाहिए, प्राप्त: {{banFor}}',
+  empty_honeypot_paths: 'honeypot रणनीति का paths खाली नहीं हो सकता',
+  empty_http_error_status_codes: 'http-error रणनीति का statusCodes खाली नहीं हो सकता',
+});
