@@ -76,6 +76,31 @@ describe('自增', async () => {
     await store.setValue('foo', '"30"');
     await expect(() => store.increaseValue('foo')).rejects.toThrow();
   });
+
+  test('自增保留过期时间', async () => {
+    const store = new CacheMemoryAdapter();
+    await store.setValue('foo', '1', 5000);
+    await store.increaseValue('foo');
+    await expect(store.ttlKey('foo')).resolves.toBeGreaterThan(3000);
+    await expect(store.getValue('foo')).resolves.toBe('2');
+  });
+
+  test('expire 后再自增仍保留 TTL', async () => {
+    const store = new CacheMemoryAdapter();
+    await store.setValue('foo', '10');
+    await store.expireKey('foo', 5000);
+    await store.increaseValue('foo');
+    await expect(store.ttlKey('foo')).resolves.toBeGreaterThan(3000);
+    await expect(store.getValue('foo')).resolves.toBe('11');
+  });
+
+  test('对已过期 key 自增等同新建且无 TTL', async () => {
+    const store = new CacheMemoryAdapter();
+    await store.setValue('foo', '9', 200);
+    await sleep(400);
+    await expect(store.increaseValue('foo')).resolves.toBe(1);
+    await expect(store.ttlKey('foo')).resolves.toBe(-1);
+  });
 });
 
 describe('自减', async () => {
@@ -112,6 +137,14 @@ describe('自减', async () => {
 
     await store.setValue('foo', '"30"');
     await expect(() => store.decreaseValue('foo')).rejects.toThrow();
+  });
+
+  test('自减保留过期时间', async () => {
+    const store = new CacheMemoryAdapter();
+    await store.setValue('foo', '10', 5000);
+    await store.decreaseValue('foo');
+    await expect(store.ttlKey('foo')).resolves.toBeGreaterThan(3000);
+    await expect(store.getValue('foo')).resolves.toBe('9');
   });
 });
 

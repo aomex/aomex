@@ -52,39 +52,11 @@ export class CacheMemoryAdapter extends CacheAdapter {
   }
 
   override async increaseValue(key: string): Promise<number> {
-    const result = this.getValueSync(key, 'string');
-    let value: number;
-    if (result === null) {
-      this.data.set(key, { value: '0' });
-      value = 0;
-    } else {
-      value = Number(result);
-    }
-
-    if (Number.isNaN(value) || !Number.isInteger(value)) {
-      throw new Error(i18n.t('not_integer'));
-    }
-
-    this.setValueSync(key, String(++value));
-    return value;
+    return this.changeInteger(key, 1);
   }
 
   override async decreaseValue(key: string): Promise<number> {
-    const result = this.getValueSync(key, 'string');
-    let value: number;
-    if (result === null) {
-      this.data.set(key, { value: '0' });
-      value = 0;
-    } else {
-      value = Number(result);
-    }
-
-    if (Number.isNaN(value) || !Number.isInteger(value)) {
-      throw new Error(i18n.t('not_integer'));
-    }
-
-    this.setValueSync(key, String(--value));
-    return value;
+    return this.changeInteger(key, -1);
   }
 
   override async deleteValue(key: string): Promise<boolean> {
@@ -151,5 +123,24 @@ export class CacheMemoryAdapter extends CacheAdapter {
   ): boolean {
     this.data.set(key, { value, expires: duration ? Date.now() + duration : undefined });
     return true;
+  }
+
+  /** 对齐 Redis INCR/DECR：只改 value，保留已有 TTL */
+  protected changeInteger(key: string, delta: number): number {
+    const result = this.getValueSync(key, 'string');
+    if (result === null) {
+      this.data.set(key, { value: String(delta) });
+      return delta;
+    }
+
+    const value = Number(result);
+    if (Number.isNaN(value) || !Number.isInteger(value)) {
+      throw new Error(i18n.t('not_integer'));
+    }
+
+    const next = value + delta;
+    const entry = this.data.get(key)!;
+    entry.value = String(next);
+    return next;
   }
 }
