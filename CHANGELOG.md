@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.4.0](https://github.com/aomex/aomex/compare/v4.3.0...v4.4.0) (2026-11-22)
+
+### Bug Fixes
+
+* **oauth2-client:** 自动登记 store 生命周期管理 ([59efc94](https://github.com/aomex/aomex/commit/59efc94bf06cc5d2cd9bfbe2279dc6e06acce01b))
+
+### Features
+
+* **cache:** 添加单飞功能以支持并发调用结果共享 ([dc3be88](https://github.com/aomex/aomex/commit/dc3be8843d9039c66afb08d81a072fcfae8eecc9))
+
+
 # [4.3.0](https://github.com/aomex/aomex/compare/v4.2.0...v4.3.0) (2026-11-21)
 
 ### Bug Fixes

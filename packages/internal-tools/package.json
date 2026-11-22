@@ -1,6 +1,6 @@
 {
   "name": "@aomex/internal-tools",
-  "version": "4.3.0",
+  "version": "4.4.0",
   "description": "aomex内部实用工具",
   "scripts": {
     "prepublishOnly": "tsdown"

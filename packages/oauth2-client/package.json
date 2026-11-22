@@ -1,6 +1,6 @@
 {
   "name": "@aomex/oauth2-client",
-  "version": "4.3.0",
+  "version": "4.4.0",
   "description": "OAuth 2.0 / OIDC 授权码客户端（PKCE）",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
