@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="#lang#">
+  <head>
+    <meta charset="utf-8" />
+    <title>#title#</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    #headTags#
+    <link rel="stylesheet" href="#prefix#/asyncapi.min.css" />
+  </head>
+  <body>
+    <div id="asyncapi"></div>
+    <script src="#prefix#/asyncapi-standalone.js"></script>
+    <script>
+      window.onload = () => {
+        AsyncApiStandalone.render(
+          {
+            schema: {
+              url: '#prefix#/asyncapi.json',
+              options: { method: 'GET', mode: 'cors' },
+            },
+            config: {
+              show: {
+                sidebar: true,
+              },
+            },
+          },
+          document.getElementById('asyncapi'),
+        );
+      };
+    </script>
+  </body>
+</html>
