@@ -10,4 +10,5 @@ export {
   type DurationUnit,
 } from './duration';
 export { OpenAPIV3 as OpenAPI } from 'openapi-types';
+export { type AsyncAPI } from './asyncapi';
 export * from '@i18nx/node';

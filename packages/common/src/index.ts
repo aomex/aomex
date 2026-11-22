@@ -3,6 +3,7 @@ export * from '@aomex/common-validator';
 export * from '@aomex/common-service';
 export {
   OpenAPI,
+  type AsyncAPI,
   I18n,
   sleep,
   parseDuration,
