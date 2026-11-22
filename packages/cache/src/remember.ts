@@ -1,7 +1,7 @@
 import { traceBlock } from '@aomex/async-trace';
 import { sleep, type DurationInput } from '@aomex/common';
 import type { BaseCacheService } from './base-cache-service';
-import type { Caching } from './caching';
+import { SINGLE_FLIGHT_LOCK_MS, type Caching } from './caching';
 import { i18n } from './i18n';
 
 export type RememberOptions<
@@ -151,10 +151,10 @@ export function createRemember<C extends CacheServiceCtor>(
         const value = await traceBlock('Remember.get', () => cache.get<Q>(dataKey));
         if (value !== null) return value;
 
-        const win = await cache.setNX(waitingKey, 1, 20_000);
+        const win = await cache.setNX(waitingKey, 1, SINGLE_FLIGHT_LOCK_MS);
         if (win) {
           const timer = setInterval(() => {
-            cache.expire(waitingKey, 20_000);
+            cache.expire(waitingKey, SINGLE_FLIGHT_LOCK_MS);
           }, 5_000);
           try {
             const result = await traceBlock('Remember.exec', async () => {

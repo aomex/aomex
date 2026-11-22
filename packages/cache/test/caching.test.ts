@@ -1,6 +1,8 @@
 import { describe, expect, test, vitest } from 'vitest';
+import { sleep } from '@aomex/common';
 import { MockStore } from './mock/caching.mock';
-import { CacheKey, Caching } from '../src';
+import { CacheMemoryAdapter } from '../src/adapters/cache-memory-adapter';
+import { CacheKey, Caching, SINGLE_FLIGHT_LOCK_MS } from '../src';
 
 const caching = new Caching(new MockStore());
 
@@ -229,6 +231,256 @@ test('删除全部', async () => {
   expect(spy).toHaveBeenCalledWith();
 
   spy.mockRestore();
+});
+
+describe('singleFlight', () => {
+  test('单次调用执行 factory 并返回结果', async () => {
+    const cache = new Caching(new CacheMemoryAdapter());
+    const spy = vitest.fn(async () => 'hello');
+
+    await expect(cache.singleFlight('k', spy)).resolves.toBe('hello');
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  test('并发调用只执行一次 factory，结果共享', async () => {
+    const cache = new Caching(new CacheMemoryAdapter());
+    const spy = vitest.fn(async () => {
+      await sleep(50);
+      return { n: 42 };
+    });
+
+    const results = await Promise.all([
+      cache.singleFlight('same', spy),
+      cache.singleFlight('same', spy),
+      cache.singleFlight('same', spy),
+    ]);
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(results).toEqual([{ n: 42 }, { n: 42 }, { n: 42 }]);
+  });
+
+  test('不写入用户 key，飞行结束后再次调用会重新执行', async () => {
+    const cache = new Caching(new CacheMemoryAdapter());
+    let n = 0;
+    const spy = vitest.fn(async () => ++n);
+
+    await expect(cache.singleFlight('k', spy)).resolves.toBe(1);
+    await expect(cache.get('k')).resolves.toBeNull();
+    await expect(cache.singleFlight('k', spy)).resolves.toBe(2);
+    expect(spy).toHaveBeenCalledTimes(2);
+  });
+
+  test('可共享 null 结果', async () => {
+    const cache = new Caching(new CacheMemoryAdapter());
+    const spy = vitest.fn(async () => {
+      await sleep(30);
+      return null;
+    });
+
+    const results = await Promise.all([
+      cache.singleFlight('null-key', spy),
+      cache.singleFlight('null-key', spy),
+    ]);
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(results).toEqual([null, null]);
+  });
+
+  test('执行方抛错时等待方收到相同错误文案', async () => {
+    const cache = new Caching(new CacheMemoryAdapter());
+    let started = 0;
+    const spy = vitest.fn(async () => {
+      started += 1;
+      await sleep(40);
+      throw new Error('boom-sf');
+    });
+
+    const p1 = cache.singleFlight('err', spy);
+    // 让 winner 先抢到锁
+    await sleep(5);
+    const p2 = cache.singleFlight('err', spy);
+
+    await expect(p1).rejects.toThrow('boom-sf');
+    await expect(p2).rejects.toThrow('boom-sf');
+    expect(started).toBe(1);
+  });
+
+  test('非 Error 抛值时等待方收到 String 后的文案', async () => {
+    const cache = new Caching(new CacheMemoryAdapter());
+    const spy = vitest.fn(async () => {
+      await sleep(40);
+      throw 'raw-fail';
+    });
+
+    const p1 = cache.singleFlight('raw-err', spy);
+    await sleep(5);
+    const p2 = cache.singleFlight('raw-err', spy);
+
+    await expect(p1).rejects.toBe('raw-fail');
+    await expect(p2).rejects.toThrow('raw-fail');
+  });
+
+  test('等待方读不到结果时重新竞争执行', async () => {
+    const cache = new Caching(new CacheMemoryAdapter());
+    const spy = vitest.fn(async () => 'after-retry');
+    const setNx = vitest
+      .spyOn(cache, 'setNX')
+      .mockResolvedValueOnce(false)
+      .mockResolvedValueOnce(true);
+    const exists = vitest.spyOn(cache, 'exists').mockResolvedValueOnce(false);
+    const get = vitest.spyOn(cache, 'get').mockResolvedValueOnce(null);
+
+    await expect(cache.singleFlight('orphan', spy)).resolves.toBe('after-retry');
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(setNx).toHaveBeenCalledTimes(2);
+    expect(exists).toHaveBeenCalled();
+    expect(get).toHaveBeenCalled();
+
+    setNx.mockRestore();
+    exists.mockRestore();
+    get.mockRestore();
+  });
+
+  test('连续读不到结果时抛错，不无限重试', async () => {
+    const cache = new Caching(new CacheMemoryAdapter());
+    const spy = vitest.fn(async () => 'never');
+    const setNx = vitest.spyOn(cache, 'setNX').mockResolvedValue(false);
+    const exists = vitest.spyOn(cache, 'exists').mockResolvedValue(false);
+    const get = vitest.spyOn(cache, 'get').mockResolvedValue(null);
+
+    await expect(cache.singleFlight('exhausted', spy)).rejects.toThrow(
+      /单飞未获得共享结果|singleFlight did not obtain/,
+    );
+    expect(spy).not.toHaveBeenCalled();
+    expect(setNx).toHaveBeenCalledTimes(5);
+
+    setNx.mockRestore();
+    exists.mockRestore();
+    get.mockRestore();
+  });
+
+  test('抛错后仍清理 waiting key，后续可再次竞争', async () => {
+    const cache = new Caching(new CacheMemoryAdapter());
+    const spy = vitest
+      .fn()
+      .mockRejectedValueOnce(new Error('first'))
+      .mockResolvedValueOnce('recovered');
+
+    await expect(cache.singleFlight('retry', spy)).rejects.toThrow('first');
+    await expect(cache.singleFlight('retry', spy)).resolves.toBe('recovered');
+    expect(spy).toHaveBeenCalledTimes(2);
+  });
+
+  test('赢锁后删除残留 resultKey，不会沿用旧错误', async () => {
+    const cache = new Caching(new CacheMemoryAdapter());
+    const resultKey = 'stale:singleFlight:$#_result_#$';
+    await cache.set(resultKey, { ok: false, e: 'stale-error' }, 60_000);
+
+    const deleted: string[] = [];
+    const deleteSpy = vitest.spyOn(cache, 'delete').mockImplementation(async (key) => {
+      deleted.push(String(key));
+      return Caching.prototype.delete.call(cache, key);
+    });
+    const spy = vitest.fn(async () => 'fresh');
+
+    await expect(cache.singleFlight('stale', spy)).resolves.toBe('fresh');
+    expect(deleted[0]).toBe(resultKey);
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(await cache.get(resultKey)).toEqual({ ok: true, v: 'fresh' });
+
+    deleteSpy.mockRestore();
+  });
+
+  test('赢锁清除残留后若未写入结果，等待方重新竞争而非读旧错误', async () => {
+    const cache = new Caching(new CacheMemoryAdapter());
+    const resultKey = 'crash:singleFlight:$#_result_#$';
+    const waitingKey = 'crash:singleFlight:$#_waiting_#$';
+    await cache.set(resultKey, { ok: false, e: 'stale-error' }, 60_000);
+
+    let swallowResultWrite = true;
+    const setSpy = vitest
+      .spyOn(cache, 'set')
+      .mockImplementation(async (key, value, ttl) => {
+        if (swallowResultWrite && key === resultKey) {
+          return true;
+        }
+        return Caching.prototype.set.call(cache, key, value, ttl);
+      });
+
+    const spy = vitest
+      .fn()
+      .mockImplementationOnce(async () => {
+        throw new Error('crash-before-publish');
+      })
+      .mockResolvedValueOnce('recovered');
+
+    // 持锁方抛错且结果写入被吞掉 → 等价于崩溃未发布；残留已在赢锁时删掉
+    await expect(cache.singleFlight('crash', spy)).rejects.toThrow(
+      'crash-before-publish',
+    );
+    expect(await cache.get(resultKey)).toBeNull();
+    expect(await cache.exists(waitingKey)).toBeFalsy();
+
+    swallowResultWrite = false;
+    await expect(cache.singleFlight('crash', spy)).resolves.toBe('recovered');
+    expect(spy).toHaveBeenCalledTimes(2);
+
+    setSpy.mockRestore();
+  });
+
+  test('持锁期间会心跳续期', async () => {
+    vitest.useFakeTimers();
+    const cache = new Caching(new CacheMemoryAdapter());
+    const expire = vitest.spyOn(cache, 'expire');
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+
+    const pending = cache.singleFlight('hb', async () => {
+      await gate;
+      return 'ok';
+    });
+
+    await vitest.advanceTimersByTimeAsync(SINGLE_FLIGHT_LOCK_MS / 5);
+    expect(expire).toHaveBeenCalledWith(
+      'hb:singleFlight:$#_waiting_#$',
+      SINGLE_FLIGHT_LOCK_MS,
+    );
+
+    release();
+    await expect(pending).resolves.toBe('ok');
+    expire.mockRestore();
+    vitest.useRealTimers();
+  });
+
+  test('接受 CacheKey', async () => {
+    const cache = new Caching(new CacheMemoryAdapter());
+    const key = new CacheKey().key('sf', 'a');
+    await expect(cache.singleFlight(key, async () => 'x')).resolves.toBe('x');
+  });
+
+  test('不同 key 互不影响', async () => {
+    const cache = new Caching(new CacheMemoryAdapter());
+    const a = vitest.fn(async () => {
+      await sleep(40);
+      return 'A';
+    });
+    const b = vitest.fn(async () => {
+      await sleep(40);
+      return 'B';
+    });
+
+    const [ra, rb] = await Promise.all([
+      cache.singleFlight('ka', a),
+      cache.singleFlight('kb', b),
+    ]);
+
+    expect(ra).toBe('A');
+    expect(rb).toBe('B');
+    expect(a).toHaveBeenCalledTimes(1);
+    expect(b).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('复杂对象', () => {

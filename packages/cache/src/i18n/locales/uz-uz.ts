@@ -6,4 +6,5 @@ export default I18n.satisfies(zh).define({
   wrong_type: "Qiymat noto'g'ri turdagi",
   not_integer: 'qiymat butun son emas',
   cache_service_destroyed: 'Kesh xizmati yo‘q qilindi',
+  single_flight_no_result: 'singleFlight umumiy natija olmadi',
 });

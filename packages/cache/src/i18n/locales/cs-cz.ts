@@ -6,4 +6,5 @@ export default I18n.satisfies(zh).define({
   wrong_type: 'Hodnota je nesprávného typu',
   not_integer: 'hodnota není celé číslo',
   cache_service_destroyed: 'Služba mezipaměti byla zničena',
+  single_flight_no_result: 'singleFlight nezískal sdílený výsledek',
 });

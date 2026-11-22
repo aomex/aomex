@@ -1,6 +1,7 @@
-import { parseDuration, type DurationInput } from '@aomex/common';
+import { parseDuration, sleep, type DurationInput } from '@aomex/common';
 import { CacheAdapter } from './cache-adapter';
 import { CacheKey } from './cache-key';
+import { i18n } from './i18n';
 
 export namespace Caching {
   export type Types =
@@ -18,6 +19,12 @@ export namespace Caching {
   /** 缓存键：字符串或 `CacheKey` */
   export type Key = string | CacheKey;
 }
+
+/** singleFlight 临时结果：成功带值，失败带错误文案供等待方复现 */
+type SingleFlightPayload<T> = { ok: true; v: T } | { ok: false; e: string };
+
+/** 分布式单飞持锁过期（`singleFlight` / `remember` 共用） */
+export const SINGLE_FLIGHT_LOCK_MS = 30_000;
 
 const CACHING_TYPE = '_$caching_type$_';
 const CACHING_DATA = '_$caching_data$_';
@@ -215,6 +222,75 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   async deleteAll(): Promise<boolean> {
     await this.adapter.connect();
     return this.adapter.deleteAllValues();
+  }
+
+  /**
+   * 分布式单飞：同一 `key` 上并发调用时只执行一次 `factory`，结果共享给等待方。
+   * 与 `remember` 不同，**不会**把结果写入长期缓存；仅在飞行期间用短 TTL 中转结果。
+   *
+   * ```typescript
+   * const data = await cache.singleFlight('jwks', () => fetchJwks());
+   * ```
+   */
+  async singleFlight<T extends Caching.Types | null>(
+    key: Caching.Key,
+    factory: () => Promise<T>,
+  ): Promise<T> {
+    const baseKey = this.resolveKey(key);
+    const waitingKey = baseKey + ':singleFlight:$#_waiting_#$';
+    const resultKey = baseKey + ':singleFlight:$#_result_#$';
+
+    // 读不到结果时最多重新竞争 5 次，避免热自旋死循环
+    for (let round = 0; round < 5; round++) {
+      const win = await this.setNX(waitingKey, 1, SINGLE_FLIGHT_LOCK_MS);
+      if (win) {
+        // 清掉上一轮残留结果，避免本轮崩溃未写入时等待方读到旧 payload
+        // 允许上一轮读取新一轮的数据
+        await this.delete(resultKey);
+        const timer = setInterval(() => {
+          void this.expire(waitingKey, SINGLE_FLIGHT_LOCK_MS);
+        }, SINGLE_FLIGHT_LOCK_MS / 5);
+        try {
+          try {
+            const result = await factory();
+            await this.set(
+              resultKey,
+              { ok: true, v: result } satisfies SingleFlightPayload<T>,
+              SINGLE_FLIGHT_LOCK_MS,
+            );
+            return result;
+          } catch (err) {
+            const message = Error.isError(err) ? err.message : String(err);
+            await this.set(
+              resultKey,
+              { ok: false, e: message } satisfies SingleFlightPayload<T>,
+              SINGLE_FLIGHT_LOCK_MS,
+            );
+            throw err;
+          }
+        } finally {
+          clearInterval(timer);
+          await this.delete(waitingKey);
+        }
+      }
+
+      while (await this.exists(waitingKey)) {
+        await sleep(100);
+      }
+
+      const payload = await this.get<SingleFlightPayload<T>>(resultKey);
+      // 执行方崩溃且未写入结果时重新竞争（有轮次上限）
+      if (payload === null) {
+        await sleep(100);
+        continue;
+      }
+      if (!payload.ok) {
+        throw new Error(payload.e);
+      }
+      return payload.v;
+    }
+
+    throw new Error(i18n.t('single_flight_no_result'));
   }
 
   protected resolveKey(key: Caching.Key): string {

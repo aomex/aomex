@@ -144,6 +144,39 @@ const cacheKey = new CacheKey().key('foo', 1);
   await caching.rightPop(cacheKey);
 }
 
+// singleFlight
+{
+  const r1 = await caching.singleFlight('k', async (): Promise<string> => 'x');
+  expectType<TypeEqual<string, typeof r1>>(true);
+
+  const r2 = await caching.singleFlight('k', async () => 1 as const);
+  expectType<TypeEqual<1, typeof r2>>(true);
+
+  const r3 = await caching.singleFlight('k', async () => null);
+  expectType<TypeEqual<null, typeof r3>>(true);
+
+  const r4 = await caching.singleFlight(cacheKey, async () => ({ a: 1 }));
+  expectType<TypeEqual<{ a: number }, typeof r4>>(true);
+
+  const r5 = await caching.singleFlight('k', async (): Promise<string | null> => 'a');
+  expectType<TypeEqual<string | null, typeof r5>>(true);
+
+  const r6 = await caching.singleFlight('k', async () => 'literal');
+  expectType<TypeEqual<'literal', typeof r6>>(true);
+
+  // @ts-expect-error key 必须是 Caching.Key
+  await caching.singleFlight(1, async () => 'x');
+
+  // @ts-expect-error factory 必须返回 Promise
+  await caching.singleFlight('k', () => 'x');
+
+  // @ts-expect-error 返回值须为 Caching.Types | null
+  await caching.singleFlight('k', async () => undefined);
+
+  // @ts-expect-error 缺少 factory
+  await caching.singleFlight('k');
+}
+
 // 手动指定类型
 {
   await caching.get<object | string>('foo');

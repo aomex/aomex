@@ -6,4 +6,5 @@ export default I18n.satisfies(zh).define({
   wrong_type: 'הערך הוא מסוג שגוי',
   not_integer: 'הערך אינו מספר שלם',
   cache_service_destroyed: 'שירות המטמון הושמד',
+  single_flight_no_result: 'singleFlight לא קיבל תוצאה משותפת',
 });

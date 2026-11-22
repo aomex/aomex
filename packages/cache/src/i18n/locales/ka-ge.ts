@@ -6,4 +6,5 @@ export default I18n.satisfies(zh).define({
   wrong_type: 'მნიშვნელობა არასწორი ტიპისაა',
   not_integer: 'მნიშვნელობა არ არის მთელი რიცხვი',
   cache_service_destroyed: 'ქეშის სერვისი განადგურდა',
+  single_flight_no_result: 'singleFlight-მა საერთო შედეგი ვერ მიიღო',
 });

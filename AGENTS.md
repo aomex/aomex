@@ -134,6 +134,13 @@
 - **自己抛出的、文案固定的错误必须走包内 i18n**（`throw new Error(i18n.t('…'))`，并补齐 `zh-CN` / `en-US`；其它语言按需异步）；第三方原样透传的错误不要包一层假 i18n
 - **翻译以简体中文（`zh-CN`）为母本**：其它语言（含 `en-US`）都从中文译出，不从英文回译或另起一套文案。简体文案有改动时，其它语言的对应条目必须按新中文重译，不能沿用旧译文
 
+## 代码审查（review）
+
+用户说 `review` / 审查 / Bugbot 审查时：**默认只审未提交改动**（staged + unstaged，相对 `HEAD`），**禁止**默认去审已提交的 branch commits。
+
+- 调用 Bugbot / review 子代理时必须使用 `Diff: uncommitted changes`
+- 仅当用户明确要求审「已提交 / 分支 / PR / 相对 main」时，才用 `Diff: branch changes` 或指定目标
+
 ## 日常改动习惯
 
 - 改动保持最小必要范围；不顺手重构无关代码

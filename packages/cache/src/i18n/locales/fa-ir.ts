@@ -6,4 +6,5 @@ export default I18n.satisfies(zh).define({
   wrong_type: 'مقدار از نوع نادرست است',
   not_integer: 'مقدار یک عدد صحیح نیست',
   cache_service_destroyed: 'سرویس کش نابود شده است',
+  single_flight_no_result: 'singleFlight نتیجه اشتراکی دریافت نکرد',
 });

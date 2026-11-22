@@ -6,4 +6,5 @@ export default I18n.satisfies(zh).define({
   wrong_type: 'Η τιμή είναι εσφαλμένου τύπου',
   not_integer: 'η τιμή δεν είναι ακέραιος',
   cache_service_destroyed: 'Η υπηρεσία προσωρινής αποθήκευσης έχει καταστραφεί',
+  single_flight_no_result: 'Το singleFlight δεν έλαβε κοινόχρηστο αποτέλεσμα',
 });

@@ -6,4 +6,5 @@ export default I18n.satisfies(zh).define({
   wrong_type: 'Vrednost je nepravilne vrste',
   not_integer: 'vrednost ni celo število',
   cache_service_destroyed: 'Predpomnilniška storitev je bila uničena',
+  single_flight_no_result: 'singleFlight ni dobil deljenega rezultata',
 });
