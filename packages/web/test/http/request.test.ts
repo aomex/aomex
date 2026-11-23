@@ -4,6 +4,13 @@ import { ensureFiles } from '../fixture/ensure-files';
 import { dirname, join } from 'path';
 import { PersistentFile } from 'formidable';
 import accepts from 'accepts';
+import { BaseWebRequest } from '../../src';
+
+test('WebRequest 继承 BaseWebRequest', async () => {
+  const { req, res } = await mockServer((agent) => agent.get('/test/api'));
+  expect(req).toBeInstanceOf(BaseWebRequest);
+  res.end();
+});
 
 test('method', async () => {
   const { req, res } = await mockServer((agent) => agent.get('/test/api'));

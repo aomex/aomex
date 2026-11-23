@@ -452,6 +452,48 @@ test('services：server close 时自动等 onDestroy 跑完', async () => {
   await vitest.waitFor(() => expect(destroyed).toBe(1));
 });
 
+test('services：手动 close 时 onDestroy 抛错只记日志', async () => {
+  const logged: unknown[] = [];
+  class CaptureLogger extends TestWebLoggerService {
+    override error(messageOrError: unknown, message?: string): void {
+      logged.push(messageOrError);
+      if (message === undefined) super.error(messageOrError);
+      else super.error(messageOrError, message);
+    }
+  }
+  class Demo extends Service {
+    ping() {
+      return 1;
+    }
+    protected override async onDestroy() {
+      throw new Error('manual-destroy-boom');
+    }
+  }
+  const services = await combineServices({
+    logger: async () => CaptureLogger,
+    demo: async () => Demo,
+  });
+  await services.demo.ping();
+
+  const app = new WebApp({
+    services,
+    logger: services.logger,
+    language: { mode: 'fixed', language: 'zh-CN' },
+    proxyIP: { mode: 'detect' },
+  });
+  const server = app.listen(0);
+  await new Promise<void>((resolve, reject) => {
+    server.on('listening', () => resolve());
+    server.on('error', reject);
+  });
+  await new Promise<void>((resolve) => server.close(() => resolve()));
+  await vitest.waitFor(() =>
+    expect(
+      logged.some((err) => err instanceof Error && err.message === 'manual-destroy-boom'),
+    ).toBe(true),
+  );
+});
+
 test('services：支持数组', async () => {
   let destroyed = 0;
   class Demo extends Service {
@@ -533,6 +575,293 @@ test('services：SIGTERM 先关 server 再等 onDestroy 后 exit', async () => {
 
   once.mockRestore();
   exit.mockRestore();
+});
+
+test('SIGTERM：WebApp.onShutdown 与 server.close 并行，早于服务 onDestroy', async () => {
+  const order: string[] = [];
+  const handlers = new Map<string | symbol, (...args: any[]) => void>();
+  const once = vitest.spyOn(process, 'once').mockImplementation((event, fn) => {
+    handlers.set(event, fn as (...args: any[]) => void);
+    return process;
+  });
+  const exit = vitest.spyOn(process, 'exit').mockImplementation((() => {}) as never);
+
+  class Demo extends Service {
+    ping() {
+      return 1;
+    }
+    protected override async onDestroy() {
+      order.push('destroy');
+    }
+  }
+
+  const services = await combineServices({
+    logger: async () => TestWebLoggerService,
+    demo: async () => Demo,
+  });
+  await services.demo.ping();
+
+  const app = new WebApp({
+    services,
+    logger: services.logger,
+    language: { mode: 'fixed', language: 'zh-CN' },
+    proxyIP: { mode: 'detect' },
+    shutdown: { timeout: 200 },
+  });
+  app.onShutdown(async () => {
+    order.push('shutdown-start');
+    await new Promise((r) => setTimeout(r, 30));
+    order.push('shutdown-end');
+  });
+
+  const server = app.listen(0);
+  await new Promise<void>((resolve, reject) => {
+    server.on('listening', () => resolve());
+    server.on('error', reject);
+  });
+
+  handlers.get('SIGTERM')!();
+  await vitest.waitFor(() => expect(exit).toHaveBeenCalledWith(0));
+  expect(order).toEqual(['shutdown-start', 'shutdown-end', 'destroy']);
+
+  once.mockRestore();
+  exit.mockRestore();
+});
+
+test('SIGTERM：onShutdown 抛错仍销毁服务并以 0 退出', async () => {
+  const order: string[] = [];
+  const handlers = new Map<string | symbol, (...args: any[]) => void>();
+  const once = vitest.spyOn(process, 'once').mockImplementation((event, fn) => {
+    handlers.set(event, fn as (...args: any[]) => void);
+    return process;
+  });
+  const exit = vitest.spyOn(process, 'exit').mockImplementation((() => {}) as never);
+
+  class Demo extends Service {
+    ping() {
+      return 1;
+    }
+    protected override async onDestroy() {
+      order.push('destroy');
+    }
+  }
+
+  const logged: unknown[] = [];
+  class CaptureLogger extends TestWebLoggerService {
+    override error(messageOrError: unknown, message?: string): void {
+      logged.push(messageOrError);
+      if (message === undefined) super.error(messageOrError);
+      else super.error(messageOrError, message);
+    }
+  }
+
+  const services = await combineServices({
+    logger: async () => CaptureLogger,
+    demo: async () => Demo,
+  });
+  await services.demo.ping();
+
+  const app = new WebApp({
+    services,
+    logger: services.logger,
+    language: { mode: 'fixed', language: 'zh-CN' },
+    proxyIP: { mode: 'detect' },
+  });
+  app.onShutdown(async () => {
+    order.push('bad');
+    throw new Error('hook-boom');
+  });
+  app.onShutdown(async () => {
+    order.push('ok');
+  });
+
+  const server = app.listen(0);
+  await new Promise<void>((resolve, reject) => {
+    server.on('listening', () => resolve());
+    server.on('error', reject);
+  });
+
+  handlers.get('SIGTERM')!();
+  await vitest.waitFor(() => expect(exit).toHaveBeenCalledWith(0));
+  expect(order).toEqual(['bad', 'ok', 'destroy']);
+  expect(logged.some((err) => err instanceof Error && err.message === 'hook-boom')).toBe(
+    true,
+  );
+
+  once.mockRestore();
+  exit.mockRestore();
+});
+
+test('SIGTERM：onDestroy 抛错仍以 0 退出', async () => {
+  const handlers = new Map<string | symbol, (...args: any[]) => void>();
+  const once = vitest.spyOn(process, 'once').mockImplementation((event, fn) => {
+    handlers.set(event, fn as (...args: any[]) => void);
+    return process;
+  });
+  const exit = vitest.spyOn(process, 'exit').mockImplementation((() => {}) as never);
+
+  class Demo extends Service {
+    ping() {
+      return 1;
+    }
+    protected override async onDestroy() {
+      throw new Error('destroy-boom');
+    }
+  }
+
+  const logged: unknown[] = [];
+  class CaptureLogger extends TestWebLoggerService {
+    override error(messageOrError: unknown, message?: string): void {
+      logged.push(messageOrError);
+      if (message === undefined) super.error(messageOrError);
+      else super.error(messageOrError, message);
+    }
+  }
+
+  const services = await combineServices({
+    logger: async () => CaptureLogger,
+    demo: async () => Demo,
+  });
+  await services.demo.ping();
+
+  const app = new WebApp({
+    services,
+    logger: services.logger,
+    language: { mode: 'fixed', language: 'zh-CN' },
+    proxyIP: { mode: 'detect' },
+  });
+  const server = app.listen(0);
+  await new Promise<void>((resolve, reject) => {
+    server.on('listening', () => resolve());
+    server.on('error', reject);
+  });
+
+  handlers.get('SIGTERM')!();
+  await vitest.waitFor(() => expect(exit).toHaveBeenCalledWith(0));
+  expect(
+    logged.some((err) => err instanceof Error && err.message === 'destroy-boom'),
+  ).toBe(true);
+
+  once.mockRestore();
+  exit.mockRestore();
+});
+
+test('onShutdown：可取消登记', async () => {
+  const app = new TestWebApp();
+  let called = 0;
+  const off = app.onShutdown(() => {
+    called += 1;
+  });
+  off();
+  await app['runShutdownHooks']();
+  expect(called).toBe(0);
+
+  app.onShutdown(() => {
+    called += 1;
+  });
+  await app['runShutdownHooks']();
+  expect(called).toBe(1);
+});
+
+test('两次 http()：信号只跑一遍钩子，并关掉全部 Server', async () => {
+  const order: string[] = [];
+  const handlers = new Map<string | symbol, (...args: any[]) => void>();
+  let signalBinds = 0;
+  const once = vitest.spyOn(process, 'once').mockImplementation((event, fn) => {
+    signalBinds += 1;
+    handlers.set(event, fn as (...args: any[]) => void);
+    return process;
+  });
+  const exit = vitest.spyOn(process, 'exit').mockImplementation((() => {}) as never);
+
+  class Demo extends Service {
+    ping() {
+      return 1;
+    }
+    protected override async onDestroy() {
+      order.push('destroy');
+    }
+  }
+
+  const services = await combineServices({
+    logger: async () => TestWebLoggerService,
+    demo: async () => Demo,
+  });
+  await services.demo.ping();
+
+  const app = new WebApp({
+    services,
+    logger: services.logger,
+    language: { mode: 'fixed', language: 'zh-CN' },
+    proxyIP: { mode: 'detect' },
+  });
+  app.onShutdown(() => {
+    order.push('shutdown');
+  });
+
+  const a = app.http({}).listen(0);
+  const b = app.http({}).listen(0);
+  await Promise.all(
+    [a, b].map(
+      (server) =>
+        new Promise<void>((resolve, reject) => {
+          server.on('listening', () => resolve());
+          server.on('error', reject);
+        }),
+    ),
+  );
+
+  expect(signalBinds).toBe(2);
+  handlers.get('SIGTERM')!();
+  await vitest.waitFor(() => expect(exit).toHaveBeenCalledWith(0));
+  expect(order).toEqual(['shutdown', 'destroy']);
+  expect(a.listening).toBeFalsy();
+  expect(b.listening).toBeFalsy();
+
+  once.mockRestore();
+  exit.mockRestore();
+});
+
+test('两次 http()：手动关掉一个不销毁服务，最后一个关掉才销毁', async () => {
+  let destroyed = 0;
+  class Demo extends Service {
+    ping() {
+      return 1;
+    }
+    protected override async onDestroy() {
+      destroyed += 1;
+    }
+  }
+  const services = await combineServices({
+    logger: async () => TestWebLoggerService,
+    demo: async () => Demo,
+  });
+  await services.demo.ping();
+
+  const app = new WebApp({
+    services,
+    logger: services.logger,
+    language: { mode: 'fixed', language: 'zh-CN' },
+    proxyIP: { mode: 'detect' },
+  });
+  const a = app.http({}).listen(0);
+  const b = app.http({}).listen(0);
+  await Promise.all(
+    [a, b].map(
+      (server) =>
+        new Promise<void>((resolve, reject) => {
+          server.on('listening', () => resolve());
+          server.on('error', reject);
+        }),
+    ),
+  );
+
+  await new Promise<void>((resolve) => a.close(() => resolve()));
+  await new Promise((r) => setTimeout(r, 30));
+  expect(destroyed).toBe(0);
+
+  await new Promise<void>((resolve) => b.close(() => resolve()));
+  await vitest.waitFor(() => expect(destroyed).toBe(1));
 });
 
 test('shutdown：重复信号只关停一次', async () => {

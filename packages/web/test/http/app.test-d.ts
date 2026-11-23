@@ -267,6 +267,7 @@ const proxyIP = { mode: 'detect' } as const;
   app.listen(3000, '127.0.0.1');
   app.listen(3000, () => {});
   expectType<http.Server>(app.listen());
+  expectType<http.Server>(app.http({}));
   expectType<http.Server>(app.http({}).listen());
 }
 
@@ -354,6 +355,12 @@ const proxyIP = { mode: 'detect' } as const;
     shutdown: 5_000,
   });
   new TestWebApp({ shutdown: { timeout: 1_000 } });
+
+  const app = new TestWebApp();
+  const off = app.onShutdown(async () => {});
+  expectType<() => void>(off);
+  // @ts-expect-error 钩子须为函数
+  app.onShutdown(1);
 }
 
 // 事件 / ctx.logger

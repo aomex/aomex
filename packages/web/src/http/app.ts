@@ -73,11 +73,12 @@ export namespace WebApp {
     envelope?: EnvelopeOptions;
     /**
      * `combineServices` 的返回值（单个或数组）。
-     * 关停：SIGINT/SIGTERM → `server.close()` → 再 await 销毁已加载服务。
+     * 关停：SIGINT/SIGTERM → {@link WebApp.onShutdown} 钩子与 `server.close()` 并行 → 再 await 销毁已加载服务。
      */
     services: CombinedServices | readonly CombinedServices[];
     /**
-     * 优雅关停：`SIGINT`/`SIGTERM` → `close` → 超时则强制断开 → 销毁服务 → 退出。
+     * 优雅关停：`SIGINT`/`SIGTERM` → {@link WebApp.onShutdown}（与 `close` 并行）→
+     * 超时则强制断开 → 服务/`registerLifecycle` 销毁 → 退出。
      * @default { timeout: 5_000 }
      */
     shutdown?: ShutdownOption;
@@ -226,6 +227,13 @@ export class WebApp<
 }> {
   protected readonly middlewareList: WebMiddlewareToken[];
   protected readonly logger: WebApp.Logger;
+  /** 关停前半段钩子（与 `server.close` 并行）；如 `WebsocketApp.attach` 登记的排空 */
+  protected readonly shutdownHooks = new Set<() => void | Promise<void>>();
+  /** 本应用创建的 HTTP(S) Server；多次 `http()` / `https()` 共用一次信号关停 */
+  protected readonly servers = new Set<http.Server | https.Server>();
+  protected processSignalsBound = false;
+  /** 信号关停进行中：`close` 回调不再销毁服务 */
+  protected shuttingDown = false;
 
   constructor(protected readonly options: WebApp.Option<T>) {
     super();
@@ -234,6 +242,25 @@ export class WebApp<
       ? [createEnvelopeMiddleware(options.envelope), ...(options.mount ?? [])]
       : [...(options.mount ?? [])];
     this.logger = options.logger;
+  }
+
+  /**
+   * 登记关停前半段钩子：与 `server.close()` 并行，在 `closeAllConnections` 前尽量跑完。
+   * 用于 WebSocket 停握手、按协议关连等；不要在此释放在途 HTTP 仍依赖的存储（那是 `registerLifecycle` / services 的 `onDestroy`）。
+   *
+   * @returns 取消登记
+   *
+   * ```ts
+   * const off = app.onShutdown(async () => {
+   *   await drainWebsocket();
+   * });
+   * ```
+   */
+  onShutdown(hook: () => void | Promise<void>): () => void {
+    this.shutdownHooks.add(hook);
+    return () => {
+      this.shutdownHooks.delete(hook);
+    };
   }
 
   /**
@@ -268,37 +295,71 @@ export class WebApp<
       .filter((tag) => tag.length > 0);
   }
 
-  protected bindServerLifecycle(server: http.Server | https.Server): void {
-    const services = toArray(this.options.services);
-    const timeout = Math.max(0, this.options.shutdown?.timeout ?? 5_000);
+  /**
+   * 并行执行关停钩子。单个钩子 reject 只记日志，不中断其余钩子，也不阻止后续销毁与退出。
+   * @returns 是否有钩子失败
+   */
+  protected async runShutdownHooks(): Promise<boolean> {
+    const results = await Promise.allSettled(
+      [...this.shutdownHooks].map((hook) => Promise.resolve().then(hook)),
+    );
+    let failed = false;
+    for (const result of results) {
+      if (result.status === 'rejected') {
+        failed = true;
+        void this.logger.error(result.reason);
+      }
+    }
+    return failed;
+  }
 
-    // 手动 close：销毁服务（不 exit）
+  protected bindServerLifecycle(server: http.Server | https.Server): void {
+    this.servers.add(server);
+    // 手动关掉最后一个 Server 才销毁服务；信号路径由 shutdownServers 统一销毁
     server.once('close', () => {
-      void internalDestroyServices(services);
+      this.servers.delete(server);
+      if (this.shuttingDown || this.servers.size > 0) return;
+      void internalDestroyServices(toArray(this.options.services)).catch((err) => {
+        void this.logger.error(err);
+      });
     });
 
-    let stopping = false;
-    const stop = () => {
-      if (stopping) return;
-      stopping = true;
+    if (this.processSignalsBound) return;
+    this.processSignalsBound = true;
+    process.once('SIGTERM', this.shutdownServers.bind(this));
+    process.once('SIGINT', this.shutdownServers.bind(this));
+  }
 
-      void (async () => {
-        let forceTimer: NodeJS.Timeout | undefined;
-        try {
-          await new Promise<void>((resolve) => {
-            server.close(() => resolve());
-            forceTimer = setTimeout(() => server.closeAllConnections(), timeout);
-          });
-        } finally {
-          if (forceTimer) clearTimeout(forceTimer);
-        }
-
-        await internalDestroyServices(services);
-        process.exit(0);
-      })();
-    };
-    process.once('SIGTERM', stop);
-    process.once('SIGINT', stop);
+  /**
+   * 信号关停：钩子与全部 Server 的 `close` 并行，全部结束后再销毁服务并退出。
+   */
+  protected async shutdownServers(): Promise<void> {
+    if (this.shuttingDown) return;
+    this.shuttingDown = true;
+    const timeout = Math.max(0, this.options.shutdown?.timeout ?? 5_000);
+    const shutdownPromise = this.runShutdownHooks();
+    await Promise.all(
+      [...this.servers].map(
+        (server) =>
+          new Promise<void>((resolve) => {
+            const forceTimer = setTimeout(() => {
+              server.closeAllConnections();
+            }, timeout);
+            server.close(() => {
+              clearTimeout(forceTimer);
+              resolve();
+            });
+          }),
+      ),
+    );
+    try {
+      await shutdownPromise;
+      await internalDestroyServices(toArray(this.options.services));
+    } catch (err) {
+      void this.logger.error(err);
+    } finally {
+      process.exit(0);
+    }
   }
 
   callback(): http.RequestListener<any, any> {
@@ -338,9 +399,10 @@ export class WebApp<
   };
 
   /**
-   * 监听http服务，可定制参数
+   * 创建 HTTP Server（未 listen）。可交给同级应用（如 `WebsocketApp.attach`）再 `server.listen`。
    * ```typescript
-   * app.http({...}).listen(3000);
+   * const server = app.http({});
+   * server.listen(3000);
    * ```
    */
   http(options: Omit<http.ServerOptions, 'IncomingMessage' | 'ServerResponse'>) {
@@ -353,13 +415,14 @@ export class WebApp<
       this.callback(),
     );
     this.bindServerLifecycle(server);
-    return { listen: server.listen.bind(server) };
+    return server;
   }
 
   /**
-   * 监听https服务，需提供证书
+   * 创建 HTTPS Server（未 listen），需提供证书。
    * ```typescript
-   * app.https({...}).listen(3000);
+   * const server = app.https({ ...certs });
+   * server.listen(3000);
    * ```
    */
   https(options: Omit<https.ServerOptions, 'IncomingMessage' | 'ServerResponse'>) {
@@ -372,6 +435,6 @@ export class WebApp<
       this.callback(),
     );
     this.bindServerLifecycle(server);
-    return { listen: server.listen.bind(server) };
+    return server;
   }
 }
