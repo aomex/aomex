@@ -1,0 +1,55 @@
+{
+  "name": "@aomex/asyncapi-generator",
+  "version": "4.4.0",
+  "description": "AsyncAPI 文档生成工具",
+  "scripts": {
+    "prepublishOnly": "tsdown"
+  },
+  "type": "module",
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [],
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "peerDependencies": {
+    "@aomex/common": "^4.0.0",
+    "@aomex/console": "^4.0.0",
+    "@aomex/websocket": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@aomex/console": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@aomex/internal-file-import": "workspace:*",
+    "@aomex/internal-tools": "workspace:*",
+    "@stoplight/spectral-core": "^1.24.1",
+    "@stoplight/spectral-rulesets": "^1.23.1",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@aomex/common": "workspace:*",
+    "@aomex/console": "workspace:*",
+    "@aomex/websocket": "workspace:*"
+  }
+}
