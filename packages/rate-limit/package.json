@@ -6,7 +6,9 @@
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/websocket.js"
+  ],
   "scripts": {
     "prepublishOnly": "tsdown"
   },
@@ -14,6 +16,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./memory": "./src/memory-store.ts",
+    "./websocket": "./src/websocket.ts",
     "./package.json": "./package.json"
   },
   "files": [
@@ -34,16 +37,27 @@
         "types": "./dist/memory-store.d.ts",
         "import": "./dist/memory-store.js"
       },
+      "./websocket": {
+        "types": "./dist/websocket.d.ts",
+        "import": "./dist/websocket.js"
+      },
       "./package.json": "./package.json"
     },
     "access": "public"
   },
   "peerDependencies": {
     "@aomex/common": "^4.0.0",
-    "@aomex/web": "^4.0.0"
+    "@aomex/web": "^4.0.0",
+    "@aomex/websocket": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@aomex/websocket": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@aomex/common": "workspace:*",
-    "@aomex/web": "workspace:*"
+    "@aomex/web": "workspace:*",
+    "@aomex/websocket": "workspace:*"
   }
 }

@@ -65,6 +65,29 @@ test('无法识别ID视为白名单', async () => {
   ]);
 });
 
+test('可读时长先折成毫秒；非法时长在创建时抛错', async () => {
+  const store = new RateLimitMemoryStore();
+  const spy = vitest.spyOn(store, 'getAndSet');
+  const app = new TestWebApp({
+    mount: [rateLimit({ store, duration: '10s' })],
+  });
+  await supertest(app.listen()).get('/');
+  expect(spy).toHaveBeenCalledWith({
+    duration: 10_000,
+    key: 'aomex-rate-limit:::ffff:127.0.0.1',
+    maxRequest: 2500,
+  });
+
+  expect(() => rateLimit({ duration: -1 })).toThrow(RangeError);
+  expect(() => rateLimit({ duration: Number.NaN })).toThrow(RangeError);
+  expect(() =>
+    rateLimit({
+      // @ts-expect-error 无单位字符串不是 DurationInput，运行时仍拒绝
+      duration: 'soon',
+    }),
+  ).toThrow(TypeError);
+});
+
 test('默认id为客户端IP', async () => {
   const store = new RateLimitMemoryStore();
   const spy = vitest.spyOn(store, 'getAndSet');
@@ -156,7 +179,7 @@ test('定制报错信息', async () => {
   await supertest(app.listen()).get('/').expect(429, 'Wait a minute');
 });
 
-test('rateLimit 自动登记 store 生命周期', async () => {
+test('rateLimit 首次请求时才登记 store 生命周期', async () => {
   const order: string[] = [];
   class TrackingStore extends RateLimitStore {
     override async onInit() {
@@ -170,8 +193,13 @@ test('rateLimit 自动登记 store 生命周期', async () => {
     }
   }
 
-  rateLimit({ store: new TrackingStore() });
-  await sleep(20);
+  const app = new TestWebApp({
+    mount: [rateLimit({ store: new TrackingStore() })],
+  });
+  expect(order).toEqual([]);
+  await supertest(app.listen()).get('/');
+  expect(order).toEqual(['init']);
+  await supertest(app.listen()).get('/');
   expect(order).toEqual(['init']);
   await internalDestroyServices([]);
   expect(order).toEqual(['init', 'destroy']);

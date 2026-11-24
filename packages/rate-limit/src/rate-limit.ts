@@ -1,4 +1,9 @@
-import { middleware, registerLifecycle } from '@aomex/common';
+import {
+  middleware,
+  parseDuration,
+  registerLifecycle,
+  type DurationInput,
+} from '@aomex/common';
 import { statuses, type WebContext, type WebMiddleware } from '@aomex/web';
 import type { RateLimitStore } from './store';
 import { RateLimitMemoryStore } from './memory-store';
@@ -10,12 +15,14 @@ export interface RateLimitOptions {
   store?: RateLimitStore;
 
   /**
-   * 限速时间周期。单位：`ms`。默认值：`3600 * 1000`(1小时)
+   * 限速窗口。毫秒数或可读时长，如 `10_000`、`'10s'`、`'1 hour'`。
+   * 默认：`'1 hour'`
    */
-  duration?: number;
+  duration?: DurationInput;
 
   /**
-   * 一个客户端（根据id字段）在一个时间周期内的最大可请求数量
+   * 一个客户端（根据 id 字段）在一个时间周期内的最大可请求数量。
+   * 默认：`2500`
    */
   maxRequest?: number;
 
@@ -63,20 +70,22 @@ export interface RateLimitOptions {
 export const rateLimit = (options: RateLimitOptions = {}): WebMiddleware => {
   const {
     store = new RateLimitMemoryStore(),
-    duration = 3600 * 1_000, // 1小时
     maxRequest = 2500,
     id: getId = (ctx) => ctx.request.ip,
     headers: headerNames = {},
     denyList = () => false,
     allowList = () => false,
   } = options;
-
-  void registerLifecycle({
-    onInit: () => store.onInit(),
-    onDestroy: () => store.onDestroy(),
-  });
+  const duration = parseDuration(options.duration ?? '1 hour');
+  let ready: Promise<void> | undefined;
 
   return middleware.web(async (ctx, next) => {
+    ready ??= registerLifecycle({
+      onInit: () => store.onInit(),
+      onDestroy: () => store.onDestroy(),
+    });
+    await ready;
+
     if (await denyList(ctx)) ctx.throw(403, 'denied');
 
     const id = getId(ctx);

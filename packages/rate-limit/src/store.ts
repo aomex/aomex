@@ -9,12 +9,12 @@ export abstract class RateLimitStore {
   }): Promise<RateLimitState>;
 
   /**
-   * 初始化存储（如建立连接）。由 `rateLimit()` 经 `registerLifecycle` 在登记时调用。
+   * 初始化存储（如建立连接）。首次处理请求/消息时经 `registerLifecycle` 调用。
    */
   async onInit(): Promise<void> {}
 
   /**
-   * 销毁存储（如断开连接）。由 `rateLimit()` 经 `registerLifecycle` 在应用关停时调用。
+   * 销毁存储（如断开连接）。由 `registerLifecycle` 在应用关停时调用。
    */
   async onDestroy(): Promise<void> {}
 

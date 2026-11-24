@@ -751,6 +751,9 @@ importers:
       '@aomex/web':
         specifier: workspace:*
         version: link:../web
+      '@aomex/websocket':
+        specifier: workspace:*
+        version: link:../websocket
 
   packages/rate-limit-redis-store:
     dependencies:

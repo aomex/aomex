@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsdown';
 
 export default defineConfig({
-  entry: ['src/index.ts', 'src/memory-store.ts'],
+  entry: ['src/index.ts', 'src/memory-store.ts', 'src/websocket.ts'],
   sourcemap: true,
   clean: true,
   format: ['esm'],
