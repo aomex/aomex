@@ -1,3 +1,4 @@
+import { once } from 'node:events';
 import type http from 'node:http';
 import { afterEach, expect, test, vitest } from 'vitest';
 import { CacheMemoryAdapter } from '@aomex/cache/memory';
@@ -45,7 +46,7 @@ test('socket：未封禁时入站正常', async () => {
   ws.close();
 });
 
-test('socket：已封禁 IP 回推 error 且不进业务', async () => {
+test('socket：已封禁 IP 回推 error 后断开且不进业务', async () => {
   const abuse = createAbuse({
     store: new CacheMemoryAdapter(),
     strategies: [],
@@ -73,8 +74,10 @@ test('socket：已封禁 IP 回推 error 且不进业务', async () => {
     event: 'error',
     data: { message: '禁止访问' },
   });
+  const [closed] = (await once(ws, 'close')) as [CloseEvent];
+  expect(closed.code).toBe(1008);
+  expect(closed.reason).toBe('禁止访问');
   expect(hit).toBe(false);
-  ws.close();
 });
 
 test('socket：errorMessage 可定制', async () => {
@@ -100,7 +103,9 @@ test('socket：errorMessage 可定制', async () => {
     event: 'error',
     data: { message: 'custom-blocked' },
   });
-  ws.close();
+  const [closed] = (await once(ws, 'close')) as [CloseEvent];
+  expect(closed.code).toBe(1008);
+  expect(closed.reason).toBe('custom-blocked');
 });
 
 test('socket：bypass 跳过封禁检查', async () => {
@@ -129,6 +134,36 @@ test('socket：bypass 跳过封禁检查', async () => {
   ws.close();
 });
 
+test('socket：send error 失败时仍会 close', async () => {
+  const abuse = createAbuse({
+    store: new CacheMemoryAdapter(),
+    strategies: [],
+  });
+  await abuse.blockIP('203.0.113.10', '1h');
+  const md = abuse.socket();
+  let closed = false;
+  await expect(
+    md['fn'](
+      {
+        event: 'ping',
+        client: {
+          id: 'c1',
+          request: { ip: '203.0.113.10' },
+          send: async () => {
+            throw new Error('send failed');
+          },
+          close: async () => {
+            closed = true;
+          },
+          data: {},
+        },
+      } as any,
+      async () => {},
+    ),
+  ).rejects.toThrow('send failed');
+  expect(closed).toBe(true);
+});
+
 test('web 与 socket 共用封禁态', async () => {
   const abuse = createAbuse({
     store: new CacheMemoryAdapter(),
@@ -146,6 +181,7 @@ test('web 与 socket 共用封禁态', async () => {
   // 直接跑中间件：模拟已封 IP
   const md = abuse.socket();
   let called = false;
+  let closed = false;
   await md['fn'](
     {
       event: 'ping',
@@ -153,6 +189,9 @@ test('web 与 socket 共用封禁态', async () => {
         id: 'c1',
         request: { ip: '203.0.113.9' },
         send: async () => {},
+        close: async () => {
+          closed = true;
+        },
         data: {},
       },
     } as any,
@@ -161,6 +200,7 @@ test('web 与 socket 共用封禁态', async () => {
     },
   );
   expect(called).toBe(false);
+  expect(closed).toBe(true);
 
   await abuse.unblockIP('203.0.113.9');
   await md['fn'](
@@ -170,6 +210,7 @@ test('web 与 socket 共用封禁态', async () => {
         id: 'c1',
         request: { ip: '203.0.113.9' },
         send: async () => {},
+        close: async () => {},
         data: {},
       },
     } as any,
@@ -216,15 +257,14 @@ test('socket-events：命中蜜罐事件满额后封禁', async () => {
     event: 'error',
     data: { message: '禁止访问' },
   });
+  const [closed] = (await once(ws, 'close')) as [CloseEvent];
+  expect(closed.code).toBe(1008);
   expect(hit).toBe(false);
   expect(onBlockIP).toHaveBeenCalledWith('::ffff:127.0.0.1', 'socket-events', {
     count: 1,
     limit: 1,
     blockFor: expect.any(Number),
   });
-  send(ws, 'admin.destroy');
-  await expect(recv(ws)).resolves.toMatchObject({ event: 'error' });
-  ws.close();
 });
 
 test('socket-events：未满额仍放行业务', async () => {
@@ -262,12 +302,13 @@ test('socket-events：未满额仍放行业务', async () => {
   expect(onBlockIP).not.toHaveBeenCalled();
   send(ws, 'trap');
   await expect(recv(ws)).resolves.toMatchObject({ event: 'error' });
+  const [closed] = (await once(ws, 'close')) as [CloseEvent];
+  expect(closed.code).toBe(1008);
   expect(onBlockIP).toHaveBeenCalledWith(expect.any(String), 'socket-events', {
     count: 2,
     limit: 2,
     blockFor: expect.any(Number),
   });
-  ws.close();
 });
 
 test('socket-events：未命中事件不计数', async () => {

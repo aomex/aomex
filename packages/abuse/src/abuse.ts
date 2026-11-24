@@ -308,7 +308,16 @@ export const createAbuse = <const S extends readonly AbuseStrategy[]>(
   const socket = (socketOptions: AbuseSocketOptions = {}): SocketMiddleware => {
     // 调用方须先 import '@aomex/websocket'，以注册 middleware.socket
     const socketBypass = socketOptions.bypass ?? (() => false);
-    const blockedMessage = () => socketOptions.errorMessage || i18n.t('blocked');
+    /** 回推 error 后断开：封禁不是软限流，连接不应继续占用 */
+    const rejectBlocked = async (ctx: WebsocketContext) => {
+      const message = socketOptions.errorMessage || i18n.t('blocked');
+      try {
+        await ctx.client.send('error', { message });
+      } finally {
+        // 1008 Policy Violation；reason 与 error 帧一致，传输层会截断超长 reason
+        await ctx.client.close(1008, message);
+      }
+    };
 
     return middleware.socket(async (ctx: WebsocketContext, next) => {
       await ensureReady();
@@ -317,7 +326,7 @@ export const createAbuse = <const S extends readonly AbuseStrategy[]>(
       const ip = ctx.client.request.ip;
 
       if (await caching.exists(getBlockKey(ip))) {
-        await ctx.client.send('error', { message: blockedMessage() });
+        await rejectBlocked(ctx);
         return;
       }
 
@@ -334,7 +343,7 @@ export const createAbuse = <const S extends readonly AbuseStrategy[]>(
           limit: strategy.limit,
           blockFor: parseDuration(strategy.blockFor),
         });
-        await ctx.client.send('error', { message: blockedMessage() });
+        await rejectBlocked(ctx);
         return;
       }
 

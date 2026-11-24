@@ -206,7 +206,7 @@ export type AbuseSocketOptions = {
    */
   bypass?: (ctx: WebsocketContext) => boolean | Promise<boolean>;
   /**
-   * 被封禁时回推的文案。默认走 i18n
+   * 被封禁时回推 `error` 帧的文案（随后以 1008 断开连接）。默认走 i18n
    */
   errorMessage?: string;
 };
@@ -231,6 +231,7 @@ export type AbuseService<
   /**
    * WebSocket 入站中间件。挂在 `WebsocketApp.mount`。
    * 调用前须 `import '@aomex/websocket'`（注册 `middleware.socket`）。
+   * IP 已封禁或 `socket-events` 满额时：回推 `error` 并以 1008 断开连接。
    *
    * ```ts
    * import '@aomex/websocket';
