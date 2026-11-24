@@ -240,6 +240,31 @@ importers:
         specifier: workspace:*
         version: link:../web
 
+  packages/access-log:
+    dependencies:
+      '@aomex/internal-tools':
+        specifier: workspace:*
+        version: link:../internal-tools
+      '@aomex/logger':
+        specifier: workspace:*
+        version: link:../logger
+      pretty-time:
+        specifier: ^1.1.0
+        version: 1.1.0
+    devDependencies:
+      '@aomex/common':
+        specifier: workspace:*
+        version: link:../common
+      '@aomex/web':
+        specifier: workspace:*
+        version: link:../web
+      '@aomex/websocket':
+        specifier: workspace:*
+        version: link:../websocket
+      '@types/pretty-time':
+        specifier: ^1.1.5
+        version: 1.1.5
+
   packages/async-trace:
     devDependencies:
       '@aomex/common':
@@ -551,28 +576,6 @@ importers:
       '@aomex/web':
         specifier: workspace:*
         version: link:../web
-
-  packages/http-access-log:
-    dependencies:
-      '@aomex/internal-tools':
-        specifier: workspace:*
-        version: link:../internal-tools
-      '@aomex/logger':
-        specifier: workspace:*
-        version: link:../logger
-      pretty-time:
-        specifier: ^1.1.0
-        version: 1.1.0
-    devDependencies:
-      '@aomex/common':
-        specifier: workspace:*
-        version: link:../common
-      '@aomex/web':
-        specifier: workspace:*
-        version: link:../web
-      '@types/pretty-time':
-        specifier: ^1.1.5
-        version: 1.1.5
 
   packages/internal-file-import:
     dependencies:

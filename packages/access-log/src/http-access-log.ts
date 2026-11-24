@@ -16,7 +16,7 @@ export interface HttpAccessLogOptions {
    */
   format?: string;
   /**
-   * 日志输出端口。默认使用 `ConsoleTransport`。
+   * 日志输出端口。默认使用 `ConsoleTransport`；传空数组相当于禁用。
    */
   transports?: Transport[];
   /**
@@ -43,23 +43,23 @@ class HttpAccessLogService extends BaseLoggerService {
   }
 }
 
+/**
+ * HTTP 访问日志。挂在 `WebApp.mount` 里。
+ */
 export const httpAccessLog = (options: HttpAccessLogOptions = {}): WebMiddleware => {
   const { disabled = false, customTokens } = options;
   const format =
     options.format ||
     `${HttpAccessLogToken.ip} ${HttpAccessLogToken.method} ${HttpAccessLogToken.url} ${HttpAccessLogToken.statusCode} ${HttpAccessLogToken.duration} ${HttpAccessLogToken.contentLength}`;
 
-  const transportList =
-    options.transports && options.transports.length > 0
-      ? options.transports
-      : [new ConsoleTransport()];
+  const transportList = options.transports ?? [new ConsoleTransport()];
 
   const logger = new HttpAccessLogService(
     transportList.map((transport) => ({ transport })),
   );
 
   return middleware.web(async (ctx, next) => {
-    if (disabled) return next();
+    if (disabled || transportList.length === 0) return next();
 
     const start = process.hrtime();
     const tokens = customTokens

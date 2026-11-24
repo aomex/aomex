@@ -1,19 +1,26 @@
 {
-  "name": "@aomex/http-access-log",
+  "name": "@aomex/access-log",
   "version": "4.4.0",
-  "description": "HTTP access log middleware",
+  "description": "访问日志",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
   "license": "MIT",
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/websocket.js"
+  ],
   "scripts": {
     "prepublishOnly": "tsdown"
   },
   "types": "src/index.ts",
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./websocket": "./src/websocket.ts",
+    "./package.json": "./package.json"
+  },
   "files": [
     "dist",
+    "LICENSE",
     "package.json",
     "README.md",
     "CHANGELOG.md"
@@ -25,13 +32,23 @@
         "types": "./dist/index.d.ts",
         "import": "./dist/index.js"
       },
+      "./websocket": {
+        "types": "./dist/websocket.d.ts",
+        "import": "./dist/websocket.js"
+      },
       "./package.json": "./package.json"
     },
     "access": "public"
   },
   "peerDependencies": {
     "@aomex/common": "^4.0.0",
-    "@aomex/web": "^4.0.0"
+    "@aomex/web": "^4.0.0",
+    "@aomex/websocket": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@aomex/websocket": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@aomex/internal-tools": "workspace:*",
@@ -41,6 +58,7 @@
   "devDependencies": {
     "@aomex/common": "workspace:*",
     "@aomex/web": "workspace:*",
+    "@aomex/websocket": "workspace:*",
     "@types/pretty-time": "^1.1.5"
   }
 }

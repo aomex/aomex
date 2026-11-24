@@ -151,11 +151,10 @@ test('禁用日志', async () => {
   expect(msgs).toMatchInlineSnapshot(`[]`);
 });
 
-test('不存在消费实例也相当于禁用日志', async () => {
+test('空 transports 相当于禁用日志', async () => {
   const app = new TestWebApp({
     mount: [
       httpAccessLog({
-        disabled: true,
         transports: [],
       }),
       middleware.web((ctx) => {
