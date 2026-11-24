@@ -1,0 +1,7 @@
+import { I18n } from '@aomex/common';
+import { zh } from './zh-cn';
+
+/** th-TH */
+export default I18n.satisfies(zh).define({
+  invalid_frame: 'เฟรม WebSocket ไม่ถูกต้อง',
+});

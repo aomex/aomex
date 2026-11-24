@@ -1,0 +1,46 @@
+{
+  "name": "@aomex/websocket-socket-io-transport",
+  "version": "4.4.0",
+  "description": "WebSocket 的 Socket.IO 传输层",
+  "repository": "git@github.com:aomex/aomex.git",
+  "homepage": "https://aomex.js.org",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "prepublishOnly": "tsdown"
+  },
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@aomex/web": "^4.0.0",
+    "@aomex/websocket": "^4.0.0"
+  },
+  "dependencies": {
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "@aomex/common": "workspace:*",
+    "@aomex/web": "workspace:*",
+    "@aomex/websocket": "workspace:*",
+    "socket.io-client": "^4.8.1"
+  }
+}
