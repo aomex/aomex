@@ -34,6 +34,63 @@ function expectWon(result: WinResult): Extract<WinResult, { slot: string }> {
   return result as Extract<WinResult, { slot: string }>;
 }
 
+function armIdleChild(task: Task) {
+  const file = join(tmpdir(), `cron-task-${Date.now()}-${Math.random()}.mjs`);
+  writeFileSync(
+    file,
+    `
+    await new Promise((resolve) => {
+      setTimeout(resolve, 600_000);
+    });
+    `,
+  );
+  // @ts-expect-error
+  task.filePath = file;
+  // @ts-expect-error
+  task.execArgv = ['--no-warnings'];
+}
+
+function spyStopAndKill(child: NonNullable<Task['child']>) {
+  const messages: string[] = [];
+  let stoppedAt = 0;
+  let killedAt = 0;
+  const send = child.send.bind(child);
+  child.send = ((message: string, ...args: any[]) => {
+    messages.push(message);
+    if (message === TELL_CHILD_STOP) stoppedAt = Date.now();
+    return send(message, ...args);
+  }) as typeof child.send;
+  const kill = child.kill.bind(child);
+  child.kill = ((signal?: NodeJS.Signals | number) => {
+    killedAt = Date.now();
+    return kill(signal);
+  }) as typeof child.kill;
+  return {
+    messages,
+    get stoppedAt() {
+      return stoppedAt;
+    },
+    get killedAt() {
+      return killedAt;
+    },
+  };
+}
+
+async function waitFor(ready: () => boolean, timeoutMs: number) {
+  const deadline = Date.now() + timeoutMs;
+  while (!ready()) {
+    if (Date.now() >= deadline) return false;
+    await sleep(50);
+  }
+  return true;
+}
+
+function expectKilledAboutOneSecondAfterStop(stoppedAt: number, killedAt: number) {
+  const delay = killedAt - stoppedAt;
+  expect(delay).toBeGreaterThanOrEqual(900);
+  expect(delay).toBeLessThan(2_500);
+}
+
 test('并发达上限', { timeout: 10_000 }, async () => {
   const cron = createCron({
     commanders: '',
@@ -198,17 +255,7 @@ test('只释放属于自己的slot', { timeout: 10_000 }, async () => {
   expect(await cron.cache.get(won1.slot)).toBe('other-token');
 });
 
-test('slot被抢后先通知子进程停止', { timeout: 30_000 }, async () => {
-  const file = join(tmpdir(), 'bin_' + Date.now() + Math.random() + '.mjs');
-  writeFileSync(
-    file,
-    `
-    await new Promise((resolve) => {
-      setTimeout(resolve, 60_000);
-    });
-    `,
-  );
-
+test('slot被抢后先通知子进程停止，约1秒后强制结束', { timeout: 90_000 }, async () => {
   const cron = createCron({
     commanders: '',
     command: 'foo:bar',
@@ -216,10 +263,7 @@ test('slot被抢后先通知子进程停止', { timeout: 30_000 }, async () => {
     waitingTimeout: 0,
   });
   const task = new Task(cron, 1, 2);
-  // @ts-expect-error
-  task.filePath = file;
-  // @ts-expect-error
-  task.execArgv = ['--no-warnings'];
+  armIdleChild(task);
 
   const won = expectWon(await task.win());
   const pong = task.ping(won.slot, won.token);
@@ -227,26 +271,57 @@ test('slot被抢后先通知子进程停止', { timeout: 30_000 }, async () => {
 
   await sleep(200);
   expect(task.child).not.toBeNull();
-
-  const messages: string[] = [];
-  const child = task.child!;
-  const send = child.send.bind(child);
-  child.send = ((message: string, ...args: any[]) => {
-    messages.push(message);
-    return send(message, ...args);
-  }) as typeof child.send;
+  const watch = spyStopAndKill(task.child!);
 
   await cron.cache.set(won.slot, 'stolen-token', 900_000);
 
-  // ping 默认 15s 探测一次；此处只断言会先发 STOP，不等 5s 的延迟 kill
-  await sleep(16_000);
-  expect(messages).toContain(TELL_CHILD_STOP);
-  expect(task.child).not.toBeNull();
+  // ping 默认 60s 探测一次；再留出 STOP 后 1s 再 kill 与调度抖动
+  expect(await waitFor(() => watch.killedAt > 0, 75_000)).toBe(true);
+  expect(watch.messages).toContain(TELL_CHILD_STOP);
+  expect(watch.stoppedAt).toBeGreaterThan(0);
+  expectKilledAboutOneSecondAfterStop(watch.stoppedAt, watch.killedAt);
+  expect(await cron.cache.get(won.slot)).toBe('stolen-token');
 
-  child.kill();
   await running;
   await pong();
   expect(task.child).toBeNull();
+  expect(await cron.cache.get(won.slot)).toBe('stolen-token');
+});
+
+test('租约过期后不再抢回槽位', { timeout: 90_000 }, async () => {
+  const cron = createCron({
+    commanders: '',
+    command: 'foo:bar',
+    concurrent: 1,
+    waitingTimeout: 0,
+  });
+  const task = new Task(cron, 1, 2);
+  armIdleChild(task);
+
+  const won = expectWon(await task.win());
+  const pong = task.ping(won.slot, won.token);
+  const running = task.runChildProcess();
+
+  await sleep(200);
+  expect(task.child).not.toBeNull();
+  const watch = spyStopAndKill(task.child!);
+
+  await cron.cache.delete(won.slot);
+
+  expect(await waitFor(() => watch.killedAt > 0, 75_000)).toBe(true);
+  expect(watch.messages).toContain(TELL_CHILD_STOP);
+  expectKilledAboutOneSecondAfterStop(watch.stoppedAt, watch.killedAt);
+  // 探测到空槽时不得 setNX 写回，否则会变成最多 20 分钟的孤儿锁
+  expect(await cron.cache.get(won.slot)).toBeNull();
+
+  const task2 = new Task(cron, 1, 2);
+  const won2 = expectWon(await task2.win());
+  expect(won2.slot).toBe(won.slot);
+
+  await running;
+  await pong();
+  expect(task.child).toBeNull();
+  expect(await cron.cache.get(won.slot)).toBe(won2.token);
 });
 
 test('执行时记录pid', { timeout: 12_000 }, async () => {

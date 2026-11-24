@@ -145,8 +145,8 @@ export class Task {
 
   ping(slot: string, token: string) {
     const cache = this.cron.cache;
-    // 检查时间越短，越能及时发现任务被抢了，防止双跑。
-    const CHECK_INTERVAL = 15_000;
+    // 探测间隔：过短会频繁打存储；过长则发现抢占更晚。60s 配合 20 分钟租约足够。
+    const CHECK_INTERVAL = 60_000;
     let isStopped = false;
 
     const checkTask = async () => {
@@ -162,19 +162,13 @@ export class Task {
 
         if (isStopped) return;
 
-        // 任务被释放了，但是下一次任务还没获得执行权，需要重新竞争，尽量不要中断任务
-        if (remoteToken === null) {
-          const win = await cache.setNX(slot, token, this.concurrentExpireDuration);
-          if (win) return;
-        }
-
         // 任务被抢了，开始清理当前进程，防止双跑
         try {
           this.child?.send(TELL_CHILD_STOP);
         } catch {
           // Error: Channel closed / ERR_IPC_CHANNEL_CLOSED
         }
-        await sleep(5_000);
+        await sleep(1_000);
         this.child?.kill();
         shouldContinue = false;
       } finally {
