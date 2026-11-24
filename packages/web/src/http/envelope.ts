@@ -1,4 +1,5 @@
 import { Validator, type ValidatorToken } from '@aomex/common';
+import type { Exact } from '@aomex/internal-tools';
 import statuses from 'statuses';
 import type { WebApp } from './app';
 import type { WebContext } from './context';
@@ -198,9 +199,17 @@ export const envelope = {
   /**
    * 自定义槽位：`schema` 供 OpenAPI；`get(vars, ctx)` 供运行时取值。
    * `vars` 为 `{ success, payload, statusCode }`；`ctx` 为 `WebContext & WebApp.Props`。
+   * 返回值类型精确匹配 `Infer<Schema>`（封闭对象禁止多余键，含嵌套）。
    */
-  slot: <Schema extends ValidatorToken>(
+  slot: <Schema extends ValidatorToken, R extends Validator.Infer<Schema>>(
     schema: Schema,
-    get: (vars: EnvelopeVars, ctx: EnvelopeSlotContext) => Validator.Infer<Schema>,
-  ) => new EnvelopeCustomSlot(schema, get),
+    get: (
+      vars: EnvelopeVars,
+      ctx: EnvelopeSlotContext,
+    ) => Exact<Validator.Infer<Schema>, R>,
+  ) =>
+    new EnvelopeCustomSlot(
+      schema,
+      get as (vars: EnvelopeVars, ctx: EnvelopeSlotContext) => Validator.Infer<Schema>,
+    ),
 };

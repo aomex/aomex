@@ -1,4 +1,5 @@
 import { Validator, type ValidatorToken, type OpenAPI, toDocument } from '@aomex/common';
+import type { Exact } from '@aomex/internal-tools';
 import { WebMiddleware, type OpenApiInjector } from '../override';
 import type { Body } from '../http';
 import type { HttpErrorProperties } from '../utils';
@@ -12,6 +13,12 @@ import {
 } from './response-media';
 import { responseFormatKey, X_RESPONSE_FORMAT_DEFAULT } from './format-error';
 import { X_SKIP_ENVELOPE } from '../http/envelope';
+
+/** `response({ content })` 定制 `send` 的 body：对齐 Infer 且落在 Body 内 */
+type ResponseSendBody<Content extends ValidatorToken> = Extract<
+  Validator.Infer<Content>,
+  Body
+>;
 
 export type {
   ClientErrorStatus,
@@ -51,10 +58,16 @@ export class WebResponseMiddleware<
         }
       : {
           /**
-           * 来自response中间件定制的send()方法。200状态码可以忽略不写
+           * 来自response中间件定制的send()方法。200状态码可以忽略不写；
+           * body 精确匹配 content 的 Infer（封闭对象禁止多余键）。
            */
-          send(statusCode: Code, body: Extract<Validator.Infer<Content>, Body>): void;
-          send(body: Extract<Validator.Infer<Content>, Body>): void;
+          send<R extends ResponseSendBody<Content>>(
+            statusCode: Code,
+            body: Exact<ResponseSendBody<Content>, R>,
+          ): void;
+          send<R extends ResponseSendBody<Content>>(
+            body: Exact<ResponseSendBody<Content>, R>,
+          ): void;
         }
     : Code extends OKStatus
       ? unknown extends Validator.Infer<Content>
@@ -66,9 +79,13 @@ export class WebResponseMiddleware<
           }
         : {
             /**
-             * 来自response中间件定制的send()方法
+             * 来自response中间件定制的send()方法；
+             * body 精确匹配 content 的 Infer（封闭对象禁止多余键）。
              */
-            send(statusCode: Code, body: Extract<Validator.Infer<Content>, Body>): void;
+            send<R extends ResponseSendBody<Content>>(
+              statusCode: Code,
+              body: Exact<ResponseSendBody<Content>, R>,
+            ): void;
           }
       : Code extends EmptyStatus
         ? {

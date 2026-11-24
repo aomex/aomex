@@ -1,4 +1,5 @@
 import { Validator, type ValidatorToken, type OpenAPI, toDocument } from '@aomex/common';
+import type { Exact } from '@aomex/internal-tools';
 import statuses from 'statuses';
 import type { Body } from '../http';
 import { HttpError } from '../utils';
@@ -51,22 +52,6 @@ export interface FormatErrorPublic {
 export type FormatErrorHandlerResult<Content extends ValidatorToken> =
   unknown extends Validator.Infer<Content> ? Body | void : Validator.Infer<Content>;
 
-/**
- * 禁止对象返回值携带 `Shape` 之外的键（多余字段 → `never`）。
- * 原始类型 / 数组 / void / 带 string 索引的类型不做键级收紧。
- */
-type NoExcessKeys<T, Shape> = [T] extends [void]
-  ? T
-  : [T] extends [readonly unknown[]]
-    ? T
-    : [T] extends [object]
-      ? string extends keyof T
-        ? T
-        : Exclude<keyof T, keyof Shape | number | symbol> extends never
-          ? T
-          : never
-      : T;
-
 export type FormatErrorOptions<
   Content extends ValidatorToken = ValidatorToken,
   R extends FormatErrorHandlerResult<Content> = FormatErrorHandlerResult<Content>,
@@ -79,15 +64,14 @@ export type FormatErrorOptions<
   statusCodes?: readonly HttpErrorStatus[];
   /**
    * 返回响应体；status / `err.headers` 已由中间件写好。
-   * 有 `content` 时返回值不得含声明外的多余字段。
+   * 有 `content` 时返回值须精确匹配 `Infer`（封闭对象禁止多余键，含嵌套）。
    * 写响应请用已净化字段；`err.raw` 见 {@link FormatErrorPublic.raw} 警告。
    */
   handler: (
     err: FormatErrorPublic,
   ) => unknown extends Validator.Infer<Content>
     ? FormatErrorHandlerResult<Content> | Promise<FormatErrorHandlerResult<Content>>
-    : | NoExcessKeys<R, Validator.Infer<Content>>
-      | Promise<NoExcessKeys<R, Validator.Infer<Content>>>;
+    : Exact<Validator.Infer<Content>, R> | Promise<Exact<Validator.Infer<Content>, R>>;
 };
 
 export class FormatErrorMiddleware<Content extends ValidatorToken> extends WebMiddleware {

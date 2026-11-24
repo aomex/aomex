@@ -169,6 +169,20 @@ import type { Body } from '../../src/http/response';
       return { error: { code: 'X' }, extra: 1 };
     },
   });
+  formatError({
+    content: {
+      error: rule.object({ code: rule.string() }),
+    },
+    // @ts-expect-error 嵌套多余字段
+    handler() {
+      return {
+        error: {
+          code: 'X',
+          extra: 1,
+        },
+      };
+    },
+  });
 }
 
 // content 为 string / array：原始与数组不做键级收紧
@@ -220,6 +234,59 @@ import type { Body } from '../../src/http/response';
     // @ts-expect-error 多余字段
     handler() {
       return { id: 1, extra: 'x' };
+    },
+  });
+  formatError({
+    content: rule.object({ id: rule.number() }).nullable(),
+    handler() {
+      return null;
+    },
+  });
+  formatError({
+    content: rule.object({ id: rule.number() }).nullable(),
+    handler() {
+      return { id: 1 };
+    },
+  });
+  formatError({
+    content: rule.object({ id: rule.number() }).nullable(),
+    // @ts-expect-error nullable 对象不能 undefined
+    handler() {
+      return undefined;
+    },
+  });
+  formatError({
+    content: rule.array({ n: rule.number() }),
+    handler() {
+      return [{ n: 1 }];
+    },
+  });
+  formatError({
+    content: rule.array({ n: rule.number() }),
+    // @ts-expect-error 数组元素多余键
+    handler() {
+      return [{ n: 1, x: true }];
+    },
+  });
+  formatError({
+    content: rule.allOf([{ a: rule.number() }, { b: rule.string() }]),
+    handler() {
+      return { a: 1, b: 'x' };
+    },
+  });
+  formatError({
+    content: rule.allOf([{ a: rule.number() }, { b: rule.string() }]),
+    // @ts-expect-error 交叉多余键
+    handler() {
+      return { a: 1, b: 'x', z: 1 };
+    },
+  });
+  const wider = { id: 1, extra: true };
+  formatError({
+    content: { id: rule.number() },
+    // @ts-expect-error 变量带回多余键
+    handler() {
+      return wider;
     },
   });
 }

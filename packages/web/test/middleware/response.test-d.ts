@@ -82,6 +82,16 @@ import { createReadStream } from 'node:fs';
   ctx.send(200, {});
   // @ts-expect-error
   ctx.send(200, { bar: 'bar' });
+  ctx.send(200, {
+    foo: 1,
+    // @ts-expect-error 多余字段
+    extra: true,
+  });
+  ctx.send({
+    foo: 1,
+    // @ts-expect-error 省略状态码时同样禁多余字段
+    extra: true,
+  });
 
   // @ts-expect-error
   ctx.send(200, 'foo');
@@ -91,6 +101,75 @@ import { createReadStream } from 'node:fs';
   ctx.send(200, createReadStream('path/to/file'));
   // @ts-expect-error
   ctx.send(200, null);
+}
+
+// nested content：嵌套多余键
+{
+  const s200 = response({
+    statusCode: 200,
+    content: {
+      user: rule.object({ id: rule.number(), name: rule.string().optional() }),
+    },
+  });
+  let ctx!: Union2Intersection<Middleware.Infer<typeof s200>>;
+  ctx.send(200, { user: { id: 1 } });
+  ctx.send(200, { user: { id: 1, name: 'a' } });
+  ctx.send(200, {
+    user: {
+      id: 1,
+      // @ts-expect-error 嵌套多余字段
+      x: 1,
+    },
+  });
+  // @ts-expect-error 缺 user.id
+  ctx.send(200, { user: {} });
+}
+
+// 201：变量多余键、数组元素、可空对象；不能省略状态码
+{
+  const s201 = response({
+    statusCode: 201,
+    content: {
+      id: rule.number(),
+      rows: rule.array({ n: rule.number() }),
+      box: rule.object({ v: rule.string() }).nullable(),
+    },
+  });
+  let ctx!: Union2Intersection<Middleware.Infer<typeof s201>>;
+  ctx.send(201, { id: 1, rows: [{ n: 1 }], box: null });
+  ctx.send(201, { id: 1, rows: [], box: { v: 'a' } });
+  const wider = {
+    id: 1,
+    rows: [] as { n: number }[],
+    box: null as { v: string } | null,
+    extra: 1,
+  };
+  // @ts-expect-error 变量带回多余键
+  ctx.send(201, wider);
+  ctx.send(201, {
+    id: 1,
+    rows: [
+      {
+        n: 1,
+        // @ts-expect-error 数组元素多余键
+        x: 1,
+      },
+    ],
+    box: null,
+  });
+  ctx.send(201, {
+    id: 1,
+    rows: [],
+    box: {
+      v: 'a',
+      // @ts-expect-error 可空对象非 null 时禁多余键
+      x: 1,
+    },
+  });
+  // @ts-expect-error 201 不能省略状态码
+  ctx.send({ id: 1, rows: [], box: null });
+  // @ts-expect-error box 不能 undefined
+  ctx.send(201, { id: 1, rows: [], box: undefined });
 }
 
 // 200状态码可以省略

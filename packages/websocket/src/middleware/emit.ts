@@ -4,7 +4,7 @@ import {
   type Validator,
   type ValidatorToken,
 } from '@aomex/common';
-import type { Union2Intersection } from '@aomex/internal-tools';
+import type { Exact, Union2Intersection } from '@aomex/internal-tools';
 import type { WebsocketBroadcastOptions } from '../core/client';
 import type { SocketMiddleware } from '../override';
 import '../override/socket-middleware.js';
@@ -28,8 +28,8 @@ export type CollectEmitMap<Props extends object | unknown> = Props extends {
 type EmitPointOverload<E extends string, Data> = [Data] extends [void]
   ? (event: E, data?: undefined) => Promise<void>
   : undefined extends Data
-    ? (event: E, data?: Data) => Promise<void>
-    : (event: E, data: Data) => Promise<void>;
+    ? <R extends Data>(event: E, data?: Exact<Data, R>) => Promise<void>
+    : <R extends Data>(event: E, data: Exact<Data, R>) => Promise<void>;
 
 type EmitBroadcastOverload<E extends string, Data> = [Data] extends [void]
   ? {
@@ -37,8 +37,16 @@ type EmitBroadcastOverload<E extends string, Data> = [Data] extends [void]
       (event: E, data?: undefined, options?: WebsocketBroadcastOptions): Promise<void>;
     }
   : undefined extends Data
-    ? (event: E, data?: Data, options?: WebsocketBroadcastOptions) => Promise<void>
-    : (event: E, data: Data, options?: WebsocketBroadcastOptions) => Promise<void>;
+    ? <R extends Data>(
+        event: E,
+        data?: Exact<Data, R>,
+        options?: WebsocketBroadcastOptions,
+      ) => Promise<void>
+    : <R extends Data>(
+        event: E,
+        data: Exact<Data, R>,
+        options?: WebsocketBroadcastOptions,
+      ) => Promise<void>;
 
 /**
  * 点对点 `send` 重载（`client.send`，无 `except`）。

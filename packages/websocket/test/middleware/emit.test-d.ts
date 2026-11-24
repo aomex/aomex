@@ -89,6 +89,24 @@ import {
       ctx.send('chat.message', { from: 'u1' });
       // @ts-expect-error 缺少必填字段
       ctx.client.send('chat.message', { from: 'u1' });
+      ctx.send('chat.message', {
+        from: 'u1',
+        text: 'hi',
+        // @ts-expect-error 多余字段
+        extra: true,
+      });
+      ctx.client.send('chat.message', {
+        from: 'u1',
+        text: 'hi',
+        // @ts-expect-error 多余字段
+        extra: true,
+      });
+      ctx.room('lobby').send('chat.message', {
+        from: 'u1',
+        text: 'hi',
+        // @ts-expect-error room 同样禁多余字段
+        extra: true,
+      });
       // @ts-expect-error chat.ack 无载荷
       ctx.send('chat.ack', { x: 1 });
       // @ts-expect-error chat.ack 无载荷
@@ -183,6 +201,58 @@ import {
       ctx.send('opt', { b: 1 });
       // @ts-expect-error
       ctx.client.send('opt', { b: 1 });
+      // @ts-expect-error 多余字段
+      ctx.send('opt', { a: 'x', extra: true });
+      // @ts-expect-error 广播同样禁多余字段
+      ctx.all.send('opt', { a: 'x', extra: true }, { except: ctx.client });
+    },
+  });
+}
+
+// 嵌套 / 可空 / 数组元素
+{
+  const channel = new Channel();
+  channel.on('x', {
+    mount: [
+      emit({
+        event: 'pack',
+        data: {
+          user: rule.object({ id: rule.number() }).nullable(),
+          rows: rule.array({ n: rule.number() }),
+        },
+      }),
+    ],
+    action: async (ctx) => {
+      ctx.send('pack', { user: null, rows: [] });
+      ctx.send('pack', { user: { id: 1 }, rows: [{ n: 1 }] });
+      ctx.client.send('pack', { user: { id: 1 }, rows: [{ n: 0 }] });
+      // @ts-expect-error user 不能 undefined
+      ctx.send('pack', { user: undefined, rows: [] });
+      ctx.send('pack', {
+        user: {
+          id: 1,
+          // @ts-expect-error 嵌套多余
+          x: 1,
+        },
+        rows: [],
+      });
+      ctx.send('pack', {
+        user: null,
+        rows: [
+          {
+            n: 1,
+            // @ts-expect-error 数组元素多余
+            x: 1,
+          },
+        ],
+      });
+      const wider = {
+        user: null as { id: number } | null,
+        rows: [] as { n: number }[],
+        extra: 1,
+      };
+      // @ts-expect-error 变量带回多余键
+      ctx.send('pack', wider);
     },
   });
 }
