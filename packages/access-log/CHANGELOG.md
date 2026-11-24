@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.5.0](https://github.com/aomex/aomex/compare/v4.4.0...v4.5.0) (2026-11-24)
+
+### Features
+
+* **access-log:** 由 http-access-log 重命名并增加 websocket 访问日志 ([1426d7b](https://github.com/aomex/aomex/commit/1426d7b624b150f94f28b485be29c69e54e87b07))
+
+
 # [4.4.0](https://github.com/aomex/aomex/compare/v4.3.0...v4.4.0) (2026-11-22)
 
 **Note:** Version bump only for package @aomex/http-access-log

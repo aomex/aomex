@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.5.0](https://github.com/aomex/aomex/compare/v4.4.0...v4.5.0) (2026-11-24)
+
+### Bug Fixes
+
+* **abuse:** socket 封禁时回推 error 后以 1008 断开连接 ([bd473a5](https://github.com/aomex/aomex/commit/bd473a516c8b7920f9438e24c82c59b8f58cd7cf))
+
+### Features
+
+* **abuse:** createAbuse 拆为 .web()/.socket() 并增加 socket-events 策略 ([3798757](https://github.com/aomex/aomex/commit/37987575bbe13e9f3046f762c9efafab07ed3f75))
+* **access-log:** 由 http-access-log 重命名并增加 websocket 访问日志 ([1426d7b](https://github.com/aomex/aomex/commit/1426d7b624b150f94f28b485be29c69e54e87b07))
+* **asyncapi-generator:** 从 Channel 生成 AsyncAPI 3 文档 ([ade2777](https://github.com/aomex/aomex/commit/ade2777c06d6aeda85cf2865e2f62d1679302a51))
+* **asyncapi-ui:** 初始化 AsyncAPI UI 组件 ([0a25457](https://github.com/aomex/aomex/commit/0a25457a940ff54b12850d73bba2e57282cb9c8a))
+* **common:** 添加 AsyncAPI 类型定义 ([afddb02](https://github.com/aomex/aomex/commit/afddb02a113c67979a857dbb5f12f546af7ece44))
+* **rate-limit:** 增加websocket限速中间件 ([0412cf7](https://github.com/aomex/aomex/commit/0412cf70208958e932d07e2e496529c7afddd350))
+* **websocket:** 新增实时通道，支持 ws、Socket.IO 与 Redis 多机广播 ([b2a1eaa](https://github.com/aomex/aomex/commit/b2a1eaab11b0b720c038f6ea3319895229ce45a0))
+* **web:** 关停钩子与 Server 关闭并行 ([2fbf4b6](https://github.com/aomex/aomex/commit/2fbf4b6ef5ae4eb2f5451c1f6ac15b9f6466d423))
+
+
 # [4.4.0](https://github.com/aomex/aomex/compare/v4.3.0...v4.4.0) (2026-11-22)
 
 ### Bug Fixes

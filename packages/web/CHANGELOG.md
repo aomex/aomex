@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.5.0](https://github.com/aomex/aomex/compare/v4.4.0...v4.5.0) (2026-11-24)
+
+### Features
+
+* **web:** 关停钩子与 Server 关闭并行 ([2fbf4b6](https://github.com/aomex/aomex/commit/2fbf4b6ef5ae4eb2f5451c1f6ac15b9f6466d423))
+
+
 # [4.4.0](https://github.com/aomex/aomex/compare/v4.3.0...v4.4.0) (2026-11-22)
 
 **Note:** Version bump only for package @aomex/web

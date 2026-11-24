@@ -1,6 +1,6 @@
 {
   "name": "@aomex/websocket-redis-hub",
-  "version": "4.4.0",
+  "version": "4.5.0",
   "description": "WebSocket 多机房间与广播的 Redis Hub",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",

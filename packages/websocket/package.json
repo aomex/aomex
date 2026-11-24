@@ -1,6 +1,6 @@
 {
   "name": "@aomex/websocket",
-  "version": "4.4.0",
+  "version": "4.5.0",
   "description": "WebSocket 实时通道（Channel / room）",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",

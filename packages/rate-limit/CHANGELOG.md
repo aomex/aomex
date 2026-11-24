@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.5.0](https://github.com/aomex/aomex/compare/v4.4.0...v4.5.0) (2026-11-24)
+
+### Features
+
+* **rate-limit:** 增加websocket限速中间件 ([0412cf7](https://github.com/aomex/aomex/commit/0412cf70208958e932d07e2e496529c7afddd350))
+
+
 # [4.4.0](https://github.com/aomex/aomex/compare/v4.3.0...v4.4.0) (2026-11-22)
 
 **Note:** Version bump only for package @aomex/rate-limit

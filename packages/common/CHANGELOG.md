@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.5.0](https://github.com/aomex/aomex/compare/v4.4.0...v4.5.0) (2026-11-24)
+
+### Features
+
+* **common:** 添加 AsyncAPI 类型定义 ([afddb02](https://github.com/aomex/aomex/commit/afddb02a113c67979a857dbb5f12f546af7ece44))
+
+
 # [4.4.0](https://github.com/aomex/aomex/compare/v4.3.0...v4.4.0) (2026-11-22)
 
 **Note:** Version bump only for package @aomex/common
