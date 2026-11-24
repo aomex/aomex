@@ -15,7 +15,8 @@
 
 - **TypeScript 贯穿**：路由参数、请求体、中间件上下文到业务代码，类型可推导、可跳转
 - **同一套中间件模型**：Web HTTP 与 Console 指令共用组合与挂载方式
-- **开箱能力**：校验、鉴权、缓存、日志出口、限流、压缩、CORS、OpenAPI 等按需安装
+- **开箱能力**：校验、鉴权、缓存、日志出口、限流、压缩、CORS、OpenAPI / AsyncAPI 等按需安装
+- **WebSocket**：Channel / room，可选 ws、Socket.IO 传输与 Redis 多机广播
 - **定时与运维**：Cron 调度、访问日志、异步链路追踪，和业务服务生命周期对齐
 - **i18n**：错误与文案可多语言，框架内置能力同样走语言包
 
@@ -24,7 +25,9 @@
 使用脚手架一键安装
 
 ```bash
-npx create-aomex@latest
+pnpm create aomex
+yarn create aomex
+npm create aomex
 ```
 
 # 应用平台
@@ -46,11 +49,20 @@ npx create-aomex@latest
 | [pretty-json](./packages/pretty-json)                       | ![npm](https://img.shields.io/npm/v/@aomex/pretty-json)            | web             | 美化响应输出         |
 | [serve-static](./packages/serve-static)                     | ![npm](https://img.shields.io/npm/v/@aomex/serve-static)           | web             | 静态文件服务         |
 | [response-time](./packages/response-time)                   | ![npm](https://img.shields.io/npm/v/@aomex/response-time)          | web             | 设置服务响应时长报文 |
-| [rate-limit](./packages/rate-limit)                         | ![npm](https://img.shields.io/npm/v/@aomex/rate-limit)             | web             | 请求限速             |
-| [rate-limit-redis-store](./packages/rate-limit-redis-store) | ![npm](https://img.shields.io/npm/v/@aomex/rate-limit-redis-store) | web             | 请求限速 Redis 存储  |
+| [rate-limit](./packages/rate-limit)                         | ![npm](https://img.shields.io/npm/v/@aomex/rate-limit)             | web / websocket | 请求限速             |
+| [rate-limit-redis-store](./packages/rate-limit-redis-store) | ![npm](https://img.shields.io/npm/v/@aomex/rate-limit-redis-store) | web / websocket | 请求限速 Redis 存储  |
 | [etag](./packages/etag)                                     | ![npm](https://img.shields.io/npm/v/@aomex/etag)                   | web             | 设置 etag 报文       |
 | [cron](./packages/cron)                                     | ![npm](https://img.shields.io/npm/v/@aomex/cron)                   | console         | 定时任务             |
-| [async-trace](./packages/async-trace)                       | ![npm](https://img.shields.io/npm/v/@aomex/async-trace)            | web/console     | 异步逻辑链路追踪     |
+| [async-trace](./packages/async-trace)                       | ![npm](https://img.shields.io/npm/v/@aomex/async-trace)            | 任意            | 异步逻辑链路追踪     |
+
+# WebSocket
+
+| Name                                                                      | Version                                                                   | Desc                                 |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------ |
+| [websocket](./packages/websocket)                                         | ![npm](https://img.shields.io/npm/v/@aomex/websocket)                     | WebSocket 实时通道（Channel / room） |
+| [websocket-ws-transport](./packages/websocket-ws-transport)               | ![npm](https://img.shields.io/npm/v/@aomex/websocket-ws-transport)        | 标准 ws 传输层                       |
+| [websocket-socket-io-transport](./packages/websocket-socket-io-transport) | ![npm](https://img.shields.io/npm/v/@aomex/websocket-socket-io-transport) | Socket.IO 传输层                     |
+| [websocket-redis-hub](./packages/websocket-redis-hub)                     | ![npm](https://img.shields.io/npm/v/@aomex/websocket-redis-hub)           | 多机房间与广播的 Redis Hub           |
 
 # 日志
 
@@ -72,23 +84,26 @@ npx create-aomex@latest
 
 # 身份认证
 
-| Name                                                                    | Version                                                       | Desc                |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------- | ------------------- |
-| [auth](./packages/auth)                                                 | ![npm](https://img.shields.io/npm/v/@aomex/auth)              | 身份认证统一入口    |
-| [auth-bearer](./packages/auth/src/strategies/auth-bearer-strategy.ts)   | `@aomex/auth/bearer`                                          | Bearer Token 策略   |
-| [auth-api-key](./packages/auth/src/strategies/auth-api-key-strategy.ts) | `@aomex/auth/api-key`                                         | API Key 策略        |
-| [auth-session](./packages/auth/src/strategies/auth-session-strategy.ts) | `@aomex/auth/session`                                         | Cookie 会话策略     |
-| [auth-jwt](./packages/auth-jwt-strategy)                                | ![npm](https://img.shields.io/npm/v/@aomex/auth-jwt-strategy) | Json Web Token 策略 |
+| Name                                                                    | Version                                                       | Desc                          |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------- | ----------------------------- |
+| [auth](./packages/auth)                                                 | ![npm](https://img.shields.io/npm/v/@aomex/auth)              | 身份认证统一入口              |
+| [auth-bearer](./packages/auth/src/strategies/auth-bearer-strategy.ts)   | `@aomex/auth/bearer`                                          | Bearer Token 策略             |
+| [auth-api-key](./packages/auth/src/strategies/auth-api-key-strategy.ts) | `@aomex/auth/api-key`                                         | API Key 策略                  |
+| [auth-session](./packages/auth/src/strategies/auth-session-strategy.ts) | `@aomex/auth/session`                                         | Cookie 会话策略               |
+| [auth-jwt](./packages/auth-jwt-strategy)                                | ![npm](https://img.shields.io/npm/v/@aomex/auth-jwt-strategy) | Json Web Token 策略           |
+| [oauth2-client](./packages/oauth2-client)                               | ![npm](https://img.shields.io/npm/v/@aomex/oauth2-client)     | OAuth 2.0 / OIDC 授权码客户端 |
 
 # 文档
 
-| Name                                                    | Version                                                       | Desc                                                     |
-| ------------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------- |
-| [openapi-generator](./packages/openapi-generator)       | ![npm](https://img.shields.io/npm/v/@aomex/openapi-generator) | 根据接口生成 openapi{.json,.yaml} 文件                   |
-| [swagger-ui](./packages/swagger-ui)                     | ![npm](https://img.shields.io/npm/v/@aomex/swagger-ui)        | swagger 文档渲染网页                                     |
-| [redoc-ui](./packages/redoc-ui)                         | ![npm](https://img.shields.io/npm/v/@aomex/redoc-ui)          | redoc 文档渲染网页                                       |
-| [scalar-ui](./packages/scalar-ui)                       | ![npm](https://img.shields.io/npm/v/@aomex/scalar-ui)         | scalar 文档渲染网页                                      |
-| [foca-openapi](https://github.com/foca-js/foca-openapi) | ![npm](https://img.shields.io/npm/v/foca-openapi)             | 根据 openapi{.json,.yaml} 文件生成 TypeScript 请求客户端 |
+| Name                                                    | Version                                                        | Desc                                                     |
+| ------------------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------- |
+| [openapi-generator](./packages/openapi-generator)       | ![npm](https://img.shields.io/npm/v/@aomex/openapi-generator)  | 根据接口生成 openapi{.json,.yaml} 文件                   |
+| [swagger-ui](./packages/swagger-ui)                     | ![npm](https://img.shields.io/npm/v/@aomex/swagger-ui)         | swagger 文档渲染网页                                     |
+| [redoc-ui](./packages/redoc-ui)                         | ![npm](https://img.shields.io/npm/v/@aomex/redoc-ui)           | redoc 文档渲染网页                                       |
+| [scalar-ui](./packages/scalar-ui)                       | ![npm](https://img.shields.io/npm/v/@aomex/scalar-ui)          | scalar 文档渲染网页                                      |
+| [asyncapi-generator](./packages/asyncapi-generator)     | ![npm](https://img.shields.io/npm/v/@aomex/asyncapi-generator) | 根据 Channel 生成 AsyncAPI 文档                          |
+| [asyncapi-ui](./packages/asyncapi-ui)                   | ![npm](https://img.shields.io/npm/v/@aomex/asyncapi-ui)        | AsyncAPI 文档渲染网页                                    |
+| [foca-openapi](https://github.com/foca-js/foca-openapi) | ![npm](https://img.shields.io/npm/v/foca-openapi)              | 根据 openapi{.json,.yaml} 文件生成 TypeScript 请求客户端 |
 
 # 数据
 
