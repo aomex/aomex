@@ -1,6 +1,6 @@
 {
   "name": "@aomex/mongoose",
-  "version": "4.5.0",
+  "version": "4.6.0",
   "description": "aomex与mongoose深度集成",
   "scripts": {
     "prepublishOnly": "tsdown"

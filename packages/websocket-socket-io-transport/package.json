@@ -1,6 +1,6 @@
 {
   "name": "@aomex/websocket-socket-io-transport",
-  "version": "4.5.0",
+  "version": "4.6.0",
   "description": "WebSocket 的 Socket.IO 传输层",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",

@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.6.0](https://github.com/aomex/aomex/compare/v4.5.0...v4.6.0) (2026-11-24)
+
+### Features
+
+* **web,websocket:** 新增 Exact 类型并统一 slot/response/emit/formatError 出站精确匹配 ([cecde1f](https://github.com/aomex/aomex/commit/cecde1fb569b16f518d61efe3c66819622c533b3))
+
+
 # [4.5.0](https://github.com/aomex/aomex/compare/v4.4.0...v4.5.0) (2026-11-24)
 
 ### Features
