@@ -10,10 +10,10 @@ export interface ScalarUIOptions {
    * 文档内容，有三种方式可以提供openapi文档：
    * 1. 文件路径，支持json和yaml格式
    * 2. 传入函数直接生成
-   * 3. 利用`@aomex/openapi`动态生成
+   * 3. 利用`@aomex/openapi-generator`动态生成
    *
    * ```typescript
-   * import { generateOpenapi } from '@aomex/openapi';
+   * import { generateOpenapi } from '@aomex/openapi-generator';
    *
    * scalarUI({ openapi: './openapi.json' });
    * scalarUI({ openapi: './openapi.yaml' });

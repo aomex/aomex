@@ -677,7 +677,7 @@ importers:
         specifier: workspace:*
         version: link:../web
 
-  packages/openapi:
+  packages/openapi-generator:
     dependencies:
       '@aomex/internal-file-import':
         specifier: workspace:*

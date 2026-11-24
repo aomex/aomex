@@ -5,8 +5,8 @@ test('默认返回值', async () => {
   await expect(initializeDocument()).resolves.toMatchInlineSnapshot(`
     {
       "info": {
-        "title": "aomex",
-        "version": "0.0.0",
+        "title": "@aomex/openapi-generator",
+        "version": "4.4.0",
       },
       "openapi": "3.0.3",
       "paths": {},
@@ -21,7 +21,7 @@ test('指定标题', async () => {
     {
       "info": {
         "title": "foo-bar",
-        "version": "0.0.0",
+        "version": "4.4.0",
       },
       "openapi": "3.0.3",
       "paths": {},
@@ -35,7 +35,7 @@ test('指定版本号', async () => {
     .toMatchInlineSnapshot(`
     {
       "info": {
-        "title": "aomex",
+        "title": "@aomex/openapi-generator",
         "version": "1.2.3",
       },
       "openapi": "3.0.3",
@@ -50,8 +50,8 @@ test('增加标签', async () => {
     .toMatchInlineSnapshot(`
     {
       "info": {
-        "title": "aomex",
-        "version": "0.0.0",
+        "title": "@aomex/openapi-generator",
+        "version": "4.4.0",
       },
       "openapi": "3.0.3",
       "paths": {},
