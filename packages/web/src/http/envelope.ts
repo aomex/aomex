@@ -1,11 +1,13 @@
 import { Validator, type ValidatorToken } from '@aomex/common';
 import statuses from 'statuses';
+import type { WebApp } from './app';
+import type { WebContext } from './context';
 import type { Body, BodyType, WebResponse } from './response';
 
 /** 可被响应体套壳包裹的 body 形态（stream / buffer 不包） */
 export type EnvelopeBodyType = Extract<BodyType, 'json' | 'string' | 'null'>;
 
-/** 套壳时可读的内置变量（自定义 `slot` 的唯一入参） */
+/** 套壳时可读的内置变量（自定义 `slot` 的第一入参） */
 export interface EnvelopeVars {
   /** 原 `statusCode < 400` */
   success: boolean;
@@ -14,6 +16,9 @@ export interface EnvelopeVars {
   /** 改写前的 HTTP 状态码 */
   statusCode: number;
 }
+
+/** 自定义 `slot` 运行时第二入参（与 `onError` 一致，含 app 级 `WebApp.Props`） */
+export type EnvelopeSlotContext = WebContext & WebApp.Props;
 
 declare const envelopeBuiltinBrand: unique symbol;
 declare const envelopeCustomBrand: unique symbol;
@@ -32,7 +37,10 @@ export class EnvelopeCustomSlot<Schema extends ValidatorToken = ValidatorToken> 
   declare readonly [envelopeCustomBrand]: void;
   constructor(
     readonly schema: Schema,
-    readonly get: (vars: EnvelopeVars) => Validator.Infer<Schema>,
+    readonly get: (
+      vars: EnvelopeVars,
+      ctx: EnvelopeSlotContext,
+    ) => Validator.Infer<Schema>,
   ) {}
 }
 
@@ -68,7 +76,11 @@ const isRedirectStatus = (code: number) => code >= 300 && code < 400;
 const isEmptyStatus = (code: number): boolean => !!statuses.empty[code];
 
 /** 将声明树转为运行时 body */
-const resolveRuntimeNode = (node: EnvelopeContent, vars: EnvelopeVars): unknown => {
+const resolveRuntimeNode = (
+  node: EnvelopeContent,
+  vars: EnvelopeVars,
+  ctx: EnvelopeSlotContext,
+): unknown => {
   if (node instanceof EnvelopeBuiltinSlot) {
     switch (node.kind) {
       case 'success':
@@ -84,11 +96,11 @@ const resolveRuntimeNode = (node: EnvelopeContent, vars: EnvelopeVars): unknown 
     }
   }
   if (node instanceof EnvelopeCustomSlot) {
-    return node.get(vars);
+    return node.get(vars, ctx);
   }
   const out: Record<string, unknown> = {};
   for (const [key, child] of Object.entries(node)) {
-    out[key] = resolveRuntimeNode(child, vars);
+    out[key] = resolveRuntimeNode(child, vars, ctx);
   }
   return out;
 };
@@ -127,7 +139,11 @@ export const applyResponseEnvelope = (
   res.removeHeader('Content-Type');
   // body 已变，原 ETag 不再对应写出内容
   res.removeHeader('ETag');
-  res.body = resolveRuntimeNode(options.content, vars) as Body;
+  res.body = resolveRuntimeNode(
+    options.content,
+    vars,
+    res.ctx as EnvelopeSlotContext,
+  ) as Body;
   res.statusCode = ENVELOPE_HTTP_STATUS;
 };
 
@@ -154,7 +170,7 @@ const resolveEnvelopePayload = (
  * 响应体套壳槽位（配置给 `WebApp.envelope`）。
  *
  * - 内置：`envelope.success` / `envelope.payload` / `envelope.statusCode`
- * - 自定义：`envelope.slot(schema, get)`，`get` 只读 `{ success, payload, statusCode }`
+ * - 自定义：`envelope.slot(schema, get)`，`get(vars, ctx)` 可读套壳变量与请求上下文
  *
  * ```ts
  * new WebApp({
@@ -164,6 +180,7 @@ const resolveEnvelopePayload = (
  *       statusCode: envelope.statusCode,
  *       data: envelope.payload,
  *       version: envelope.slot(rule.string(), () => '1.0'),
+ *       path: envelope.slot(rule.string(), (_vars, ctx) => ctx.request.pathname),
  *     },
  *   },
  *   mount: [formatError({ ... })],
@@ -179,11 +196,11 @@ export const envelope = {
   /** 套壳前的 HTTP 状态码（写出后仍固定为 200） */
   statusCode: new EnvelopeBuiltinSlot('statusCode'),
   /**
-   * 自定义槽位：`schema` 供 OpenAPI；`get(vars)` 供运行时取值。
-   * `vars` 仅含 `{ success, payload, statusCode }`，勿依赖其它上下文。
+   * 自定义槽位：`schema` 供 OpenAPI；`get(vars, ctx)` 供运行时取值。
+   * `vars` 为 `{ success, payload, statusCode }`；`ctx` 为 `WebContext & WebApp.Props`。
    */
   slot: <Schema extends ValidatorToken>(
     schema: Schema,
-    get: (vars: EnvelopeVars) => Validator.Infer<Schema>,
+    get: (vars: EnvelopeVars, ctx: EnvelopeSlotContext) => Validator.Infer<Schema>,
   ) => new EnvelopeCustomSlot(schema, get),
 };

@@ -107,6 +107,31 @@ describe('envelope runtime', () => {
     });
   });
 
+  test('envelope.slot 可读 ctx', async () => {
+    const app = new TestWebApp({
+      envelope: {
+        content: {
+          data: envelope.payload,
+          path: envelope.slot(rule.string(), (_vars, ctx) => ctx.request.pathname),
+          method: envelope.slot(rule.string(), (_vars, ctx) => ctx.request.method),
+        },
+      },
+      mount: [
+        middleware.web((ctx) => {
+          ctx.send({ ok: true });
+        }),
+      ],
+    });
+
+    const res = await get(app);
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      data: { ok: true },
+      path: '/',
+      method: 'GET',
+    });
+  });
+
   test('string body 可包', async () => {
     const app = new TestWebApp({
       envelope: {

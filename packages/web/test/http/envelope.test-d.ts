@@ -6,7 +6,10 @@ import {
   EnvelopeCustomSlot,
   type EnvelopeContent,
   type EnvelopeOptions,
+  type EnvelopeSlotContext,
   type EnvelopeVars,
+  type WebApp,
+  type WebContext,
 } from '../../src';
 
 // 内置槽位
@@ -19,16 +22,22 @@ import {
   expectType<TypeEqual<'statusCode', (typeof envelope.statusCode)['kind']>>(true);
 }
 
-// slot：get 入参为 EnvelopeVars，返回值对齐 schema
+// slot：get 入参为 EnvelopeVars + EnvelopeSlotContext，返回值对齐 schema
 {
-  const s = envelope.slot(rule.string(), (vars) => {
+  const s = envelope.slot(rule.string(), (vars, ctx) => {
     expectType<EnvelopeVars>(vars);
     expectType<boolean>(vars.success);
     expectType<object | string | null>(vars.payload);
     expectType<number>(vars.statusCode);
+    expectType<EnvelopeSlotContext>(ctx);
+    expectType<WebContext & WebApp.Props>(ctx);
+    expectType<string>(ctx.request.pathname);
     return '1.0';
   });
   expectType<EnvelopeCustomSlot<ReturnType<typeof rule.string>>>(s);
+
+  // 可省略第二参
+  envelope.slot(rule.string(), (vars) => String(vars.statusCode));
 
   // @ts-expect-error 返回值必须是 number
   envelope.slot(rule.number(), (vars) => String(vars.statusCode));
