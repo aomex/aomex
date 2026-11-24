@@ -34,7 +34,7 @@ test('socket：未封禁时入站正常', async () => {
   const { port } = await listenWebsocket(
     new TestWebApp(),
     {
-      mount: [await abuse.socket()],
+      mount: [abuse.socket()],
       channels: [channel],
     },
     slot,
@@ -60,7 +60,7 @@ test('socket：已封禁 IP 回推 error 且不进业务', async () => {
   const { port } = await listenWebsocket(
     new TestWebApp(),
     {
-      mount: [await abuse.socket()],
+      mount: [abuse.socket()],
       channels: [channel],
     },
     slot,
@@ -88,7 +88,7 @@ test('socket：errorMessage 可定制', async () => {
   const { port } = await listenWebsocket(
     new TestWebApp(),
     {
-      mount: [await abuse.socket({ errorMessage: 'custom-blocked' })],
+      mount: [abuse.socket({ errorMessage: 'custom-blocked' })],
       channels: [channel],
     },
     slot,
@@ -117,7 +117,7 @@ test('socket：bypass 跳过封禁检查', async () => {
   const { port } = await listenWebsocket(
     new TestWebApp(),
     {
-      mount: [await abuse.socket({ bypass: () => true })],
+      mount: [abuse.socket({ bypass: () => true })],
       channels: [channel],
     },
     slot,
@@ -135,7 +135,7 @@ test('socket：无 IP 时放行', async () => {
     strategies: [],
   });
   await abuse.blockIP('203.0.113.1', '1h');
-  const md = await abuse.socket();
+  const md = abuse.socket();
   let called = false;
   await md['fn'](
     {
@@ -169,7 +169,7 @@ test('web 与 socket 共用封禁态', async () => {
     },
   });
   // 直接跑中间件：模拟已封 IP
-  const md = await abuse.socket();
+  const md = abuse.socket();
   let called = false;
   await md['fn'](
     {
@@ -230,7 +230,7 @@ test('socket-events：命中蜜罐事件满额后封禁', async () => {
   const { port } = await listenWebsocket(
     new TestWebApp(),
     {
-      mount: [await abuse.socket()],
+      mount: [abuse.socket()],
       channels: [channel],
     },
     slot,
@@ -276,7 +276,7 @@ test('socket-events：未满额仍放行业务', async () => {
   const { port } = await listenWebsocket(
     new TestWebApp(),
     {
-      mount: [await abuse.socket()],
+      mount: [abuse.socket()],
       channels: [channel],
     },
     slot,
@@ -319,7 +319,7 @@ test('socket-events：未命中事件不计数', async () => {
   const { port } = await listenWebsocket(
     new TestWebApp(),
     {
-      mount: [await abuse.socket()],
+      mount: [abuse.socket()],
       channels: [channel],
     },
     slot,

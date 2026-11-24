@@ -96,7 +96,8 @@ const validateStrategies = (strategies: readonly AbuseStrategy[]) => {
  *   ],
  * });
  * app.mount([abuse.web()]);
- * ws.mount([await abuse.socket(), channels('./src/channels')]);
+ * // 须先 import '@aomex/websocket'，以注册 middleware.socket
+ * ws.mount([abuse.socket(), channels('./src/channels')]);
  * await abuse.ipAbuse(ip, 'logout-miss');
  * ```
  */
@@ -305,11 +306,8 @@ export const createAbuse = <const S extends readonly AbuseStrategy[]>(
     });
   };
 
-  const socket = async (
-    socketOptions: AbuseSocketOptions = {},
-  ): Promise<SocketMiddleware> => {
-    // 注册 middleware.socket；仅调用 .socket() 时才加载，HTTP-only 安装不强制依赖
-    await import('@aomex/websocket');
+  const socket = (socketOptions: AbuseSocketOptions = {}): SocketMiddleware => {
+    // 调用方须先 import '@aomex/websocket'，以注册 middleware.socket
     const socketBypass = socketOptions.bypass ?? (() => false);
     const blockedMessage = () => socketOptions.errorMessage || i18n.t('blocked');
 

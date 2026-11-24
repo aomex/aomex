@@ -230,13 +230,14 @@ export type AbuseService<
   web(options?: AbuseWebOptions): WebMiddleware;
   /**
    * WebSocket 入站中间件。挂在 `WebsocketApp.mount`。
-   * 仅做 IP 封禁检查；需安装 `@aomex/websocket`，运行时 `await import`。
+   * 调用前须 `import '@aomex/websocket'`（注册 `middleware.socket`）。
    *
    * ```ts
-   * mount: [await abuse.socket(), channels('./src/channels')]
+   * import '@aomex/websocket';
+   * mount: [abuse.socket(), channels('./src/channels')]
    * ```
    */
-  socket(options?: AbuseSocketOptions): Promise<SocketMiddleware>;
+  socket(options?: AbuseSocketOptions): SocketMiddleware;
 };
 
 type AbuseOnBanUser<S extends readonly AbuseStrategy[]> = (

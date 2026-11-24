@@ -94,8 +94,8 @@ expectType<WebMiddleware>(
 md.web({ blockedError: 'blocked' });
 // @ts-expect-error blockedError 须为 HttpError
 md.web({ blockedError: 403 });
-expectType<Promise<SocketMiddleware>>(md.socket());
-expectType<Promise<SocketMiddleware>>(
+expectType<SocketMiddleware>(md.socket());
+expectType<SocketMiddleware>(
   md.socket({
     bypass: (ctx) => {
       expectType<string>(ctx.event);
