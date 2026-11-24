@@ -3,29 +3,29 @@ import type { CacheAdapter } from '@aomex/cache';
 import { CacheMemoryAdapter } from '@aomex/cache/memory';
 import { HttpError, type WebMiddleware } from '@aomex/web';
 import type { SocketMiddleware } from '@aomex/websocket';
-import { createAbuse } from '../src';
+import { Abuse } from '../src';
 import type { AbuseApi, AbuseService, AbuseBlockStrategy } from '../src';
 
 const adapter: CacheAdapter = new CacheMemoryAdapter();
-createAbuse({ store: adapter, strategies: [] });
+new Abuse({ store: adapter, strategies: [] });
 // @ts-expect-error store 必须是 CacheAdapter
-createAbuse({ store: {}, strategies: [] });
+new Abuse({ store: {}, strategies: [] });
 // @ts-expect-error store 必填
-createAbuse({ strategies: [] });
-createAbuse({
+new Abuse({ strategies: [] });
+new Abuse({
   store: adapter,
   strategies: [],
-  // @ts-expect-error createAbuse 不再接受 blockedError
+  // @ts-expect-error Abuse 不再接受 blockedError
   blockedError: new HttpError(429, 'blocked'),
 });
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [],
-  // @ts-expect-error createAbuse 不再接受 bypass
+  // @ts-expect-error Abuse 不再接受 bypass
   bypass: () => true,
 });
 
-const md = createAbuse({
+const md = new Abuse({
   store: adapter,
   strategies: [
     {
@@ -139,7 +139,7 @@ api.ipAbuse('127.0.0.1', 'nope');
 // @ts-expect-error 不允许 boolean id
 api.userAbuse(true, 'order-probe');
 
-const noAbuse = createAbuse({
+const noAbuse = new Abuse({
   store: adapter,
   strategies: [
     {
@@ -157,7 +157,7 @@ const noAbuse = createAbuse({
 });
 expectType<AbuseService<never, never>>(noAbuse);
 
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [],
   onBlockIP: (_ip, reason, detail) => {
@@ -170,7 +170,7 @@ expectType<'honeypot' | 'http-error' | 'socket-events' | 'ip-abuse' | 'manual'>(
   null as unknown as AbuseBlockStrategy,
 );
 
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [
     {
@@ -186,7 +186,7 @@ createAbuse({
   },
 });
 
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [
     // @ts-expect-error socket-events 须配置 events
@@ -199,7 +199,7 @@ createAbuse({
   ],
 });
 
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [
     // @ts-expect-error honeypot 缺少 limit
@@ -207,7 +207,7 @@ createAbuse({
   ],
 });
 
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [
     // @ts-expect-error honeypot 须配置 paths
@@ -221,7 +221,7 @@ createAbuse({
   ],
 });
 
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [
     // @ts-expect-error honeypot 缺少 window
@@ -234,7 +234,7 @@ createAbuse({
   ],
 });
 
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [
     // @ts-expect-error http-error 缺少 window
@@ -247,7 +247,7 @@ createAbuse({
   ],
 });
 
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [
     {
@@ -261,7 +261,7 @@ createAbuse({
   ],
 });
 
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [
     // @ts-expect-error user-abuse 缺少 reason
@@ -271,7 +271,7 @@ createAbuse({
 });
 
 // @ts-expect-error 配置了 user-abuse 必须提供 onBanUser
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [
     {
@@ -283,7 +283,7 @@ createAbuse({
   ],
 });
 
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [
     {
@@ -298,7 +298,7 @@ createAbuse({
   onBanUser: () => {},
 });
 
-const numericReason = createAbuse({
+const numericReason = new Abuse({
   store: adapter,
   strategies: [
     {
@@ -336,7 +336,7 @@ enum AbuseName {
   Idor = 'idor',
 }
 
-const enumReason = createAbuse({
+const enumReason = new Abuse({
   store: adapter,
   strategies: [
     {
@@ -372,7 +372,7 @@ enumReason.userAbuse(1, AbuseName.Idor);
 // @ts-expect-error 裸 string 不能代替字符串枚举成员
 enumReason.userAbuse(1, 'order-probe');
 
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [
     {
@@ -386,7 +386,7 @@ createAbuse({
   ],
 });
 
-const onlyIpAbuse = createAbuse({
+const onlyIpAbuse = new Abuse({
   store: adapter,
   strategies: [
     {
@@ -406,7 +406,7 @@ onlyIpAbuse.ipAbuse('127.0.0.1', 'nope');
 // @ts-expect-error 无 user-abuse 时无 userAbuse reason
 onlyIpAbuse.userAbuse(1, 'order-probe');
 
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [
     // @ts-expect-error ip-abuse 缺少 blockFor
@@ -419,7 +419,7 @@ createAbuse({
   ],
 });
 
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [
     // @ts-expect-error ip-abuse 缺少 limit
@@ -432,7 +432,7 @@ createAbuse({
   ],
 });
 
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [
     // @ts-expect-error ip-abuse 缺少 window
@@ -445,7 +445,7 @@ createAbuse({
   ],
 });
 
-createAbuse({
+new Abuse({
   store: adapter,
   strategies: [
     {

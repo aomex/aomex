@@ -4,7 +4,7 @@ import { HttpError } from '@aomex/web';
 import { afterEach, expect, test, vitest } from 'vitest';
 import supertest from 'supertest';
 import { TestWebApp } from '../../web/src/testing';
-import { createAbuse } from '../src';
+import { Abuse } from '../src';
 
 afterEach(async () => {
   await internalDestroyServices([]);
@@ -14,7 +14,7 @@ test('honeypot 命中蜜罐路径后封禁 IP', async () => {
   const onBlockIP = vitest.fn();
   const app = new TestWebApp({
     mount: [
-      createAbuse({
+      new Abuse({
         store: new CacheMemoryAdapter(),
         strategies: [
           {
@@ -45,7 +45,7 @@ test('honeypot 命中蜜罐路径后封禁 IP', async () => {
 test('blockedError 可定制', async () => {
   const app = new TestWebApp({
     mount: [
-      createAbuse({
+      new Abuse({
         store: new CacheMemoryAdapter(),
         strategies: [
           {
@@ -71,7 +71,7 @@ test('blockedError 可定制', async () => {
 test('bypass 跳过探测与封禁检查', async () => {
   const app = new TestWebApp({
     mount: [
-      createAbuse({
+      new Abuse({
         store: new CacheMemoryAdapter(),
         strategies: [
           {
@@ -97,7 +97,7 @@ test('http-error 对 ctx.throw 累计满额后封禁', async () => {
   const onBlockIP = vitest.fn();
   const app = new TestWebApp({
     mount: [
-      createAbuse({
+      new Abuse({
         store: new CacheMemoryAdapter(),
         strategies: [
           {
@@ -133,7 +133,7 @@ test('http-error 对 ctx.send(4xx) 累计满额后封禁', async () => {
   const onBlockIP = vitest.fn();
   const app = new TestWebApp({
     mount: [
-      createAbuse({
+      new Abuse({
         store: new CacheMemoryAdapter(),
         strategies: [
           {
@@ -166,7 +166,7 @@ test('http-error 对 ctx.send(4xx) 累计满额后封禁', async () => {
 
 test('user-abuse 满额触发 onBanUser 且不自动封 IP', async () => {
   const onBanUser = vitest.fn();
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [
       {
@@ -205,7 +205,7 @@ test('onBanUser 失败后释放 hook，同窗口可重试', async () => {
     .fn()
     .mockRejectedValueOnce(new Error('db down'))
     .mockResolvedValueOnce(undefined);
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [
       {
@@ -228,7 +228,7 @@ test('onBanUser 失败后释放 hook，同窗口可重试', async () => {
 test('计数 key 无 TTL 时后续 bump 会补设窗口', async () => {
   const onBanUser = vitest.fn();
   const store = new CacheMemoryAdapter();
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store,
     strategies: [
       {
@@ -261,7 +261,7 @@ test('计数 key 无 TTL 时后续 bump 会补设窗口', async () => {
 
 test('user-abuse 支持 number reason', async () => {
   const onBanUser = vitest.fn();
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [
       {
@@ -286,7 +286,7 @@ test('user-abuse 支持 number reason', async () => {
 
 test('返回值可在 service 中直接 userAbuse，无需 ctx', async () => {
   const onBanUser = vitest.fn();
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [
       {
@@ -313,7 +313,7 @@ test('honeypot / http-error 未满额不封，满额才 onBlockIP', async () => 
   const onBlockIP = vitest.fn();
   const onBanUser = vitest.fn();
 
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [
       {
@@ -423,7 +423,7 @@ test('honeypot / http-error 未满额不封，满额才 onBlockIP', async () => 
 
 test('ip-abuse 满额封禁 IP（logout miss 等场景）', async () => {
   const onBlockIP = vitest.fn();
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [
       {
@@ -476,7 +476,7 @@ test('ip-abuse 满额封禁 IP（logout miss 等场景）', async () => {
 });
 
 test('未知 ip-abuse reason 抛错', async () => {
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [
       {
@@ -496,7 +496,7 @@ test('未知 ip-abuse reason 抛错', async () => {
 
 test('手动 blockIP / isIPBlocked / unblockIP', async () => {
   const onBlockIP = vitest.fn();
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [],
     onBlockIP,
@@ -535,7 +535,7 @@ test('手动 blockIP / isIPBlocked / unblockIP', async () => {
 test('并发 blockIP / userAbuse 钩子只触发一次', async () => {
   const onBlockIP = vitest.fn();
   const onBanUser = vitest.fn();
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [
       {
@@ -567,39 +567,41 @@ test('并发 blockIP / userAbuse 钩子只触发一次', async () => {
 });
 
 test('honeypot 空 paths / http-error 空 statusCodes 创建即抛错', () => {
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'honeypot',
-          paths: [],
-          limit: 1,
-          window: 60_000,
-          blockFor: 60_000,
-        },
-      ],
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'honeypot',
+            paths: [],
+            limit: 1,
+            window: 60_000,
+            blockFor: 60_000,
+          },
+        ],
+      }),
   ).toThrow(/paths 不能为空/);
 
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'http-error',
-          statusCodes: [],
-          limit: 1,
-          window: 60_000,
-          blockFor: 60_000,
-        },
-      ],
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'http-error',
+            statusCodes: [],
+            limit: 1,
+            window: 60_000,
+            blockFor: 60_000,
+          },
+        ],
+      }),
   ).toThrow(/statusCodes 不能为空/);
 });
 
 test('bypass 不检查封禁，API 仍可 block/unblock', async () => {
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [],
   });
@@ -627,7 +629,7 @@ test('http-error 可按 methods 过滤', async () => {
   const onBlockIP = vitest.fn();
   const app = new TestWebApp({
     mount: [
-      createAbuse({
+      new Abuse({
         store: new CacheMemoryAdapter(),
         strategies: [
           {
@@ -657,7 +659,7 @@ test('http-error 可按 methods 过滤', async () => {
 test('honeypot 配置 methods+paths 时需同时满足', async () => {
   const app = new TestWebApp({
     mount: [
-      createAbuse({
+      new Abuse({
         store: new CacheMemoryAdapter(),
         strategies: [
           {
@@ -685,7 +687,7 @@ test('http-error 可按 paths 过滤', async () => {
   const onBlockIP = vitest.fn();
   const app = new TestWebApp({
     mount: [
-      createAbuse({
+      new Abuse({
         store: new CacheMemoryAdapter(),
         strategies: [
           {
@@ -719,7 +721,7 @@ test('http-error 可按 paths 过滤', async () => {
 
 test('http-error 未匹配的 throw 状态码不计入', async () => {
   const onBlockIP = vitest.fn();
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [
       {
@@ -747,148 +749,157 @@ test('http-error 未匹配的 throw 状态码不计入', async () => {
 });
 
 test('配置了 user-abuse 但未提供 onBanUser 时创建即抛错', () => {
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'user-abuse',
-          reason: 'order-probe',
-          limit: 3,
-          window: 60_000,
-        },
-      ],
-      // 运行时绕过类型约束
-      onBanUser: undefined as unknown as () => void,
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'user-abuse',
+            reason: 'order-probe',
+            limit: 3,
+            window: 60_000,
+          },
+        ],
+        // 运行时绕过类型约束
+        onBanUser: undefined as unknown as () => void,
+      }),
   ).toThrow(/必须提供 onBanUser/);
 });
 
 test('limit / window / blockFor / banFor <= 0 创建即抛错', () => {
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'honeypot',
-          paths: ['/.env'],
-          limit: 0,
-          window: 60_000,
-          blockFor: 60_000,
-        },
-      ],
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'honeypot',
+            paths: ['/.env'],
+            limit: 0,
+            window: 60_000,
+            blockFor: 60_000,
+          },
+        ],
+      }),
   ).toThrow(/limit 必须为正整数/);
 
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'http-error',
-          statusCodes: [404],
-          limit: -1,
-          window: 60_000,
-          blockFor: 60_000,
-        },
-      ],
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'http-error',
+            statusCodes: [404],
+            limit: -1,
+            window: 60_000,
+            blockFor: 60_000,
+          },
+        ],
+      }),
   ).toThrow(/limit 必须为正整数/);
 
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'honeypot',
-          paths: ['/.env'],
-          limit: 0.5,
-          window: 60_000,
-          blockFor: 60_000,
-        },
-      ],
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'honeypot',
+            paths: ['/.env'],
+            limit: 0.5,
+            window: 60_000,
+            blockFor: 60_000,
+          },
+        ],
+      }),
   ).toThrow(/limit 必须为正整数/);
 
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'ip-abuse',
-          reason: 'logout-miss',
-          limit: 3,
-          window: 0,
-          blockFor: 60_000,
-        },
-      ],
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'ip-abuse',
+            reason: 'logout-miss',
+            limit: 3,
+            window: 0,
+            blockFor: 60_000,
+          },
+        ],
+      }),
   ).toThrow(/window 必须为正数/);
 
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'user-abuse',
-          reason: 'order-probe',
-          limit: 3,
-          window: '0ms',
-        },
-      ],
-      onBanUser: () => {},
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'user-abuse',
+            reason: 'order-probe',
+            limit: 3,
+            window: '0ms',
+          },
+        ],
+        onBanUser: () => {},
+      }),
   ).toThrow(/window 必须为正数/);
 
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'honeypot',
-          paths: ['/.env'],
-          limit: 1,
-          window: 0,
-          blockFor: 60_000,
-        },
-      ],
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'honeypot',
+            paths: ['/.env'],
+            limit: 1,
+            window: 0,
+            blockFor: 60_000,
+          },
+        ],
+      }),
   ).toThrow(/window 必须为正数/);
 
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'honeypot',
-          paths: ['/.env'],
-          limit: 1,
-          window: 60_000,
-          blockFor: 0,
-        },
-      ],
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'honeypot',
+            paths: ['/.env'],
+            limit: 1,
+            window: 60_000,
+            blockFor: 0,
+          },
+        ],
+      }),
   ).toThrow(/blockFor 必须为正数/);
 
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'user-abuse',
-          reason: 'order-probe',
-          limit: 3,
-          window: 60_000,
-          banFor: '0ms',
-        },
-      ],
-      onBanUser: () => {},
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'user-abuse',
+            reason: 'order-probe',
+            limit: 3,
+            window: 60_000,
+            banFor: '0ms',
+          },
+        ],
+        onBanUser: () => {},
+      }),
   ).toThrow(/banFor 必须为正数/);
 });
 
 test('blockIP 时长 <= 0 抛错', async () => {
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [],
   });
@@ -896,99 +907,103 @@ test('blockIP 时长 <= 0 抛错', async () => {
 });
 
 test('重复的 user-abuse / ip-abuse reason 创建即抛错', () => {
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'user-abuse',
-          reason: 'order-probe',
-          limit: 3,
-          window: 60_000,
-        },
-        {
-          strategy: 'user-abuse',
-          reason: 'order-probe',
-          limit: 5,
-          window: 60_000,
-        },
-      ],
-      onBanUser: () => {},
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'user-abuse',
+            reason: 'order-probe',
+            limit: 3,
+            window: 60_000,
+          },
+          {
+            strategy: 'user-abuse',
+            reason: 'order-probe',
+            limit: 5,
+            window: 60_000,
+          },
+        ],
+        onBanUser: () => {},
+      }),
   ).toThrow(/重复的用户滥用原因/);
 
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'ip-abuse',
-          reason: 'logout-miss',
-          limit: 3,
-          window: 60_000,
-          blockFor: 60_000,
-        },
-        {
-          strategy: 'ip-abuse',
-          reason: 'logout-miss',
-          limit: 5,
-          window: 60_000,
-          blockFor: 60_000,
-        },
-      ],
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'ip-abuse',
+            reason: 'logout-miss',
+            limit: 3,
+            window: 60_000,
+            blockFor: 60_000,
+          },
+          {
+            strategy: 'ip-abuse',
+            reason: 'logout-miss',
+            limit: 5,
+            window: 60_000,
+            blockFor: 60_000,
+          },
+        ],
+      }),
   ).toThrow(/重复的 IP 滥用原因/);
 });
 
 test('user-abuse 与 ip-abuse 可共用同一 reason 字符串', () => {
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'user-abuse',
-          reason: 'shared',
-          limit: 3,
-          window: 60_000,
-        },
-        {
-          strategy: 'ip-abuse',
-          reason: 'shared',
-          limit: 3,
-          window: 60_000,
-          blockFor: 60_000,
-        },
-      ],
-      onBanUser: () => {},
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'user-abuse',
+            reason: 'shared',
+            limit: 3,
+            window: 60_000,
+          },
+          {
+            strategy: 'ip-abuse',
+            reason: 'shared',
+            limit: 3,
+            window: 60_000,
+            blockFor: 60_000,
+          },
+        ],
+        onBanUser: () => {},
+      }),
   ).not.toThrow();
 });
 
 test('user-abuse 数字与同形字符串 reason 视为重复', () => {
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'user-abuse',
-          reason: 1001,
-          limit: 3,
-          window: 60_000,
-        },
-        {
-          strategy: 'user-abuse',
-          reason: '1001',
-          limit: 5,
-          window: 60_000,
-        },
-      ],
-      onBanUser: () => {},
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'user-abuse',
+            reason: 1001,
+            limit: 3,
+            window: 60_000,
+          },
+          {
+            strategy: 'user-abuse',
+            reason: '1001',
+            limit: 5,
+            window: 60_000,
+          },
+        ],
+        onBanUser: () => {},
+      }),
   ).toThrow(/重复的用户滥用原因/);
 });
 
 test('未知 user-abuse reason 抛错', async () => {
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [
       {
@@ -1008,7 +1023,7 @@ test('未知 user-abuse reason 抛错', async () => {
 
 test('onBlockIP 抛错时封禁仍生效，蜜罐当次不走 throwBlocked', async () => {
   const onBlockIP = vitest.fn().mockRejectedValue(new Error('notify fail'));
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [
       {
@@ -1039,7 +1054,7 @@ test('onBlockIP 抛错时封禁仍生效，蜜罐当次不走 throwBlocked', asy
 
 test('ipAbuse 使用的 IP 须与 ctx.request.ip 一致才会拦截请求', async () => {
   const onBlockIP = vitest.fn();
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [
       {
@@ -1073,7 +1088,7 @@ test('ipAbuse 使用的 IP 须与 ctx.request.ip 一致才会拦截请求', asyn
 
 test('ip-abuse 支持 number reason；数字与同形字符串视为重复', async () => {
   const onBlockIP = vitest.fn();
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [
       {
@@ -1097,32 +1112,33 @@ test('ip-abuse 支持 number reason；数字与同形字符串视为重复', asy
     blockFor: expect.any(Number),
   });
 
-  expect(() =>
-    createAbuse({
-      store: new CacheMemoryAdapter(),
-      strategies: [
-        {
-          strategy: 'ip-abuse',
-          reason: 1001,
-          limit: 3,
-          window: 60_000,
-          blockFor: 60_000,
-        },
-        {
-          strategy: 'ip-abuse',
-          reason: '1001',
-          limit: 5,
-          window: 60_000,
-          blockFor: 60_000,
-        },
-      ],
-    }),
+  expect(
+    () =>
+      new Abuse({
+        store: new CacheMemoryAdapter(),
+        strategies: [
+          {
+            strategy: 'ip-abuse',
+            reason: 1001,
+            limit: 3,
+            window: 60_000,
+            blockFor: 60_000,
+          },
+          {
+            strategy: 'ip-abuse',
+            reason: '1001',
+            limit: 5,
+            window: 60_000,
+            blockFor: 60_000,
+          },
+        ],
+      }),
   ).toThrow(/重复的 IP 滥用原因/);
 });
 
 test('并发 ipAbuse 满额时 onBlockIP 只触发一次', async () => {
   const onBlockIP = vitest.fn();
-  const abuse = createAbuse({
+  const abuse = new Abuse({
     store: new CacheMemoryAdapter(),
     strategies: [
       {
@@ -1160,7 +1176,7 @@ test('abuse 首次使用时才登记适配器生命周期', async () => {
     }
   }
 
-  const abuse = createAbuse({ store: new TrackingAdapter(), strategies: [] });
+  const abuse = new Abuse({ store: new TrackingAdapter(), strategies: [] });
   expect(order).toEqual([]);
   expect(await abuse.isIPBlocked('203.0.113.1')).toBe(false);
   expect(order).toEqual(['init']);

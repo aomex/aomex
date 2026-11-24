@@ -1,11 +1,13 @@
+import { CacheMemoryAdapter } from '@aomex/cache/memory';
 import { expect, test } from 'vitest';
-import {
-  matchAnyEvent,
-  matchAnyPath,
-  matchEvent,
-  matchMethod,
-  matchPath,
-} from '../src/match';
+import { Abuse } from '../src';
+
+const abuse = new Abuse({ store: new CacheMemoryAdapter(), strategies: [] });
+const matchPath = abuse['matchPath'].bind(abuse);
+const matchAnyPath = abuse['matchAnyPath'].bind(abuse);
+const matchMethod = abuse['matchMethod'].bind(abuse);
+const matchEvent = abuse['matchEvent'].bind(abuse);
+const matchAnyEvent = abuse['matchAnyEvent'].bind(abuse);
 
 test('精确路径：完全相等才命中', () => {
   expect(matchPath('/.env', '', '/.env')).toBe(true);

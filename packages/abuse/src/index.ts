@@ -1,4 +1,4 @@
-export { createAbuse } from './abuse';
+export { Abuse } from './abuse';
 export type {
   AbuseApi,
   AbuseBlockDetail,

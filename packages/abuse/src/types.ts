@@ -212,7 +212,7 @@ export type AbuseSocketOptions = {
 };
 
 /**
- * `createAbuse()` 返回值：上报 API + `.web()` / `.socket()` 适配器。
+ * `Abuse` 实例的公开形状：上报 API + `.web()` / `.socket()` 适配器。
  * 不挂 `ctx`；HTTP / WebSocket 共用同一封禁态与 API。
  */
 export type AbuseService<
