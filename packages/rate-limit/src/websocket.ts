@@ -27,8 +27,7 @@ export interface WebsocketRateLimitOptions {
   maxRequest?: number;
   /**
    * 身份。返回 `false` 表示这条消息不限速。
-   * 默认：握手请求的 IP；没有 IP 时用 `ctx.client.id`。
-   * 同一 IP 上的多条连接共享配额。
+   * 默认：`ctx.client.request.ip`。同一 IP 上的多条连接共享配额。
    */
   id?: (ctx: WebsocketContext) => string | false;
   /**
@@ -69,7 +68,7 @@ export const websocketRateLimit = (options: WebsocketRateLimitOptions = {}) => {
   const {
     store = new RateLimitMemoryStore(),
     maxRequest = 2500,
-    id: getId = (ctx) => ctx.client.request?.ip || ctx.client.id,
+    id: getId = (ctx) => ctx.client.request.ip,
     denyList = () => false,
     allowList = () => false,
   } = options;

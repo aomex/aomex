@@ -32,9 +32,9 @@ export interface WebsocketTransport {
   readonly id: string;
   /**
    * 升级时的请求（{@link BaseWebRequest}），供业务读 Cookie / Query / IP。
-   * 对应 `ctx.client.request`。
+   * 对应 `ctx.client.request`；连上即有。
    */
-  readonly request?: BaseWebRequest;
+  readonly request: BaseWebRequest;
   /** 向该连接推送 `{ event, data }`（可为异步） */
   send(event: string, data: unknown): void | Promise<void>;
 

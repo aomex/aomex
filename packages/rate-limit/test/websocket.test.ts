@@ -24,14 +24,13 @@ afterEach(async () => {
   await internalDestroyServices([]);
 });
 
-const fakeCtx = (options: { id?: string; ip?: string | null } = {}) => {
+const fakeCtx = (options: { id?: string; ip?: string } = {}) => {
   const sent: Array<{ event: string; data: unknown }> = [];
-  const request = options.ip === null ? undefined : { ip: options.ip ?? '203.0.113.1' };
   const ctx = {
     event: 'ping',
     client: {
       id: options.id ?? 'c1',
-      request,
+      request: { ip: options.ip ?? '203.0.113.1' },
       send: async (event: string, data?: unknown) => {
         sent.push({ event, data });
       },
@@ -72,21 +71,6 @@ test('不同 IP 各自计数；同一 IP 的不同连接共享配额', async () 
   await expect(run(options, a.ctx)).resolves.toBe(true);
   await expect(run(options, b.ctx)).resolves.toBe(true);
   await expect(run(options, sameIp.ctx)).resolves.toBe(false);
-});
-
-test('没有 IP 时按连接 id 计数', async () => {
-  const store = new RateLimitMemoryStore();
-  const options = { store, maxRequest: 1, duration: 60_000 };
-  const first = fakeCtx({ id: 'c1', ip: null });
-  const other = fakeCtx({ id: 'c2', ip: null });
-  const again = fakeCtx({ id: 'c1', ip: '' });
-
-  await expect(run(options, first.ctx)).resolves.toBe(true);
-  await expect(run(options, other.ctx)).resolves.toBe(true);
-  await expect(run(options, again.ctx)).resolves.toBe(false);
-  expect(again.sent).toEqual([
-    { event: 'error', data: { message: i18n.t('too_many_requests') } },
-  ]);
 });
 
 test('id 返回 false 或命中白名单时不计数', async () => {

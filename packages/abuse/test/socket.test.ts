@@ -129,31 +129,6 @@ test('socket：bypass 跳过封禁检查', async () => {
   ws.close();
 });
 
-test('socket：无 IP 时放行', async () => {
-  const abuse = createAbuse({
-    store: new CacheMemoryAdapter(),
-    strategies: [],
-  });
-  await abuse.blockIP('203.0.113.1', '1h');
-  const md = abuse.socket();
-  let called = false;
-  await md['fn'](
-    {
-      event: 'ping',
-      client: {
-        id: 'c1',
-        request: undefined,
-        send: async () => {},
-        data: {},
-      },
-    } as any,
-    async () => {
-      called = true;
-    },
-  );
-  expect(called).toBe(true);
-});
-
 test('web 与 socket 共用封禁态', async () => {
   const abuse = createAbuse({
     store: new CacheMemoryAdapter(),

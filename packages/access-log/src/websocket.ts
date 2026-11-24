@@ -95,7 +95,7 @@ export const websocketAccessLog = (options: WebsocketAccessLogOptions = {}) => {
             message: format,
             tokens,
             startTime: start,
-            ip: ctx.client.request?.ip ?? '',
+            ip: ctx.client.request.ip,
             clientId: ctx.client.id,
             event: ctx.event,
           }),

@@ -1037,46 +1037,6 @@ test('onBlockIP 抛错时封禁仍生效，蜜罐当次不走 throwBlocked', asy
   await agent.get('/').expect(403);
 });
 
-test('request.ip 为空时跳过封禁与探测', async () => {
-  const onBlockIP = vitest.fn();
-  const abuse = createAbuse({
-    store: new CacheMemoryAdapter(),
-    strategies: [
-      {
-        strategy: 'honeypot',
-        paths: ['/.env'],
-        limit: 1,
-        window: 60_000,
-        blockFor: 60_000,
-      },
-    ],
-    onBlockIP,
-  });
-  const app = new TestWebApp({
-    mount: [
-      middleware.web(async (ctx, next) => {
-        Object.defineProperty(ctx.request, 'ip', {
-          configurable: true,
-          get: () => '',
-        });
-        await next();
-      }),
-      abuse.web(),
-      middleware.web((ctx) => {
-        ctx.send(200);
-      }),
-    ],
-  });
-
-  await abuse.blockIP('', 60_000);
-  expect(onBlockIP).toHaveBeenCalledTimes(1);
-
-  const agent = supertest(app.listen());
-  await agent.get('/.env').expect(200);
-  await agent.get('/').expect(200);
-  expect(onBlockIP).toHaveBeenCalledTimes(1);
-});
-
 test('ipAbuse 使用的 IP 须与 ctx.request.ip 一致才会拦截请求', async () => {
   const onBlockIP = vitest.fn();
   const abuse = createAbuse({

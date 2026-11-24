@@ -57,13 +57,12 @@ afterAll(() => {
   hrtimeSpy.mockRestore();
 });
 
-const fakeCtx = (options: { id?: string; ip?: string | null; event?: string } = {}) => {
-  const request = options.ip === null ? undefined : { ip: options.ip ?? '203.0.113.1' };
+const fakeCtx = (options: { id?: string; ip?: string; event?: string } = {}) => {
   return {
     event: options.event ?? 'ping',
     client: {
       id: options.id ?? 'c1',
-      request,
+      request: { ip: options.ip ?? '203.0.113.1' },
       data: {},
       send: async () => {},
     },
@@ -85,7 +84,7 @@ test('打印入站日志', async () => {
 });
 
 test('没有 IP 时记为 -', async () => {
-  await run({ transports }, fakeCtx({ ip: null }));
+  await run({ transports }, fakeCtx({ ip: '' }));
   await sleep(100);
   expect(msgs).toEqual(['[info] 2024-06-04 11:23:12 - c1 ping 1s']);
 });

@@ -831,7 +831,7 @@ test('client.data 与 rooms / request 可用', async () => {
       ctx.client.send('ok', {
         userId: ctx.client.data['userId'],
         rooms: [...(await ctx.client.getRooms())],
-        hasRequest: !!ctx.client.request,
+        ip: ctx.client.request.ip,
       });
     },
   });
@@ -841,9 +841,9 @@ test('client.data 与 rooms / request 可用', async () => {
   send(ws, 'auth', { userId: 'u1' });
   const msg = await recv(ws);
   expect(msg.event).toBe('ok');
-  const data = msg.data as { userId: string; rooms: string[]; hasRequest: boolean };
+  const data = msg.data as { userId: string; rooms: string[]; ip: string };
   expect(data.userId).toBe('u1');
-  expect(data.hasRequest).toBe(true);
+  expect(data.ip).toBeTruthy();
   expect(data.rooms).toContain('vip');
   expect(data.rooms.length).toBeGreaterThanOrEqual(2);
   ws.close();

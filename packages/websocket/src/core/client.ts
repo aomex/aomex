@@ -61,14 +61,14 @@ export class WebsocketClient {
   }
 
   /**
-   * 升级时的请求（{@link BaseWebRequest}），可读 Cookie、Query、IP 等。
+   * 升级时的请求（{@link BaseWebRequest}），可读 Cookie、Query、IP 等。连上即有。
    *
    * ```ts
-   * const sid = ctx.client.request?.cookies['sid'];
-   * const ip = ctx.client.request?.ip;
+   * const sid = ctx.client.request.cookies['sid'];
+   * const ip = ctx.client.request.ip;
    * ```
    */
-  get request(): BaseWebRequest | undefined {
+  get request(): BaseWebRequest {
     return this.transport.request;
   }
 

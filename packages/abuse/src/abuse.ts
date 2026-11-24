@@ -242,7 +242,6 @@ export const createAbuse = <const S extends readonly AbuseStrategy[]>(
       if (await bypass(ctx)) return next();
 
       const ip = ctx.request.ip;
-      if (!ip) return next();
 
       if (await caching.exists(getBlockKey(ip))) {
         return throwBlocked(ctx);
@@ -315,8 +314,7 @@ export const createAbuse = <const S extends readonly AbuseStrategy[]>(
       await ensureReady();
       if (await socketBypass(ctx)) return next();
 
-      const ip = ctx.client.request?.ip;
-      if (!ip) return next();
+      const ip = ctx.client.request.ip;
 
       if (await caching.exists(getBlockKey(ip))) {
         await ctx.client.send('error', { message: blockedMessage() });

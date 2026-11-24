@@ -11,8 +11,8 @@ const options = {
   id: (ctx) => {
     expectType<string>(ctx.client.id);
     expectType<string>(ctx.event);
-    expectType<string | undefined>(ctx.client.request?.ip);
-    return ctx.client.request?.ip || false;
+    expectType<string>(ctx.client.request.ip);
+    return ctx.client.request.ip || false;
   },
   allowList: async (ctx) => ctx.event === 'ping',
   denyList: (ctx) => ctx.client.id === 'ops',

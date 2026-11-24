@@ -55,6 +55,7 @@ function fakeTransport(
   const calls = { close: 0 };
   const transport: WebsocketTransport = {
     id,
+    request: { ip: '' } as WebsocketTransport['request'],
     send() {},
     close() {
       calls.close += 1;
