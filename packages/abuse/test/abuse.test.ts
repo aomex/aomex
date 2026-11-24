@@ -26,7 +26,7 @@ test('honeypot 命中蜜罐路径后封禁 IP', async () => {
           },
         ],
         onBlockIP,
-      }),
+      }).web(),
       middleware.web((ctx) => {
         ctx.send(200);
       }),
@@ -47,9 +47,6 @@ test('blockedError 可定制', async () => {
     mount: [
       createAbuse({
         store: new CacheMemoryAdapter(),
-        blockedError: new HttpError(429, 'too many probes', {
-          code: 'BLOCKED',
-        }),
         strategies: [
           {
             strategy: 'honeypot',
@@ -59,6 +56,10 @@ test('blockedError 可定制', async () => {
             blockFor: 60_000,
           },
         ],
+      }).web({
+        blockedError: new HttpError(429, 'too many probes', {
+          code: 'BLOCKED',
+        }),
       }),
     ],
   });
@@ -72,7 +73,6 @@ test('bypass 跳过探测与封禁检查', async () => {
     mount: [
       createAbuse({
         store: new CacheMemoryAdapter(),
-        bypass: () => true,
         strategies: [
           {
             strategy: 'honeypot',
@@ -82,7 +82,7 @@ test('bypass 跳过探测与封禁检查', async () => {
             blockFor: 60_000,
           },
         ],
-      }),
+      }).web({ bypass: () => true }),
       middleware.web((ctx) => {
         ctx.send(200);
       }),
@@ -109,7 +109,7 @@ test('http-error 对 ctx.throw 累计满额后封禁', async () => {
           },
         ],
         onBlockIP,
-      }),
+      }).web(),
       middleware.web((ctx) => {
         ctx.throw(404);
       }),
@@ -145,7 +145,7 @@ test('http-error 对 ctx.send(4xx) 累计满额后封禁', async () => {
           },
         ],
         onBlockIP,
-      }),
+      }).web(),
       middleware.web((ctx) => {
         ctx.send(404, 'missing');
       }),
@@ -181,7 +181,7 @@ test('user-abuse 满额触发 onBanUser 且不自动封 IP', async () => {
   });
   const app = new TestWebApp({
     mount: [
-      abuse,
+      abuse.web(),
       middleware.web((ctx) => {
         ctx.send(200);
       }),
@@ -343,7 +343,7 @@ test('honeypot / http-error 未满额不封，满额才 onBlockIP', async () => 
 
   const app = new TestWebApp({
     mount: [
-      abuse,
+      abuse.web(),
       middleware.web((ctx) => {
         if (ctx.request.pathname === '/.env') {
           ctx.send(200);
@@ -438,7 +438,7 @@ test('ip-abuse 满额封禁 IP（logout miss 等场景）', async () => {
   });
   const app = new TestWebApp({
     mount: [
-      abuse,
+      abuse.web(),
       middleware.web((ctx) => {
         ctx.send(204);
       }),
@@ -503,7 +503,7 @@ test('手动 blockIP / isIPBlocked / unblockIP', async () => {
   });
   const app = new TestWebApp({
     mount: [
-      abuse,
+      abuse.web(),
       middleware.web((ctx) => {
         ctx.send(200);
       }),
@@ -601,12 +601,13 @@ test('honeypot 空 paths / http-error 空 statusCodes 创建即抛错', () => {
 test('bypass 不检查封禁，API 仍可 block/unblock', async () => {
   const abuse = createAbuse({
     store: new CacheMemoryAdapter(),
-    bypass: (ctx) => ctx.request.pathname.startsWith('/ops'),
     strategies: [],
   });
   const app = new TestWebApp({
     mount: [
-      abuse,
+      abuse.web({
+        bypass: (ctx) => ctx.request.pathname.startsWith('/ops'),
+      }),
       middleware.web((ctx) => {
         ctx.send(200);
       }),
@@ -639,7 +640,7 @@ test('http-error 可按 methods 过滤', async () => {
           },
         ],
         onBlockIP,
-      }),
+      }).web(),
       middleware.web((ctx) => {
         ctx.throw(404);
       }),
@@ -668,7 +669,7 @@ test('honeypot 配置 methods+paths 时需同时满足', async () => {
             blockFor: 60_000,
           },
         ],
-      }),
+      }).web(),
       middleware.web((ctx) => {
         ctx.send(200);
       }),
@@ -697,7 +698,7 @@ test('http-error 可按 paths 过滤', async () => {
           },
         ],
         onBlockIP,
-      }),
+      }).web(),
       middleware.web((ctx) => {
         ctx.throw(404);
       }),
@@ -733,7 +734,7 @@ test('http-error 未匹配的 throw 状态码不计入', async () => {
   });
   const app = new TestWebApp({
     mount: [
-      abuse,
+      abuse.web(),
       middleware.web((ctx) => {
         ctx.throw(400);
       }),
@@ -1022,7 +1023,7 @@ test('onBlockIP 抛错时封禁仍生效，蜜罐当次不走 throwBlocked', asy
   });
   const app = new TestWebApp({
     mount: [
-      abuse,
+      abuse.web(),
       middleware.web((ctx) => {
         ctx.send(200);
       }),
@@ -1060,7 +1061,7 @@ test('request.ip 为空时跳过封禁与探测', async () => {
         });
         await next();
       }),
-      abuse,
+      abuse.web(),
       middleware.web((ctx) => {
         ctx.send(200);
       }),
@@ -1093,7 +1094,7 @@ test('ipAbuse 使用的 IP 须与 ctx.request.ip 一致才会拦截请求', asyn
   });
   const app = new TestWebApp({
     mount: [
-      abuse,
+      abuse.web(),
       middleware.web((ctx) => {
         ctx.send(204);
       }),

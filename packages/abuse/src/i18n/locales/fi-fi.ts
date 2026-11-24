@@ -15,4 +15,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banForin on oltava positiivinen kesto, saatu: {{banFor}}',
   empty_honeypot_paths: 'honeypot-strategian paths ei voi olla tyhjä',
   empty_http_error_status_codes: 'http-error-strategian statusCodes ei voi olla tyhjä',
+  empty_socket_events: 'socket-events-strategian events ei voi olla tyhjä',
+  blocked: 'Pääsy estetty',
 });

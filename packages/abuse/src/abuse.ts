@@ -1,17 +1,21 @@
 import { CacheKey, Caching } from '@aomex/cache';
 import { middleware, parseDuration, registerLifecycle } from '@aomex/common';
 import { HttpError, type WebContext } from '@aomex/web';
+import type { SocketMiddleware, WebsocketContext } from '@aomex/websocket';
 import { i18n } from './i18n';
-import { matchAnyPath, matchMethod } from './match';
+import { matchAnyEvent, matchAnyPath, matchMethod } from './match';
 import type {
   AbuseApi,
   AbuseBlockStrategy,
   AbuseHoneypotStrategy,
   AbuseHttpErrorStrategy,
   AbuseIpAbuseStrategy,
-  AbuseMiddleware,
   AbuseOptions,
+  AbuseService,
+  AbuseSocketEventsStrategy,
+  AbuseSocketOptions,
   AbuseStrategy,
+  AbuseWebOptions,
   AbuseUserAbuseStrategy,
   InferIpAbuseReasons,
   InferUserAbuseReasons,
@@ -39,6 +43,10 @@ const validateStrategies = (strategies: readonly AbuseStrategy[]) => {
     } else if (item.strategy === 'http-error') {
       if (item.statusCodes.length === 0) {
         throw new Error(i18n.t('empty_http_error_status_codes'));
+      }
+    } else if (item.strategy === 'socket-events') {
+      if (item.events.length === 0) {
+        throw new Error(i18n.t('empty_socket_events'));
       }
     }
     if (item.strategy === 'user-abuse') {
@@ -74,32 +82,32 @@ const validateStrategies = (strategies: readonly AbuseStrategy[]) => {
 /**
  * 蜜罐路径 / 错误累计 / 业务滥用计数。
  *
- * - `honeypot` / `http-error`：按请求匹配计数，满额封 IP
+ * - `honeypot` / `http-error`：仅 `.web()` 按请求匹配计数，满额封 IP
+ * - `socket-events`：仅 `.socket()` 按事件名蜜罐计数，满额封 IP
  * - `ip-abuse`：业务上报 IP 滥用（如 logout token 未命中），满额封 IP
  * - `user-abuse`：业务上报，满额只触发 `onBanUser`（账号封禁由业务写库）
  *
- * 返回值既是中间件，也带 API（不挂到 `ctx`）：
+ * 返回值是服务（API + `.web()` / `.socket()`），不挂到 `ctx`：
  * ```ts
- * const abuse = createAbuse({ store, strategies });
- * app.mount([abuse]);
- * await abuse.ipAbuse(ip, 'logout-miss'); // 路由内上报
- * await abuse.userAbuse(userId, 'order-probe');
+ * const abuse = createAbuse({
+ *   store,
+ *   strategies: [
+ *     { strategy: 'socket-events', events: ['admin.destroy'], limit: 1, window: '1h', blockFor: '1d' },
+ *   ],
+ * });
+ * app.mount([abuse.web()]);
+ * ws.mount([await abuse.socket(), channels('./src/channels')]);
+ * await abuse.ipAbuse(ip, 'logout-miss');
  * ```
  */
 export const createAbuse = <const S extends readonly AbuseStrategy[]>(
   options: AbuseOptions<S>,
-): AbuseMiddleware<InferUserAbuseReasons<S>, InferIpAbuseReasons<S>> => {
+): AbuseService<InferUserAbuseReasons<S>, InferIpAbuseReasons<S>> => {
   const adapter = options.store;
   const caching = new Caching(adapter);
   const getBlockKey = (ip: string) => abuseKey.key('block', ip);
   const onBanUser = options.onBanUser;
   const onBlockIP = options.onBlockIP;
-  const bypass = options.bypass ?? (() => false);
-  const blockedError = options.blockedError;
-  const throwBlocked = (ctx: WebContext): never => {
-    if (blockedError) throw blockedError;
-    return ctx.throw(403);
-  };
 
   const bumpCount = async (countKey: Caching.Key, windowMs: number): Promise<number> => {
     const count = await caching.increment(countKey);
@@ -128,6 +136,9 @@ export const createAbuse = <const S extends readonly AbuseStrategy[]>(
   );
   const httpErrorStrategies = options.strategies.filter(
     (item): item is AbuseHttpErrorStrategy => item.strategy === 'http-error',
+  );
+  const socketEventsStrategies = options.strategies.filter(
+    (item): item is AbuseSocketEventsStrategy => item.strategy === 'socket-events',
   );
   const { userAbuseStrategies, ipAbuseStrategies } = validateStrategies(
     options.strategies,
@@ -218,76 +229,126 @@ export const createAbuse = <const S extends readonly AbuseStrategy[]>(
     },
   };
 
-  const md = middleware.web(async (ctx, next) => {
-    await ensureReady();
-    if (await bypass(ctx)) return next();
+  const web = (webOptions: AbuseWebOptions = {}) => {
+    const bypass = webOptions.bypass ?? (() => false);
+    const throwBlocked = (ctx: WebContext): never => {
+      if (webOptions.blockedError) throw webOptions.blockedError;
+      return ctx.throw(403);
+    };
 
-    const ip = ctx.request.ip;
-    if (!ip) return next();
+    return middleware.web(async (ctx, next) => {
+      await ensureReady();
+      if (await bypass(ctx)) return next();
 
-    if (await caching.exists(getBlockKey(ip))) {
-      return throwBlocked(ctx);
-    }
+      const ip = ctx.request.ip;
+      if (!ip) return next();
 
-    const request = ctx.request;
-
-    for (let i = 0; i < honeypotStrategies.length; i += 1) {
-      const strategy = honeypotStrategies[i]!;
-      if (
-        !matchMethod(request.method, strategy.methods) ||
-        !matchAnyPath(request.pathname, request.search, strategy.paths)
-      ) {
-        continue;
+      if (await caching.exists(getBlockKey(ip))) {
+        return throwBlocked(ctx);
       }
 
-      const countKey = abuseKey.key('count', 'honeypot', i, ip);
-      const count = await bumpCount(countKey, parseDuration(strategy.window));
-      if (count < strategy.limit) continue;
+      const request = ctx.request;
 
-      await ensureBlocked(ip, 'honeypot', {
-        count,
-        limit: strategy.limit,
-        blockFor: parseDuration(strategy.blockFor),
-      });
-      return throwBlocked(ctx);
-    }
+      for (let i = 0; i < honeypotStrategies.length; i += 1) {
+        const strategy = honeypotStrategies[i]!;
+        if (
+          !matchMethod(request.method, strategy.methods) ||
+          !matchAnyPath(request.pathname, request.search, strategy.paths)
+        ) {
+          continue;
+        }
 
-    let statusCode: number;
-    let thrown: HttpError | undefined;
-    try {
-      await next();
-      statusCode = ctx.response.statusCode;
-    } catch (e) {
-      thrown = HttpError.from(e);
-      statusCode = thrown.statusCode;
-    }
+        const countKey = abuseKey.key('count', 'honeypot', i, ip);
+        const count = await bumpCount(countKey, parseDuration(strategy.window));
+        if (count < strategy.limit) continue;
 
-    for (let i = 0; i < httpErrorStrategies.length; i += 1) {
-      const strategy = httpErrorStrategies[i]!;
-      if (
-        !strategy.statusCodes.includes(statusCode) ||
-        !matchMethod(request.method, strategy.methods) ||
-        !matchAnyPath(request.pathname, request.search, strategy.paths)
-      ) {
-        continue;
+        await ensureBlocked(ip, 'honeypot', {
+          count,
+          limit: strategy.limit,
+          blockFor: parseDuration(strategy.blockFor),
+        });
+        return throwBlocked(ctx);
       }
 
-      const countKey = abuseKey.key('count', 'http-error', i, ip);
-      const count = await bumpCount(countKey, parseDuration(strategy.window));
-      if (count < strategy.limit) continue;
+      let statusCode: number;
+      let thrown: HttpError | undefined;
+      try {
+        await next();
+        statusCode = ctx.response.statusCode;
+      } catch (e) {
+        thrown = HttpError.from(e);
+        statusCode = thrown.statusCode;
+      }
 
-      await ensureBlocked(ip, 'http-error', {
-        count,
-        limit: strategy.limit,
-        blockFor: parseDuration(strategy.blockFor),
-      });
-    }
+      for (let i = 0; i < httpErrorStrategies.length; i += 1) {
+        const strategy = httpErrorStrategies[i]!;
+        if (
+          !strategy.statusCodes.includes(statusCode) ||
+          !matchMethod(request.method, strategy.methods) ||
+          !matchAnyPath(request.pathname, request.search, strategy.paths)
+        ) {
+          continue;
+        }
 
-    if (thrown) throw thrown;
-  });
+        const countKey = abuseKey.key('count', 'http-error', i, ip);
+        const count = await bumpCount(countKey, parseDuration(strategy.window));
+        if (count < strategy.limit) continue;
 
-  return Object.assign(md, api) as AbuseMiddleware<
-    InferUserAbuseReasons<S>,
-    InferIpAbuseReasons<S>
-  >;
+        await ensureBlocked(ip, 'http-error', {
+          count,
+          limit: strategy.limit,
+          blockFor: parseDuration(strategy.blockFor),
+        });
+      }
+
+      if (thrown) throw thrown;
+    });
+  };
+
+  const socket = async (
+    socketOptions: AbuseSocketOptions = {},
+  ): Promise<SocketMiddleware> => {
+    // 注册 middleware.socket；仅调用 .socket() 时才加载，HTTP-only 安装不强制依赖
+    await import('@aomex/websocket');
+    const socketBypass = socketOptions.bypass ?? (() => false);
+    const blockedMessage = () => socketOptions.errorMessage || i18n.t('blocked');
+
+    return middleware.socket(async (ctx: WebsocketContext, next) => {
+      await ensureReady();
+      if (await socketBypass(ctx)) return next();
+
+      const ip = ctx.client.request?.ip;
+      if (!ip) return next();
+
+      if (await caching.exists(getBlockKey(ip))) {
+        await ctx.client.send('error', { message: blockedMessage() });
+        return;
+      }
+
+      for (let i = 0; i < socketEventsStrategies.length; i += 1) {
+        const strategy = socketEventsStrategies[i]!;
+        if (!matchAnyEvent(ctx.event, strategy.events)) continue;
+
+        const countKey = abuseKey.key('count', 'socket-events', i, ip);
+        const count = await bumpCount(countKey, parseDuration(strategy.window));
+        if (count < strategy.limit) continue;
+
+        await ensureBlocked(ip, 'socket-events', {
+          count,
+          limit: strategy.limit,
+          blockFor: parseDuration(strategy.blockFor),
+        });
+        await ctx.client.send('error', { message: blockedMessage() });
+        return;
+      }
+
+      return next();
+    });
+  };
+
+  return {
+    ...api,
+    web,
+    socket,
+  } as AbuseService<InferUserAbuseReasons<S>, InferIpAbuseReasons<S>>;
 };

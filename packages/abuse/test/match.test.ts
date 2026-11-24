@@ -1,5 +1,11 @@
 import { expect, test } from 'vitest';
-import { matchAnyPath, matchMethod, matchPath } from '../src/match';
+import {
+  matchAnyEvent,
+  matchAnyPath,
+  matchEvent,
+  matchMethod,
+  matchPath,
+} from '../src/match';
 
 test('精确路径：完全相等才命中', () => {
   expect(matchPath('/.env', '', '/.env')).toBe(true);
@@ -191,4 +197,28 @@ test('methods 未配置或空数组时不限方法', () => {
   expect(matchMethod('GET', undefined)).toBe(true);
   expect(matchMethod('TRACE', [])).toBe(true);
   expect(matchMethod('WEIRD', [])).toBe(true);
+});
+
+test('事件：精确匹配', () => {
+  expect(matchEvent('admin.destroy', 'admin.destroy')).toBe(true);
+  expect(matchEvent('admin.destroy', 'admin.delete')).toBe(false);
+  expect(matchEvent('admin', 'admin.destroy')).toBe(false);
+});
+
+test('事件：glob 与正则', () => {
+  expect(matchEvent('admin.destroy', 'admin.*')).toBe(true);
+  expect(matchEvent('admin.destroy.all', 'admin.*')).toBe(true);
+  expect(matchEvent('user.destroy', 'admin.*')).toBe(false);
+  expect(matchEvent('admin.destroy', /^admin\./)).toBe(true);
+  expect(matchEvent('chat.send', /^admin\./)).toBe(false);
+  // `.` 按字面量
+  expect(matchEvent('adminXdestroy', 'admin.destroy')).toBe(false);
+});
+
+test('事件：matchAnyEvent', () => {
+  expect(matchAnyEvent('ping')).toBe(true);
+  expect(matchAnyEvent('ping', undefined)).toBe(true);
+  expect(matchAnyEvent('ping', [])).toBe(false);
+  expect(matchAnyEvent('admin.destroy', ['chat.send', 'admin.*'])).toBe(true);
+  expect(matchAnyEvent('pong', ['ping', /^chat\./])).toBe(false);
 });

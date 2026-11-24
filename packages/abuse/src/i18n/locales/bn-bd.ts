@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor অবশ্যই ধনাত্মক সময়কাল হতে হবে, প্রাপ্ত: {{banFor}}',
   empty_honeypot_paths: 'honeypot কৌশলের paths খালি হতে পারে না',
   empty_http_error_status_codes: 'http-error কৌশলের statusCodes খালি হতে পারে না',
+  empty_socket_events: 'socket-events কৌশলের events খালি হতে পারে না',
+  blocked: 'প্রবেশাধিকার নিষিদ্ধ',
 });

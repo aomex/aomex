@@ -15,4 +15,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor trebuie să fie o durată pozitivă, primit: {{banFor}}',
   empty_honeypot_paths: 'paths al strategiei honeypot nu poate fi gol',
   empty_http_error_status_codes: 'statusCodes al strategiei http-error nu poate fi gol',
+  empty_socket_events: 'events al strategiei socket-events nu poate fi gol',
+  blocked: 'Acces interzis',
 });

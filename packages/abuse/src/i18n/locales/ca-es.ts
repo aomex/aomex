@@ -16,4 +16,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: "paths de l'estratègia honeypot no pot estar buit",
   empty_http_error_status_codes:
     "statusCodes de l'estratègia http-error no pot estar buit",
+  empty_socket_events: "events de l'estratègia socket-events no pot estar buit",
+  blocked: 'Accés denegat',
 });

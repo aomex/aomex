@@ -15,4 +15,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: 'لا يمكن أن تكون paths لاستراتيجية honeypot فارغة',
   empty_http_error_status_codes:
     'لا يمكن أن تكون statusCodes لاستراتيجية http-error فارغة',
+  empty_socket_events: 'لا يمكن أن تكون events لاستراتيجية socket-events فارغة',
+  blocked: 'تم رفض الوصول',
 });

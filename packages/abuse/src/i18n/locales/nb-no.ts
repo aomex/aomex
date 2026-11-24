@@ -15,4 +15,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: 'paths for honeypot-strategien kan ikke være tom',
   empty_http_error_status_codes:
     'statusCodes for http-error-strategien kan ikke være tom',
+  empty_socket_events: 'events for socket-events-strategien kan ikke være tom',
+  blocked: 'Tilgang nektet',
 });

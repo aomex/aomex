@@ -17,4 +17,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: 'honeypot стратегиясының paths бос болмауы керек',
   empty_http_error_status_codes:
     'http-error стратегиясының statusCodes бос болмауы керек',
+  empty_socket_events: 'socket-events стратегиясының events бос болмауы керек',
+  blocked: 'Қол жеткізуге тыйым салынған',
 });

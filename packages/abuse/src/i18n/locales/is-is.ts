@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor verður að vera jákvæð tímalengd, móttekið: {{banFor}}',
   empty_honeypot_paths: 'paths fyrir honeypot aðferð má ekki vera tómt',
   empty_http_error_status_codes: 'statusCodes fyrir http-error aðferð má ekki vera tómt',
+  empty_socket_events: 'events fyrir socket-events aðferð má ekki vera tómt',
+  blocked: 'Aðgangi hafnað',
 });

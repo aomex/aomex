@@ -16,4 +16,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: 'paths van honeypot-strategie mag niet leeg zijn',
   empty_http_error_status_codes:
     'statusCodes van http-error-strategie mag niet leeg zijn',
+  empty_socket_events: 'events van socket-events-strategie mag niet leeg zijn',
+  blocked: 'Toegang geweigerd',
 });

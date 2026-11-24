@@ -16,4 +16,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: 'honeypot ռազմավարության paths-ը չի կարող դատարկ լինել',
   empty_http_error_status_codes:
     'http-error ռազմավարության statusCodes-ը չի կարող դատարկ լինել',
+  empty_socket_events: 'socket-events ռազմավարության events-ը չի կարող դատարկ լինել',
+  blocked: 'Մուտքն արգելված է',
 });

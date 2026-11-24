@@ -239,6 +239,9 @@ importers:
       '@aomex/web':
         specifier: workspace:*
         version: link:../web
+      '@aomex/websocket':
+        specifier: workspace:*
+        version: link:../websocket
 
   packages/access-log:
     dependencies:

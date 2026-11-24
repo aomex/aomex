@@ -36,21 +36,21 @@ npx create-aomex@latest
 
 # 中间件
 
-| Name                                                        | Version                                                            | Platform    | Desc                 |
-| ----------------------------------------------------------- | ------------------------------------------------------------------ | ----------- | -------------------- |
-| [compress](./packages/compress)                             | ![npm](https://img.shields.io/npm/v/@aomex/compress)               | web         | 压缩响应内容         |
-| [cors](./packages/cors)                                     | ![npm](https://img.shields.io/npm/v/@aomex/cors)                   | web         | 跨域请求共享         |
-| [csrf](./packages/csrf)                                     | ![npm](https://img.shields.io/npm/v/@aomex/csrf)                   | web         | CSRF 防护            |
-| [abuse](./packages/abuse)                                   | ![npm](https://img.shields.io/npm/v/@aomex/abuse)                  | web         | 滥用计数与封禁       |
-| [helmet](./packages/helmet)                                 | ![npm](https://img.shields.io/npm/v/@aomex/helmet)                 | web         | 设置安全报文         |
-| [pretty-json](./packages/pretty-json)                       | ![npm](https://img.shields.io/npm/v/@aomex/pretty-json)            | web         | 美化响应输出         |
-| [serve-static](./packages/serve-static)                     | ![npm](https://img.shields.io/npm/v/@aomex/serve-static)           | web         | 静态文件服务         |
-| [response-time](./packages/response-time)                   | ![npm](https://img.shields.io/npm/v/@aomex/response-time)          | web         | 设置服务响应时长报文 |
-| [rate-limit](./packages/rate-limit)                         | ![npm](https://img.shields.io/npm/v/@aomex/rate-limit)             | web         | 请求限速             |
-| [rate-limit-redis-store](./packages/rate-limit-redis-store) | ![npm](https://img.shields.io/npm/v/@aomex/rate-limit-redis-store) | web         | 请求限速 Redis 存储  |
-| [etag](./packages/etag)                                     | ![npm](https://img.shields.io/npm/v/@aomex/etag)                   | web         | 设置 etag 报文       |
-| [cron](./packages/cron)                                     | ![npm](https://img.shields.io/npm/v/@aomex/cron)                   | console     | 定时任务             |
-| [async-trace](./packages/async-trace)                       | ![npm](https://img.shields.io/npm/v/@aomex/async-trace)            | web/console | 异步逻辑链路追踪     |
+| Name                                                        | Version                                                            | Platform        | Desc                 |
+| ----------------------------------------------------------- | ------------------------------------------------------------------ | --------------- | -------------------- |
+| [compress](./packages/compress)                             | ![npm](https://img.shields.io/npm/v/@aomex/compress)               | web             | 压缩响应内容         |
+| [cors](./packages/cors)                                     | ![npm](https://img.shields.io/npm/v/@aomex/cors)                   | web             | 跨域请求共享         |
+| [csrf](./packages/csrf)                                     | ![npm](https://img.shields.io/npm/v/@aomex/csrf)                   | web             | CSRF 防护            |
+| [abuse](./packages/abuse)                                   | ![npm](https://img.shields.io/npm/v/@aomex/abuse)                  | web / websocket | 滥用计数与封禁       |
+| [helmet](./packages/helmet)                                 | ![npm](https://img.shields.io/npm/v/@aomex/helmet)                 | web             | 设置安全报文         |
+| [pretty-json](./packages/pretty-json)                       | ![npm](https://img.shields.io/npm/v/@aomex/pretty-json)            | web             | 美化响应输出         |
+| [serve-static](./packages/serve-static)                     | ![npm](https://img.shields.io/npm/v/@aomex/serve-static)           | web             | 静态文件服务         |
+| [response-time](./packages/response-time)                   | ![npm](https://img.shields.io/npm/v/@aomex/response-time)          | web             | 设置服务响应时长报文 |
+| [rate-limit](./packages/rate-limit)                         | ![npm](https://img.shields.io/npm/v/@aomex/rate-limit)             | web             | 请求限速             |
+| [rate-limit-redis-store](./packages/rate-limit-redis-store) | ![npm](https://img.shields.io/npm/v/@aomex/rate-limit-redis-store) | web             | 请求限速 Redis 存储  |
+| [etag](./packages/etag)                                     | ![npm](https://img.shields.io/npm/v/@aomex/etag)                   | web             | 设置 etag 报文       |
+| [cron](./packages/cron)                                     | ![npm](https://img.shields.io/npm/v/@aomex/cron)                   | console         | 定时任务             |
+| [async-trace](./packages/async-trace)                       | ![npm](https://img.shields.io/npm/v/@aomex/async-trace)            | web/console     | 异步逻辑链路追踪     |
 
 # 日志
 

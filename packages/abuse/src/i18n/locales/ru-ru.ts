@@ -18,4 +18,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor должен быть положительной длительностью, получено: {{banFor}}',
   empty_honeypot_paths: 'paths стратегии honeypot не может быть пустым',
   empty_http_error_status_codes: 'statusCodes стратегии http-error не может быть пустым',
+  empty_socket_events: 'events стратегии socket-events не может быть пустым',
+  blocked: 'Доступ запрещён',
 });

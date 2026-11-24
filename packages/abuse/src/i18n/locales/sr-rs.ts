@@ -15,4 +15,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor mora biti pozitivno trajanje, primljeno: {{banFor}}',
   empty_honeypot_paths: 'paths strategije honeypot ne sme biti prazan',
   empty_http_error_status_codes: 'statusCodes strategije http-error ne sme biti prazan',
+  empty_socket_events: 'events strategije socket-events ne sme biti prazan',
+  blocked: 'Приступ одбијен',
 });

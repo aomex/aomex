@@ -15,4 +15,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor divê demjimêreke erênî be, hatî: {{banFor}}',
   empty_honeypot_paths: 'paths ya stratejiya honeypot nikare vala be',
   empty_http_error_status_codes: 'statusCodes ya stratejiya http-error nikare vala be',
+  empty_socket_events: 'events ya stratejiya socket-events nikare vala be',
+  blocked: 'Gihîştin hate redkirin',
 });

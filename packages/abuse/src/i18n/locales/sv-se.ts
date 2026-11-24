@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor måste vara en positiv varaktighet, mottaget: {{banFor}}',
   empty_honeypot_paths: 'paths för honeypot-strategin får inte vara tom',
   empty_http_error_status_codes: 'statusCodes för http-error-strategin får inte vara tom',
+  empty_socket_events: 'events för socket-events-strategin får inte vara tom',
+  blocked: 'Åtkomst nekad',
 });

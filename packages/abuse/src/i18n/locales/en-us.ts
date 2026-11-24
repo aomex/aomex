@@ -13,4 +13,6 @@ export const en = I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor must be a positive duration, got: {{banFor}}',
   empty_honeypot_paths: 'honeypot strategy paths must not be empty',
   empty_http_error_status_codes: 'http-error strategy statusCodes must not be empty',
+  empty_socket_events: 'socket-events strategy events must not be empty',
+  blocked: 'Access denied',
 });

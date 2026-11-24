@@ -1,0 +1,349 @@
+import type http from 'node:http';
+import { afterEach, expect, test, vitest } from 'vitest';
+import { CacheMemoryAdapter } from '@aomex/cache/memory';
+import { Channel } from '@aomex/websocket';
+import { internalDestroyServices } from '@aomex/common';
+import { TestWebApp } from '../../web/src/testing';
+import {
+  closeServer,
+  connect,
+  listenWebsocket,
+  recv,
+  send,
+} from '../../websocket/test/fixture/ws-helpers';
+import { createAbuse } from '../src';
+
+const slot: { server?: http.Server } = {};
+
+afterEach(async () => {
+  await closeServer(slot);
+  await internalDestroyServices([]);
+});
+
+test('socket：未封禁时入站正常', async () => {
+  const abuse = createAbuse({
+    store: new CacheMemoryAdapter(),
+    strategies: [],
+  });
+  const channel = new Channel();
+  channel.on('ping', {
+    action: async (ctx) => {
+      await ctx.client.send('pong');
+    },
+  });
+  const { port } = await listenWebsocket(
+    new TestWebApp(),
+    {
+      mount: [await abuse.socket()],
+      channels: [channel],
+    },
+    slot,
+  );
+  const ws = await connect(port);
+  send(ws, 'ping');
+  await expect(recv(ws)).resolves.toMatchObject({ event: 'pong' });
+  ws.close();
+});
+
+test('socket：已封禁 IP 回推 error 且不进业务', async () => {
+  const abuse = createAbuse({
+    store: new CacheMemoryAdapter(),
+    strategies: [],
+  });
+  let hit = false;
+  const channel = new Channel();
+  channel.on('ping', {
+    action: async () => {
+      hit = true;
+    },
+  });
+  const { port } = await listenWebsocket(
+    new TestWebApp(),
+    {
+      mount: [await abuse.socket()],
+      channels: [channel],
+    },
+    slot,
+  );
+  const ws = await connect(port);
+  // 标准 ws 握手 IP 为 ::ffff:127.0.0.1
+  await abuse.blockIP('::ffff:127.0.0.1', '1 hour');
+  send(ws, 'ping');
+  await expect(recv(ws)).resolves.toMatchObject({
+    event: 'error',
+    data: { message: '禁止访问' },
+  });
+  expect(hit).toBe(false);
+  ws.close();
+});
+
+test('socket：errorMessage 可定制', async () => {
+  const abuse = createAbuse({
+    store: new CacheMemoryAdapter(),
+    strategies: [],
+  });
+  const channel = new Channel();
+  channel.on('ping', { action: async () => {} });
+
+  const { port } = await listenWebsocket(
+    new TestWebApp(),
+    {
+      mount: [await abuse.socket({ errorMessage: 'custom-blocked' })],
+      channels: [channel],
+    },
+    slot,
+  );
+  const ws = await connect(port);
+  await abuse.blockIP('::ffff:127.0.0.1', 60_000);
+  send(ws, 'ping');
+  await expect(recv(ws)).resolves.toMatchObject({
+    event: 'error',
+    data: { message: 'custom-blocked' },
+  });
+  ws.close();
+});
+
+test('socket：bypass 跳过封禁检查', async () => {
+  const abuse = createAbuse({
+    store: new CacheMemoryAdapter(),
+    strategies: [],
+  });
+  const channel = new Channel();
+  channel.on('ping', {
+    action: async (ctx) => {
+      await ctx.client.send('pong');
+    },
+  });
+  const { port } = await listenWebsocket(
+    new TestWebApp(),
+    {
+      mount: [await abuse.socket({ bypass: () => true })],
+      channels: [channel],
+    },
+    slot,
+  );
+  const ws = await connect(port);
+  await abuse.blockIP('::ffff:127.0.0.1', 60_000);
+  send(ws, 'ping');
+  await expect(recv(ws)).resolves.toMatchObject({ event: 'pong' });
+  ws.close();
+});
+
+test('socket：无 IP 时放行', async () => {
+  const abuse = createAbuse({
+    store: new CacheMemoryAdapter(),
+    strategies: [],
+  });
+  await abuse.blockIP('203.0.113.1', '1h');
+  const md = await abuse.socket();
+  let called = false;
+  await md['fn'](
+    {
+      event: 'ping',
+      client: {
+        id: 'c1',
+        request: undefined,
+        send: async () => {},
+        data: {},
+      },
+    } as any,
+    async () => {
+      called = true;
+    },
+  );
+  expect(called).toBe(true);
+});
+
+test('web 与 socket 共用封禁态', async () => {
+  const abuse = createAbuse({
+    store: new CacheMemoryAdapter(),
+    strategies: [],
+  });
+  await abuse.blockIP('203.0.113.9', '1h');
+  await expect(abuse.isIPBlocked('203.0.113.9')).resolves.toBe(true);
+
+  const channel = new Channel();
+  channel.on('ping', {
+    action: async (ctx) => {
+      await ctx.client.send('pong');
+    },
+  });
+  // 直接跑中间件：模拟已封 IP
+  const md = await abuse.socket();
+  let called = false;
+  await md['fn'](
+    {
+      event: 'ping',
+      client: {
+        id: 'c1',
+        request: { ip: '203.0.113.9' },
+        send: async () => {},
+        data: {},
+      },
+    } as any,
+    async () => {
+      called = true;
+    },
+  );
+  expect(called).toBe(false);
+
+  await abuse.unblockIP('203.0.113.9');
+  await md['fn'](
+    {
+      event: 'ping',
+      client: {
+        id: 'c1',
+        request: { ip: '203.0.113.9' },
+        send: async () => {},
+        data: {},
+      },
+    } as any,
+    async () => {
+      called = true;
+    },
+  );
+  expect(called).toBe(true);
+});
+
+test('socket-events：命中蜜罐事件满额后封禁', async () => {
+  const onBlockIP = vitest.fn();
+  const abuse = createAbuse({
+    store: new CacheMemoryAdapter(),
+    strategies: [
+      {
+        strategy: 'socket-events',
+        events: ['admin.destroy', 'debug.*'],
+        limit: 1,
+        window: '1h',
+        blockFor: '1d',
+      },
+    ],
+    onBlockIP,
+  });
+  let hit = false;
+  const channel = new Channel();
+  channel.on('admin.destroy', {
+    action: async () => {
+      hit = true;
+    },
+  });
+  const { port } = await listenWebsocket(
+    new TestWebApp(),
+    {
+      mount: [await abuse.socket()],
+      channels: [channel],
+    },
+    slot,
+  );
+  const ws = await connect(port);
+  send(ws, 'admin.destroy');
+  await expect(recv(ws)).resolves.toMatchObject({
+    event: 'error',
+    data: { message: '禁止访问' },
+  });
+  expect(hit).toBe(false);
+  expect(onBlockIP).toHaveBeenCalledWith('::ffff:127.0.0.1', 'socket-events', {
+    count: 1,
+    limit: 1,
+    blockFor: expect.any(Number),
+  });
+  send(ws, 'admin.destroy');
+  await expect(recv(ws)).resolves.toMatchObject({ event: 'error' });
+  ws.close();
+});
+
+test('socket-events：未满额仍放行业务', async () => {
+  const onBlockIP = vitest.fn();
+  const abuse = createAbuse({
+    store: new CacheMemoryAdapter(),
+    strategies: [
+      {
+        strategy: 'socket-events',
+        events: ['trap'],
+        limit: 2,
+        window: 60_000,
+        blockFor: 60_000,
+      },
+    ],
+    onBlockIP,
+  });
+  const channel = new Channel();
+  channel.on('trap', {
+    action: async (ctx) => {
+      await ctx.client.send('ok');
+    },
+  });
+  const { port } = await listenWebsocket(
+    new TestWebApp(),
+    {
+      mount: [await abuse.socket()],
+      channels: [channel],
+    },
+    slot,
+  );
+  const ws = await connect(port);
+  send(ws, 'trap');
+  await expect(recv(ws)).resolves.toMatchObject({ event: 'ok' });
+  expect(onBlockIP).not.toHaveBeenCalled();
+  send(ws, 'trap');
+  await expect(recv(ws)).resolves.toMatchObject({ event: 'error' });
+  expect(onBlockIP).toHaveBeenCalledWith(expect.any(String), 'socket-events', {
+    count: 2,
+    limit: 2,
+    blockFor: expect.any(Number),
+  });
+  ws.close();
+});
+
+test('socket-events：未命中事件不计数', async () => {
+  const onBlockIP = vitest.fn();
+  const abuse = createAbuse({
+    store: new CacheMemoryAdapter(),
+    strategies: [
+      {
+        strategy: 'socket-events',
+        events: ['trap'],
+        limit: 1,
+        window: 60_000,
+        blockFor: 60_000,
+      },
+    ],
+    onBlockIP,
+  });
+  const channel = new Channel();
+  channel.on('ping', {
+    action: async (ctx) => {
+      await ctx.client.send('pong');
+    },
+  });
+  const { port } = await listenWebsocket(
+    new TestWebApp(),
+    {
+      mount: [await abuse.socket()],
+      channels: [channel],
+    },
+    slot,
+  );
+  const ws = await connect(port);
+  send(ws, 'ping');
+  await expect(recv(ws)).resolves.toMatchObject({ event: 'pong' });
+  expect(onBlockIP).not.toHaveBeenCalled();
+  ws.close();
+});
+
+test('socket-events：空 events 创建即抛错', () => {
+  expect(() =>
+    createAbuse({
+      store: new CacheMemoryAdapter(),
+      strategies: [
+        {
+          strategy: 'socket-events',
+          events: [],
+          limit: 1,
+          window: 60_000,
+          blockFor: 60_000,
+        },
+      ],
+    }),
+  ).toThrow(/events 不能为空/);
+});

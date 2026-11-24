@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor ต้องเป็นระยะเวลาที่เป็นบวก ที่ได้รับ: {{banFor}}',
   empty_honeypot_paths: 'paths ของกลยุทธ์ honeypot ต้องไม่ว่าง',
   empty_http_error_status_codes: 'statusCodes ของกลยุทธ์ http-error ต้องไม่ว่าง',
+  empty_socket_events: 'events ของกลยุทธ์ socket-events ต้องไม่ว่าง',
+  blocked: 'ปฏิเสธการเข้าถึง',
 });

@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor நேர்மறை கால அளவாக இருக்க வேண்டும், பெற்றது: {{banFor}}',
   empty_honeypot_paths: 'honeypot உத்தியின் paths காலியாக இருக்கக்கூடாது',
   empty_http_error_status_codes: 'http-error உத்தியின் statusCodes காலியாக இருக்கக்கூடாது',
+  empty_socket_events: 'socket-events உத்தியின் events காலியாக இருக்கக்கூடாது',
+  blocked: 'அணுகல் மறுக்கப்பட்டது',
 });

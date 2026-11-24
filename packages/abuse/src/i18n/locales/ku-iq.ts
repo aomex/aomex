@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor دەبێت ماوەی ئەرێنی بێت، وەرگیراو: {{banFor}}',
   empty_honeypot_paths: 'paths ی ستراتیژی honeypot نابێت بەتاڵ بێت',
   empty_http_error_status_codes: 'statusCodes ی ستراتیژی http-error نابێت بەتاڵ بێت',
+  empty_socket_events: 'events ی ستراتیژی socket-events نابێت بەتاڵ بێت',
+  blocked: 'دەستگەیشتن ڕەتکرایەوە',
 });

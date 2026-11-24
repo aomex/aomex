@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor ត្រូវតែជារយៈពេលវិជ្ជមាន ទទួលបាន៖ {{banFor}}',
   empty_honeypot_paths: 'paths នៃយុទ្ធសាស្ត្រ honeypot មិនអាចទទេបានទេ',
   empty_http_error_status_codes: 'statusCodes នៃយុទ្ធសាស្ត្រ http-error មិនអាចទទេបានទេ',
+  empty_socket_events: 'events នៃយុទ្ធសាស្ត្រ socket-events មិនអាចទទេបានទេ',
+  blocked: 'ការចូលប្រើត្រូវបានបដិសេធ',
 });

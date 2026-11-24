@@ -12,4 +12,6 @@ export const zh = I18n.define({
   invalid_ban_for: 'banFor 必须为正数时长，收到：{{banFor}}',
   empty_honeypot_paths: 'honeypot 策略的 paths 不能为空',
   empty_http_error_status_codes: 'http-error 策略的 statusCodes 不能为空',
+  empty_socket_events: 'socket-events 策略的 events 不能为空',
+  blocked: '禁止访问',
 });

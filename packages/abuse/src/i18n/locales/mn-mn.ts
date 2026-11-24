@@ -17,4 +17,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor эерэг хугацаа байх ёстой, хүлээн авсан: {{banFor}}',
   empty_honeypot_paths: 'honeypot стратегийн paths хоосон байж болохгүй',
   empty_http_error_status_codes: 'http-error стратегийн statusCodes хоосон байж болохгүй',
+  empty_socket_events: 'socket-events стратегийн events хоосон байж болохгүй',
+  blocked: 'Хандалт хориглосон',
 });

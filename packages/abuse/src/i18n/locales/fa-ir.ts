@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor باید مدت مثبت باشد، دریافت‌شده: {{banFor}}',
   empty_honeypot_paths: 'paths راهبرد honeypot نمی‌تواند خالی باشد',
   empty_http_error_status_codes: 'statusCodes راهبرد http-error نمی‌تواند خالی باشد',
+  empty_socket_events: 'events راهبرد socket-events نمی‌تواند خالی باشد',
+  blocked: 'دسترسی ممنوع',
 });

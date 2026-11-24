@@ -1,6 +1,7 @@
 import type { CacheAdapter } from '@aomex/cache';
 import type { DurationInput } from '@aomex/common';
 import type { HttpError, WebContext, WebMiddleware } from '@aomex/web';
+import type { SocketMiddleware, WebsocketContext } from '@aomex/websocket';
 
 /** 用户主体标识。存储前统一 `String(id)` */
 export type AbuseId = string | number;
@@ -9,7 +10,7 @@ export type AbuseId = string | number;
 export type AbusePathMatcher = string | RegExp;
 
 /**
- * 蜜罐路径：命中后按 IP 计数，满额封 IP。
+ * HTTP 路径蜜罐：命中后按 IP 计数，满额封 IP。仅 `.web()` 生效。
  */
 export type AbuseHoneypotStrategy = {
   strategy: 'honeypot';
@@ -34,7 +35,7 @@ export type AbuseHoneypotStrategy = {
 };
 
 /**
- * 按响应状态码累计。满额后封 IP。
+ * 按 HTTP 响应状态码累计。满额后封 IP。仅 `.web()` 生效。
  */
 export type AbuseHttpErrorStrategy = {
   strategy: 'http-error';
@@ -65,7 +66,29 @@ export type AbuseHttpErrorStrategy = {
 };
 
 /**
- * 业务上报的用户滥用。只吃返回值上的 `userAbuse()`；满额触发 `onBanUser`，不自动封 IP。
+ * WebSocket 事件蜜罐：命中 `events` 后按 IP 计数，满额封 IP。仅 `.socket()` 生效。
+ */
+export type AbuseSocketEventsStrategy = {
+  strategy: 'socket-events';
+  /**
+   * 蜜罐事件名（不能为空）。字符串支持 `*`；正则整串匹配 `ctx.event`
+   */
+  events: readonly (string | RegExp)[];
+  /** 窗口内累计次数上限，须为正整数 */
+  limit: number;
+  /**
+   * 固定计数窗口（须为正数时长）。自该 IP 首次命中起算，窗口内累计次数；到期后计数清零重开
+   */
+  window: DurationInput;
+  /**
+   * 撞线后封禁 IP 的时长（须为正数）
+   */
+  blockFor: DurationInput;
+};
+
+/**
+ * 业务上报的用户滥用。只吃返回值上的 `userAbuse()`（HTTP / WebSocket 均可调）；
+ * 满额触发 `onBanUser`，不自动封 IP。
  */
 export type AbuseUserAbuseStrategy<Reason extends string | number = string | number> = {
   strategy: 'user-abuse';
@@ -88,7 +111,8 @@ export type AbuseUserAbuseStrategy<Reason extends string | number = string | num
 };
 
 /**
- * 业务上报的 IP 滥用（如 logout token 未命中仍返回 204）。只吃 `ipAbuse()`；满额封 IP。
+ * 业务上报的 IP 滥用（如 logout token 未命中仍返回 204）。
+ * 只吃 `ipAbuse()`（HTTP / WebSocket 均可调）；满额封 IP。
  */
 export type AbuseIpAbuseStrategy<Reason extends string | number = string | number> = {
   strategy: 'ip-abuse';
@@ -113,6 +137,7 @@ export type AbuseIpAbuseStrategy<Reason extends string | number = string | numbe
 export type AbuseStrategy =
   | AbuseHoneypotStrategy
   | AbuseHttpErrorStrategy
+  | AbuseSocketEventsStrategy
   | AbuseUserAbuseStrategy
   | AbuseIpAbuseStrategy;
 
@@ -131,7 +156,8 @@ export type InferIpAbuseReasons<S extends readonly AbuseStrategy[]> =
     : never;
 
 /** `onBlockIP` 的 reason */
-export type AbuseBlockStrategy = 'honeypot' | 'http-error' | 'ip-abuse' | 'manual';
+export type AbuseBlockStrategy =
+  'honeypot' | 'http-error' | 'socket-events' | 'ip-abuse' | 'manual';
 
 export type AbuseApi<
   UserAbuseReason extends string | number = string | number,
@@ -161,13 +187,57 @@ export type AbuseApi<
   isIPBlocked(ip: string): Promise<boolean>;
 };
 
+/** `.web()` 可选配置 */
+export type AbuseWebOptions = {
+  /**
+   * 跳过探测与封禁检查（如健康检查、内网）
+   */
+  bypass?: (ctx: WebContext) => boolean | Promise<boolean>;
+  /**
+   * IP 被封禁时抛出的错误。默认：`403 Forbidden`
+   */
+  blockedError?: HttpError;
+};
+
+/** `.socket()` 可选配置 */
+export type AbuseSocketOptions = {
+  /**
+   * 跳过封禁检查（如内网、监控探针）
+   */
+  bypass?: (ctx: WebsocketContext) => boolean | Promise<boolean>;
+  /**
+   * 被封禁时回推的文案。默认走 i18n
+   */
+  errorMessage?: string;
+};
+
 /**
- * `createAbuse()` 返回值：中间件 + API。不挂 `ctx`，service / 路由均直接调用返回值上的方法
+ * `createAbuse()` 返回值：上报 API + `.web()` / `.socket()` 适配器。
+ * 不挂 `ctx`；HTTP / WebSocket 共用同一封禁态与 API。
  */
-export type AbuseMiddleware<
+export type AbuseService<
   UserAbuseReason extends string | number = string | number,
   IpAbuseReason extends string | number = string | number,
-> = WebMiddleware & AbuseApi<UserAbuseReason, IpAbuseReason>;
+> = AbuseApi<UserAbuseReason, IpAbuseReason> & {
+  /**
+   * HTTP 中间件。挂在 `WebApp.mount`。
+   * 含蜜罐 / http-error 累计与 IP 封禁检查。
+   *
+   * ```ts
+   * mount: [abuse.web({ bypass: (ctx) => ctx.request.pathname === '/health' })]
+   * ```
+   */
+  web(options?: AbuseWebOptions): WebMiddleware;
+  /**
+   * WebSocket 入站中间件。挂在 `WebsocketApp.mount`。
+   * 仅做 IP 封禁检查；需安装 `@aomex/websocket`，运行时 `await import`。
+   *
+   * ```ts
+   * mount: [await abuse.socket(), channels('./src/channels')]
+   * ```
+   */
+  socket(options?: AbuseSocketOptions): Promise<SocketMiddleware>;
+};
 
 type AbuseOnBanUser<S extends readonly AbuseStrategy[]> = (
   id: AbuseId,
@@ -181,10 +251,6 @@ type AbuseOptionsBase<S extends readonly AbuseStrategy[]> = {
    */
   store: CacheAdapter;
   /**
-   * 跳过探测与封禁检查（如健康检查、内网）
-   */
-  bypass?: (ctx: WebContext) => boolean | Promise<boolean>;
-  /**
    * IP 被封禁时回调（策略撞线、`ipAbuse` 满额或手动 `blockIP`）
    */
   onBlockIP?: (
@@ -192,10 +258,6 @@ type AbuseOptionsBase<S extends readonly AbuseStrategy[]> = {
     reason: AbuseBlockStrategy,
     detail: AbuseBlockDetail,
   ) => void | Promise<void>;
-  /**
-   * IP被封禁时抛出的错误。默认：`403 Forbidden`
-   */
-  blockedError?: HttpError;
   strategies: S;
 };
 

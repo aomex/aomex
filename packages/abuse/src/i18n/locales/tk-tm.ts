@@ -16,4 +16,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: 'honeypot strategiýasynyň paths boş bolup bilmez',
   empty_http_error_status_codes:
     'http-error strategiýasynyň statusCodes boş bolup bilmez',
+  empty_socket_events: 'socket-events strategiýasynyň events boş bolup bilmez',
+  blocked: 'Giriş gadagan',
 });

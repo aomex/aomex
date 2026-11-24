@@ -16,4 +16,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: 'honeypot სტრატეგიის paths არ შეიძლება იყოს ცარიელი',
   empty_http_error_status_codes:
     'http-error სტრატეგიის statusCodes არ შეიძლება იყოს ცარიელი',
+  empty_socket_events: 'socket-events სტრატეგიის events არ შეიძლება იყოს ცარიელი',
+  blocked: 'წვდომა აკრძალულია',
 });

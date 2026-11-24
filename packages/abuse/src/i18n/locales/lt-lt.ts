@@ -15,4 +15,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor turi būti teigiama trukmė, gauta: {{banFor}}',
   empty_honeypot_paths: 'honeypot strategijos paths negali būti tuščias',
   empty_http_error_status_codes: 'http-error strategijos statusCodes negali būti tuščias',
+  empty_socket_events: 'socket-events strategijos events negali būti tuščias',
+  blocked: 'Prieiga uždrausta',
 });

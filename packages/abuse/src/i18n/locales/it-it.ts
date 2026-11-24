@@ -16,4 +16,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: 'paths della strategia honeypot non può essere vuoto',
   empty_http_error_status_codes:
     'statusCodes della strategia http-error non può essere vuoto',
+  empty_socket_events: 'events della strategia socket-events non può essere vuoto',
+  blocked: 'Accesso negato',
 });

@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor धन कालावधी असणे आवश्यक आहे, मिळाले: {{banFor}}',
   empty_honeypot_paths: 'honeypot धोरणाचे paths रिकामे असू शकत नाही',
   empty_http_error_status_codes: 'http-error धोरणाचे statusCodes रिकामे असू शकत नाही',
+  empty_socket_events: 'socket-events धोरणाचे events रिकामे असू शकत नाही',
+  blocked: 'प्रवेश नाकारला',
 });

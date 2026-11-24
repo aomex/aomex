@@ -16,4 +16,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: 'Το paths της στρατηγικής honeypot δεν μπορεί να είναι κενό',
   empty_http_error_status_codes:
     'Το statusCodes της στρατηγικής http-error δεν μπορεί να είναι κενό',
+  empty_socket_events: 'Το events της στρατηγικής socket-events δεν μπορεί να είναι κενό',
+  blocked: 'Η πρόσβαση απορρίφθηκε',
 });

@@ -15,4 +15,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor は正の期間である必要があります。受け取った値：{{banFor}}',
   empty_honeypot_paths: 'honeypot 戦略の paths は空にできません',
   empty_http_error_status_codes: 'http-error 戦略の statusCodes は空にできません',
+  empty_socket_events: 'socket-events 戦略の events は空にできません',
+  blocked: 'アクセスが拒否されました',
 });

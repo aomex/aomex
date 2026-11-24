@@ -17,4 +17,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor jābūt pozitīvam ilgumam, saņemts: {{banFor}}',
   empty_honeypot_paths: 'honeypot stratēģijas paths nedrīkst būt tukšs',
   empty_http_error_status_codes: 'http-error stratēģijas statusCodes nedrīkst būt tukšs',
+  empty_socket_events: 'socket-events stratēģijas events nedrīkst būt tukšs',
+  blocked: 'Piekļuve liegta',
 });

@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor ධන කාල සීමාවක් විය යුතුය, ලැබුණේ: {{banFor}}',
   empty_honeypot_paths: 'honeypot උපාය මාර්ගයේ paths හිස් විය නොහැක',
   empty_http_error_status_codes: 'http-error උපාය මාර්ගයේ statusCodes හිස් විය නොහැක',
+  empty_socket_events: 'socket-events උපාය මාර්ගයේ events හිස් විය නොහැක',
+  blocked: 'ප්‍රවේශය ප්‍රතික්ෂේප විය',
 });

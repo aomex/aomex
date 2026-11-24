@@ -17,4 +17,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: 'Ní féidir le paths na straitéise honeypot a bheith folamh',
   empty_http_error_status_codes:
     'Ní féidir le statusCodes na straitéise http-error a bheith folamh',
+  empty_socket_events: 'Ní féidir le events na straitéise socket-events a bheith folamh',
+  blocked: 'Rochtain diúltaithe',
 });

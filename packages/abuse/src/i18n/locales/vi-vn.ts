@@ -15,4 +15,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: 'paths của chiến lược honeypot không được để trống',
   empty_http_error_status_codes:
     'statusCodes của chiến lược http-error không được để trống',
+  empty_socket_events: 'events của chiến lược socket-events không được để trống',
+  blocked: 'Truy cập bị từ chối',
 });

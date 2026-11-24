@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor مثبت مدت ہونی چاہیے، موصول: {{banFor}}',
   empty_honeypot_paths: 'honeypot حکمت عملی کا paths خالی نہیں ہو سکتا',
   empty_http_error_status_codes: 'http-error حکمت عملی کا statusCodes خالی نہیں ہو سکتا',
+  empty_socket_events: 'socket-events حکمت عملی کا events خالی نہیں ہو سکتا',
+  blocked: 'رسائی مسترد',
 });

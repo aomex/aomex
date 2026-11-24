@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor musi być dodatnim czasem trwania, otrzymano: {{banFor}}',
   empty_honeypot_paths: 'paths strategii honeypot nie może być puste',
   empty_http_error_status_codes: 'statusCodes strategii http-error nie może być puste',
+  empty_socket_events: 'events strategii socket-events nie może być puste',
+  blocked: 'Odmowa dostępu',
 });

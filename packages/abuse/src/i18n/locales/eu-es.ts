@@ -18,4 +18,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: 'honeypot estrategiaren paths ezin da hutsik egon',
   empty_http_error_status_codes:
     'http-error estrategiaren statusCodes ezin da hutsik egon',
+  empty_socket_events: 'socket-events estrategiaren events ezin da hutsik egon',
+  blocked: 'Sarbidea ukatuta',
 });

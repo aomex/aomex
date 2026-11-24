@@ -42,6 +42,46 @@ export function matchMethod(method: string, methods?: readonly string[]): boolea
   return methods.some((item) => item.toUpperCase() === upper);
 }
 
+/**
+ * 事件名匹配：精确字符串、简单 glob（`*` → 任意字符）、或正则。
+ */
+export function matchEvent(event: string, matcher: string | RegExp): boolean {
+  if (matcher instanceof RegExp) {
+    return matcher.test(event);
+  }
+
+  if (!matcher.includes('*')) {
+    return event === matcher;
+  }
+
+  let pattern = '';
+  for (let i = 0; i < matcher.length; i += 1) {
+    const char = matcher[i]!;
+    if (char === '*') {
+      pattern += '.*';
+      continue;
+    }
+    if (/[.+?^${}()|[\]\\]/.test(char)) {
+      pattern += `\\${char}`;
+      continue;
+    }
+    pattern += char;
+  }
+  return new RegExp(`^${pattern}$`).test(event);
+}
+
+/**
+ * 任一事件匹配器命中即为 true。
+ * `events` 为 `undefined` 时视为不限；空数组不命中。
+ */
+export function matchAnyEvent(
+  event: string,
+  events?: readonly (string | RegExp)[],
+): boolean {
+  if (events === undefined) return true;
+  return events.some((item) => matchEvent(event, item));
+}
+
 function globToRegExp(glob: string): RegExp {
   let source = glob;
   let optionalDeep = false;

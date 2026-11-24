@@ -17,4 +17,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: 'A honeypot stratégia paths értéke nem lehet üres',
   empty_http_error_status_codes:
     'A http-error stratégia statusCodes értéke nem lehet üres',
+  empty_socket_events: 'A socket-events stratégia events értéke nem lehet üres',
+  blocked: 'Hozzáférés megtagadva',
 });

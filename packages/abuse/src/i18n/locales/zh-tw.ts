@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor 必須為正數時長，收到：{{banFor}}',
   empty_honeypot_paths: 'honeypot 策略的 paths 不能為空',
   empty_http_error_status_codes: 'http-error 策略的 statusCodes 不能為空',
+  empty_socket_events: 'socket-events 策略的 events 不能為空',
+  blocked: '禁止訪問',
 });

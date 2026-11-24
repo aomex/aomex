@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor သည် အပေါင်းကြာချိန်ဖြစ်ရမည်၊ ရရှိသည်: {{banFor}}',
   empty_honeypot_paths: 'honeypot ဗျူဟာ၏ paths သည် ဗလာမဖြစ်ရ',
   empty_http_error_status_codes: 'http-error ဗျူဟာ၏ statusCodes သည် ဗလာမဖြစ်ရ',
+  empty_socket_events: 'socket-events ဗျူဟာ၏ events သည် ဗလာမဖြစ်ရ',
+  blocked: 'ဝင်ရောက်ခွင့် ငြင်းပယ်ထားသည်',
 });

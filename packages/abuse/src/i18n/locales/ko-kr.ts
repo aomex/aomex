@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor는 양의 기간이어야 합니다. 받은 값: {{banFor}}',
   empty_honeypot_paths: 'honeypot 전략의 paths는 비워둘 수 없습니다',
   empty_http_error_status_codes: 'http-error 전략의 statusCodes는 비워둘 수 없습니다',
+  empty_socket_events: 'socket-events 전략의 events는 비워둘 수 없습니다',
+  blocked: '접근이 거부되었습니다',
 });

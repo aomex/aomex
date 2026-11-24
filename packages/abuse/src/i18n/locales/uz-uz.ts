@@ -17,4 +17,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: 'honeypot strategiyasining paths boʻsh boʻlishi mumkin emas',
   empty_http_error_status_codes:
     'http-error strategiyasining statusCodes boʻsh boʻlishi mumkin emas',
+  empty_socket_events: 'socket-events strategiyasining events boʻsh boʻlishi mumkin emas',
+  blocked: 'Kirish taqiqlangan',
 });

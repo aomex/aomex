@@ -15,4 +15,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor musí byť kladná doba, prijaté: {{banFor}}',
   empty_honeypot_paths: 'paths stratégie honeypot nesmie byť prázdne',
   empty_http_error_status_codes: 'statusCodes stratégie http-error nesmie byť prázdne',
+  empty_socket_events: 'events stratégie socket-events nesmie byť prázdne',
+  blocked: 'Prístup zamietnutý',
 });

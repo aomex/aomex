@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor ഒരു ധനാത്മക കാലയളവായിരിക്കണം, ലഭിച്ചത്: {{banFor}}',
   empty_honeypot_paths: 'honeypot തന്ത്രത്തിന്റെ paths ശൂന്യമാകരുത്',
   empty_http_error_status_codes: 'http-error തന്ത്രത്തിന്റെ statusCodes ശൂന്യമാകരുത്',
+  empty_socket_events: 'socket-events തന്ത്രത്തിന്റെ events ശൂന്യമാകരുത്',
+  blocked: 'പ്രവേശനം നിരസിച്ചു',
 });

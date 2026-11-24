@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor harus durasi positif, diterima: {{banFor}}',
   empty_honeypot_paths: 'paths strategi honeypot tidak boleh kosong',
   empty_http_error_status_codes: 'statusCodes strategi http-error tidak boleh kosong',
+  empty_socket_events: 'events strategi socket-events tidak boleh kosong',
+  blocked: 'Akses ditolak',
 });

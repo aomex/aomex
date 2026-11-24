@@ -21,4 +21,6 @@ export default I18n.satisfies(zh).define({
   empty_honeypot_paths: 'paths на стратегията honeypot не може да бъде празен',
   empty_http_error_status_codes:
     'statusCodes на стратегията http-error не може да бъде празен',
+  empty_socket_events: 'events на стратегията socket-events не може да бъде празен',
+  blocked: 'Достъпът е забранен',
 });

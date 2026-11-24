@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor धनात्मक अवधि होनी चाहिए, प्राप्त: {{banFor}}',
   empty_honeypot_paths: 'honeypot रणनीति का paths खाली नहीं हो सकता',
   empty_http_error_status_codes: 'http-error रणनीति का statusCodes खाली नहीं हो सकता',
+  empty_socket_events: 'socket-events रणनीति का events खाली नहीं हो सकता',
+  blocked: 'पहुंच अस्वीकृत',
 });

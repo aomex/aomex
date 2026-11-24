@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor חייב להיות משך זמן חיובי, התקבל: {{banFor}}',
   empty_honeypot_paths: 'paths של אסטרטגיית honeypot לא יכול להיות ריק',
   empty_http_error_status_codes: 'statusCodes של אסטרטגיית http-error לא יכול להיות ריק',
+  empty_socket_events: 'events של אסטרטגיית socket-events לא יכול להיות ריק',
+  blocked: 'הגישה נדחתה',
 });

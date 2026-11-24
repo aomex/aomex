@@ -2,24 +2,28 @@ import { expectType } from 'ts-expect';
 import type { CacheAdapter } from '@aomex/cache';
 import { CacheMemoryAdapter } from '@aomex/cache/memory';
 import { HttpError, type WebMiddleware } from '@aomex/web';
+import type { SocketMiddleware } from '@aomex/websocket';
 import { createAbuse } from '../src';
-import type { AbuseApi, AbuseMiddleware, AbuseBlockStrategy } from '../src';
+import type { AbuseApi, AbuseService, AbuseBlockStrategy } from '../src';
 
 const adapter: CacheAdapter = new CacheMemoryAdapter();
 createAbuse({ store: adapter, strategies: [] });
-createAbuse({
-  store: adapter,
-  strategies: [],
-  blockedError: new HttpError(429, 'blocked'),
-});
 // @ts-expect-error store 必须是 CacheAdapter
 createAbuse({ store: {}, strategies: [] });
 // @ts-expect-error store 必填
 createAbuse({ strategies: [] });
-// @ts-expect-error blockedError 须为 HttpError
-createAbuse({ store: adapter, strategies: [], blockedError: 'blocked' });
-// @ts-expect-error blockedError 须为 HttpError
-createAbuse({ store: adapter, strategies: [], blockedError: 403 });
+createAbuse({
+  store: adapter,
+  strategies: [],
+  // @ts-expect-error createAbuse 不再接受 blockedError
+  blockedError: new HttpError(429, 'blocked'),
+});
+createAbuse({
+  store: adapter,
+  strategies: [],
+  // @ts-expect-error createAbuse 不再接受 bypass
+  bypass: () => true,
+});
 
 const md = createAbuse({
   store: adapter,
@@ -75,8 +79,32 @@ const md = createAbuse({
   },
 });
 
-expectType<AbuseMiddleware<'order-probe' | 'idor', 'logout-miss'>>(md);
-expectType<WebMiddleware>(md);
+expectType<AbuseService<'order-probe' | 'idor', 'logout-miss'>>(md);
+expectType<WebMiddleware>(md.web());
+expectType<WebMiddleware>(
+  md.web({
+    bypass: (ctx) => {
+      expectType<string>(ctx.request.pathname);
+      return false;
+    },
+    blockedError: new HttpError(429, 'blocked'),
+  }),
+);
+// @ts-expect-error blockedError 须为 HttpError
+md.web({ blockedError: 'blocked' });
+// @ts-expect-error blockedError 须为 HttpError
+md.web({ blockedError: 403 });
+expectType<Promise<SocketMiddleware>>(md.socket());
+expectType<Promise<SocketMiddleware>>(
+  md.socket({
+    bypass: (ctx) => {
+      expectType<string>(ctx.event);
+      expectType<string>(ctx.client.id);
+      return false;
+    },
+    errorMessage: 'nope',
+  }),
+);
 
 // 只通过返回值调用，不挂 ctx
 md.userAbuse(1, 'order-probe');
@@ -96,6 +124,8 @@ md.ipAbuse('127.0.0.1', 'nope');
 md.userAbuse(true, 'order-probe');
 // @ts-expect-error 非法时长
 md.blockIP('127.0.0.1', 'soon');
+// @ts-expect-error 返回值不再是 WebMiddleware
+const _notMiddleware: WebMiddleware = md;
 
 declare const api: AbuseApi<'order-probe' | 'idor', 'logout-miss'>;
 api.userAbuse(1, 'order-probe');
@@ -125,7 +155,7 @@ const noAbuse = createAbuse({
     expectType<number>(detail.blockFor);
   },
 });
-expectType<AbuseMiddleware<never, never>>(noAbuse);
+expectType<AbuseService<never, never>>(noAbuse);
 
 createAbuse({
   store: adapter,
@@ -136,9 +166,38 @@ createAbuse({
   },
 });
 
-expectType<'honeypot' | 'http-error' | 'ip-abuse' | 'manual'>(
+expectType<'honeypot' | 'http-error' | 'socket-events' | 'ip-abuse' | 'manual'>(
   null as unknown as AbuseBlockStrategy,
 );
+
+createAbuse({
+  store: adapter,
+  strategies: [
+    {
+      strategy: 'socket-events',
+      events: ['admin.destroy', /^debug\./],
+      limit: 1,
+      window: '1h',
+      blockFor: '1d',
+    },
+  ],
+  onBlockIP: (_ip, reason) => {
+    expectType<AbuseBlockStrategy>(reason);
+  },
+});
+
+createAbuse({
+  store: adapter,
+  strategies: [
+    // @ts-expect-error socket-events 须配置 events
+    {
+      strategy: 'socket-events',
+      limit: 1,
+      window: 1,
+      blockFor: 1,
+    },
+  ],
+});
 
 createAbuse({
   store: adapter,
@@ -340,7 +399,7 @@ const onlyIpAbuse = createAbuse({
   ],
   // 无 user-abuse 时 onBanUser 可省略
 });
-expectType<AbuseMiddleware<never, 'logout-miss'>>(onlyIpAbuse);
+expectType<AbuseService<never, 'logout-miss'>>(onlyIpAbuse);
 onlyIpAbuse.ipAbuse('127.0.0.1', 'logout-miss');
 // @ts-expect-error 未配置的 ip-abuse reason
 onlyIpAbuse.ipAbuse('127.0.0.1', 'nope');
@@ -397,5 +456,4 @@ createAbuse({
       blockFor: 60_000,
     },
   ],
-  bypass: async () => true,
-});
+}).web({ bypass: async () => true });

@@ -15,4 +15,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor peab olema positiivne kestus, saadud: {{banFor}}',
   empty_honeypot_paths: 'honeypot strateegia paths ei tohi olla tühi',
   empty_http_error_status_codes: 'http-error strateegia statusCodes ei tohi olla tühi',
+  empty_socket_events: 'socket-events strateegia events ei tohi olla tühi',
+  blocked: 'Juurdepääs keelatud',
 });

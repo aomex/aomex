@@ -14,4 +14,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor ಧನಾತ್ಮಕ ಅವಧಿಯಾಗಿರಬೇಕು, ಸ್ವೀಕರಿಸಿದ್ದು: {{banFor}}',
   empty_honeypot_paths: 'honeypot ತಂತ್ರದ paths ಖಾಲಿಯಾಗಿರಬಾರದು',
   empty_http_error_status_codes: 'http-error ತಂತ್ರದ statusCodes ಖಾಲಿಯಾಗಿರಬಾರದು',
+  empty_socket_events: 'socket-events ತಂತ್ರದ events ಖಾಲಿಯಾಗಿರಬಾರದು',
+  blocked: 'ಪ್ರವೇಶ ನಿರಾಕರಿಸಲಾಗಿದೆ',
 });

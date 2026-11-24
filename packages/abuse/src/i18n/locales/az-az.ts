@@ -15,4 +15,6 @@ export default I18n.satisfies(zh).define({
   invalid_ban_for: 'banFor müsbət müddət olmalıdır, alınan: {{banFor}}',
   empty_honeypot_paths: 'honeypot strategiyasının paths boş ola bilməz',
   empty_http_error_status_codes: 'http-error strategiyasının statusCodes boş ola bilməz',
+  empty_socket_events: 'socket-events strategiyasının events boş ola bilməz',
+  blocked: 'Giriş qadağandır',
 });
