@@ -4,8 +4,8 @@ const start = process.hrtime.bigint();
 export abstract class RateLimitStore {
   abstract getAndSet(data: {
     key: string;
-    maxRequest: number;
-    duration: number;
+    limit: number;
+    window: number;
   }): Promise<RateLimitState>;
 
   /**

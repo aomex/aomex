@@ -18,13 +18,12 @@ export interface RateLimitOptions {
    * 限速窗口。毫秒数或可读时长，如 `10_000`、`'10s'`、`'1 hour'`。
    * 默认：`'1 hour'`
    */
-  duration?: DurationInput;
+  window?: DurationInput;
 
   /**
-   * 一个客户端（根据 id 字段）在一个时间周期内的最大可请求数量。
-   * 默认：`2500`
+   * 窗口内允许的最大请求数（按 `id` 计）。默认：`2500`
    */
-  maxRequest?: number;
+  limit?: number;
 
   /**
    * 请求客户端的身份识别信息，默认使用客户端的IP地址。如果返回`false`，则代表该请求不需要限速
@@ -70,13 +69,13 @@ export interface RateLimitOptions {
 export const rateLimit = (options: RateLimitOptions = {}): WebMiddleware => {
   const {
     store = new RateLimitMemoryStore(),
-    maxRequest = 2500,
+    limit = 2500,
     id: getId = (ctx) => ctx.request.ip,
     headers: headerNames = {},
     denyList = () => false,
     allowList = () => false,
   } = options;
-  const duration = parseDuration(options.duration ?? '1 hour');
+  const windowMs = parseDuration(options.window ?? '1 hour');
   let ready: Promise<void> | undefined;
 
   return middleware.web(async (ctx, next) => {
@@ -93,8 +92,8 @@ export const rateLimit = (options: RateLimitOptions = {}): WebMiddleware => {
 
     const state = await store.getAndSet({
       key: `aomex-rate-limit:${id}`,
-      maxRequest,
-      duration,
+      limit,
+      window: windowMs,
     });
 
     const headers: Record<string, number> = {};
@@ -106,7 +105,7 @@ export const rateLimit = (options: RateLimitOptions = {}): WebMiddleware => {
       headers[headerNames.reset || 'X-RateLimit-Reset'] = Math.floor(
         state.resetAt / 1_000_000,
       );
-      headers[headerNames.total || 'X-RateLimit-Limit'] = maxRequest;
+      headers[headerNames.total || 'X-RateLimit-Limit'] = limit;
       ctx.response.setHeaders(headers);
     }
 

@@ -20,11 +20,11 @@ export interface WebsocketRateLimitOptions {
    * 限速窗口。毫秒数或可读时长，如 `10_000`、`'10s'`、`'1 hour'`。
    * 默认：`'1 hour'`
    */
-  duration?: DurationInput;
+  window?: DurationInput;
   /**
-   * 一个身份在窗口内可处理的入站消息数。默认：`2500`
+   * 窗口内允许的最大入站消息数（按 `id` 计）。默认：`2500`
    */
-  maxRequest?: number;
+  limit?: number;
   /**
    * 身份。返回 `false` 表示这条消息不限速。
    * 默认：`ctx.client.request.ip`。同一 IP 上的多条连接共享配额。
@@ -58,7 +58,7 @@ export interface WebsocketRateLimitOptions {
  *   language,
  *   transport,
  *   mount: [
- *     websocketRateLimit({ maxRequest: 30, duration: '10s' }),
+ *     websocketRateLimit({ limit: 30, window: '10s' }),
  *     channels('./src/channels'),
  *   ],
  * });
@@ -67,12 +67,12 @@ export interface WebsocketRateLimitOptions {
 export const websocketRateLimit = (options: WebsocketRateLimitOptions = {}) => {
   const {
     store = new RateLimitMemoryStore(),
-    maxRequest = 2500,
+    limit = 2500,
     id: getId = (ctx) => ctx.client.request.ip,
     denyList = () => false,
     allowList = () => false,
   } = options;
-  const duration = parseDuration(options.duration ?? '1 hour');
+  const windowMs = parseDuration(options.window ?? '1 hour');
   let ready: Promise<void> | undefined;
 
   return middleware.socket(async (ctx, next) => {
@@ -92,8 +92,8 @@ export const websocketRateLimit = (options: WebsocketRateLimitOptions = {}) => {
 
     const state = await store.getAndSet({
       key: `aomex-rate-limit:ws:${id}`,
-      maxRequest,
-      duration,
+      limit,
+      window: windowMs,
     });
     if (state.remaining) return next();
 

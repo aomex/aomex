@@ -50,7 +50,7 @@ const run = async (options: WebsocketRateLimitOptions, ctx: WebsocketContext) =>
 test('窗口内放行，超限回推 error 且不进入后续中间件', async () => {
   const store = new RateLimitMemoryStore();
   const { ctx, sent } = fakeCtx();
-  const options = { store, maxRequest: 1, duration: 60_000 };
+  const options = { store, limit: 1, window: 60_000 };
 
   await expect(run(options, ctx)).resolves.toBe(true);
   expect(sent).toEqual([]);
@@ -63,7 +63,7 @@ test('窗口内放行，超限回推 error 且不进入后续中间件', async (
 
 test('不同 IP 各自计数；同一 IP 的不同连接共享配额', async () => {
   const store = new RateLimitMemoryStore();
-  const options = { store, maxRequest: 1, duration: 60_000 };
+  const options = { store, limit: 1, window: 60_000 };
   const a = fakeCtx({ id: 'a', ip: '203.0.113.1' });
   const b = fakeCtx({ id: 'b', ip: '203.0.113.2' });
   const sameIp = fakeCtx({ id: 'c', ip: '203.0.113.1' });
@@ -78,10 +78,10 @@ test('id 返回 false 或命中白名单时不计数', async () => {
   const spy = vitest.spyOn(store, 'getAndSet');
   const { ctx } = fakeCtx();
 
-  await expect(run({ store, maxRequest: 1, id: () => false }, ctx)).resolves.toBe(true);
-  await expect(
-    run({ store, maxRequest: 1, allowList: async () => true }, ctx),
-  ).resolves.toBe(true);
+  await expect(run({ store, limit: 1, id: () => false }, ctx)).resolves.toBe(true);
+  await expect(run({ store, limit: 1, allowList: async () => true }, ctx)).resolves.toBe(
+    true,
+  );
   expect(spy).not.toHaveBeenCalled();
 });
 
@@ -108,9 +108,9 @@ test('可定制超限文案；空字符串沿用默认文案', async () => {
   const deny = async (errorMessage: string) => {
     const { ctx, sent } = fakeCtx();
     const store = new RateLimitMemoryStore();
-    await run({ store, maxRequest: 1, errorMessage }, ctx);
+    await run({ store, limit: 1, errorMessage }, ctx);
     sent.length = 0;
-    await run({ store, maxRequest: 1, errorMessage }, ctx);
+    await run({ store, limit: 1, errorMessage }, ctx);
     return sent;
   };
 
@@ -126,19 +126,19 @@ test('可读时长会先折成毫秒；非法时长在创建时抛错', async ()
   const store = new RateLimitMemoryStore();
   const spy = vitest.spyOn(store, 'getAndSet');
   const { ctx } = fakeCtx();
-  await run({ store, duration: '10s' }, ctx);
+  await run({ store, window: '10s' }, ctx);
   expect(spy).toHaveBeenCalledWith({
-    duration: 10_000,
-    maxRequest: 2500,
+    window: 10_000,
+    limit: 2500,
     key: 'aomex-rate-limit:ws:203.0.113.1',
   });
 
-  expect(() => websocketRateLimit({ duration: -1 })).toThrow(RangeError);
-  expect(() => websocketRateLimit({ duration: Number.NaN })).toThrow(RangeError);
+  expect(() => websocketRateLimit({ window: -1 })).toThrow(RangeError);
+  expect(() => websocketRateLimit({ window: Number.NaN })).toThrow(RangeError);
   expect(() =>
     websocketRateLimit({
       // @ts-expect-error 无单位字符串不是 DurationInput，运行时仍拒绝
-      duration: 'soon',
+      window: 'soon',
     }),
   ).toThrow(TypeError);
 });
@@ -149,8 +149,8 @@ test('默认身份、窗口和键前缀', async () => {
   const { ctx } = fakeCtx({ ip: '198.51.100.10' });
   await run({ store }, ctx);
   expect(spy).toHaveBeenCalledWith({
-    duration: 3_600_000,
-    maxRequest: 2500,
+    window: 3_600_000,
+    limit: 2500,
     key: 'aomex-rate-limit:ws:198.51.100.10',
   });
 });
@@ -162,7 +162,7 @@ test('存储抛错会冒泡；回推失败也会冒泡', async () => {
     }
   }
   const { ctx } = fakeCtx();
-  await expect(run({ store: new BoomStore(), maxRequest: 1 }, ctx)).rejects.toThrow(
+  await expect(run({ store: new BoomStore(), limit: 1 }, ctx)).rejects.toThrow(
     'store-down',
   );
 
@@ -171,8 +171,8 @@ test('存储抛错会冒泡；回推失败也会冒泡', async () => {
     throw new Error('gone');
   };
   const store = new RateLimitMemoryStore();
-  await run({ store, maxRequest: 1 }, limited.ctx);
-  await expect(run({ store, maxRequest: 1 }, limited.ctx)).rejects.toThrow('gone');
+  await run({ store, limit: 1 }, limited.ctx);
+  await expect(run({ store, limit: 1 }, limited.ctx)).rejects.toThrow('gone');
 });
 
 test('websocketRateLimit 首次处理消息时才登记 store 生命周期', async () => {
@@ -210,7 +210,7 @@ test('真实连接超限后仍保持打开', async () => {
   const { port } = await listenWebsocket(
     new TestWebApp(),
     {
-      mount: [websocketRateLimit({ maxRequest: 1, duration: 60_000 })],
+      mount: [websocketRateLimit({ limit: 1, window: 60_000 })],
       channels: [channel],
     },
     slot,
@@ -236,8 +236,8 @@ test('与 HTTP rateLimit 共用 store 时键前缀隔离、配额不混用', asy
     mount: [
       httpRateLimit({
         store,
-        maxRequest: 1,
-        duration: 60_000,
+        limit: 1,
+        window: 60_000,
         id: () => identity,
       }),
     ],
@@ -250,8 +250,8 @@ test('与 HTTP rateLimit 共用 store 时键前缀隔离、配额不混用', asy
     run(
       {
         store,
-        maxRequest: 1,
-        duration: 60_000,
+        limit: 1,
+        window: 60_000,
         id: () => identity,
       },
       ctx,
@@ -278,7 +278,7 @@ test('超限与拒绝文案跟随 WebsocketApp 的 language', async () => {
     new TestWebApp(),
     {
       language: { mode: 'fixed', language: 'en-US' },
-      mount: [websocketRateLimit({ maxRequest: 1, duration: 60_000 })],
+      mount: [websocketRateLimit({ limit: 1, window: 60_000 })],
       channels: [channel],
     },
     slot,

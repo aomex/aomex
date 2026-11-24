@@ -5,8 +5,8 @@ import { websocketRateLimit, type WebsocketRateLimitOptions } from '../src/webso
 expectType<SocketMiddleware>(websocketRateLimit());
 
 const options = {
-  maxRequest: 30,
-  duration: '10s',
+  limit: 30,
+  window: '10s',
   errorMessage: '稍后再试',
   id: (ctx) => {
     expectType<string>(ctx.client.id);
@@ -24,15 +24,15 @@ websocketRateLimit({
   id: () => 1,
 });
 
-websocketRateLimit({ duration: '1 hour' });
-websocketRateLimit({ duration: 10_000 });
+websocketRateLimit({ window: '1 hour' });
+websocketRateLimit({ window: 10_000 });
 
 websocketRateLimit({
   // @ts-expect-error 无单位的数字字符串不是 DurationInput
-  duration: '1',
+  window: '1',
 });
 
 websocketRateLimit({
-  // @ts-expect-error maxRequest 须为 number
-  maxRequest: '1',
+  // @ts-expect-error limit 须为 number
+  limit: '1',
 });

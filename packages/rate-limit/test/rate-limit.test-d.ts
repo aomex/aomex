@@ -5,23 +5,23 @@ import { rateLimit, type RateLimitOptions } from '../src/rate-limit';
 expectType<WebMiddleware>(rateLimit());
 
 const options = {
-  maxRequest: 30,
-  duration: '10s',
+  limit: 30,
+  window: '10s',
   errorMessage: '稍后再试',
   headers: false,
 } satisfies RateLimitOptions;
 void rateLimit(options);
 
-rateLimit({ duration: '1 hour' });
-rateLimit({ duration: 10_000 });
-rateLimit({ duration: 3600 * 1_000 });
+rateLimit({ window: '1 hour' });
+rateLimit({ window: 10_000 });
+rateLimit({ window: 3600 * 1_000 });
 
 rateLimit({
   // @ts-expect-error 无单位的数字字符串不是 DurationInput
-  duration: '1',
+  window: '1',
 });
 
 rateLimit({
-  // @ts-expect-error maxRequest 须为 number
-  maxRequest: '1',
+  // @ts-expect-error limit 须为 number
+  limit: '1',
 });

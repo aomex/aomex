@@ -29,7 +29,7 @@ afterAll(async () => {
 });
 
 test('输出', async () => {
-  const result = await store.getAndSet({ key: 'foo', maxRequest: 10, duration: 100 });
+  const result = await store.getAndSet({ key: 'foo', limit: 10, window: 100 });
   expect(Object.keys(result)).toMatchInlineSnapshot(`
     [
       "key",
@@ -41,27 +41,27 @@ test('输出', async () => {
 
 test('根据ID寻找', async () => {
   await expect(
-    store.getAndSet({ key: 'foo', maxRequest: 10, duration: 100 }),
+    store.getAndSet({ key: 'foo', limit: 10, window: 100 }),
   ).resolves.toHaveProperty('remaining', 10);
   await expect(
-    store.getAndSet({ key: 'foo', maxRequest: 10, duration: 100 }),
+    store.getAndSet({ key: 'foo', limit: 10, window: 100 }),
   ).resolves.toHaveProperty('remaining', 9);
 
   await expect(
-    store.getAndSet({ key: 'bar', maxRequest: 10, duration: 100 }),
+    store.getAndSet({ key: 'bar', limit: 10, window: 100 }),
   ).resolves.toHaveProperty('remaining', 10);
   await expect(
-    store.getAndSet({ key: 'foo', maxRequest: 10, duration: 100 }),
+    store.getAndSet({ key: 'foo', limit: 10, window: 100 }),
   ).resolves.toHaveProperty('remaining', 8);
 });
 
 test('并发', async () => {
   const result = await Promise.all([
-    store.getAndSet({ key: 'foo', maxRequest: 10, duration: 100 }),
-    store.getAndSet({ key: 'foo', maxRequest: 10, duration: 100 }),
-    store.getAndSet({ key: 'foo', maxRequest: 10, duration: 100 }),
-    store.getAndSet({ key: 'foo', maxRequest: 10, duration: 100 }),
-    store.getAndSet({ key: 'foo', maxRequest: 10, duration: 100 }),
+    store.getAndSet({ key: 'foo', limit: 10, window: 100 }),
+    store.getAndSet({ key: 'foo', limit: 10, window: 100 }),
+    store.getAndSet({ key: 'foo', limit: 10, window: 100 }),
+    store.getAndSet({ key: 'foo', limit: 10, window: 100 }),
+    store.getAndSet({ key: 'foo', limit: 10, window: 100 }),
   ]);
 
   expect(result.map((item) => item.remaining)).toStrictEqual([10, 9, 8, 7, 6]);
@@ -69,39 +69,39 @@ test('并发', async () => {
 
 test('过期自动重置剩余次数', async () => {
   await expect(
-    store.getAndSet({ key: 'foo', maxRequest: 10, duration: 100 }),
+    store.getAndSet({ key: 'foo', limit: 10, window: 100 }),
   ).resolves.toHaveProperty('remaining', 10);
   await expect(
-    store.getAndSet({ key: 'foo', maxRequest: 10, duration: 100 }),
+    store.getAndSet({ key: 'foo', limit: 10, window: 100 }),
   ).resolves.toHaveProperty('remaining', 9);
 
   await sleep(150);
   await expect(
-    store.getAndSet({ key: 'foo', maxRequest: 10, duration: 100 }),
+    store.getAndSet({ key: 'foo', limit: 10, window: 100 }),
   ).resolves.toHaveProperty('remaining', 10);
 });
 
 test('超过次数后，延长重置次数', async () => {
   const { resetAt: resetAt1 } = await store.getAndSet({
     key: 'foo',
-    maxRequest: 2,
-    duration: 2000,
+    limit: 2,
+    window: 2000,
   });
   await sleep(200);
   const { resetAt: resetAt2 } = await store.getAndSet({
     key: 'foo',
-    maxRequest: 2,
-    duration: 2000,
+    limit: 2,
+    window: 2000,
   });
   const { resetAt: resetAt3 } = await store.getAndSet({
     key: 'foo',
-    maxRequest: 2,
-    duration: 2000,
+    limit: 2,
+    window: 2000,
   });
   const { resetAt: resetAt4 } = await store.getAndSet({
     key: 'foo',
-    maxRequest: 2,
-    duration: 2000,
+    limit: 2,
+    window: 2000,
   });
   expect(resetAt1).toBe(resetAt2);
   expect(resetAt3).toBeGreaterThan(resetAt2);

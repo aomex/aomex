@@ -9,27 +9,27 @@ export class RateLimitMemoryStore extends RateLimitStore {
 
   override async getAndSet(data: {
     key: string;
-    maxRequest: number;
-    duration: number;
+    limit: number;
+    window: number;
   }): Promise<RateLimitState> {
-    const { key, maxRequest, duration } = data;
+    const { key, limit, window: windowMs } = data;
     const now = this.getMicroTime();
-    const durationMicro = duration * 1_000;
-    const startTime = now - durationMicro;
+    const windowMicro = windowMs * 1_000;
+    const startTime = now - windowMicro;
 
     let result = this.store.get(key);
     if (!result || result.expires < now) {
-      this.store.set(key, (result = { expires: now + durationMicro, records: [] }));
+      this.store.set(key, (result = { expires: now + windowMicro, records: [] }));
     }
 
     result.records = result.records.filter((record) => record >= startTime);
     const usedCount = result.records.length;
     result.records.push(now);
-    result.records = result.records.slice(-maxRequest);
-    result.expires = now + durationMicro;
+    result.records = result.records.slice(-limit);
+    result.expires = now + windowMicro;
 
-    const remaining = Math.max(maxRequest - usedCount, 0);
-    const resetAt = Math.floor(result.records[0]! + durationMicro);
+    const remaining = Math.max(limit - usedCount, 0);
+    const resetAt = Math.floor(result.records[0]! + windowMicro);
 
     return { key, remaining, resetAt };
   }

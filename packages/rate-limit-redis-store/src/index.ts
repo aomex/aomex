@@ -23,13 +23,13 @@ export class RateLimitRedisStore extends RateLimitStore {
 
   override async getAndSet(data: {
     key: string;
-    maxRequest: number;
-    duration: number;
+    limit: number;
+    window: number;
   }): Promise<RateLimitState> {
-    const { key, maxRequest, duration } = data;
+    const { key, limit, window: windowMs } = data;
     const now = this.getMicroTime();
-    const durationMicro = duration * 1_000;
-    const startTime = now - durationMicro;
+    const windowMsMicro = windowMs * 1_000;
+    const startTime = now - windowMsMicro;
 
     const result = (await this.redis
       .multi()
@@ -40,9 +40,9 @@ export class RateLimitRedisStore extends RateLimitStore {
       // @ts-expect-error stop 运行时仍接受 number
       .zrange(key, 0, 0)
       // @ts-expect-error stop 运行时仍接受 number
-      .zrange(key, -maxRequest, -maxRequest)
-      .zremrangebyrank(key, 0, -(maxRequest + 1))
-      .pexpire(key, duration)
+      .zrange(key, -limit, -limit)
+      .zremrangebyrank(key, 0, -(limit + 1))
+      .pexpire(key, windowMs)
       .exec()) as [
       never,
       [null, usedCount: Awaited<ReturnType<Redis['zcard']>>],
@@ -54,8 +54,8 @@ export class RateLimitRedisStore extends RateLimitStore {
     ];
 
     const usedCount = Number(result[1][1]);
-    const remaining = Math.max(maxRequest - usedCount, 0);
-    const resetAt = Number(result[remaining ? 3 : 4][1][0]) + durationMicro;
+    const remaining = Math.max(limit - usedCount, 0);
+    const resetAt = Number(result[remaining ? 3 : 4][1][0]) + windowMsMicro;
 
     return { key, remaining, resetAt };
   }

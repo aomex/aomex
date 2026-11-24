@@ -27,7 +27,7 @@ test('设置白名单', async () => {
   const app = new TestWebApp({
     mount: [
       rateLimit({
-        maxRequest: 1,
+        limit: 1,
         allowList: () => true,
       }),
       middleware.web((ctx) => {
@@ -48,7 +48,7 @@ test('无法识别ID视为白名单', async () => {
   const app = new TestWebApp({
     mount: [
       rateLimit({
-        maxRequest: 1,
+        limit: 1,
         id: () => false,
       }),
       middleware.web((ctx) => {
@@ -69,21 +69,21 @@ test('可读时长先折成毫秒；非法时长在创建时抛错', async () =>
   const store = new RateLimitMemoryStore();
   const spy = vitest.spyOn(store, 'getAndSet');
   const app = new TestWebApp({
-    mount: [rateLimit({ store, duration: '10s' })],
+    mount: [rateLimit({ store, window: '10s' })],
   });
   await supertest(app.listen()).get('/');
   expect(spy).toHaveBeenCalledWith({
-    duration: 10_000,
+    window: 10_000,
     key: 'aomex-rate-limit:::ffff:127.0.0.1',
-    maxRequest: 2500,
+    limit: 2500,
   });
 
-  expect(() => rateLimit({ duration: -1 })).toThrow(RangeError);
-  expect(() => rateLimit({ duration: Number.NaN })).toThrow(RangeError);
+  expect(() => rateLimit({ window: -1 })).toThrow(RangeError);
+  expect(() => rateLimit({ window: Number.NaN })).toThrow(RangeError);
   expect(() =>
     rateLimit({
       // @ts-expect-error 无单位字符串不是 DurationInput，运行时仍拒绝
-      duration: 'soon',
+      window: 'soon',
     }),
   ).toThrow(TypeError);
 });
@@ -96,15 +96,15 @@ test('默认id为客户端IP', async () => {
   });
   await supertest(app.listen()).get('/');
   expect(spy).toHaveBeenCalledWith({
-    duration: 3600000,
+    window: 3600000,
     key: 'aomex-rate-limit:::ffff:127.0.0.1',
-    maxRequest: 2500,
+    limit: 2500,
   });
 });
 
 test('携带额外报头', async () => {
   const app = new TestWebApp({
-    mount: [rateLimit({ maxRequest: 20 })],
+    mount: [rateLimit({ limit: 20 })],
   });
   await supertest(app.listen())
     .get('/')
@@ -117,7 +117,7 @@ test('携带额外报头', async () => {
 
 test('超过速率后抛出429状态码', async () => {
   const app = new TestWebApp({
-    mount: [rateLimit({ maxRequest: 2 })],
+    mount: [rateLimit({ limit: 2 })],
   });
   await supertest(app.listen()).get('/').expect(404).expect('x-ratelimit-remaining', '1');
   await supertest(app.listen()).get('/').expect(404).expect('x-ratelimit-remaining', '0');
@@ -132,7 +132,7 @@ test('超过速率后抛出429状态码', async () => {
 
 test('retry-after格式为秒', async () => {
   const app = new TestWebApp({
-    mount: [rateLimit({ maxRequest: 1, duration: 3600_000 })],
+    mount: [rateLimit({ limit: 1, window: 3600_000 })],
   });
   await supertest(app.listen()).get('/');
   await supertest(app.listen())
@@ -157,7 +157,7 @@ test('可以取消headers', async () => {
 
 test('定制重置周期', async () => {
   const app = new TestWebApp({
-    mount: [rateLimit({ duration: 1500, maxRequest: 2 })],
+    mount: [rateLimit({ window: 1500, limit: 2 })],
   });
 
   await supertest(app.listen()).get('/').expect(404);
@@ -173,7 +173,7 @@ test('定制重置周期', async () => {
 
 test('定制报错信息', async () => {
   const app = new TestWebApp({
-    mount: [rateLimit({ errorMessage: 'Wait a minute', maxRequest: 1 })],
+    mount: [rateLimit({ errorMessage: 'Wait a minute', limit: 1 })],
   });
   await supertest(app.listen()).get('/').expect(404);
   await supertest(app.listen()).get('/').expect(429, 'Wait a minute');
