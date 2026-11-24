@@ -9,8 +9,9 @@ export const initializeDocument = async (basic?: GenerateOpenapiOptions['docs'])
   document.tags ||= [];
   document.info ||= { title: '', version: '' };
   document.paths = {};
-  document.info.title ||= (await readPackageJson()).name || 'OpenAPI';
-  document.info.version ||= (await readPackageJson()).version || '0.0.0';
+  const pkg = await readPackageJson();
+  document.info.title ||= pkg.name || 'OpenAPI';
+  document.info.version ||= pkg.version || '0.0.0';
   return document;
 };
 
