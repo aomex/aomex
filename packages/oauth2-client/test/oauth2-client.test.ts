@@ -1356,10 +1356,13 @@ test('revoke：tokenAuth=basic', async () => {
   expect(body.get('client_id')).toBeNull();
 });
 
-test('构造：自动登记 store 生命周期', async () => {
+test('首次读写 state 时才登记 store 生命周期', async () => {
   const order: string[] = [];
   class TrackingAdapter extends CacheMemoryAdapter {
+    #connected = false;
     override async connect() {
+      if (this.#connected) return;
+      this.#connected = true;
       order.push('init');
     }
     override async disconnect() {
@@ -1367,7 +1370,7 @@ test('构造：自动登记 store 生命周期', async () => {
     }
   }
 
-  new OAuth2Client({
+  const client = new OAuth2Client({
     authorizationEndpoint: 'https://example.com/a',
     tokenEndpoint: 'https://example.com/t',
     clientId: 'cid',
@@ -1376,7 +1379,17 @@ test('构造：自动登记 store 生命周期', async () => {
     store: new TrackingAdapter(),
     onProfile: async () => ({}),
   });
-  await new Promise((r) => setTimeout(r, 20));
+  expect(order).toEqual([]);
+  const app = new TestWebApp({
+    mount: [
+      middleware.web(async (ctx) => {
+        ctx.send(await client.getAuthorizationUrl(ctx));
+      }),
+    ],
+  });
+  await supertest(app.listen()).get('/');
+  expect(order).toEqual(['init']);
+  await supertest(app.listen()).get('/');
   expect(order).toEqual(['init']);
   await internalDestroyServices([]);
   expect(order).toEqual(['init', 'destroy']);

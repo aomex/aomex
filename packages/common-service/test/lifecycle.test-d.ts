@@ -11,11 +11,11 @@ expectType<
   >
 >(true);
 
-const unregister = await registerLifecycle({
+const ready = registerLifecycle({
   onInit: () => {},
   onDestroy: () => {},
 });
-expectType<TypeEqual<() => void, typeof unregister>>(true);
+expectType<TypeEqual<Promise<void>, typeof ready>>(true);
 
 await registerLifecycle({
   onInit: async () => {},

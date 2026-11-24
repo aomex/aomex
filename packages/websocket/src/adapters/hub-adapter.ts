@@ -88,7 +88,7 @@ export abstract class WebsocketHubAdapter {
     this.readyPromise ??= registerLifecycle({
       onInit: () => this.onInit(),
       onDestroy: () => this.onDestroy(),
-    }).then(() => undefined);
+    });
     return this.readyPromise;
   }
 

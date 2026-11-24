@@ -1185,10 +1185,13 @@ test('并发 ipAbuse 满额时 onBlockIP 只触发一次', async () => {
   expect(await abuse.isIPBlocked(ip)).toBe(true);
 });
 
-test('abuse 自动登记适配器生命周期', async () => {
+test('abuse 首次使用时才登记适配器生命周期', async () => {
   const order: string[] = [];
   class TrackingAdapter extends CacheMemoryAdapter {
+    #connected = false;
     override async connect() {
+      if (this.#connected) return;
+      this.#connected = true;
       order.push('init');
     }
     override async disconnect() {
@@ -1196,8 +1199,11 @@ test('abuse 自动登记适配器生命周期', async () => {
     }
   }
 
-  createAbuse({ store: new TrackingAdapter(), strategies: [] });
-  await new Promise((r) => setTimeout(r, 20));
+  const abuse = createAbuse({ store: new TrackingAdapter(), strategies: [] });
+  expect(order).toEqual([]);
+  expect(await abuse.isIPBlocked('203.0.113.1')).toBe(false);
+  expect(order).toEqual(['init']);
+  expect(await abuse.isIPBlocked('203.0.113.1')).toBe(false);
   expect(order).toEqual(['init']);
   await internalDestroyServices([]);
   expect(order).toEqual(['init', 'destroy']);

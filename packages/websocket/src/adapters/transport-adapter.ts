@@ -180,7 +180,7 @@ export abstract class WebsocketTransportAdapter {
     this.readyPromise ??= registerLifecycle({
       onInit: () => this.onInit(),
       onDestroy: () => this.onDestroy(),
-    }).then(() => undefined);
+    });
     return this.readyPromise;
   }
 

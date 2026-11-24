@@ -13,9 +13,9 @@ afterEach(async () => {
 
 const noop = () => {};
 
-test('registerLifecycle：onInit 在返回前执行', async () => {
+test('registerLifecycle：返回 onInit 完成的 Promise', async () => {
   const order: string[] = [];
-  const unregister = await registerLifecycle({
+  const ready = registerLifecycle({
     onInit: async () => {
       await sleep(10);
       order.push('init');
@@ -24,10 +24,11 @@ test('registerLifecycle：onInit 在返回前执行', async () => {
       order.push('destroy');
     },
   });
+  expect(order).toEqual([]);
+  await ready;
   expect(order).toEqual(['init']);
-  unregister();
   await internalDestroyServices([]);
-  expect(order).toEqual(['init']);
+  expect(order).toEqual(['init', 'destroy']);
 });
 
 test('registerLifecycle：onInit 失败不登记 onDestroy', async () => {
@@ -42,20 +43,6 @@ test('registerLifecycle：onInit 失败不登记 onDestroy', async () => {
       },
     }),
   ).rejects.toThrow('init-fail');
-  await internalDestroyServices([]);
-  expect(destroyed).toBe(0);
-});
-
-test('registerLifecycle：unregister 后不再 onDestroy', async () => {
-  let destroyed = 0;
-  const unregister = await registerLifecycle({
-    onInit: noop,
-    onDestroy: () => {
-      destroyed += 1;
-    },
-  });
-  unregister();
-  unregister(); // 幂等
   await internalDestroyServices([]);
   expect(destroyed).toBe(0);
 });

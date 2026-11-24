@@ -116,7 +116,7 @@ export namespace OAuth2Client {
     scopes?: readonly string[];
     /**
      * 存放 state、PKCE verifier（及 OIDC nonce）。
-     * 构造时经 `registerLifecycle` 调用 `connect` / 关停时 `disconnect`
+     * 首次读写 state 时经 `registerLifecycle` 调用 `connect`，关停时 `disconnect`
      */
     store: CacheAdapter;
     /**
@@ -232,6 +232,7 @@ export class OAuth2Client<
   protected readonly tokenAuth: 'body' | 'basic';
   protected metadata: OidcMetadata | null = null;
   protected jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
+  protected readyPromise: Promise<void> | undefined;
 
   /** OIDC 且省略 `onProfile`：`callback` 返回已验签 claims（`Profile` 默认为 `IdTokenClaims`） */
   constructor(opts: OAuth2Client.OidcWithoutOnProfileOptions);
@@ -269,17 +270,24 @@ export class OAuth2Client<
     this.stateTtlMs = ttl;
     this.pkce = opts.pkce !== false;
     this.tokenAuth = opts.tokenAuth ?? 'body';
+  }
 
-    void registerLifecycle({
-      onInit: () => opts.store.connect(),
-      onDestroy: () => opts.store.disconnect(),
+  /**
+   * 确保 store 已 `connect`（可重入）。首次读写 state 时登记生命周期。
+   */
+  protected ensureReady(): Promise<void> {
+    this.readyPromise ??= registerLifecycle({
+      onInit: () => this.opts.store.connect(),
+      onDestroy: () => this.opts.store.disconnect(),
     });
+    return this.readyPromise;
   }
 
   /**
    * 写入 state（及 PKCE verifier / OIDC nonce）后返回授权 URL，不发送响应
    */
   async getAuthorizationUrl(ctx: WebContext): Promise<string> {
+    await this.ensureReady();
     const { authorizationEndpoint } = await this.resolveEndpoints();
     const state = this.randomToken();
     const verifier = this.pkce ? this.randomToken() : '';
@@ -967,6 +975,7 @@ export class OAuth2Client<
    * 并发 callback 仅一方成功；换票失败不恢复（防授权码重放）。
    */
   protected async consumeState(state: string): Promise<StatePayload> {
+    await this.ensureReady();
     const saved = await this.caching.getAndDelete<StatePayload>(this.stateKey(state));
     if (!saved || (this.pkce && !saved.verifier)) {
       throw new Error(i18n.t('invalid_state'));

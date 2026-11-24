@@ -14,12 +14,12 @@ let destroying: Promise<void> | null = null;
 /**
  * 注册进程级生命周期钩子（不进入 `services` 袋）。
  *
- * - `onInit`：本函数返回前 await
+ * - `onInit`：立即执行；返回的 Promise 在其完成后兑现
  * - `onDestroy`：由 `WebApp` / `ConsoleApp` 关停时经 `internalDestroyServices` 触发，并移除登记
  *
  * 库内自建资源（如 Redis store）应在构造时自动调用；业务侧 Prisma 等也可直接登记。
  *
- * @returns 取消登记；已销毁或已取消后再次调用无效果
+ * @returns `onInit` 完成的 Promise；`onInit` 失败则拒绝且不登记 `onDestroy`
  *
  * @example
  * ```ts
@@ -29,15 +29,10 @@ let destroying: Promise<void> | null = null;
  * });
  * ```
  */
-export const registerLifecycle = async (hooks: LifecycleHooks): Promise<() => void> => {
-  await hooks.onInit();
-
-  const entry: LifecycleEntry = { onDestroy: hooks.onDestroy };
-  entries.add(entry);
-
-  return () => {
-    entries.delete(entry);
-  };
+export const registerLifecycle = (hooks: LifecycleHooks): Promise<void> => {
+  return Promise.resolve(hooks.onInit()).then(() => {
+    entries.add({ onDestroy: hooks.onDestroy });
+  });
 };
 
 /**

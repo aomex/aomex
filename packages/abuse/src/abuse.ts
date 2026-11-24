@@ -137,13 +137,18 @@ export const createAbuse = <const S extends readonly AbuseStrategy[]>(
     throw new Error(i18n.t('missing_on_ban_user'));
   }
 
-  void registerLifecycle({
-    onInit: () => adapter.connect(),
-    onDestroy: () => adapter.disconnect(),
-  });
+  let ready: Promise<void> | undefined;
+  const ensureReady = () => {
+    ready ??= registerLifecycle({
+      onInit: () => adapter.connect(),
+      onDestroy: () => adapter.disconnect(),
+    });
+    return ready;
+  };
 
   const api: AbuseApi<InferUserAbuseReasons<S>, InferIpAbuseReasons<S>> = {
     async userAbuse(id, reason) {
+      await ensureReady();
       const reasonKey = String(reason);
       const strategy = userAbuseStrategies.get(reasonKey);
       if (!strategy) {
@@ -175,6 +180,7 @@ export const createAbuse = <const S extends readonly AbuseStrategy[]>(
       }
     },
     async ipAbuse(ip, reason) {
+      await ensureReady();
       const reasonKey = String(reason);
       const strategy = ipAbuseStrategies.get(reasonKey);
       if (!strategy) {
@@ -191,6 +197,7 @@ export const createAbuse = <const S extends readonly AbuseStrategy[]>(
       });
     },
     async blockIP(ip, duration) {
+      await ensureReady();
       const blockFor = parseDuration(duration);
       if (blockFor <= 0) {
         throw new Error(i18n.t('invalid_block_for', { blockFor: String(duration) }));
@@ -202,14 +209,17 @@ export const createAbuse = <const S extends readonly AbuseStrategy[]>(
       });
     },
     async unblockIP(ip) {
+      await ensureReady();
       await caching.delete(getBlockKey(ip));
     },
     async isIPBlocked(ip) {
+      await ensureReady();
       return caching.exists(getBlockKey(ip));
     },
   };
 
   const md = middleware.web(async (ctx, next) => {
+    await ensureReady();
     if (await bypass(ctx)) return next();
 
     const ip = ctx.request.ip;
