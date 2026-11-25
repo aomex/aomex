@@ -6,7 +6,7 @@ export abstract class Transport {
   abstract consume(log: LogRecord): Promise<any>;
 
   /**
-   * 异步初始化。`BaseLoggerService` 在首次投递 / 服务 `onInit` 时会等待全部 transport 完成。
+   * 异步初始化。`Logger` 的 `ensureReady` 会等待全部 transport 完成。
    * 默认无操作。
    */
   async onInit(): Promise<void> {}
@@ -17,7 +17,7 @@ export abstract class Transport {
   async flush(): Promise<void> {}
 
   /**
-   * 异步销毁。服务 `onDestroy` 在 `flush` 之后会等待全部 transport 完成。
+   * 异步销毁。关停 lifecycle 在刷队列后会等待全部 transport 完成。
    * 默认无操作。
    */
   async onDestroy(): Promise<void> {}

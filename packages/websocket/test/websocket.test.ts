@@ -4,8 +4,9 @@ import { join } from 'node:path';
 import type http from 'node:http';
 import { Socket } from 'node:net';
 import { afterEach, expect, test, vi } from 'vitest';
+import { Logger, Transport, type LogRecord } from '@aomex/logger';
 import { rule } from '@aomex/common';
-import { BaseWebRequest, type WebApp } from '@aomex/web';
+import { BaseWebRequest } from '@aomex/web';
 import { TestWebApp } from '../../web/src/testing';
 import { Channel, MemoryHub, channels, payload } from '../src';
 import { TestWebsocketApp } from '../src/testing';
@@ -13,6 +14,13 @@ import { i18n } from '../src/i18n';
 import { WsTransport } from '../../websocket-ws-transport/src';
 import { listenWebsocket, closeServer, connect, recv, send } from './fixture/ws-helpers';
 import type { AddressInfo } from 'node:net';
+
+class CaptureTransport extends Transport {
+  messages: LogRecord[] = [];
+  override async consume(message: LogRecord): Promise<void> {
+    this.messages.push(message);
+  }
+}
 
 const fixtureDir = join(import.meta.dirname, 'fixture', 'channels');
 const slot: { server?: http.Server } = {};
@@ -105,6 +113,32 @@ test('入站事件经 Channel 处理并可回发', async () => {
     event: 'echo',
     data: { hello: 'world' },
   });
+  ws.close();
+});
+
+test('ctx.logger 与 App logger 为同一实例并可写', async () => {
+  const capture = new CaptureTransport();
+  const logger = new Logger({ transports: [{ transport: capture }] });
+  const channel = new Channel();
+  channel.on('log', {
+    action: async (ctx) => {
+      expect(ctx.logger).toBe(logger);
+      ctx.logger.info('from-ctx');
+      ctx.client.send('ok');
+    },
+  });
+
+  const { port } = await listenWebsocket(
+    new TestWebApp({ logger }),
+    { channels: [channel] },
+    slot,
+  );
+  const ws = await connect(port);
+  send(ws, 'log');
+  await expect(recv(ws)).resolves.toEqual({ event: 'ok', data: undefined });
+  await logger.flush();
+  expect(capture.messages).toHaveLength(1);
+  expect(capture.messages[0]).toMatchObject({ level: 'info', message: 'from-ctx' });
   ws.close();
 });
 
@@ -1065,7 +1099,7 @@ test('握手校验抛错的日志跟随 language', async () => {
       messages.push(message ?? '');
     },
     warn() {},
-  } as unknown as WebApp.Logger;
+  } as unknown as Logger;
   const { port } = await listenWebsocket(
     new TestWebApp({ logger }),
     {

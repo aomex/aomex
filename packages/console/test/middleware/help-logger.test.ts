@@ -2,8 +2,8 @@ import { TestConsoleApp } from '../../src/testing';
 import { afterAll, expect, test, vitest } from 'vitest';
 import { ConsoleApp, ConsoleMiddleware } from '../../src';
 import { afterEach } from 'node:test';
-import { combineServices, middleware } from '@aomex/common';
-import { BaseLoggerService } from '@aomex/logger';
+import { middleware } from '@aomex/common';
+import { Logger } from '@aomex/logger';
 import { stripVTControlCharacters } from 'node:util';
 import { helpLogger } from '../../src/middleware/help-logger';
 let lastMsg = '';
@@ -181,9 +181,9 @@ test('指令参数', async () => {
 });
 
 test('检测相似指令', async () => {
-  class CaptureLogger extends BaseLoggerService {
-    protected createTransports() {
-      return [];
+  class CaptureLogger extends Logger {
+    constructor() {
+      super({ transports: [] });
     }
     override error(messageOrError: unknown, message?: string): void {
       lastMsg = `Error: ${Error.isError(messageOrError) ? messageOrError.message : String(messageOrError)}`;
@@ -191,13 +191,10 @@ test('检测相似指令', async () => {
       else super.error(messageOrError, message);
     }
   }
-  const services = await combineServices(
-    { logger: async () => CaptureLogger },
-    { eager: ['logger'] },
-  );
+  const logger = new CaptureLogger();
   const app = new ConsoleApp({
-    services,
-    logger: services.logger,
+    services: [],
+    logger,
     language: 'zh-CN',
     mount: [
       middleware.console({

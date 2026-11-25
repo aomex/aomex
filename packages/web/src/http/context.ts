@@ -1,3 +1,4 @@
+import type { Logger } from '@aomex/logger';
 import type { WebApp } from './app';
 import type { WebRequest } from './request';
 import type { Body, WebResponse } from './response';
@@ -25,7 +26,7 @@ export class WebContext {
   }
 
   /** 与构造时传入的 `logger` 相同，取自 app */
-  get logger(): WebApp.Logger {
+  get logger(): Logger {
     return this.app['logger'];
   }
 

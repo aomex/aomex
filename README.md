@@ -68,7 +68,7 @@ npm create aomex
 
 | Name                                          | Version                                                     | Desc                         |
 | --------------------------------------------- | ----------------------------------------------------------- | ---------------------------- |
-| [logger](./packages/logger)                   | ![npm](https://img.shields.io/npm/v/@aomex/logger)          | 日志服务与内置出口           |
+| [logger](./packages/logger)                   | ![npm](https://img.shields.io/npm/v/@aomex/logger)          | 日志与内置出口               |
 | [logger-sentry](./packages/logger-sentry)     | ![npm](https://img.shields.io/npm/v/@aomex/logger-sentry)   | Sentry 出口                  |
 | [logger-telegram](./packages/logger-telegram) | ![npm](https://img.shields.io/npm/v/@aomex/logger-telegram) | Telegram Bot 出口            |
 | [access-log](./packages/access-log)           | ![npm](https://img.shields.io/npm/v/@aomex/access-log)      | 访问日志（HTTP / WebSocket） |

@@ -13,9 +13,8 @@ import {
   middleware,
   type CombinedServices,
   type I18nLanguage,
-  type PromisifiedService,
 } from '@aomex/common';
-import type { BaseLoggerService } from '@aomex/logger';
+import type { Logger } from '@aomex/logger';
 import { WebContext } from './context';
 import type { HttpError } from '../utils';
 import type { WebMiddlewareToken } from '../override';
@@ -25,8 +24,6 @@ import type { EnvelopeOptions } from './envelope';
 import { createEnvelopeMiddleware } from '../middleware/envelope';
 
 export namespace WebApp {
-  export type Logger = PromisifiedService<BaseLoggerService>;
-
   export interface Option<T extends WebMiddlewareToken[] | []> {
     /**
      * 全局中间件
@@ -34,7 +31,7 @@ export namespace WebApp {
      * ```typescript
      * const app = new WebApp({
      *   services,
-     *   logger: services.logger,
+     *   logger,
      *   language: { mode: 'fixed', language: 'zh-CN' },
      *   proxyIP: { mode: 'detect' },
      *   mount: [md1, md2],
@@ -83,17 +80,19 @@ export namespace WebApp {
      */
     shutdown?: ShutdownOption;
     /**
-     * 经 `combineServices` 处理后的 logger（通常为 `services.logger`）。
+     * 应用日志实例（`new Logger({ transports })`）。
      * 默认 `error` 监听 / `ctx.logger` 均走此实例。
+     * 首次写日志时懒连接，并经内部 `registerLifecycle` 随 App 关停自动销毁。
      *
      * ```ts
-     * const services = await combineServices(
-     *   { logger: () => import('./logger.service.js') },
-     *   { eager: ['logger'] },
-     * );
+     * import { Logger, ConsoleTransport } from '@aomex/logger';
+     *
+     * const logger = new Logger({
+     *   transports: [{ transport: new ConsoleTransport() }],
+     * });
      * new WebApp({
      *   services,
-     *   logger: services.logger,
+     *   logger,
      *   language: { mode: 'fixed', language: 'zh-CN' },
      *   proxyIP: { mode: 'detect' },
      * });
@@ -226,7 +225,7 @@ export class WebApp<
   error: [err: HttpError, ctx: WebContext & WebApp.Props];
 }> {
   protected readonly middlewareList: WebMiddlewareToken[];
-  protected readonly logger: WebApp.Logger;
+  protected readonly logger: Logger;
   /** 关停前半段钩子（与 `server.close` 并行）；如 `WebsocketApp.attach` 登记的排空 */
   protected readonly shutdownHooks = new Set<() => void | Promise<void>>();
   /** 本应用创建的 HTTP(S) Server；多次 `http()` / `https()` 共用一次信号关停 */

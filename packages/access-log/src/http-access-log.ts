@@ -1,5 +1,5 @@
 import { middleware } from '@aomex/common';
-import { BaseLoggerService, ConsoleTransport, type Transport } from '@aomex/logger';
+import { Logger, ConsoleTransport, type Transport } from '@aomex/logger';
 import type { WebContext, WebMiddleware } from '@aomex/web';
 import { HttpAccessLogToken } from './http-access-log-token';
 import { Counter } from './counter';
@@ -33,16 +33,6 @@ export interface HttpAccessLogOptions {
   customTokens?: { [key: string]: (ctx: WebContext) => string | Promise<string> };
 }
 
-class HttpAccessLogService extends BaseLoggerService {
-  constructor(private readonly entries: BaseLoggerService.TransportEntry[]) {
-    super();
-  }
-
-  protected createTransports(): BaseLoggerService.TransportEntry[] {
-    return this.entries;
-  }
-}
-
 /**
  * HTTP 访问日志。挂在 `WebApp.mount` 里。
  */
@@ -54,9 +44,9 @@ export const httpAccessLog = (options: HttpAccessLogOptions = {}): WebMiddleware
 
   const transportList = options.transports ?? [new ConsoleTransport()];
 
-  const logger = new HttpAccessLogService(
-    transportList.map((transport) => ({ transport })),
-  );
+  const logger = new Logger({
+    transports: transportList.map((transport) => ({ transport })),
+  });
 
   return middleware.web(async (ctx, next) => {
     if (disabled || transportList.length === 0) return next();

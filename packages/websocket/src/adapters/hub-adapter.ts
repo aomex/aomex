@@ -1,5 +1,5 @@
 import { registerLifecycle } from '@aomex/common';
-import type { WebApp } from '@aomex/web';
+import type { Logger } from '@aomex/logger';
 import { i18n } from '../i18n';
 import type {
   WebsocketMetricEvent,
@@ -56,7 +56,7 @@ const DEFAULT_FANOUT_BATCH_SIZE = 256;
  * import { RedisHub } from '@aomex/websocket-redis-hub';
  *
  * const ws = new WebsocketApp({
- *   logger: services.logger,
+ *   logger,
  *   language: { mode: 'fixed', language: 'zh-CN' },
  *   transport: new WsTransport(),
  *   hub: new RedisHub({ host: '127.0.0.1', port: 6379, fanoutBatchSize: 512 }),
@@ -72,7 +72,7 @@ export abstract class WebsocketHubAdapter {
   protected deliver: WebsocketHubDeliver = () => {};
   protected metricHandler?: WebsocketMetricHandler;
   /** 由 {@link WebsocketApp} 在构造时注入的应用日志 */
-  protected logger!: WebApp.Logger;
+  protected logger!: Logger;
   /** 本机扇出批次，构造时解析；非法值回退默认 */
   protected readonly fanoutBatchSize: number;
 
@@ -88,6 +88,9 @@ export abstract class WebsocketHubAdapter {
     this.readyPromise ??= registerLifecycle({
       onInit: () => this.onInit(),
       onDestroy: () => this.onDestroy(),
+    }).catch((err) => {
+      this.readyPromise = undefined;
+      throw err;
     });
     return this.readyPromise;
   }
@@ -107,7 +110,7 @@ export abstract class WebsocketHubAdapter {
   }
 
   /** 由 {@link WebsocketApp} 注入应用日志。后台失败都写到这里。 */
-  bindLogger(logger: WebApp.Logger): void {
+  bindLogger(logger: Logger): void {
     this.logger = logger;
   }
 

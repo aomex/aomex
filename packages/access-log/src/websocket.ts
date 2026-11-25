@@ -1,7 +1,7 @@
 import '@aomex/websocket';
 import type { WebsocketContext } from '@aomex/websocket';
 import { middleware } from '@aomex/common';
-import { BaseLoggerService, ConsoleTransport, type Transport } from '@aomex/logger';
+import { Logger, ConsoleTransport, type Transport } from '@aomex/logger';
 import { replaceWebsocketToken } from './replace-websocket-token';
 import { WebsocketAccessLogToken } from './websocket-token';
 
@@ -35,16 +35,6 @@ export interface WebsocketAccessLogOptions {
   };
 }
 
-class WebsocketAccessLogService extends BaseLoggerService {
-  constructor(private readonly entries: BaseLoggerService.TransportEntry[]) {
-    super();
-  }
-
-  protected createTransports(): BaseLoggerService.TransportEntry[] {
-    return this.entries;
-  }
-}
-
 /**
  * 入站消息访问日志。挂在 `WebsocketApp.mount` 里、`channels()` 前面。
  * 每条入站消息在中间件链结束后打一条日志（含抛错路径）。
@@ -69,9 +59,9 @@ export const websocketAccessLog = (options: WebsocketAccessLogOptions = {}) => {
 
   const transportList = options.transports ?? [new ConsoleTransport()];
 
-  const logger = new WebsocketAccessLogService(
-    transportList.map((transport) => ({ transport })),
-  );
+  const logger = new Logger({
+    transports: transportList.map((transport) => ({ transport })),
+  });
 
   return middleware.socket(async (ctx, next) => {
     if (disabled || transportList.length === 0) return next();

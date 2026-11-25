@@ -1,3 +1,4 @@
+import type { Logger } from '@aomex/logger';
 import type { ConsoleApp } from './app';
 import type { ConsoleInput } from './input';
 
@@ -10,7 +11,7 @@ export class ConsoleContext {
   ) {}
 
   /** 与构造时传入的 `logger` 相同，取自 app */
-  get logger(): ConsoleApp.Logger {
+  get logger(): Logger {
     return this.app['logger'];
   }
 }

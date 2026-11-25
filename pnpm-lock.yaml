@@ -1000,6 +1000,9 @@ importers:
       '@aomex/common':
         specifier: workspace:*
         version: link:../common
+      '@aomex/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@aomex/web':
         specifier: workspace:*
         version: link:../web

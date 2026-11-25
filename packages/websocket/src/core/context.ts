@@ -1,3 +1,4 @@
+import type { Logger } from '@aomex/logger';
 import type { WebsocketAll, WebsocketClient, WebsocketRoom } from './client';
 
 export declare namespace WebsocketContext {
@@ -29,6 +30,7 @@ export declare namespace WebsocketContext {
  *     ctx.payload;      // 校验后的消息体
  *     ctx.rawPayload;   // 原始入站 data（未校验）
  *     ctx.client;       // 当前连接
+ *     ctx.logger;       // 与 WebsocketApp 构造时传入的 logger 相同
  *     ctx.all;          // 全体在线广播（句柄，非数组）
  *     await ctx.send('ack', { ok: true }); // 等同 ctx.client.send
  *     ctx.room('lobby').send('chat.message', ctx.payload);
@@ -86,6 +88,10 @@ export class WebsocketContext {
      * ```
      */
     public readonly rawPayload: unknown,
+    /**
+     * 与 `WebsocketApp` 构造时传入的 `logger` 相同。
+     */
+    public readonly logger: Logger,
   ) {}
 
   /**

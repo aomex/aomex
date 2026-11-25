@@ -79,6 +79,9 @@ export const websocketRateLimit = (options: WebsocketRateLimitOptions = {}) => {
     ready ??= registerLifecycle({
       onInit: () => store.onInit(),
       onDestroy: () => store.onDestroy(),
+    }).catch((err) => {
+      ready = undefined;
+      throw err;
     });
     await ready;
 

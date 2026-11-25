@@ -200,6 +200,29 @@ test('websocketRateLimit 首次处理消息时才登记 store 生命周期', asy
   expect(order).toEqual(['init', 'destroy']);
 });
 
+test('websocketRateLimit onInit 失败清空 ready，下次可重试', async () => {
+  let fail = true;
+  let inits = 0;
+  class FlakyStore extends RateLimitStore {
+    override async onInit() {
+      inits += 1;
+      if (fail) throw new Error('ws-store-init-boom');
+    }
+    override async getAndSet(): Promise<RateLimitState> {
+      return { key: 'k', remaining: 1, resetAt: 0 };
+    }
+  }
+
+  const { ctx } = fakeCtx();
+  const mdw = websocketRateLimit({ store: new FlakyStore() });
+  await expect(mdw['fn'](ctx, async () => {})).rejects.toThrow('ws-store-init-boom');
+  expect(inits).toBe(1);
+
+  fail = false;
+  await mdw['fn'](ctx, async () => {});
+  expect(inits).toBe(2);
+});
+
 test('真实连接超限后仍保持打开', async () => {
   const channel = new Channel();
   channel.on('ping', {

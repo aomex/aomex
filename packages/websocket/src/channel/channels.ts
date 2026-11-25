@@ -16,7 +16,7 @@ import { i18n } from '../i18n';
  *
  * ```ts
  * new WebsocketApp({
- *   logger: services.logger,
+ *   logger,
  *   language: { mode: 'fixed', language: 'zh-CN' },
  *   transport: new WsTransport(),
  *   mount: [

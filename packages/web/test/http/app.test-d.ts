@@ -1,7 +1,8 @@
 import { combineServices, middleware, Service } from '@aomex/common';
 import { WebApp, WebContext, formatError } from '../../src';
-import { TestWebApp, TestWebLoggerService } from '../../src/testing';
+import { TestWebApp, createTestWebLogger } from '../../src/testing';
 import { expectType } from 'ts-expect';
+import type { Logger } from '@aomex/logger';
 import type { HttpError } from '../../src';
 import http from 'http';
 
@@ -17,17 +18,16 @@ const proxyIP = { mode: 'detect' } as const;
 }
 
 {
-  const services = await combineServices({
-    logger: async () => TestWebLoggerService,
-  });
+  const logger = createTestWebLogger();
+  const services = await combineServices({});
   // @ts-expect-error 缺少 language / proxyIP
-  new WebApp({ services, logger: services.logger });
+  new WebApp({ services, logger });
   // @ts-expect-error 缺少 proxyIP
-  new WebApp({ services, logger: services.logger, language });
-  new WebApp({ services, logger: services.logger, language, proxyIP });
+  new WebApp({ services, logger, language });
+  new WebApp({ services, logger, language, proxyIP });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     body: {
@@ -37,7 +37,7 @@ const proxyIP = { mode: 'detect' } as const;
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     body: {
@@ -47,7 +47,7 @@ const proxyIP = { mode: 'detect' } as const;
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     // @ts-expect-error
@@ -55,7 +55,7 @@ const proxyIP = { mode: 'detect' } as const;
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     // @ts-expect-error
@@ -63,7 +63,7 @@ const proxyIP = { mode: 'detect' } as const;
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     // @ts-expect-error
@@ -71,7 +71,7 @@ const proxyIP = { mode: 'detect' } as const;
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     // @ts-expect-error
@@ -79,28 +79,28 @@ const proxyIP = { mode: 'detect' } as const;
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     body: {},
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     body: { payload: {} },
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     body: { formData: {} },
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     // @ts-expect-error
@@ -108,104 +108,104 @@ const proxyIP = { mode: 'detect' } as const;
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP: { mode: 'detect' },
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP: { mode: 'specify', header: 'x-forwarded-for', hops: 1 },
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP: { mode: 'specify', header: 'x-real-ip', hops: 1 },
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP: { mode: 'specify', header: 'cf-connecting-ip', hops: 0 },
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP: { mode: 'specify', header: 'x-custom-client-ip', hops: 1 },
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP: { mode: 'specify', header: 'X-My-Real-IP', hops: 2 },
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     // @ts-expect-error specify 缺 header
     proxyIP: { mode: 'specify', hops: 1 },
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     // @ts-expect-error specify 缺 hops
     proxyIP: { mode: 'specify', header: 'x-forwarded-for' },
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     // @ts-expect-error hops 须为 number
     proxyIP: { mode: 'specify', header: 'x-forwarded-for', hops: '1' },
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     // @ts-expect-error
     proxyIP: { header: 'x-forwarded-for', hops: 1 },
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     // @ts-expect-error
     proxyIP: true,
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     proxyIP,
     // @ts-expect-error
     language: { mode: 'fixed' },
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     proxyIP,
     // @ts-expect-error fallback 必填
     language: { mode: 'dynamic' },
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language: { mode: 'dynamic', fallback: 'zh-CN' },
     proxyIP,
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language: { mode: 'dynamic', header: 'accept-language', fallback: 'en-US' },
     proxyIP,
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     proxyIP,
     // @ts-expect-error
     language: { mode: 'fixed', language: 'zh_CN' },
@@ -223,19 +223,19 @@ const proxyIP = { mode: 'detect' } as const;
   // @ts-expect-error 缺少 logger
   new WebApp({ services: withoutLogger, language, proxyIP });
 
+  const logger = createTestWebLogger();
   const services = await combineServices({
-    logger: async () => TestWebLoggerService,
     demo: async () => Demo,
   });
-  new WebApp({ services, logger: services.logger, language, proxyIP });
+  new WebApp({ services, logger, language, proxyIP });
   new WebApp({
     services: [services, services],
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
   });
   // @ts-expect-error
-  new WebApp({ services: 1, logger: services.logger, language, proxyIP });
+  new WebApp({ services: 1, logger, language, proxyIP });
   // @ts-expect-error
   new WebApp({ services, logger: 1, language, proxyIP });
 }
@@ -258,10 +258,9 @@ const proxyIP = { mode: 'detect' } as const;
 
 // 监听http
 {
-  const services = await combineServices({
-    logger: async () => TestWebLoggerService,
-  });
-  const app = new WebApp({ services, logger: services.logger, language, proxyIP });
+  const logger = createTestWebLogger();
+  const services = await combineServices({});
+  const app = new WebApp({ services, logger, language, proxyIP });
   app.listen();
   app.listen(3000);
   app.listen(3000, '127.0.0.1');
@@ -273,10 +272,9 @@ const proxyIP = { mode: 'detect' } as const;
 
 // 监听https
 {
-  const services = await combineServices({
-    logger: async () => TestWebLoggerService,
-  });
-  const app = new WebApp({ services, logger: services.logger, language, proxyIP });
+  const logger = createTestWebLogger();
+  const services = await combineServices({});
+  const app = new WebApp({ services, logger, language, proxyIP });
   // @ts-expect-error
   app.http({ cert: '' }).listen();
   app.https({ cert: '' }).listen();
@@ -284,20 +282,19 @@ const proxyIP = { mode: 'detect' } as const;
 
 // 挂载
 {
-  const services = await combineServices({
-    logger: async () => TestWebLoggerService,
-  });
+  const logger = createTestWebLogger();
+  const services = await combineServices({});
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     mount: undefined,
   });
-  new WebApp({ services, logger: services.logger, language, proxyIP, mount: [] });
+  new WebApp({ services, logger, language, proxyIP, mount: [] });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     // @ts-expect-error
@@ -305,7 +302,7 @@ const proxyIP = { mode: 'detect' } as const;
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     // @ts-expect-error
@@ -315,32 +312,31 @@ const proxyIP = { mode: 'detect' } as const;
 
 // shutdown
 {
-  const services = await combineServices({
-    logger: async () => TestWebLoggerService,
-  });
+  const logger = createTestWebLogger();
+  const services = await combineServices({});
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     shutdown: {},
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     shutdown: { timeout: 5_000 },
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     // @ts-expect-error timeout 须为 number
@@ -348,7 +344,7 @@ const proxyIP = { mode: 'detect' } as const;
   });
   new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language,
     proxyIP,
     // @ts-expect-error shutdown 须为对象
@@ -365,10 +361,9 @@ const proxyIP = { mode: 'detect' } as const;
 
 // 事件 / ctx.logger
 {
-  const services = await combineServices({
-    logger: async () => TestWebLoggerService,
-  });
-  const app = new WebApp({ services, logger: services.logger, language, proxyIP });
+  const logger = createTestWebLogger();
+  const services = await combineServices({});
+  const app = new WebApp({ services, logger, language, proxyIP });
   app.on('error', (err, ctx) => {
     expectType<HttpError>(err);
     expectType<WebContext & WebApp.Props>(ctx);
@@ -383,6 +378,6 @@ const proxyIP = { mode: 'detect' } as const;
   app.on('error', (err: string) => {});
 
   const ctx = null as unknown as WebContext;
-  expectType<WebApp.Logger>(ctx.logger);
-  expectType<WebApp.Logger>(app['logger']);
+  expectType<Logger>(ctx.logger);
+  expectType<Logger>(app['logger']);
 }

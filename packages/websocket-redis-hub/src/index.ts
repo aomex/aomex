@@ -57,7 +57,7 @@ export type RedisHubOptions = RedisOptions &
  * import { RedisHub } from '@aomex/websocket-redis-hub';
  *
  * const ws = new WebsocketApp({
- *   logger: services.logger,
+ *   logger,
  *   language: { mode: 'fixed', language: 'zh-CN' },
  *   transport: new WsTransport(),
  *   hub: new RedisHub({ host: '127.0.0.1', port: 6379, fanoutBatchSize: 512 }),

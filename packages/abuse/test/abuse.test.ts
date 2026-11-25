@@ -1185,3 +1185,24 @@ test('abuse 首次使用时才登记适配器生命周期', async () => {
   await internalDestroyServices([]);
   expect(order).toEqual(['init', 'destroy']);
 });
+
+test('abuse connect 失败清空 ready，下次可重试', async () => {
+  let fail = true;
+  let connects = 0;
+  class FlakyAdapter extends CacheMemoryAdapter {
+    override async connect() {
+      connects += 1;
+      if (fail) throw new Error('connect-boom');
+    }
+  }
+
+  const abuse = new Abuse({ store: new FlakyAdapter(), strategies: [] });
+  await expect(abuse.isIPBlocked('203.0.113.9')).rejects.toThrow('connect-boom');
+  expect(connects).toBe(1);
+
+  fail = false;
+  const afterFail = connects;
+  expect(await abuse.isIPBlocked('203.0.113.9')).toBe(false);
+  // ensureReady 会再调一次 connect；Caching 读写时还可能再连，故只断言有重试
+  expect(connects).toBeGreaterThan(afterFail);
+});

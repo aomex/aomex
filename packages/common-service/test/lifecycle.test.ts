@@ -47,6 +47,34 @@ test('registerLifecycle：onInit 失败不登记 onDestroy', async () => {
   expect(destroyed).toBe(0);
 });
 
+test('推荐写法：onInit 失败清空 ready，下次可再试', async () => {
+  let fail = true;
+  let inits = 0;
+  let ready: Promise<void> | undefined;
+  const ensure = () => {
+    ready ??= registerLifecycle({
+      onInit: async () => {
+        inits += 1;
+        if (fail) throw new Error('init-fail');
+      },
+      onDestroy: noop,
+    }).catch((err) => {
+      ready = undefined;
+      throw err;
+    });
+    return ready;
+  };
+
+  await expect(ensure()).rejects.toThrow('init-fail');
+  expect(inits).toBe(1);
+  expect(ready).toBeUndefined();
+
+  fail = false;
+  await ensure();
+  expect(inits).toBe(2);
+  await internalDestroyServices([]);
+});
+
 test('internalDestroyServices：空数组仍执行 lifecycle', async () => {
   let destroyed = 0;
   await registerLifecycle({

@@ -204,3 +204,27 @@ test('rateLimit 首次请求时才登记 store 生命周期', async () => {
   await internalDestroyServices([]);
   expect(order).toEqual(['init', 'destroy']);
 });
+
+test('rateLimit onInit 失败清空 ready，下次请求可重试', async () => {
+  let fail = true;
+  let inits = 0;
+  class FlakyStore extends RateLimitStore {
+    override async onInit() {
+      inits += 1;
+      if (fail) throw new Error('store-init-boom');
+    }
+    override async getAndSet() {
+      return { key: 'k', remaining: 1, resetAt: 0 };
+    }
+  }
+
+  const app = new TestWebApp({
+    mount: [rateLimit({ store: new FlakyStore() })],
+  });
+  await supertest(app.listen()).get('/').expect(500);
+  expect(inits).toBe(1);
+
+  fail = false;
+  await supertest(app.listen()).get('/').expect(404);
+  expect(inits).toBe(2);
+});

@@ -82,6 +82,9 @@ export const rateLimit = (options: RateLimitOptions = {}): WebMiddleware => {
     ready ??= registerLifecycle({
       onInit: () => store.onInit(),
       onDestroy: () => store.onDestroy(),
+    }).catch((err) => {
+      ready = undefined;
+      throw err;
     });
     await ready;
 

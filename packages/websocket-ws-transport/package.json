@@ -40,6 +40,7 @@
   },
   "devDependencies": {
     "@aomex/common": "workspace:*",
+    "@aomex/logger": "workspace:*",
     "@aomex/web": "workspace:*",
     "@aomex/websocket": "workspace:*",
     "@types/ws": "^8.18.2"

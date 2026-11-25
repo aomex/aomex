@@ -4,8 +4,8 @@ import type http from 'node:http';
 import { IncomingMessage } from 'node:http';
 import { Socket } from 'node:net';
 import { afterEach, expect, test, vi } from 'vitest';
+import type { Logger } from '@aomex/logger';
 import { internalDestroyServices } from '@aomex/common';
-import type { WebApp } from '@aomex/web';
 import { TestWebApp } from '../../web/src/testing';
 import {
   Channel,
@@ -322,7 +322,7 @@ test('传输初始化失败由 attach 记一条，握手不再重复', async () 
       messages.push(message ?? '');
     },
     warn() {},
-  } as unknown as WebApp.Logger;
+  } as unknown as Logger;
   const transport = new BoomTransport();
   const app = new TestWebApp({ logger });
   const httpServer = app.http({});
@@ -363,7 +363,7 @@ test('attach 把传输初始化失败交给日志且不产生未处理 rejection
       messages.push(message ?? '');
     },
     warn() {},
-  } as unknown as WebApp.Logger;
+  } as unknown as Logger;
   const transport = new BoomTransport();
   const app = new TestWebApp({ logger });
   const httpServer = app.http({});

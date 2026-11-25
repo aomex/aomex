@@ -1,6 +1,7 @@
 import { type TypeEqual, expectType } from 'ts-expect';
+import type { Logger } from '@aomex/logger';
 import { ConsoleApp, ConsoleContext, ConsoleError } from '../../src';
-import { TestConsoleApp, TestConsoleLoggerService } from '../../src/testing';
+import { TestConsoleApp, createTestConsoleLogger } from '../../src/testing';
 import { combineServices, middleware, Service } from '@aomex/common';
 
 const language = 'zh-CN' as const;
@@ -11,37 +12,36 @@ new ConsoleApp();
 new ConsoleApp({});
 
 {
-  const services = await combineServices({
-    logger: async () => TestConsoleLoggerService,
-  });
+  const logger = createTestConsoleLogger();
+  const services = await combineServices({});
   // @ts-expect-error 缺少 language
-  new ConsoleApp({ services, logger: services.logger });
-  const app = new ConsoleApp({ services, logger: services.logger, language });
+  new ConsoleApp({ services, logger });
+  const app = new ConsoleApp({ services, logger, language });
 
   // language
   {
-    new ConsoleApp({ services, logger: services.logger, language: 'en-US' });
+    new ConsoleApp({ services, logger, language: 'en-US' });
     // @ts-expect-error
-    new ConsoleApp({ services, logger: services.logger, language: 'zh_CN' });
+    new ConsoleApp({ services, logger, language: 'zh_CN' });
   }
 
   // 挂载
   {
     new ConsoleApp({
       services,
-      logger: services.logger,
+      logger,
       language,
       mount: undefined,
     });
-    new ConsoleApp({ services, logger: services.logger, language, mount: [] });
+    new ConsoleApp({ services, logger, language, mount: [] });
     new ConsoleApp({
       services,
-      logger: services.logger,
+      logger,
       language,
       mount: [middleware.console(() => {}), middleware.mixin(() => {})],
     });
     // @ts-expect-error
-    new ConsoleApp({ services, logger: services.logger, language, mount: {} });
+    new ConsoleApp({ services, logger, language, mount: {} });
   }
 
   // services / logger
@@ -55,24 +55,24 @@ new ConsoleApp({});
     // @ts-expect-error 缺少 logger
     new ConsoleApp({ services: withoutLogger, language });
 
-    const withLogger = await combineServices({
-      logger: async () => TestConsoleLoggerService,
+    const withServices = await combineServices({
       demo: async () => Demo,
     });
+    const withLogger = createTestConsoleLogger();
     new ConsoleApp({
-      services: withLogger,
-      logger: withLogger.logger,
+      services: withServices,
+      logger: withLogger,
       language,
     });
     new ConsoleApp({
-      services: [withLogger],
-      logger: withLogger.logger,
+      services: [withServices],
+      logger: withLogger,
       language,
     });
     // @ts-expect-error
-    new ConsoleApp({ services: 1, logger: withLogger.logger, language });
+    new ConsoleApp({ services: 1, logger: withLogger, language });
     // @ts-expect-error
-    new ConsoleApp({ services: withLogger, logger: 1, language });
+    new ConsoleApp({ services: withServices, logger: 1, language });
   }
 
   // TestConsoleApp：services/logger/language 选填
@@ -112,7 +112,7 @@ new ConsoleApp({});
   // ctx.logger
   {
     const ctx = null as unknown as ConsoleContext;
-    expectType<TypeEqual<ConsoleApp.Logger, typeof ctx.logger>>(true);
-    expectType<TypeEqual<ConsoleApp.Logger, (typeof app)['logger']>>(true);
+    expectType<TypeEqual<Logger, typeof ctx.logger>>(true);
+    expectType<TypeEqual<Logger, (typeof app)['logger']>>(true);
   }
 }

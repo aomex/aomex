@@ -1,28 +1,14 @@
-import { combineServices, internalDestroyServices } from '@aomex/common';
+import { internalDestroyServices } from '@aomex/common';
+import timers from 'node:timers/promises';
 import { afterEach, describe, expect, test, vitest } from 'vitest';
-import {
-  BaseLoggerService,
-  LOGGER_LEVELS,
-  ConsoleTransport,
-  type LogRecord,
-} from '../src';
+import { Logger, LOGGER_LEVELS, ConsoleTransport, type LogRecord } from '../src';
 import { MockTransport } from './mocks/mock-transport';
 
 afterEach(() => {
   vitest.restoreAllMocks();
 });
 
-class ProbeLoggerService extends BaseLoggerService {
-  constructor(private readonly entries: BaseLoggerService.TransportEntry[] = []) {
-    super();
-  }
-
-  protected createTransports() {
-    return this.entries;
-  }
-}
-
-const levelProbe = new ProbeLoggerService();
+const levelProbe = new Logger();
 
 test('标准六级与 LOGGER_LEVELS 一致', () => {
   expect(LOGGER_LEVELS).toStrictEqual([
@@ -92,25 +78,17 @@ describe('resolveLevelGate / isLevelEnabled', () => {
   });
 });
 
-test('onInit 后六级方法可写日志', async () => {
+test('六级方法可写日志', async () => {
   const transport = new MockTransport();
-  class DemoLoggerService extends BaseLoggerService {
-    protected createTransports() {
-      return [{ transport }];
-    }
-  }
+  const logger = new Logger({ transports: [{ transport }] });
 
-  const services = await combineServices({
-    logger: async () => DemoLoggerService,
-  });
-
-  await services.logger.trace('t');
-  await services.logger.debug('d');
-  await services.logger.info('i');
-  await services.logger.warn('w');
-  await services.logger.error('e');
-  await services.logger.fatal('f');
-  await services.logger.flush();
+  logger.trace('t');
+  logger.debug('d');
+  logger.info('i');
+  logger.warn('w');
+  logger.error('e');
+  logger.fatal('f');
+  await logger.flush();
 
   expect(transport.messages.map((m) => [m.level, m.message])).toStrictEqual([
     ['trace', 't'],
@@ -124,30 +102,24 @@ test('onInit 后六级方法可写日志', async () => {
 
 test('transport 按最低 level 过滤', async () => {
   const transport = new MockTransport();
-  class DemoLoggerService extends BaseLoggerService {
-    protected createTransports() {
-      return [{ transport, level: 'warn' as const }];
-    }
-  }
-
-  const services = await combineServices({
-    logger: async () => DemoLoggerService,
+  const logger = new Logger({
+    transports: [{ transport, level: 'warn' }],
   });
 
-  await services.logger.info('skip');
-  await services.logger.warn('w');
-  await services.logger.error('e');
-  await services.logger.fatal('f');
-  await services.logger.flush();
+  logger.info('skip');
+  logger.warn('w');
+  logger.error('e');
+  logger.fatal('f');
+  await logger.flush();
 
   expect(transport.messages.map((m) => m.message)).toStrictEqual(['w', 'e', 'f']);
 });
 
 test('transport 按 { min, max } 过滤', async () => {
   const transport = new MockTransport();
-  const logger = new ProbeLoggerService([
-    { transport, level: { min: 'warn', max: 'error' } },
-  ]);
+  const logger = new Logger({
+    transports: [{ transport, level: { min: 'warn', max: 'error' } }],
+  });
 
   logger.info('skip');
   logger.warn('w');
@@ -159,35 +131,20 @@ test('transport 按 { min, max } 过滤', async () => {
 });
 
 test('无 transport 时写日志不抛错', async () => {
-  class SilentLoggerService extends BaseLoggerService {
-    protected createTransports() {
-      return [];
-    }
-  }
-
-  const services = await combineServices({
-    logger: async () => SilentLoggerService,
-  });
-  await expect(services.logger.info('x')).resolves.toBeUndefined();
-  await expect(services.logger.flush()).resolves.toBeUndefined();
+  const logger = new Logger({ transports: [] });
+  expect(() => logger.info('x')).not.toThrow();
+  await expect(logger.flush()).resolves.toBeUndefined();
 });
 
-test('onDestroy 会 flush 刷完队列并调用 transport.onDestroy', async () => {
+test('关停时 flush 并调用 transport.onDestroy', async () => {
   const transport = new MockTransport();
   const consume = vitest.spyOn(transport, 'consume');
   const onDestroy = vitest.spyOn(transport, 'onDestroy');
 
-  class DemoLoggerService extends BaseLoggerService {
-    protected createTransports() {
-      return [{ transport }];
-    }
-  }
-
-  const services = await combineServices({
-    logger: async () => DemoLoggerService,
-  });
-  await services.logger.info('before-destroy');
-  await internalDestroyServices([services]);
+  const logger = new Logger({ transports: [{ transport }] });
+  logger.info('before-destroy');
+  await logger.flush();
+  await internalDestroyServices([]);
 
   expect(consume).toHaveBeenCalled();
   expect(onDestroy).toHaveBeenCalledOnce();
@@ -195,22 +152,67 @@ test('onDestroy 会 flush 刷完队列并调用 transport.onDestroy', async () =
   expect(transport.messages[0]!.message).toBe('before-destroy');
 });
 
+test('ensureReady 登记 lifecycle：关停时自动销毁', async () => {
+  const transport = new MockTransport();
+  const onInit = vitest.spyOn(transport, 'onInit');
+  const onDestroy = vitest.spyOn(transport, 'onDestroy');
+  const logger = new Logger({ transports: [{ transport }] });
+
+  logger.info('via-lifecycle');
+  await logger.flush();
+  expect(onInit).toHaveBeenCalledOnce();
+
+  await internalDestroyServices([]);
+  expect(onDestroy).toHaveBeenCalledOnce();
+  expect(transport.messages[0]!.message).toBe('via-lifecycle');
+});
+
+test('onInit 失败：清空 ready，下次可重试；write 不产生 unhandledRejection', async () => {
+  let fail = true;
+  let inits = 0;
+  class FlakyTransport extends MockTransport {
+    override async onInit(): Promise<void> {
+      inits += 1;
+      if (fail) throw new Error('init-boom');
+    }
+  }
+  const transport = new FlakyTransport();
+  const logger = new Logger({ transports: [{ transport }] });
+  const rejections: unknown[] = [];
+  const onReject = (reason: unknown) => {
+    rejections.push(reason);
+  };
+  process.on('unhandledRejection', onReject);
+  try {
+    logger.info('queued');
+    await timers.setTimeout(50);
+    expect(rejections).toEqual([]);
+    expect(inits).toBe(1);
+
+    await expect(logger.flush()).rejects.toThrow('init-boom');
+    expect(inits).toBe(2);
+
+    fail = false;
+    await logger.flush();
+    expect(inits).toBe(3);
+    expect(transport.messages.map((m) => m.message)).toEqual(['queued']);
+    await internalDestroyServices([]);
+  } finally {
+    process.off('unhandledRejection', onReject);
+  }
+});
+
 test('disabled transport 不调用 onDestroy', async () => {
   const active = new MockTransport();
   const disabled = new MockTransport();
   const onDestroy = vitest.spyOn(disabled, 'onDestroy');
 
-  class DemoLoggerService extends BaseLoggerService {
-    protected createTransports() {
-      return [{ transport: active }, { transport: disabled, disabled: true }];
-    }
-  }
-
-  const services = await combineServices({
-    logger: async () => DemoLoggerService,
+  const logger = new Logger({
+    transports: [{ transport: active }, { transport: disabled, disabled: true }],
   });
-  await services.logger.info('x');
-  await internalDestroyServices([services]);
+  logger.info('x');
+  await logger.flush();
+  await internalDestroyServices([]);
 
   expect(onDestroy).not.toHaveBeenCalled();
   expect(active.messages).toHaveLength(1);
@@ -218,10 +220,7 @@ test('disabled transport 不调用 onDestroy', async () => {
 
 test('子类可 override 标准 level 方法', async () => {
   const transport = new MockTransport();
-  class DemoLoggerService extends BaseLoggerService {
-    protected createTransports() {
-      return [{ transport }];
-    }
+  class DemoLogger extends Logger {
     override info(message: string): void;
     override info(err: unknown): void;
     override info(err: unknown, message: string): void;
@@ -238,65 +237,44 @@ test('子类可 override 标准 level 方法', async () => {
     }
   }
 
-  const services = await combineServices({
-    logger: async () => DemoLoggerService,
-  });
-  await services.logger.info('hi');
-  await services.logger.flush();
+  const logger = new DemoLogger({ transports: [{ transport }] });
+  logger.info('hi');
+  await logger.flush();
   expect(transport.messages[0]!.message).toBe('[app] hi');
 });
 
 test('子类可新增业务 level 方法（落到标准 write）', async () => {
   const transport = new MockTransport();
-  class DemoLoggerService extends BaseLoggerService {
-    protected createTransports() {
-      return [{ transport }];
-    }
+  class DemoLogger extends Logger {
     audit(message: string) {
       this.write('info', message);
     }
   }
 
-  const services = await combineServices({
-    logger: async () => DemoLoggerService,
-  });
-  await services.logger.audit('paid');
-  await services.logger.flush();
+  const logger = new DemoLogger({ transports: [{ transport }] });
+  logger.audit('paid');
+  await logger.flush();
   expect(transport.messages[0]).toMatchObject({ level: 'info', message: 'paid' });
 });
 
-test('createTransports 可使用内置 Console transport', async () => {
-  class DemoLoggerService extends BaseLoggerService {
-    protected createTransports() {
-      return [
-        {
-          transport: new ConsoleTransport({
-            output: process.stdout,
-          }),
-          level: 'fatal' as const,
-        },
-      ];
-    }
-  }
-
-  const services = await combineServices({
-    logger: async () => DemoLoggerService,
+test('可使用内置 Console transport', async () => {
+  const logger = new Logger({
+    transports: [
+      {
+        transport: new ConsoleTransport({
+          output: process.stdout,
+        }),
+        level: 'fatal',
+      },
+    ],
   });
-  await expect(services.logger.info('x')).resolves.toBeUndefined();
-});
-
-test('不经 combineServices 也可懒加载写日志', async () => {
-  const transport = new MockTransport();
-  const logger = new ProbeLoggerService([{ transport }]);
-  logger.info('direct');
+  expect(() => logger.info('x')).not.toThrow();
   await logger.flush();
-  expect(transport.messages).toHaveLength(1);
-  expect(transport.messages[0]!.message).toBe('direct');
 });
 
 test('withBindings 写入带 bindings，可嵌套合并', async () => {
   const transport = new MockTransport();
-  const logger = new ProbeLoggerService([{ transport }]);
+  const logger = new Logger({ transports: [{ transport }] });
 
   await logger.withBindings({ requestId: 'r1' }, async () => {
     expect(logger.bindings()).toStrictEqual({ requestId: 'r1' });
@@ -332,7 +310,7 @@ test('withBindings 写入带 bindings，可嵌套合并', async () => {
 
 test('空 bindings 不写入 LogRecord.bindings', async () => {
   const transport = new MockTransport();
-  const logger = new ProbeLoggerService([{ transport }]);
+  const logger = new Logger({ transports: [{ transport }] });
   await logger.withBindings({}, async () => {
     logger.info('plain');
   });
@@ -341,7 +319,7 @@ test('空 bindings 不写入 LogRecord.bindings', async () => {
 });
 
 test('withBindings 回调必须返回 Promise', async () => {
-  const logger = new ProbeLoggerService();
+  const logger = new Logger();
   const pending = logger.withBindings({ a: 1 }, async () => {
     expect(logger.bindings()).toStrictEqual({ a: 1 });
     return 42;
@@ -357,10 +335,9 @@ test('disabled transport 不 onInit / 不投递', async () => {
   const onInit = vitest.spyOn(disabled, 'onInit');
   const consume = vitest.spyOn(disabled, 'consume');
 
-  const logger = new ProbeLoggerService([
-    { transport: active },
-    { transport: disabled, disabled: true },
-  ]);
+  const logger = new Logger({
+    transports: [{ transport: active }, { transport: disabled, disabled: true }],
+  });
   logger.info('only-active');
   await logger.flush();
 
@@ -377,7 +354,9 @@ test('单个 transport consume 失败不影响其它出口与后续日志', asyn
   vitest.spyOn(bad, 'consume').mockRejectedValue(new Error('sink down'));
   const reported = vitest.spyOn(console, 'error').mockImplementation(() => {});
 
-  const logger = new ProbeLoggerService([{ transport: bad }, { transport: ok }]);
+  const logger = new Logger({
+    transports: [{ transport: bad }, { transport: ok }],
+  });
   logger.info('first');
   logger.info('second');
   await expect(logger.flush()).resolves.toBeUndefined();
@@ -406,7 +385,7 @@ test('consume 前会 await 全部 transport.onInit', async () => {
   }
 
   const transport = new SlowInitTransport();
-  const logger = new ProbeLoggerService([{ transport }]);
+  const logger = new Logger({ transports: [{ transport }] });
   logger.info('after-init');
   await logger.flush();
 
@@ -414,7 +393,7 @@ test('consume 前会 await 全部 transport.onInit', async () => {
   expect(transport.messages).toHaveLength(1);
 });
 
-test('combineServices eager onInit 会等待 transport.onInit', async () => {
+test('flush 会等待 transport.onInit', async () => {
   let inited = false;
   class SlowInitTransport extends MockTransport {
     override async onInit(): Promise<void> {
@@ -423,23 +402,39 @@ test('combineServices eager onInit 会等待 transport.onInit', async () => {
     }
   }
 
-  class DemoLoggerService extends BaseLoggerService {
-    protected createTransports() {
-      return [{ transport: new SlowInitTransport() }];
+  const logger = new Logger({
+    transports: [{ transport: new SlowInitTransport() }],
+  });
+  await logger.flush();
+  expect(inited).toBe(true);
+});
+
+test('未显式 connect 时 flush / 投递会懒连接', async () => {
+  let inited = false;
+  class SlowInitTransport extends MockTransport {
+    override async onInit(): Promise<void> {
+      inited = true;
     }
   }
 
-  await combineServices({ logger: async () => DemoLoggerService }, { eager: ['logger'] });
+  const transport = new SlowInitTransport();
+  const logger = new Logger({ transports: [{ transport }] });
+  expect(inited).toBe(false);
+  logger.info('lazy');
+  await logger.flush();
   expect(inited).toBe(true);
+  expect(transport.messages).toHaveLength(1);
 });
 
 test('多 transport 各自门槛', async () => {
   const t1 = new MockTransport();
   const t2 = new MockTransport();
-  const logger = new ProbeLoggerService([
-    { transport: t1, level: 'info' },
-    { transport: t2, level: { min: 'warn', max: 'error' } },
-  ]);
+  const logger = new Logger({
+    transports: [
+      { transport: t1, level: 'info' },
+      { transport: t2, level: { min: 'warn', max: 'error' } },
+    ],
+  });
 
   logger.debug('d');
   logger.info('i');
@@ -454,7 +449,7 @@ test('多 transport 各自门槛', async () => {
 
 test('error(err) 序列化 stack，message 默认取 err.message', async () => {
   const transport = new MockTransport();
-  const logger = new ProbeLoggerService([{ transport }]);
+  const logger = new Logger({ transports: [{ transport }] });
   const err = new Error('boom');
   logger.error(err);
   await logger.flush();
@@ -473,7 +468,7 @@ test('error(err) 序列化 stack，message 默认取 err.message', async () => {
 
 test('error(err, message) 自定义 message，仍带 exception', async () => {
   const transport = new MockTransport();
-  const logger = new ProbeLoggerService([{ transport }]);
+  const logger = new Logger({ transports: [{ transport }] });
   const cause = new TypeError('bad');
   const err = new Error('outer', { cause });
   logger.error(err, 'checkout failed');
@@ -497,7 +492,7 @@ test('error(err, message) 自定义 message，仍带 exception', async () => {
 
 test('warn(err) 可带错误栈（可恢复异常）', async () => {
   const transport = new MockTransport();
-  const logger = new ProbeLoggerService([{ transport }]);
+  const logger = new Logger({ transports: [{ transport }] });
   const err = new Error('soft');
   logger.warn(err, 'handled');
   await logger.flush();
@@ -510,7 +505,7 @@ test('warn(err) 可带错误栈（可恢复异常）', async () => {
 
 test('循环 cause 不炸栈', async () => {
   const transport = new MockTransport();
-  const logger = new ProbeLoggerService([{ transport }]);
+  const logger = new Logger({ transports: [{ transport }] });
   const a = new Error('a');
   const b = new Error('b', { cause: a });
   (a as Error & { cause: Error }).cause = b;
@@ -525,7 +520,7 @@ test('循环 cause 不炸栈', async () => {
 
 test('无 name / 无 stack 的 Error 仍可序列化', async () => {
   const transport = new MockTransport();
-  const logger = new ProbeLoggerService([{ transport }]);
+  const logger = new Logger({ transports: [{ transport }] });
   const err = new Error('x');
   err.name = '';
   err.stack = undefined;
@@ -548,7 +543,7 @@ test('无 name / 无 stack 的 Error 仍可序列化', async () => {
 
 test('unknown（非 Error）可直接记入 exception', async () => {
   const transport = new MockTransport();
-  const logger = new ProbeLoggerService([{ transport }]);
+  const logger = new Logger({ transports: [{ transport }] });
   const caught: unknown = { code: 42 };
   logger.error(caught, 'from catch');
   logger.error(404);
@@ -576,7 +571,7 @@ test('unknown（非 Error）可直接记入 exception', async () => {
 
 test('仅传 string 仍是纯 message，不挂 exception', async () => {
   const transport = new MockTransport();
-  const logger = new ProbeLoggerService([{ transport }]);
+  const logger = new Logger({ transports: [{ transport }] });
   logger.error('plain');
   await logger.flush();
   expect(transport.messages[0]).toMatchObject({ message: 'plain' });
@@ -585,7 +580,7 @@ test('仅传 string 仍是纯 message，不挂 exception', async () => {
 
 test('非 Error 的 cause 也会降级序列化', async () => {
   const transport = new MockTransport();
-  const logger = new ProbeLoggerService([{ transport }]);
+  const logger = new Logger({ transports: [{ transport }] });
   const err = new Error('outer');
   (err as Error & { cause: unknown }).cause = 'root-cause';
   logger.error(err);
@@ -612,20 +607,12 @@ test('serializeUnknown：循环对象与 JSON 失败', () => {
   });
 });
 
-test('serializeError 与 serializeUnknown(Error) 一致', () => {
-  const err = new Error('x');
-  expect(levelProbe['serializeError'](err)).toMatchObject(
-    levelProbe['serializeUnknown'](err),
-  );
-});
-
 test('Error.isError：仿 Error 对象不当真 Error；跨 realm Error 仍识别', async () => {
   const fake = Object.create(Error.prototype) as { name: string; message: string };
   fake.name = 'TypeError';
   fake.message = 'fake';
   expect(fake instanceof Error).toBe(true);
   expect(Error.isError(fake)).toBe(false);
-  // 走普通 object 分支（constructor 仍可能显示 Error）
   expect(levelProbe['serializeUnknown'](fake)).toMatchObject({
     message: expect.stringContaining('fake'),
   });
@@ -644,7 +631,7 @@ test('Error.isError：仿 Error 对象不当真 Error；跨 realm Error 仍识�
 
 test('flush 会等异步消费结束', async () => {
   const transport = new MockTransport();
-  const logger = new ProbeLoggerService([{ transport }]);
+  const logger = new Logger({ transports: [{ transport }] });
   logger.info('hello');
   expect(transport.messages).toHaveLength(0);
   await logger.flush();

@@ -4,6 +4,7 @@ import {
   resolveI18nLanguage,
   type I18nLanguage,
 } from '@aomex/common';
+import type { Logger } from '@aomex/logger';
 import { type BaseWebRequest, type WebApp } from '@aomex/web';
 import type http from 'node:http';
 import type https from 'node:https';
@@ -162,11 +163,11 @@ export interface WebsocketAppOptions<
    */
   onMetric?: WebsocketMetricHandler;
   /**
-   * 应用日志（必填）。与 `WebApp` / `ConsoleApp` 传入同一个 `services.logger`。
+   * 应用日志（必填）。与 `WebApp` / `ConsoleApp` 传入同一个 `Logger` 实例。
    * 传输初始化、扇出、订阅对齐等后台失败都写到这里。
    * HTTP 与 console 是两个进程，各自构造时传本进程的 logger。
    */
-  logger: WebApp.Logger;
+  logger: Logger;
 }
 
 /**
@@ -189,7 +190,7 @@ export interface WebsocketAppOptions<
  * import { RedisHub } from '@aomex/websocket-redis-hub';
  *
  * export const ws = new WebsocketApp({
- *   logger: services.logger,
+ *   logger,
  *   language: { mode: 'dynamic', fallback: 'zh-CN' },
  *   path: '/ws',
  *   transport: new WsTransport(),

@@ -1,22 +1,18 @@
-import { combineServices, type CombinedServices, type I18nLanguage } from '@aomex/common';
+import { type CombinedServices, type I18nLanguage } from '@aomex/common';
 import { toArray } from '@aomex/internal-tools';
-import { BaseLoggerService, ConsoleTransport } from '@aomex/logger';
+import { Logger, ConsoleTransport } from '@aomex/logger';
 import { ConsoleApp } from './cli/app';
 import type { ConsoleMiddlewareToken } from './override';
 // 注册 middleware.console（与 @aomex/console 主入口对齐）
 import './override/console-middleware.js';
 
-/** 测试默认 logger：输出到 console */
-export class TestConsoleLoggerService extends BaseLoggerService {
-  protected createTransports() {
-    return [{ transport: new ConsoleTransport() }];
-  }
-}
+/** 测试用 logger：输出到 console（生命周期由 Logger 内部 `ensureReady` 登记） */
+export const createTestConsoleLogger = () =>
+  new Logger({
+    transports: [{ transport: new ConsoleTransport() }],
+  });
 
-const defaultLoggerServices = await combineServices(
-  { logger: async () => TestConsoleLoggerService },
-  { eager: ['logger'] },
-);
+const defaultLogger = createTestConsoleLogger();
 
 /** 测试默认：整站简体 */
 const defaultLanguage = 'zh-CN' as const satisfies I18nLanguage;
@@ -27,7 +23,7 @@ export namespace TestConsoleApp {
     'services' | 'logger' | 'language'
   > & {
     services?: CombinedServices | readonly CombinedServices[];
-    logger?: ConsoleApp.Logger;
+    logger?: Logger;
     language?: I18nLanguage;
   };
 }
@@ -37,7 +33,7 @@ export namespace TestConsoleApp {
  *
  * ```ts
  * new TestConsoleApp({ mount: [md] });
- * new TestConsoleApp({ services, logger: services.logger, mount: [md] });
+ * new TestConsoleApp({ services, logger, mount: [md] });
  * ```
  */
 export class TestConsoleApp<
@@ -46,8 +42,8 @@ export class TestConsoleApp<
   constructor(options: TestConsoleApp.Option<T> = {}) {
     super({
       ...options,
-      services: toArray(options.services ?? []).concat(defaultLoggerServices),
-      logger: options.logger ?? defaultLoggerServices.logger,
+      services: toArray(options.services ?? []),
+      logger: options.logger ?? defaultLogger,
       language: options.language ?? defaultLanguage,
     });
   }

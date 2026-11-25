@@ -9,9 +9,8 @@ import {
   middleware,
   type CombinedServices,
   type I18nLanguage,
-  type PromisifiedService,
 } from '@aomex/common';
-import type { BaseLoggerService } from '@aomex/logger';
+import type { Logger } from '@aomex/logger';
 import { ConsoleInput } from './input';
 import { ConsoleContext } from './context';
 import { helpLogger } from '../middleware/help-logger';
@@ -20,8 +19,6 @@ import { toArray, type Union2Intersection } from '@aomex/internal-tools';
 import { ConsoleError } from '../utils/console-error';
 
 export namespace ConsoleApp {
-  export type Logger = PromisifiedService<BaseLoggerService>;
-
   export interface Option<T extends ConsoleMiddlewareToken[] | []> {
     /**
      * 全局中间件
@@ -29,7 +26,7 @@ export namespace ConsoleApp {
      *
      * const app = new ConsoleApp({
      *   services,
-     *   logger: services.logger,
+     *   logger,
      *   language: 'zh-CN',
      *   mount: [md1, md2],
      * });
@@ -49,17 +46,19 @@ export namespace ConsoleApp {
      */
     services: CombinedServices | readonly CombinedServices[];
     /**
-     * 经 `combineServices` 处理后的 logger（通常为 `services.logger`）。
+     * 应用日志实例（`new Logger({ transports })`）。
      * 默认 `error` 监听 / `ctx.logger` 均走此实例。
+     * 首次写日志时懒连接，并经内部 `registerLifecycle` 随 App 关停自动销毁。
      *
      * ```ts
-     * const services = await combineServices(
-     *   { logger: () => import('./logger.service.js') },
-     *   { eager: ['logger'] },
-     * );
+     * import { Logger, ConsoleTransport } from '@aomex/logger';
+     *
+     * const logger = new Logger({
+     *   transports: [{ transport: new ConsoleTransport() }],
+     * });
      * new ConsoleApp({
      *   services,
-     *   logger: services.logger,
+     *   logger,
      *   language: 'zh-CN',
      * });
      * ```
@@ -89,7 +88,7 @@ export class ConsoleApp<
 }> {
   level: number = 0;
   protected readonly middlewareList: Middleware[];
-  protected readonly logger: ConsoleApp.Logger;
+  protected readonly logger: Logger;
 
   constructor(protected readonly options: ConsoleApp.Option<T>) {
     super();

@@ -19,13 +19,19 @@ let destroying: Promise<void> | null = null;
  *
  * 库内自建资源（如 Redis store）应在构造时自动调用；业务侧 Prisma 等也可直接登记。
  *
+ * 懒连接请用 `ready ??= registerLifecycle(…).catch(…)`：`onInit` 失败时清空 `ready`，
+ * 以便下次 `ensureReady` 再试。本函数**不会**自动重试。
+ *
  * @returns `onInit` 完成的 Promise；`onInit` 失败则拒绝且不登记 `onDestroy`
  *
  * @example
  * ```ts
- * await registerLifecycle({
- *   onInit: () => prisma.$connect(),
- *   onDestroy: () => prisma.$disconnect(),
+ * this.ready ??= registerLifecycle({
+ *   onInit: () => this.connect(),
+ *   onDestroy: () => this.disconnect(),
+ * }).catch((err) => {
+ *   this.ready = undefined;
+ *   throw err;
  * });
  * ```
  */

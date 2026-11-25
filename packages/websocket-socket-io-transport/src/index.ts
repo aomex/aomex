@@ -44,7 +44,7 @@ export type SocketIoTransportOptions = Omit<
  * import { SocketIoTransport } from '@aomex/websocket-socket-io-transport';
  *
  * const ws = new WebsocketApp({
- *   logger: services.logger,
+ *   logger,
  *   language: { mode: 'fixed', language: 'zh-CN' },
  *   path: '/ws',
  *   transport: new SocketIoTransport(),

@@ -279,6 +279,9 @@ export class OAuth2Client<
     this.readyPromise ??= registerLifecycle({
       onInit: () => this.opts.store.connect(),
       onDestroy: () => this.opts.store.disconnect(),
+    }).catch((err) => {
+      this.readyPromise = undefined;
+      throw err;
     });
     return this.readyPromise;
   }

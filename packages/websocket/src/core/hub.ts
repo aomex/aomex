@@ -13,7 +13,7 @@ import {
 } from './client';
 import { WebsocketContext } from './context';
 import type { WebsocketHubAdapter } from '../adapters/hub-adapter';
-import type { WebApp } from '@aomex/web';
+import type { Logger } from '@aomex/logger';
 import { MemoryHub } from './memory-hub';
 import type { WebsocketMetricHandler, WebsocketStats } from './metric';
 
@@ -65,7 +65,7 @@ export class WebsocketHub {
   protected readonly hub: WebsocketHubAdapter;
   protected readonly unknownEvent: WebsocketUnknownEventMode;
   /** 应用日志。接入、入站和移除失败都写到这里。 */
-  protected logger!: WebApp.Logger;
+  protected logger!: Logger;
 
   /**
    * @param hub 房间与广播；默认进程内 {@link MemoryHub}
@@ -94,7 +94,7 @@ export class WebsocketHub {
   }
 
   /** 记下应用日志，并交给 Hub 适配器。扇出和订阅失败在适配器里写。 */
-  bindLogger(logger: WebApp.Logger): void {
+  bindLogger(logger: Logger): void {
     this.logger = logger;
     this.hub.bindLogger(logger);
   }
@@ -330,6 +330,7 @@ export class WebsocketHub {
       this.all,
       (name) => this.room(name),
       data,
+      this.logger,
     );
 
     try {

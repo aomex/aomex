@@ -52,7 +52,7 @@ export type WsTransportOptions = Omit<
  * import { WsTransport } from '@aomex/websocket-ws-transport';
  *
  * const ws = new WebsocketApp({
- *   logger: services.logger,
+ *   logger,
  *   language: { mode: 'fixed', language: 'zh-CN' },
  *   path: '/ws',
  *   transport: new WsTransport({

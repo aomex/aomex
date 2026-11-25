@@ -1,8 +1,9 @@
 import { IncomingMessage } from 'node:http';
 import { Socket } from 'node:net';
 import { afterEach, expect, test } from 'vitest';
+import type { Logger } from '@aomex/logger';
 import { internalDestroyServices } from '@aomex/common';
-import { BaseWebRequest, type WebApp } from '@aomex/web';
+import { BaseWebRequest } from '@aomex/web';
 import { TestWebApp } from '../../../web/src/testing';
 import { WebsocketTransportAdapter } from '../../src';
 
@@ -18,6 +19,27 @@ class EnsureProbe extends WebsocketTransportAdapter {
     return this['ensureRequest'](req, app);
   }
 }
+
+test('ensureReady：onInit 失败清空 readyPromise，下次可重试', async () => {
+  let fail = true;
+  let inits = 0;
+  class FlakyProbe extends EnsureProbe {
+    override async onInit(): Promise<void> {
+      inits += 1;
+      if (fail) throw new Error('transport-init-boom');
+    }
+  }
+  const probe = new FlakyProbe();
+  await expect(probe.ensureReady()).rejects.toThrow('transport-init-boom');
+  expect(inits).toBe(1);
+  expect(probe['readyPromise']).toBeUndefined();
+
+  fail = false;
+  await probe.ensureReady();
+  expect(inits).toBe(2);
+  await probe.ensureReady();
+  expect(inits).toBe(2);
+});
 
 test('generateClientId 默认 256-bit CSPRNG base64url', () => {
   const probe = new EnsureProbe();
@@ -63,7 +85,7 @@ test('语言包加载失败时 failHandshake 直接抛出', async () => {
       messages.push(message ?? '');
     },
     warn() {},
-  } as unknown as WebApp.Logger);
+  } as unknown as Logger);
   await expect(
     probe['failHandshake'](
       { app, path: '/ws', maxPayload: 1024, onConnection() {} },

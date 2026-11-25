@@ -1,8 +1,8 @@
 import { afterAll, expect, test, vitest } from 'vitest';
 import { ConsoleApp, ConsoleError } from '../../src';
-import { TestConsoleApp, TestConsoleLoggerService } from '../../src/testing';
+import { TestConsoleApp, createTestConsoleLogger } from '../../src/testing';
 import { combineServices, middleware, Service } from '@aomex/common';
-import { BaseLoggerService } from '@aomex/logger';
+import { Logger } from '@aomex/logger';
 import { i18n } from '../../src/i18n';
 
 let consoleSpy = vitest.spyOn(console, 'error').mockImplementation(() => {});
@@ -68,9 +68,9 @@ test('深层指令', async () => {
 
 test('报错日志', async () => {
   let msg = '';
-  class CaptureLogger extends BaseLoggerService {
-    protected createTransports() {
-      return [];
+  class CaptureLogger extends Logger {
+    constructor() {
+      super({ transports: [] });
     }
     override error(messageOrError: unknown, message?: string): void {
       msg = Error.isError(messageOrError)
@@ -80,11 +80,8 @@ test('报错日志', async () => {
       else super.error(messageOrError, message);
     }
   }
-  const services = await combineServices(
-    { logger: async () => CaptureLogger },
-    { eager: ['logger'] },
-  );
-  const app = new ConsoleApp({ services, logger: services.logger, language: 'zh-CN' });
+  const logger = new CaptureLogger();
+  const app = new ConsoleApp({ services: [], logger, language: 'zh-CN' });
   await app.run('foo');
   expect(msg).toMatchInlineSnapshot(`"命令「foo」不存在"`);
 });
@@ -169,18 +166,21 @@ test('services：信号路径会等 onDestroy 完成再 exit', async () => {
     }
   }
 
+  const logger = createTestConsoleLogger();
   const services = await combineServices({
-    logger: async () => TestConsoleLoggerService,
     demo: async () => Demo,
   });
   await services.demo.ping();
-  new ConsoleApp({ services, logger: services.logger, language: 'zh-CN' });
+  new ConsoleApp({ services, logger, language: 'zh-CN' });
 
   expect(handlers.has('SIGTERM')).toBe(true);
   handlers.get('SIGTERM')!();
   expect(destroyed).toBe(0);
-  await vitest.waitFor(() => expect(destroyed).toBe(1));
-  expect(exit).toHaveBeenCalledWith(0);
+  // services 与 registerLifecycle（含 Logger）并行销毁；须等全部完成才会 exit
+  await vitest.waitFor(() => {
+    expect(destroyed).toBe(1);
+    expect(exit).toHaveBeenCalledWith(0);
+  });
 
   once.mockRestore();
   exit.mockRestore();
@@ -204,12 +204,12 @@ test('services：beforeExit 调度销毁且不 exit', async () => {
     }
   }
 
+  const logger = createTestConsoleLogger();
   const services = await combineServices({
-    logger: async () => TestConsoleLoggerService,
     demo: async () => Demo,
   });
   await services.demo.ping();
-  new ConsoleApp({ services, logger: services.logger, language: 'zh-CN' });
+  new ConsoleApp({ services, logger, language: 'zh-CN' });
 
   handlers.get('beforeExit')!();
   await vitest.waitFor(() => expect(destroyed).toBe(1));
@@ -236,17 +236,16 @@ test('services：支持数组', async () => {
     }
   }
 
+  const logger = createTestConsoleLogger();
   const s1 = await combineServices({
-    logger: async () => TestConsoleLoggerService,
     a: async () => Demo,
   });
   const s2 = await combineServices({
-    logger: async () => TestConsoleLoggerService,
     b: async () => Demo,
   });
   await s1.a.ping();
   await s2.b.ping();
-  new ConsoleApp({ services: [s1, s2], logger: s1.logger, language: 'zh-CN' });
+  new ConsoleApp({ services: [s1, s2], logger, language: 'zh-CN' });
 
   handlers.get('beforeExit')!();
   await vitest.waitFor(() => expect(destroyed).toBe(2));

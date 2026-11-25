@@ -1,11 +1,32 @@
 import { afterEach, expect, test } from 'vitest';
+import type { Logger } from '@aomex/logger';
 import { internalDestroyServices } from '@aomex/common';
-import type { WebApp } from '@aomex/web';
 import { MemoryHub, type WebsocketMetricEvent } from '../../src';
 import { i18n } from '../../src/i18n';
 
 afterEach(async () => {
   await internalDestroyServices([]);
+});
+
+test('ensureReady：onInit 失败清空 readyPromise，下次可重试', async () => {
+  let fail = true;
+  let inits = 0;
+  class FlakyHub extends MemoryHub {
+    override async onInit(): Promise<void> {
+      inits += 1;
+      if (fail) throw new Error('hub-init-boom');
+    }
+  }
+  const hub = new FlakyHub();
+  await expect(hub.ensureReady()).rejects.toThrow('hub-init-boom');
+  expect(inits).toBe(1);
+  expect(hub['readyPromise']).toBeUndefined();
+
+  fail = false;
+  await hub.ensureReady();
+  expect(inits).toBe(2);
+  await hub.ensureReady();
+  expect(inits).toBe(2);
 });
 
 test('MemoryHub 房间广播与 except', async () => {
@@ -166,7 +187,7 @@ test('扇出时单个 deliver 失败不影响其余连接', async () => {
         logs.push({ level: 'warn', message });
         void err;
       },
-    } as WebApp.Logger);
+    } as Logger);
     hub.bindMetric((e) => {
       events.push(e);
     });
@@ -283,7 +304,7 @@ test('reportMetric 无 handler 时不抛；handler 抛错会记日志', async ()
     warn(_err: unknown, message?: string) {
       logs.push(message ?? '');
     },
-  } as unknown as WebApp.Logger);
+  } as unknown as Logger);
   hub.bind(() => {});
   hub.addClient('a');
   hub.join('a', 'r');

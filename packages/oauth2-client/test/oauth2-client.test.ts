@@ -33,6 +33,28 @@ function createClient(
   return { client, store, onProfile, caching: new Caching(store) };
 }
 
+test('ensureReady：store.connect 失败清空 readyPromise，下次可重试', async () => {
+  let fail = true;
+  let connects = 0;
+  class FlakyStore extends CacheMemoryAdapter {
+    override async connect() {
+      connects += 1;
+      if (fail) throw new Error('oauth-store-connect-boom');
+    }
+  }
+  const { client } = createClient({ store: new FlakyStore() });
+
+  await expect(client['ensureReady']()).rejects.toThrow('oauth-store-connect-boom');
+  expect(connects).toBe(1);
+  expect(client['readyPromise']).toBeUndefined();
+
+  fail = false;
+  await client['ensureReady']();
+  expect(connects).toBe(2);
+  await client['ensureReady']();
+  expect(connects).toBe(2);
+});
+
 test('构造：空 clientId 抛错', () => {
   expect(
     () =>

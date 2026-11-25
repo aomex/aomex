@@ -1,10 +1,10 @@
 import { afterEach, expect, test } from 'vitest';
+import type { Logger } from '@aomex/logger';
 import { internalDestroyServices } from '@aomex/common';
-import type { WebApp } from '@aomex/web';
 import { MemoryHub, WebsocketHub, type WebsocketTransport } from '../../src';
 import { i18n } from '../../src/i18n';
 
-const silentLogger = { error() {}, warn() {} } as unknown as WebApp.Logger;
+const silentLogger = { error() {}, warn() {} } as unknown as Logger;
 
 const openHub = (
   adapter: ConstructorParameters<typeof WebsocketHub>[0],
@@ -106,7 +106,7 @@ test('接入失败日志跟随连接语言', async () => {
       messages.push(message ?? '');
     },
     warn() {},
-  } as unknown as WebApp.Logger);
+  } as unknown as Logger);
   const conn = fakeTransport('c1');
   hub.accept(conn.transport, 'en-US');
   await flush();
@@ -281,7 +281,7 @@ test('回推 error 失败时入站队列不产生未处理 rejection，后续消
     warn(_err, message) {
       logs.push(message ?? '');
     },
-  } as WebApp.Logger);
+  } as Logger);
   hub.accept(conn.transport, 'zh-CN');
   await flush();
 

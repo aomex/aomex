@@ -1,8 +1,8 @@
 import { describe, expect, test, vitest } from 'vitest';
 import { body, WebApp } from '../../src';
-import { TestWebApp, TestWebLoggerService } from '../../src/testing';
+import { TestWebApp, createTestWebLogger } from '../../src/testing';
 import { combineServices, middleware, rule, Service } from '@aomex/common';
-import { BaseLoggerService } from '@aomex/logger';
+import { Logger } from '@aomex/logger';
 import supertest from 'supertest';
 import { Server } from 'node:http';
 import fs from 'node:fs';
@@ -202,9 +202,9 @@ describe('listen', () => {
 describe('日志', () => {
   test('打印日志', async () => {
     const errors: unknown[] = [];
-    class CaptureLogger extends BaseLoggerService {
-      protected createTransports() {
-        return [];
+    class CaptureLogger extends Logger {
+      constructor() {
+        super({ transports: [] });
       }
       override error(messageOrError: unknown, message?: string): void {
         errors.push(messageOrError);
@@ -212,13 +212,10 @@ describe('日志', () => {
         else super.error(messageOrError, message);
       }
     }
-    const services = await combineServices(
-      { logger: async () => CaptureLogger },
-      { eager: ['logger'] },
-    );
+    const logger = new CaptureLogger();
     const app = new WebApp({
-      services,
-      logger: services.logger,
+      services: [],
+      logger,
       language: { mode: 'fixed', language: 'zh-CN' },
       proxyIP: { mode: 'detect' },
       mount: [
@@ -235,9 +232,9 @@ describe('日志', () => {
 
   test('默认 log 走 logger.error', async () => {
     const errors: unknown[] = [];
-    class CaptureLogger extends BaseLoggerService {
-      protected createTransports() {
-        return [];
+    class CaptureLogger extends Logger {
+      constructor() {
+        super({ transports: [] });
       }
       override error(messageOrError: unknown, message?: string): void {
         errors.push(messageOrError);
@@ -245,13 +242,10 @@ describe('日志', () => {
         else super.error(messageOrError, message);
       }
     }
-    const services = await combineServices(
-      { logger: async () => CaptureLogger },
-      { eager: ['logger'] },
-    );
+    const logger = new CaptureLogger();
     const app = new WebApp({
-      services,
-      logger: services.logger,
+      services: [],
+      logger,
       language: { mode: 'fixed', language: 'zh-CN' },
       proxyIP: { mode: 'detect' },
       mount: [
@@ -268,9 +262,9 @@ describe('日志', () => {
 
   test('4xx（expose 默认 true）不打印日志', async () => {
     const errors: unknown[] = [];
-    class CaptureLogger extends BaseLoggerService {
-      protected createTransports() {
-        return [];
+    class CaptureLogger extends Logger {
+      constructor() {
+        super({ transports: [] });
       }
       override error(messageOrError: unknown, message?: string): void {
         errors.push(messageOrError);
@@ -278,13 +272,10 @@ describe('日志', () => {
         else super.error(messageOrError, message);
       }
     }
-    const services = await combineServices(
-      { logger: async () => CaptureLogger },
-      { eager: ['logger'] },
-    );
+    const logger = new CaptureLogger();
     const app = new WebApp({
-      services,
-      logger: services.logger,
+      services: [],
+      logger,
       language: { mode: 'fixed', language: 'zh-CN' },
       proxyIP: { mode: 'detect' },
       mount: [
@@ -300,9 +291,9 @@ describe('日志', () => {
 
   test('expose时不打印日志', async () => {
     const errors: unknown[] = [];
-    class CaptureLogger extends BaseLoggerService {
-      protected createTransports() {
-        return [];
+    class CaptureLogger extends Logger {
+      constructor() {
+        super({ transports: [] });
       }
       override error(messageOrError: unknown, message?: string): void {
         errors.push(messageOrError);
@@ -310,13 +301,10 @@ describe('日志', () => {
         else super.error(messageOrError, message);
       }
     }
-    const services = await combineServices(
-      { logger: async () => CaptureLogger },
-      { eager: ['logger'] },
-    );
+    const logger = new CaptureLogger();
     const app = new WebApp({
-      services,
-      logger: services.logger,
+      services: [],
+      logger,
       language: { mode: 'fixed', language: 'zh-CN' },
       proxyIP: { mode: 'detect' },
       mount: [
@@ -431,15 +419,15 @@ test('services：server close 时自动等 onDestroy 跑完', async () => {
       destroyed += 1;
     }
   }
+  const logger = createTestWebLogger();
   const services = await combineServices({
-    logger: async () => TestWebLoggerService,
     demo: async () => Demo,
   });
   await services.demo.ping();
 
   const app = new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language: { mode: 'fixed', language: 'zh-CN' },
     proxyIP: { mode: 'detect' },
   });
@@ -454,7 +442,10 @@ test('services：server close 时自动等 onDestroy 跑完', async () => {
 
 test('services：手动 close 时 onDestroy 抛错只记日志', async () => {
   const logged: unknown[] = [];
-  class CaptureLogger extends TestWebLoggerService {
+  class CaptureLogger extends Logger {
+    constructor() {
+      super({ transports: [] });
+    }
     override error(messageOrError: unknown, message?: string): void {
       logged.push(messageOrError);
       if (message === undefined) super.error(messageOrError);
@@ -469,15 +460,15 @@ test('services：手动 close 时 onDestroy 抛错只记日志', async () => {
       throw new Error('manual-destroy-boom');
     }
   }
+  const logger = new CaptureLogger();
   const services = await combineServices({
-    logger: async () => CaptureLogger,
     demo: async () => Demo,
   });
   await services.demo.ping();
 
   const app = new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language: { mode: 'fixed', language: 'zh-CN' },
     proxyIP: { mode: 'detect' },
   });
@@ -504,12 +495,11 @@ test('services：支持数组', async () => {
       destroyed += 1;
     }
   }
+  const logger = createTestWebLogger();
   const s1 = await combineServices({
-    logger: async () => TestWebLoggerService,
     a: async () => Demo,
   });
   const s2 = await combineServices({
-    logger: async () => TestWebLoggerService,
     b: async () => Demo,
   });
   await s1.a.ping();
@@ -517,7 +507,7 @@ test('services：支持数组', async () => {
 
   const app = new WebApp({
     services: [s1, s2],
-    logger: s1.logger,
+    logger,
     language: { mode: 'fixed', language: 'zh-CN' },
     proxyIP: { mode: 'detect' },
   });
@@ -549,14 +539,14 @@ test('services：SIGTERM 先关 server 再等 onDestroy 后 exit', async () => {
     }
   }
 
+  const logger = createTestWebLogger();
   const services = await combineServices({
-    logger: async () => TestWebLoggerService,
     demo: async () => Demo,
   });
   await services.demo.ping();
   const app = new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language: { mode: 'fixed', language: 'zh-CN' },
     proxyIP: { mode: 'detect' },
   });
@@ -569,8 +559,11 @@ test('services：SIGTERM 先关 server 再等 onDestroy 后 exit', async () => {
   expect(handlers.has('SIGTERM')).toBe(true);
   handlers.get('SIGTERM')!();
   expect(destroyed).toBe(0);
-  await vitest.waitFor(() => expect(destroyed).toBe(1));
-  expect(exit).toHaveBeenCalledWith(0);
+  // services 与 registerLifecycle（含 Logger）并行销毁；须等全部完成才会 exit
+  await vitest.waitFor(() => {
+    expect(destroyed).toBe(1);
+    expect(exit).toHaveBeenCalledWith(0);
+  });
   expect(server.listening).toBeFalsy();
 
   once.mockRestore();
@@ -595,15 +588,15 @@ test('SIGTERM：WebApp.onShutdown 与 server.close 并行，早于服务 onDestr
     }
   }
 
+  const logger = createTestWebLogger();
   const services = await combineServices({
-    logger: async () => TestWebLoggerService,
     demo: async () => Demo,
   });
   await services.demo.ping();
 
   const app = new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language: { mode: 'fixed', language: 'zh-CN' },
     proxyIP: { mode: 'detect' },
     shutdown: { timeout: 200 },
@@ -647,7 +640,10 @@ test('SIGTERM：onShutdown 抛错仍销毁服务并以 0 退出', async () => {
   }
 
   const logged: unknown[] = [];
-  class CaptureLogger extends TestWebLoggerService {
+  class CaptureLogger extends Logger {
+    constructor() {
+      super({ transports: [] });
+    }
     override error(messageOrError: unknown, message?: string): void {
       logged.push(messageOrError);
       if (message === undefined) super.error(messageOrError);
@@ -655,15 +651,15 @@ test('SIGTERM：onShutdown 抛错仍销毁服务并以 0 退出', async () => {
     }
   }
 
+  const logger = new CaptureLogger();
   const services = await combineServices({
-    logger: async () => CaptureLogger,
     demo: async () => Demo,
   });
   await services.demo.ping();
 
   const app = new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language: { mode: 'fixed', language: 'zh-CN' },
     proxyIP: { mode: 'detect' },
   });
@@ -710,7 +706,10 @@ test('SIGTERM：onDestroy 抛错仍以 0 退出', async () => {
   }
 
   const logged: unknown[] = [];
-  class CaptureLogger extends TestWebLoggerService {
+  class CaptureLogger extends Logger {
+    constructor() {
+      super({ transports: [] });
+    }
     override error(messageOrError: unknown, message?: string): void {
       logged.push(messageOrError);
       if (message === undefined) super.error(messageOrError);
@@ -718,15 +717,15 @@ test('SIGTERM：onDestroy 抛错仍以 0 退出', async () => {
     }
   }
 
+  const logger = new CaptureLogger();
   const services = await combineServices({
-    logger: async () => CaptureLogger,
     demo: async () => Demo,
   });
   await services.demo.ping();
 
   const app = new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language: { mode: 'fixed', language: 'zh-CN' },
     proxyIP: { mode: 'detect' },
   });
@@ -783,15 +782,15 @@ test('两次 http()：信号只跑一遍钩子，并关掉全部 Server', async 
     }
   }
 
+  const logger = createTestWebLogger();
   const services = await combineServices({
-    logger: async () => TestWebLoggerService,
     demo: async () => Demo,
   });
   await services.demo.ping();
 
   const app = new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language: { mode: 'fixed', language: 'zh-CN' },
     proxyIP: { mode: 'detect' },
   });
@@ -832,15 +831,15 @@ test('两次 http()：手动关掉一个不销毁服务，最后一个关掉才�
       destroyed += 1;
     }
   }
+  const logger = createTestWebLogger();
   const services = await combineServices({
-    logger: async () => TestWebLoggerService,
     demo: async () => Demo,
   });
   await services.demo.ping();
 
   const app = new WebApp({
     services,
-    logger: services.logger,
+    logger,
     language: { mode: 'fixed', language: 'zh-CN' },
     proxyIP: { mode: 'detect' },
   });

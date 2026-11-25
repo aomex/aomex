@@ -32,6 +32,7 @@
   },
   "peerDependencies": {
     "@aomex/common": "^4.0.0",
+    "@aomex/logger": "^4.0.0",
     "@aomex/web": "^4.0.0"
   },
   "dependencies": {

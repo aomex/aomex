@@ -511,6 +511,9 @@ export class Abuse<
     this.ready ??= registerLifecycle({
       onInit: () => this.adapter.connect(),
       onDestroy: () => this.adapter.disconnect(),
+    }).catch((err) => {
+      this.ready = undefined;
+      throw err;
     });
     return this.ready;
   }

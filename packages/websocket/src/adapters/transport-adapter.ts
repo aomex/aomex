@@ -8,6 +8,7 @@ import {
   registerLifecycle,
   type I18nLanguage,
 } from '@aomex/common';
+import type { Logger } from '@aomex/logger';
 import { BaseWebRequest, statuses, type HttpErrorStatus, type WebApp } from '@aomex/web';
 import { i18n } from '../i18n';
 
@@ -130,7 +131,7 @@ export interface WebsocketTransportListenContext {
  *   }
  * }
  *
- * new WebsocketApp({ logger: services.logger, language: { mode: 'fixed', language: 'zh-CN' }, transport: new MyTransport(), mount: [channels('./src/channels')] }).attach(web, server);
+ * new WebsocketApp({ logger, language: { mode: 'fixed', language: 'zh-CN' }, transport: new MyTransport(), mount: [channels('./src/channels')] }).attach(web, server);
  * ```
  */
 export abstract class WebsocketTransportAdapter {
@@ -139,10 +140,10 @@ export abstract class WebsocketTransportAdapter {
   /** 关停中：握手应拒绝新连接 */
   protected destroying = false;
   /** 由 {@link WebsocketApp} 在构造时注入的应用日志 */
-  protected logger!: WebApp.Logger;
+  protected logger!: Logger;
 
   /** 由 {@link WebsocketApp} 注入应用日志。校验抛错写到这里。 */
-  bindLogger(logger: WebApp.Logger): void {
+  bindLogger(logger: Logger): void {
     this.logger = logger;
   }
 
@@ -180,6 +181,9 @@ export abstract class WebsocketTransportAdapter {
     this.readyPromise ??= registerLifecycle({
       onInit: () => this.onInit(),
       onDestroy: () => this.onDestroy(),
+    }).catch((err) => {
+      this.readyPromise = undefined;
+      throw err;
     });
     return this.readyPromise;
   }

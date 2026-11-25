@@ -1,6 +1,7 @@
 import { expectType } from 'ts-expect';
+import type { Logger } from '@aomex/logger';
 import { middleware, type I18nLanguage } from '@aomex/common';
-import type { BaseWebRequest, WebApp } from '@aomex/web';
+import type { BaseWebRequest } from '@aomex/web';
 import { WsTransport } from '../../websocket-ws-transport/src';
 import {
   Channel,
@@ -18,7 +19,7 @@ import {
 import { TestWebsocketApp } from '../src/testing';
 
 const transport = new WsTransport({ heartbeatInterval: 0 });
-declare const logger: WebApp.Logger;
+declare const logger: Logger;
 declare const connection: WebsocketTransport;
 const language = { mode: 'fixed', language: 'zh-CN' } as const;
 
@@ -182,6 +183,11 @@ const language = { mode: 'fixed', language: 'zh-CN' } as const;
     action: async (ctx) => {
       expectType<string>(ctx.event);
       expectType<unknown>(ctx.rawPayload);
+      expectType<Logger>(ctx.logger);
+      ctx.logger.info('ok');
+      ctx.logger.error(new Error('x'), 'failed');
+      // @ts-expect-error logger 只读，不可替换
+      ctx.logger = null;
       ctx.client.id;
       ctx.client.data['userId'] = '1';
       await ctx.client.getRooms();

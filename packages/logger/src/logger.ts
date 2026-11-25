@@ -1,4 +1,4 @@
-import { Service } from '@aomex/common';
+import { registerLifecycle } from '@aomex/common';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import timers from 'node:timers/promises';
 import type { Transport } from './transports/transport';
@@ -11,7 +11,7 @@ import {
   type SerializedError,
 } from './types';
 
-export namespace BaseLoggerService {
+export namespace Logger {
   export type Level = LoggerLevel;
   export type LevelGate = LoggerLevelGate;
 
@@ -28,75 +28,69 @@ export namespace BaseLoggerService {
      */
     disabled?: boolean;
   }
+
+  export interface Options {
+    /**
+     * 日志出口。默认 `[]`（静默）。
+     */
+    transports?: TransportEntry[];
+  }
 }
 
-/**
- * 日志领域服务基类：子类实现 `createTransports`，对外通过标准 level 方法写日志。
- *
- * ```typescript
- * import { BaseLoggerService, ConsoleTransport, FileTransport } from '@aomex/logger';
- *
- * class LoggerService extends BaseLoggerService {
- *   protected createTransports() {
- *     return [
- *       { transport: new ConsoleTransport(), level: 'debug' },
- *       {
- *         transport: new FileTransport({ file: './app.log' }),
- *         level: { min: 'warn', max: 'error' },
- *       },
- *     ];
- *   }
- * }
- *
- * // combineServices 后
- * await services.logger.info('hello');
- * await services.logger.error(err);
- * await services.logger.error(err, 'checkout failed');
- *
- * await services.logger.withBindings({ requestId: '…' }, async () => {
- *   await services.logger.info('ok');
- * });
- * ```
- */
 type TransportGate = {
   transport: Transport;
   level?: LoggerLevelGate;
   disabled: boolean;
 };
 
-export abstract class BaseLoggerService extends Service {
+/**
+ * 应用日志：组合 transports。首次投递 / `flush` 经 `ensureReady` 懒连接，
+ * 并在内部 `registerLifecycle`，随 App 关停自动销毁。
+ *
+ * ```typescript
+ * import { Logger, ConsoleTransport, FileTransport } from '@aomex/logger';
+ *
+ * const logger = new Logger({
+ *   transports: [
+ *     { transport: new ConsoleTransport(), level: 'debug' },
+ *     {
+ *       transport: new FileTransport({ file: './app.log' }),
+ *       level: { min: 'warn', max: 'error' },
+ *     },
+ *   ],
+ * });
+ *
+ * logger.info('hello');
+ * logger.error(err, 'checkout failed');
+ *
+ * await logger.withBindings({ requestId: '…' }, async () => {
+ *   logger.info('ok');
+ * });
+ *
+ * new WebApp({ services, logger, language, proxyIP });
+ * ```
+ */
+export class Logger {
   private readonly logs: LogRecord[] = [];
-  private transportGates: TransportGate[] = [];
+  private readonly transportGates: TransportGate[];
   private timer?: NodeJS.Timeout;
-  private readyPromise?: Promise<void>;
+  private ready?: Promise<void>;
   private readonly bindingsStorage = new AsyncLocalStorage<LoggerBindings>();
 
-  protected abstract createTransports(): BaseLoggerService.TransportEntry[];
-
-  protected override async onInit(): Promise<void> {
-    await this.ensureReady();
-  }
-
-  protected override async onDestroy(): Promise<void> {
-    await this.flush();
-    await Promise.all(
-      this.transportGates
-        .filter((gate) => !gate.disabled)
-        .map(({ transport }) => transport.onDestroy()),
+  constructor(options: Logger.Options = {}) {
+    this.transportGates = (options.transports ?? []).map(
+      ({ transport, level, disabled }) => ({
+        transport,
+        level,
+        disabled: disabled === true,
+      }),
     );
   }
 
   /** 等待内存队列输送完毕，并 flush 各 transport 内部缓冲 */
   async flush(): Promise<void> {
     await this.ensureReady();
-    while (this.timer || this.logs.length) {
-      await timers.setTimeout(50);
-    }
-    await Promise.all(
-      this.transportGates
-        .filter((gate) => !gate.disabled)
-        .map(({ transport }) => transport.flush()),
-    );
+    await this.drainQueue();
   }
 
   /**
@@ -195,12 +189,15 @@ export abstract class BaseLoggerService extends Service {
       ...(normalized.exception ? { exception: normalized.exception } : {}),
       ...(bindings ? { bindings } : {}),
     });
-    this.timer ||= setTimeout(async () => {
-      try {
-        await this.consume();
-      } finally {
-        this.timer = undefined;
-      }
+    this.timer ||= setTimeout(() => {
+      void this.consume()
+        .catch((err) => {
+          const detail = Error.isError(err) ? (err.stack ?? err.message) : String(err);
+          console.error(`[aomex/logger] consume failed: ${detail}`);
+        })
+        .finally(() => {
+          this.timer = undefined;
+        });
     });
   }
 
@@ -258,14 +255,6 @@ export abstract class BaseLoggerService extends Service {
     return { type: typeof value, message: String(value) };
   }
 
-  /** `Error` 专用入口，等价于 `serializeUnknown(err)` */
-  protected serializeError(
-    err: Error,
-    seen: WeakSet<object> = new WeakSet(),
-  ): SerializedError {
-    return this.serializeUnknown(err, seen);
-  }
-
   /**
    * - 仅传 `string` → 普通文案，不挂 `exception`
    * - 传 `unknown`（可再跟 message）→ 序列化到 `exception`
@@ -314,25 +303,46 @@ export abstract class BaseLoggerService extends Service {
     return index >= minIndex && index <= maxIndex;
   }
 
-  /**
-   * 创建 transports 并等待各自 `onInit`。可重入，只执行一次。
-   */
+  /** 懒连接并登记生命周期（对齐 abuse / rate-limit）；`onInit` 失败则清空门闩以便下次再试 */
   private ensureReady(): Promise<void> {
-    this.readyPromise ??= (async () => {
-      this.transportGates = this.createTransports().map(
-        ({ transport, level, disabled }) => ({
-          transport,
-          level,
-          disabled: disabled === true,
-        }),
-      );
-      await Promise.all(
-        this.transportGates
-          .filter((gate) => !gate.disabled)
-          .map(({ transport }) => transport.onInit()),
-      );
-    })();
-    return this.readyPromise;
+    this.ready ??= registerLifecycle({
+      onInit: async () => {
+        await Promise.all(
+          this.transportGates
+            .filter((gate) => !gate.disabled)
+            .map(({ transport }) => transport.onInit()),
+        );
+      },
+      onDestroy: async () => {
+        await this.drainQueue();
+        await Promise.all(
+          this.transportGates
+            .filter((gate) => !gate.disabled)
+            .map(({ transport }) => transport.onDestroy()),
+        );
+      },
+    }).catch((err) => {
+      this.ready = undefined;
+      throw err;
+    });
+    return this.ready;
+  }
+
+  /** 等内存队列与各 transport 内部缓冲刷完（不再触发 ensureReady） */
+  private async drainQueue(): Promise<void> {
+    while (this.timer || this.logs.length) {
+      if (this.timer) {
+        await timers.setTimeout(50);
+        continue;
+      }
+      // timer 已结束但队列仍有残留（如 ensureReady 曾失败）：主动再消费，避免空转
+      await this.consume();
+    }
+    await Promise.all(
+      this.transportGates
+        .filter((gate) => !gate.disabled)
+        .map(({ transport }) => transport.flush()),
+    );
   }
 
   private async consume(): Promise<void> {
