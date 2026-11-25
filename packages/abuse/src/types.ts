@@ -1,4 +1,4 @@
-import type { CacheAdapter } from '@aomex/cache';
+import type { Caching } from '@aomex/cache';
 import type { DurationInput } from '@aomex/common';
 import type { HttpError, WebContext, WebMiddleware } from '@aomex/web';
 import type { SocketMiddleware, WebsocketContext } from '@aomex/websocket';
@@ -249,9 +249,9 @@ type AbuseOnBanUser<S extends readonly AbuseStrategy[]> = (
 
 type AbuseOptionsBase<S extends readonly AbuseStrategy[]> = {
   /**
-   * 缓存适配器（`@aomex/cache`，如 memory / redis）
+   * 缓存门面。组合根应 `const cache = new Caching(adapter)`，再传入此处
    */
-  store: CacheAdapter;
+  store: Caching;
   /**
    * IP 被封禁时回调（策略撞线、`ipAbuse` 满额或手动 `blockIP`）
    */

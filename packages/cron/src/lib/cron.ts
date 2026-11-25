@@ -94,7 +94,7 @@ export class Cron {
   }
 
   get cache(): Caching {
-    return (this._cache ??= new Caching(this.options.store ?? new CacheMemoryAdapter()));
+    return (this._cache ??= this.options.store ?? new Caching(new CacheMemoryAdapter()));
   }
 
   public get argv(): string[] {

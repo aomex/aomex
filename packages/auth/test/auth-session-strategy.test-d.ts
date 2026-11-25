@@ -5,14 +5,14 @@ import { WebMiddleware } from '@aomex/web';
 import { Auth } from '../src';
 import { AuthSessionStrategy } from '../src/strategies/auth-session-strategy';
 
-function store() {
-  return new CacheMemoryAdapter();
+function cache() {
+  return new Caching(new CacheMemoryAdapter());
 }
 
 // 由 onLoaded 形参/返回值推导 Stored 与 Loaded
 {
   const session = new AuthSessionStrategy({
-    store: store(),
+    store: cache(),
     cookie: { maxAge: 3600 },
     onLoaded(data: { userId: number }) {
       return { userId: data.userId, name: 'a' };
@@ -46,7 +46,7 @@ function store() {
 // 存储与加载同形时也可恒等返回
 {
   const session = new AuthSessionStrategy({
-    store: store(),
+    store: cache(),
     cookie: { maxAge: 3600 },
     onLoaded(data: { userId: number }) {
       return data;
@@ -74,7 +74,7 @@ function store() {
 // 认证加授权（Loaded 贯通 getIdentity）
 {
   const session = new AuthSessionStrategy({
-    store: store(),
+    store: cache(),
     cookie: { maxAge: 3600 },
     onLoaded(data: { userId: number }) {
       return { userId: data.userId, role: 1 as 0 | 1 };
@@ -115,7 +115,7 @@ function store() {
 // 授权
 {
   const session = new AuthSessionStrategy({
-    store: store(),
+    store: cache(),
     cookie: { maxAge: 3600 },
     onLoaded(data: { userId: number }) {
       return data;
@@ -142,7 +142,7 @@ function store() {
 // 无授权参数
 {
   const session = new AuthSessionStrategy({
-    store: store(),
+    store: cache(),
     cookie: { maxAge: 3600 },
     onLoaded(data: { userId: number }) {
       return data;
@@ -157,7 +157,7 @@ function store() {
 // 扩展数组授权
 {
   const session = new AuthSessionStrategy({
-    store: store(),
+    store: cache(),
     cookie: { maxAge: 3600 },
     onLoaded(data: { userId: number }) {
       return data;
@@ -175,7 +175,7 @@ function store() {
 // cookie.maxAge 必填
 {
   new AuthSessionStrategy({
-    store: store(),
+    store: cache(),
     // @ts-expect-error
     cookie: {},
     onLoaded(data: { userId: number }) {
@@ -187,7 +187,7 @@ function store() {
 // cookie 复用 web 的 CookieSerializeOptions 字段
 {
   new AuthSessionStrategy({
-    store: store(),
+    store: cache(),
     cookie: {
       maxAge: 3600,
       path: '/',
@@ -218,16 +218,16 @@ function store() {
 {
   // @ts-expect-error
   new AuthSessionStrategy({
-    store: store(),
+    store: cache(),
     cookie: { maxAge: 3600 },
   });
 }
 
-// store 必须是适配器，不能传 Caching
+// store 必须是 Caching，不能传适配器
 {
   new AuthSessionStrategy({
     // @ts-expect-error
-    store: new Caching(store()),
+    store: new CacheMemoryAdapter(),
     cookie: { maxAge: 3600 },
     onLoaded(data: { userId: number }) {
       return data;
@@ -238,7 +238,7 @@ function store() {
 // login 不得传入 Loaded 专有字段（仅 Stored）
 {
   const session = new AuthSessionStrategy({
-    store: store(),
+    store: cache(),
     cookie: { maxAge: 3600 },
     onLoaded(data: { userId: number }) {
       return { userId: data.userId, name: 'x' };
@@ -251,7 +251,7 @@ function store() {
 // regenerateSessionId：data 可选；返回 string | false；不得传 Loaded 专有字段
 {
   const session = new AuthSessionStrategy({
-    store: store(),
+    store: cache(),
     cookie: { maxAge: 3600 },
     onLoaded(data: { userId: number }) {
       return { userId: data.userId, name: 'x' };

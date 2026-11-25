@@ -16,8 +16,9 @@
 
 有键值、TTL、计数、封禁态等存储需求时：**尽量复用 `@aomex/cache`**。
 
-- 公共 API 由调用方传入 `CacheAdapter`（常见配置名：`store` / `adapter`），包内用 `Caching` 封装读写
-- 禁止为本包再引入一套 Redis / 内存客户端，或自造平行的存储抽象
+- 公共 API 由调用方传入 `Caching`（常见配置名：`store`）；组合根用 `const cache = new Caching(adapter)` 创建一次后共享（变量名推荐 `cache`）
+- 类名保持 `Caching`、不要改成 `Cache`：避免与 TypeScript DOM / Web Cache API 的全局 `Cache` 冲突
+- 禁止为本包再引入一套 Redis / 内存客户端，或自造平行的存储抽象；禁止再包一层平行的 `new Caching(adapter)`（应直接使用传入的 `cache` / `store`）
 - 仅当 `@aomex/cache` 能力明显不够、且扩展 adapter 也不合适时，才另开存储方案，并在实现与文档中说明原因
 
 ## TypeScript 类型提示（红线）

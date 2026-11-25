@@ -1,35 +1,22 @@
 import { type TypeEqual, expectType } from 'ts-expect';
-import { BaseCacheService } from '../src/base-cache-service';
-import { createRemember, type Remember } from '../src/remember';
+import { Caching, createRemember, type Remember } from '../src';
 import { CacheMemoryAdapter } from '../src/adapters/cache-memory-adapter';
 
 {
-  class DemoCacheService extends BaseCacheService {
-    protected createAdapter() {
-      return new CacheMemoryAdapter();
-    }
-  }
-
-  const remember = createRemember(DemoCacheService);
+  const cache = new Caching(new CacheMemoryAdapter());
+  const remember = createRemember(cache);
   expectType<Remember>(remember);
 
-  // @ts-expect-error 不能传入 BaseCacheService 本身
-  createRemember(BaseCacheService);
+  // @ts-expect-error 不能传入适配器
+  createRemember(new CacheMemoryAdapter());
 
-  // @ts-expect-error 需要 BaseCacheService 子类构造函数
-  createRemember(class {});
-
-  // @ts-expect-error 不能传入实例
-  createRemember(new DemoCacheService());
+  // @ts-expect-error 不能传入构造函数
+  createRemember(Caching);
 }
 
 {
-  class DemoCacheService extends BaseCacheService {
-    protected createAdapter() {
-      return new CacheMemoryAdapter();
-    }
-  }
-  const remember = createRemember(DemoCacheService);
+  const cache = new Caching(new CacheMemoryAdapter());
+  const remember = createRemember(cache);
 
   class MyClass {
     @remember(1)
@@ -145,11 +132,4 @@ import { CacheMemoryAdapter } from '../src/adapters/cache-memory-adapter';
 
   const withoutDefault = await host.getDate7();
   expectType<string | null>(withoutDefault);
-
-  // @ts-expect-error 不再暴露 setInstance
-  remember.setInstance;
-  // @ts-expect-error 不再暴露 deleteInstance
-  remember.deleteInstance;
-  // @ts-expect-error 不再暴露 fork
-  remember.fork;
 }

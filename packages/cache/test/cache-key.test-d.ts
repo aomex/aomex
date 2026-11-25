@@ -6,11 +6,16 @@ import { CacheKey } from '../src';
   expectType<TypeEqual<CacheKey, ReturnType<typeof key.key>>>(true);
   expectType<TypeEqual<CacheKey, ReturnType<typeof key.keyHash>>>(true);
   expectType<TypeEqual<CacheKey, ReturnType<typeof key.toHash>>>(true);
+  expectType<TypeEqual<CacheKey, ReturnType<typeof CacheKey.key>>>(true);
+  expectType<TypeEqual<CacheKey, ReturnType<typeof CacheKey.keyHash>>>(true);
 
   key.key('a', 1, 'b');
   key.keyHash('a', 1);
   key.keyHash('x');
   key.toHash();
+  CacheKey.key('a', 1);
+  CacheKey.keyHash('a', 1);
+  CacheKey.key();
 
   // @ts-expect-error 不接受 boolean
   key.key(true);
@@ -24,6 +29,10 @@ import { CacheKey } from '../src';
   key.toHash('x');
   // @ts-expect-error 已移除 hash
   key.hash('x');
+  // @ts-expect-error 静态 key 不接受 boolean
+  CacheKey.key(true);
+  // @ts-expect-error 静态 keyHash 不接受 boolean
+  CacheKey.keyHash(false);
 }
 
 {

@@ -1,10 +1,5 @@
-import { CacheKey, Caching, type CacheAdapter } from '@aomex/cache';
-import {
-  middleware,
-  parseDuration,
-  registerLifecycle,
-  type DurationInput,
-} from '@aomex/common';
+import { CacheKey, Caching } from '@aomex/cache';
+import { middleware, parseDuration, type DurationInput } from '@aomex/common';
 import { HttpError, type WebContext, type WebMiddleware } from '@aomex/web';
 import type { SocketMiddleware, WebsocketContext } from '@aomex/websocket';
 import { i18n } from './i18n';
@@ -27,7 +22,7 @@ import type {
   InferUserAbuseReasons,
 } from './types';
 
-const abuseKey = new CacheKey().key('abuse');
+const abuseKey = CacheKey.key('abuse');
 
 /**
  * 蜜罐路径 / 错误累计 / 业务滥用计数。
@@ -39,8 +34,9 @@ const abuseKey = new CacheKey().key('abuse');
  *
  * 实例即服务（API + `.web()` / `.socket()`），不挂到 `ctx`：
  * ```ts
+ * const cache = new Caching(adapter);
  * const abuse = new Abuse({
- *   store,
+ *   store: cache,
  *   strategies: [
  *     { strategy: 'socket-events', events: ['admin.destroy'], limit: 1, window: '1h', blockFor: '1d' },
  *   ],
@@ -56,8 +52,7 @@ export class Abuse<
   UserAbuseReason extends string | number = InferUserAbuseReasons<S>,
   IpAbuseReason extends string | number = InferIpAbuseReasons<S>,
 > implements AbuseApi<UserAbuseReason, IpAbuseReason> {
-  protected readonly caching: Caching;
-  protected readonly adapter: CacheAdapter;
+  protected readonly cache: Caching;
   protected readonly onBanUser?: (
     id: AbuseId,
     reason: UserAbuseReason,
@@ -73,11 +68,8 @@ export class Abuse<
   protected readonly socketEventsStrategies: AbuseSocketEventsStrategy[];
   protected readonly userAbuseStrategies: Map<string, AbuseUserAbuseStrategy>;
   protected readonly ipAbuseStrategies: Map<string, AbuseIpAbuseStrategy>;
-  protected ready: Promise<void> | undefined;
-
   constructor(options: AbuseOptions<S>) {
-    this.adapter = options.store;
-    this.caching = new Caching(options.store);
+    this.cache = options.store;
     this.onBanUser = options.onBanUser as typeof this.onBanUser;
     this.onBlockIP = options.onBlockIP;
 
@@ -102,7 +94,6 @@ export class Abuse<
   }
 
   async userAbuse(id: AbuseId, reason: UserAbuseReason): Promise<void> {
-    await this.ensureReady();
     const reasonKey = String(reason);
     const strategy = this.userAbuseStrategies.get(reasonKey);
     if (!strategy) {
@@ -118,8 +109,8 @@ export class Abuse<
     const hookKey = abuseKey.key('hook', 'user-abuse', reasonKey, idKey);
     const banFor =
       strategy.banFor === undefined ? undefined : parseDuration(strategy.banFor);
-    const countTtl = await this.caching.ttl(countKey);
-    const marked = await this.caching.setNX(
+    const countTtl = await this.cache.ttl(countKey);
+    const marked = await this.cache.setNX(
       hookKey,
       '1',
       Math.max(countTtl > 0 ? countTtl : windowMs, 1),
@@ -133,13 +124,12 @@ export class Abuse<
       });
     } catch (e) {
       // 回调失败则释放 hook，允许窗口内重试
-      await this.caching.delete(hookKey);
+      await this.cache.delete(hookKey);
       throw e;
     }
   }
 
   async ipAbuse(ip: string, reason: IpAbuseReason): Promise<void> {
-    await this.ensureReady();
     const reasonKey = String(reason);
     const strategy = this.ipAbuseStrategies.get(reasonKey);
     if (!strategy) {
@@ -157,7 +147,6 @@ export class Abuse<
   }
 
   async blockIP(ip: string, duration: DurationInput): Promise<void> {
-    await this.ensureReady();
     const blockFor = parseDuration(duration);
     if (blockFor <= 0) {
       throw new Error(i18n.t('invalid_block_for', { blockFor: String(duration) }));
@@ -170,13 +159,11 @@ export class Abuse<
   }
 
   async unblockIP(ip: string): Promise<void> {
-    await this.ensureReady();
-    await this.caching.delete(this.getBlockKey(ip));
+    await this.cache.delete(this.getBlockKey(ip));
   }
 
   async isIPBlocked(ip: string): Promise<boolean> {
-    await this.ensureReady();
-    return this.caching.exists(this.getBlockKey(ip));
+    return this.cache.exists(this.getBlockKey(ip));
   }
 
   /**
@@ -191,12 +178,11 @@ export class Abuse<
     };
 
     return middleware.web(async (ctx, next) => {
-      await this.ensureReady();
       if (await bypass(ctx)) return next();
 
       const ip = ctx.request.ip;
 
-      if (await this.caching.exists(this.getBlockKey(ip))) {
+      if (await this.cache.exists(this.getBlockKey(ip))) {
         return throwBlocked(ctx);
       }
 
@@ -278,12 +264,11 @@ export class Abuse<
     };
 
     return middleware.socket(async (ctx: WebsocketContext, next) => {
-      await this.ensureReady();
       if (await socketBypass(ctx)) return next();
 
       const ip = ctx.client.request.ip;
 
-      if (await this.caching.exists(this.getBlockKey(ip))) {
+      if (await this.cache.exists(this.getBlockKey(ip))) {
         await rejectBlocked(ctx);
         return;
       }
@@ -482,9 +467,9 @@ export class Abuse<
   }
 
   protected async bumpCount(countKey: Caching.Key, windowMs: number): Promise<number> {
-    const count = await this.caching.increment(countKey);
-    if (count === 1 || (await this.caching.ttl(countKey)) === -1) {
-      await this.caching.expire(countKey, Math.max(windowMs, 1));
+    const count = await this.cache.increment(countKey);
+    if (count === 1 || (await this.cache.ttl(countKey)) === -1) {
+      await this.cache.expire(countKey, Math.max(windowMs, 1));
     }
     return count;
   }
@@ -497,24 +482,9 @@ export class Abuse<
     reason: AbuseBlockStrategy,
     detail: { count: number; limit: number; blockFor: number },
   ): Promise<boolean> {
-    const created = await this.caching.setNX(
-      this.getBlockKey(ip),
-      reason,
-      detail.blockFor,
-    );
+    const created = await this.cache.setNX(this.getBlockKey(ip), reason, detail.blockFor);
     if (!created) return false;
     await this.onBlockIP?.(ip, reason, detail);
     return true;
-  }
-
-  protected ensureReady() {
-    this.ready ??= registerLifecycle({
-      onInit: () => this.adapter.connect(),
-      onDestroy: () => this.adapter.disconnect(),
-    }).catch((err) => {
-      this.ready = undefined;
-      throw err;
-    });
-    return this.ready;
   }
 }

@@ -5,6 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'අගය වැරදි වර්ගයකි',
   not_integer: 'අගය පූර්ණ සංඛ්‍යාවක් නොවේ',
-  cache_service_destroyed: 'ක්ෂණික මතක සේවාව විනාශ කර ඇත',
   single_flight_no_result: 'singleFlight හවුල් ප්‍රතිඵලයක් ලබා ගත්තේ නැත',
 });

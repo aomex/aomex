@@ -1,9 +1,10 @@
+import { Caching } from '@aomex/cache';
 import { CacheMemoryAdapter } from '@aomex/cache/memory';
 import type { WebContext } from '@aomex/web';
 import { expectType, type TypeEqual } from 'ts-expect';
 import { OAuth2Client } from '../src';
 
-const store = new CacheMemoryAdapter();
+const cache = new Caching(new CacheMemoryAdapter());
 
 const client = new OAuth2Client({
   authorizationEndpoint: 'https://example.com/oauth/authorize',
@@ -11,7 +12,7 @@ const client = new OAuth2Client({
   clientId: 'cid',
   clientSecret: 'secret',
   redirectUri: 'http://localhost/callback',
-  store,
+  store: cache,
   onProfile({ token, ctx }) {
     expectType<TypeEqual<OAuth2Client.TokenSet, typeof token>>(true);
     expectType<TypeEqual<WebContext, typeof ctx>>(true);
@@ -26,7 +27,7 @@ const client = new OAuth2Client({
     clientId: 'cid',
     clientSecret: async () => 'jwt-secret',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     onProfile: async () => ({}),
   });
 }
@@ -79,7 +80,7 @@ declare const ctx: WebContext;
       expectType<TypeEqual<WebContext, typeof c>>(true);
       return 'http://localhost/cb';
     },
-    store,
+    store: cache,
     scopes: ['openid'],
     pkce: false,
     tokenAuth: 'basic',
@@ -98,7 +99,7 @@ declare const ctx: WebContext;
     clientId: 'cid',
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     // @ts-expect-error 无单位的数字字符串不是 DurationInput
     stateTtl: '1000',
     onProfile: async () => ({}),
@@ -125,7 +126,7 @@ declare const ctx: WebContext;
     clientId: 'cid',
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
   });
 }
 
@@ -136,7 +137,7 @@ declare const ctx: WebContext;
     clientId: 'cid',
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     // @ts-expect-error tokenAuth 非法
     tokenAuth: 'query',
     onProfile: async () => ({}),
@@ -149,7 +150,7 @@ declare const ctx: WebContext;
     clientId: 'cid',
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: 'https://accounts.google.com' },
     onProfile({ token, oidc, ctx }) {
       expectType<TypeEqual<OAuth2Client.TokenSet, typeof token>>(true);
@@ -173,7 +174,7 @@ declare const ctx: WebContext;
     clientId: 'cid',
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: 'https://accounts.google.com' },
   });
 
@@ -189,7 +190,7 @@ declare const ctx: WebContext;
     clientId: 'cid',
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: 'https://accounts.google.com' },
   });
 
@@ -205,7 +206,7 @@ declare const ctx: WebContext;
     clientId: 'cid',
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: 'https://accounts.google.com' },
     onProfile({ oidc }) {
       expectType<TypeEqual<GoogleClaims, typeof oidc.claims>>(true);
@@ -224,7 +225,7 @@ declare const ctx: WebContext;
     clientId: 'cid',
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: {
       issuer: 'https://accounts.google.com',
       jwksUri: 'https://www.googleapis.com/oauth2/v3/certs',
@@ -241,7 +242,7 @@ declare const ctx: WebContext;
     clientId: 'cid',
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     onProfile: async () =>
       ({
         iss: '',
@@ -260,7 +261,7 @@ declare const ctx: WebContext;
     clientId: 'cid',
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     onProfile: async () =>
       ({
         iss: '',
@@ -277,7 +278,7 @@ declare const ctx: WebContext;
     clientId: 'cid',
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     // @ts-expect-error oidc 启用时缺少 oidc.issuer
     oidc: {},
     // @ts-expect-error 过载回落到 OAuth2 时 Profile 默认与返回值冲突

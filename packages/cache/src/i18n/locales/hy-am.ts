@@ -5,6 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'Արժեքը սխալ տեսակի է',
   not_integer: 'արժեքը ամբողջ թիվ չէ',
-  cache_service_destroyed: 'Քեշ ծառայությունը ոչնչացվել է',
   single_flight_no_result: 'singleFlight-ը չստացավ համատեղ արդյունք',
 });

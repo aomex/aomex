@@ -1,12 +1,13 @@
-import type { CacheAdapter } from '@aomex/cache';
+import type { Caching } from '@aomex/cache';
 import type { GlobPathOptions } from '@aomex/internal-file-import';
 
 export interface CronsOptions {
   commanders: GlobPathOptions;
   /**
-   * 集群服务共享状态。默认使用内存存储，只能约束当前进程
+   * 集群服务共享状态。组合根应 `const cache = new Caching(adapter)` 后传入；
+   * 未传时默认内存适配器，只能约束当前进程
    */
-  store?: CacheAdapter;
+  store?: Caching;
   /**
    * 服务端口，用于查看任务状态和停止定时任务。有效范围：`1-65535`
    */

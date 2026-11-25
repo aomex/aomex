@@ -5,6 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'Мән қате түрі',
   not_integer: 'мән бүтін сан емес',
-  cache_service_destroyed: 'Кэш қызметі жойылды',
   single_flight_no_result: 'singleFlight ортақ нәтиже алмады',
 });

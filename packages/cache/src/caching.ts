@@ -1,4 +1,9 @@
-import { parseDuration, sleep, type DurationInput } from '@aomex/common';
+import {
+  parseDuration,
+  registerLifecycle,
+  sleep,
+  type DurationInput,
+} from '@aomex/common';
 import { CacheAdapter } from './cache-adapter';
 import { CacheKey } from './cache-key';
 import { i18n } from './i18n';
@@ -29,19 +34,47 @@ export const SINGLE_FLIGHT_LOCK_MS = 30_000;
 const CACHING_TYPE = '_$caching_type$_';
 const CACHING_DATA = '_$caching_data$_';
 
+/**
+ * 缓存门面：组合根创建一次，业务与各库包共用同一实例。
+ *
+ * 类名不用 `Cache`：TypeScript DOM / Web Cache API 已有全局 `Cache`（`cache.match` /
+ * `cache.put`），同名会导致自动导入与类型跳转混淆。实例变量仍推荐叫 `cache`。
+ *
+ * ```typescript
+ * export const cache = new Caching(new CacheMemoryAdapter());
+ * await cache.set(cache.key('user', 1), { id: 1 }, '1 day');
+ * ```
+ */
 export class Caching<T extends CacheAdapter = CacheAdapter> {
+  protected ready: Promise<void> | undefined;
+
   constructor(readonly adapter: T) {}
+
+  /**
+   * 用 `:` 拼接片段，得到可读的缓存键（可继续链式调用）。
+   * 委托 `CacheKey.key`。
+   */
+  key(...keys: Array<string | number>): CacheKey {
+    return CacheKey.key(...keys);
+  }
+
+  /**
+   * 将片段用 `:` 拼接后整体 MD5（无可读前缀）。
+   * 委托 `CacheKey.keyHash`。
+   */
+  keyHash(...keys: Array<string | number>): CacheKey {
+    return CacheKey.keyHash(...keys);
+  }
 
   /**
    * 查看缓存是否存在
    */
   async exists(key: Caching.Key): Promise<boolean> {
-    await this.adapter.connect();
+    await this.ensureReady();
     return this.adapter.existsKey(this.resolveKey(key));
   }
 
   /**
-   *
    * 获取缓存。如果未找到缓存并且未提供默认值，则返回`null`
    * ```typescript
    * await cache.get('key'); // null
@@ -55,7 +88,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
   ): Promise<T | null>;
   async get<T extends Caching.Types>(key: Caching.Key): Promise<T | null>;
   async get(key: Caching.Key, defaultValue?: Caching.Types | null): Promise<any> {
-    await this.adapter.connect();
+    await this.ensureReady();
     const result = await this.adapter.getValue(this.resolveKey(key));
     return this.decodeValue(result, defaultValue);
   }
@@ -79,7 +112,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
     key: Caching.Key,
     defaultValue?: Caching.Types | null,
   ): Promise<any> {
-    await this.adapter.connect();
+    await this.ensureReady();
     const result = await this.adapter.getAndDeleteValue(this.resolveKey(key));
     return this.decodeValue(result, defaultValue);
   }
@@ -98,7 +131,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
     value: Caching.Types,
     duration?: DurationInput,
   ): Promise<boolean> {
-    await this.adapter.connect();
+    await this.ensureReady();
     return this.adapter.setValue(
       this.resolveKey(key),
       this.encodeValue(value),
@@ -120,7 +153,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
     value: Caching.Types,
     duration?: DurationInput,
   ): Promise<boolean> {
-    await this.adapter.connect();
+    await this.ensureReady();
     return this.adapter.setNotExistValue(
       this.resolveKey(key),
       this.encodeValue(value),
@@ -138,7 +171,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    */
   async leftPush(key: Caching.Key, ...values: Caching.Types[]): Promise<boolean> {
     if (!values.length) return false;
-    await this.adapter.connect();
+    await this.ensureReady();
     return this.adapter.leftPushValue(
       this.resolveKey(key),
       ...values.map((value) => this.encodeValue(value)),
@@ -149,7 +182,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * 移除列表的最后一个元素，返回值为被移除的元素
    */
   async rightPop<T extends Caching.Types>(key: Caching.Key): Promise<T | null> {
-    await this.adapter.connect();
+    await this.ensureReady();
     const result = await this.adapter.rightPopValue(this.resolveKey(key));
     return this.decodeValue(result);
   }
@@ -164,7 +197,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * ```
    */
   async increment(key: Caching.Key): Promise<number> {
-    await this.adapter.connect();
+    await this.ensureReady();
     return this.adapter.increaseValue(this.resolveKey(key));
   }
 
@@ -177,7 +210,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * ```
    */
   async expire(key: Caching.Key, duration: DurationInput): Promise<boolean> {
-    await this.adapter.connect();
+    await this.ensureReady();
     return this.adapter.expireKey(this.resolveKey(key), parseDuration(duration));
   }
 
@@ -196,7 +229,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * ```
    */
   async ttl(key: Caching.Key): Promise<number> {
-    await this.adapter.connect();
+    await this.ensureReady();
     return this.adapter.ttlKey(this.resolveKey(key));
   }
 
@@ -204,7 +237,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * 将key中储存的数字值减一。如果key不存在，那么key的值会先被初始化为0，然后再执行操作。如果值包含错误的类型，或字符串类型的值不能表示为数字，那么返回一个错误
    */
   async decrement(key: Caching.Key): Promise<number> {
-    await this.adapter.connect();
+    await this.ensureReady();
     return this.adapter.decreaseValue(this.resolveKey(key));
   }
 
@@ -212,7 +245,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * 删除指定缓存
    */
   async delete(key: Caching.Key): Promise<boolean> {
-    await this.adapter.connect();
+    await this.ensureReady();
     return this.adapter.deleteValue(this.resolveKey(key));
   }
 
@@ -220,7 +253,7 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
    * 删除所有缓存
    */
   async deleteAll(): Promise<boolean> {
-    await this.adapter.connect();
+    await this.ensureReady();
     return this.adapter.deleteAllValues();
   }
 
@@ -291,6 +324,21 @@ export class Caching<T extends CacheAdapter = CacheAdapter> {
     }
 
     throw new Error(i18n.t('single_flight_no_result'));
+  }
+
+  /**
+   * 懒连接：首次读写时 `connect` 并登记关停时 `disconnect`。
+   * `onInit` 失败会清空 `ready`，下次可重试。
+   */
+  protected ensureReady(): Promise<void> {
+    this.ready ??= registerLifecycle({
+      onInit: () => this.adapter.connect(),
+      onDestroy: () => this.adapter.disconnect(),
+    }).catch((err) => {
+      this.ready = undefined;
+      throw err;
+    });
+    return this.ready;
   }
 
   protected resolveKey(key: Caching.Key): string {

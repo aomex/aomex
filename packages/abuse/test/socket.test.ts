@@ -1,6 +1,7 @@
 import { once } from 'node:events';
 import type http from 'node:http';
 import { afterEach, expect, test, vitest } from 'vitest';
+import { Caching } from '@aomex/cache';
 import { CacheMemoryAdapter } from '@aomex/cache/memory';
 import { Channel } from '@aomex/websocket';
 import { internalDestroyServices } from '@aomex/common';
@@ -23,7 +24,7 @@ afterEach(async () => {
 
 test('socket：未封禁时入站正常', async () => {
   const abuse = new Abuse({
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     strategies: [],
   });
   const channel = new Channel();
@@ -48,7 +49,7 @@ test('socket：未封禁时入站正常', async () => {
 
 test('socket：已封禁 IP 回推 error 后断开且不进业务', async () => {
   const abuse = new Abuse({
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     strategies: [],
   });
   let hit = false;
@@ -82,7 +83,7 @@ test('socket：已封禁 IP 回推 error 后断开且不进业务', async () => 
 
 test('socket：errorMessage 可定制', async () => {
   const abuse = new Abuse({
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     strategies: [],
   });
   const channel = new Channel();
@@ -110,7 +111,7 @@ test('socket：errorMessage 可定制', async () => {
 
 test('socket：bypass 跳过封禁检查', async () => {
   const abuse = new Abuse({
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     strategies: [],
   });
   const channel = new Channel();
@@ -136,7 +137,7 @@ test('socket：bypass 跳过封禁检查', async () => {
 
 test('socket：send error 失败时仍会 close', async () => {
   const abuse = new Abuse({
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     strategies: [],
   });
   await abuse.blockIP('203.0.113.10', '1h');
@@ -166,7 +167,7 @@ test('socket：send error 失败时仍会 close', async () => {
 
 test('web 与 socket 共用封禁态', async () => {
   const abuse = new Abuse({
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     strategies: [],
   });
   await abuse.blockIP('203.0.113.9', '1h');
@@ -224,7 +225,7 @@ test('web 与 socket 共用封禁态', async () => {
 test('socket-events：命中蜜罐事件满额后封禁', async () => {
   const onBlockIP = vitest.fn();
   const abuse = new Abuse({
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     strategies: [
       {
         strategy: 'socket-events',
@@ -270,7 +271,7 @@ test('socket-events：命中蜜罐事件满额后封禁', async () => {
 test('socket-events：未满额仍放行业务', async () => {
   const onBlockIP = vitest.fn();
   const abuse = new Abuse({
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     strategies: [
       {
         strategy: 'socket-events',
@@ -314,7 +315,7 @@ test('socket-events：未满额仍放行业务', async () => {
 test('socket-events：未命中事件不计数', async () => {
   const onBlockIP = vitest.fn();
   const abuse = new Abuse({
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     strategies: [
       {
         strategy: 'socket-events',
@@ -351,7 +352,7 @@ test('socket-events：空 events 创建即抛错', () => {
   expect(
     () =>
       new Abuse({
-        store: new CacheMemoryAdapter(),
+        store: new Caching(new CacheMemoryAdapter()),
         strategies: [
           {
             strategy: 'socket-events',

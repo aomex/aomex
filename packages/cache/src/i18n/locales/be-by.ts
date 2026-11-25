@@ -5,6 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'Значэнне мае няправільны тып',
   not_integer: "значэнне не з'яўляецца цэлым лікам",
-  cache_service_destroyed: 'Сэрвіс кэша знішчаны',
   single_flight_no_result: 'singleFlight не атрымаў агульны вынік',
 });

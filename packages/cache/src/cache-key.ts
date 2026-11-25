@@ -1,15 +1,15 @@
 import { createHash } from 'node:crypto';
 
 /**
- * 缓存键。通常由 `BaseCacheService#key()` / `#keyHash()` 创建。
+ * 缓存键。可用静态工厂或实例链式拼接。
  *
  * ```typescript
- * this.key('user', 1);                 // user:1
- * this.key('user').key(1);             // user:1
- * this.keyHash('user', 1);             // md5('user:1')
- * this.key('user').keyHash(1);         // user:md5('1')
- * this.key('user', 1).toHash();        // md5('user:1')
- * await this.cache.get(this.key('user', 1));
+ * CacheKey.key('user', 1);              // user:1
+ * CacheKey.key('user').key(1);          // user:1
+ * CacheKey.keyHash('user', 1);          // md5('user:1')
+ * CacheKey.key('user').keyHash(1);      // user:md5('1')
+ * CacheKey.key('user', 1).toHash();     // md5('user:1')
+ * await cache.get(CacheKey.key('user', 1));
  * ```
  */
 export class CacheKey {
@@ -17,6 +17,22 @@ export class CacheKey {
 
   constructor(value: string = '') {
     this.value = value;
+  }
+
+  /**
+   * 用 `:` 拼接片段，得到可读的缓存键（可继续链式调用）。
+   * 无参数时返回空键，便于再链式 `.key(...)`。
+   */
+  static key(...keys: Array<string | number>): CacheKey {
+    return keys.length === 0 ? new CacheKey() : new CacheKey().key(...keys);
+  }
+
+  /**
+   * 将片段用 `:` 拼接后整体 MD5（无可读前缀）。
+   * 等价于 `CacheKey.key(...keys).toHash()`。
+   */
+  static keyHash(...keys: Array<string | number>): CacheKey {
+    return new CacheKey().keyHash(...keys);
   }
 
   /** 用 `:` 拼接片段（保留已有前缀），如 `key('user').key(1)` → `'user:1'` */

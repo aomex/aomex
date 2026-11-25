@@ -5,6 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'মান ভুল ধরনের',
   not_integer: 'মান একটি পূর্ণসংখ্যা নয়',
-  cache_service_destroyed: 'ক্যাশে সার্ভিস ধ্বংস করা হয়েছে',
   single_flight_no_result: 'singleFlight ভাগ করা ফলাফল পায়নি',
 });

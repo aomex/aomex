@@ -5,6 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'Вредноста е од погрешен тип',
   not_integer: 'вредноста не е цел број',
-  cache_service_destroyed: 'Услугата за кеш е уништена',
   single_flight_no_result: 'singleFlight не доби заеднички резултат',
 });

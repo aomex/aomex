@@ -49,7 +49,7 @@ test('keyHash 只 md5 最新参数并保留前缀', () => {
 });
 
 test('toHash 对当前完整键做 md5', () => {
-  expect(new CacheKey().key('user', 1).toHash()['value']).toBe(
+  expect(CacheKey.key('user', 1).toHash()['value']).toBe(
     createHash('md5').update('user:1').digest('hex'),
   );
   expect(new CacheKey('user').key(1).key('profile').toHash()['value']).toBe(
@@ -58,8 +58,8 @@ test('toHash 对当前完整键做 md5', () => {
   expect(new CacheKey().toHash()['value']).toBe(
     createHash('md5').update('').digest('hex'),
   );
-  expect(new CacheKey().key('user', 1).toHash()['value']).toBe(
-    new CacheKey().keyHash('user', 1)['value'],
+  expect(CacheKey.key('user', 1).toHash()['value']).toBe(
+    CacheKey.keyHash('user', 1)['value'],
   );
   expect(new CacheKey('user').keyHash(1).toHash()['value']).toBe(
     createHash('md5')
@@ -84,4 +84,16 @@ test('key/keyHash/toHash 返回新的 CacheKey 实例', () => {
 test('构造时可带初始 value', () => {
   expect(new CacheKey('preset')['value']).toBe('preset');
   expect(new CacheKey()['value']).toBe('');
+});
+
+test('静态 key / keyHash 入口', () => {
+  expect(CacheKey.key()['value']).toBe('');
+  expect(CacheKey.key('user', 1)['value']).toBe('user:1');
+  expect(CacheKey.key('user').key(1)['value']).toBe('user:1');
+  expect(CacheKey.keyHash('user', 1)['value']).toBe(
+    createHash('md5').update('user:1').digest('hex'),
+  );
+  expect(CacheKey.keyHash('user', 1)['value']).toBe(
+    CacheKey.key('user', 1).toHash()['value'],
+  );
 });

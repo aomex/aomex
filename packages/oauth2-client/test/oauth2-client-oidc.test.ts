@@ -117,7 +117,7 @@ test('构造：oidc.issuer 为空抛错', () => {
         clientId: CLIENT_ID,
         clientSecret: 's',
         redirectUri: 'http://localhost/cb',
-        store: new CacheMemoryAdapter(),
+        store: new Caching(new CacheMemoryAdapter()),
         oidc: { issuer: '' },
         onProfile: async ({ oidc }) => oidc.claims.sub,
       }),
@@ -129,13 +129,12 @@ test('OIDC：discovery 补齐端点，授权 URL 含 openid 与 nonce', async ()
     token: () => Response.json({ access_token: 'x', token_type: 'bearer' }),
   });
 
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const client = new OAuth2Client({
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => ({ sub: oidc.claims.sub }),
   });
@@ -154,18 +153,17 @@ test('OIDC：discovery 补齐端点，授权 URL 含 openid 与 nonce', async ()
   expect(url.searchParams.get('nonce')).toMatch(/^[A-Za-z0-9_-]+$/);
 
   const state = url.searchParams.get('state')!;
-  const saved = await caching.get<{ verifier: string; nonce: string }>(
+  const saved = await cache.get<{ verifier: string; nonce: string }>(
     `oauth2:state:${CLIENT_ID}:${state}`,
   );
   expect(saved?.nonce).toBe(url.searchParams.get('nonce'));
 });
 
 test('OIDC：callback 验签 id_token 并传入 claims', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const nonce = 'N'.repeat(43);
   const state = 'S'.repeat(43);
-  await caching.set(
+  await cache.set(
     `oauth2:state:${CLIENT_ID}:${state}`,
     { verifier: 'V'.repeat(43), nonce },
     60_000,
@@ -181,7 +179,7 @@ test('OIDC：callback 验签 id_token 并传入 claims', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER },
     onProfile: async ({ token, oidc }) => ({
       access: token.access_token,
@@ -202,11 +200,10 @@ test('OIDC：callback 验签 id_token 并传入 claims', async () => {
 });
 
 test('OIDC：id_token 含正确 at_hash 时通过', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const nonce = 'N'.repeat(43);
   const state = 'S'.repeat(43);
-  await caching.set(
+  await cache.set(
     `oauth2:state:${CLIENT_ID}:${state}`,
     { verifier: 'V'.repeat(43), nonce },
     60_000,
@@ -231,7 +228,7 @@ test('OIDC：id_token 含正确 at_hash 时通过', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER },
     onProfile: async ({ token, oidc }) => ({
       access: token.access_token,
@@ -256,11 +253,10 @@ test('OIDC：id_token 含正确 at_hash 时通过', async () => {
 });
 
 test('OIDC：at_hash 与 access_token 不匹配时拒绝', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const nonce = 'N'.repeat(43);
   const state = 'S'.repeat(43);
-  await caching.set(
+  await cache.set(
     `oauth2:state:${CLIENT_ID}:${state}`,
     { verifier: 'V'.repeat(43), nonce },
     60_000,
@@ -283,7 +279,7 @@ test('OIDC：at_hash 与 access_token 不匹配时拒绝', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -306,11 +302,10 @@ test('OIDC：at_hash 与 access_token 不匹配时拒绝', async () => {
 });
 
 test('OIDC：at_hash 为空字符串时拒绝', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const nonce = 'N'.repeat(43);
   const state = 'S'.repeat(43);
-  await caching.set(
+  await cache.set(
     `oauth2:state:${CLIENT_ID}:${state}`,
     { verifier: 'V'.repeat(43), nonce },
     60_000,
@@ -326,7 +321,7 @@ test('OIDC：at_hash 为空字符串时拒绝', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -349,11 +344,10 @@ test('OIDC：at_hash 为空字符串时拒绝', async () => {
 });
 
 test('OIDC：省略 onProfile 时 callback 直接返回 claims', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const nonce = 'N'.repeat(43);
   const state = 'S'.repeat(43);
-  await caching.set(
+  await cache.set(
     `oauth2:state:${CLIENT_ID}:${state}`,
     { verifier: 'V'.repeat(43), nonce },
     60_000,
@@ -373,7 +367,7 @@ test('OIDC：省略 onProfile 时 callback 直接返回 claims', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER },
   });
 
@@ -392,11 +386,10 @@ test('OIDC：省略 onProfile 时 callback 直接返回 claims', async () => {
 });
 
 test('OIDC：可手写端点并覆盖 jwksUri', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const nonce = 'nonce-manual-123456789012345678901234567';
   const state = 'state-manual-12345678901234567890123456';
-  await caching.set(
+  await cache.set(
     `oauth2:state:${CLIENT_ID}:${state}`,
     { verifier: 'ver', nonce },
     60_000,
@@ -414,7 +407,7 @@ test('OIDC：可手写端点并覆盖 jwksUri', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     scopes: ['openid', 'email'],
     oidc: {
       issuer: ISSUER,
@@ -435,11 +428,10 @@ test('OIDC：可手写端点并覆盖 jwksUri', async () => {
 });
 
 test('OIDC：手写端点时配置 issuer 尾斜杠与 id_token.iss 仍匹配', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const nonce = 'nonce-trail-slash-1234567890123456789012';
   const state = 'state-trail-slash-123456789012345678901';
-  await caching.set(
+  await cache.set(
     `oauth2:state:${CLIENT_ID}:${state}`,
     { verifier: 'ver', nonce },
     60_000,
@@ -457,7 +449,7 @@ test('OIDC：手写端点时配置 issuer 尾斜杠与 id_token.iss 仍匹配', 
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     scopes: ['openid'],
     oidc: {
       issuer: `${ISSUER}/`,
@@ -479,11 +471,10 @@ test('OIDC：手写端点时配置 issuer 尾斜杠与 id_token.iss 仍匹配', 
 });
 
 test('OIDC：id_token.iss 尾斜杠与配置无斜杠仍匹配', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const nonce = 'nonce-iss-slash-123456789012345678901234';
   const state = 'state-iss-slash-12345678901234567890123';
-  await caching.set(
+  await cache.set(
     `oauth2:state:${CLIENT_ID}:${state}`,
     { verifier: 'ver', nonce },
     60_000,
@@ -501,7 +492,7 @@ test('OIDC：id_token.iss 尾斜杠与配置无斜杠仍匹配', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     scopes: ['openid'],
     oidc: {
       issuer: ISSUER,
@@ -521,11 +512,10 @@ test('OIDC：id_token.iss 尾斜杠与配置无斜杠仍匹配', async () => {
 });
 
 test('OIDC：id_token.iss 与期望 issuer 真正不一致时拒绝', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const nonce = 'nonce-bad-iss-12345678901234567890123456';
   const state = 'state-bad-iss-1234567890123456789012345';
-  await caching.set(
+  await cache.set(
     `oauth2:state:${CLIENT_ID}:${state}`,
     { verifier: 'ver', nonce },
     60_000,
@@ -543,7 +533,7 @@ test('OIDC：id_token.iss 与期望 issuer 真正不一致时拒绝', async () =
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     scopes: ['openid'],
     oidc: {
       issuer: ISSUER,
@@ -570,10 +560,9 @@ test('OIDC：id_token.iss 与期望 issuer 真正不一致时拒绝', async () =
 });
 
 test('OIDC：缺少 id_token', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const state = 'missingidtokenstate123456789012345678901';
-  await caching.set(
+  await cache.set(
     `oauth2:state:${CLIENT_ID}:${state}`,
     { verifier: 'v', nonce: 'n' },
     60_000,
@@ -586,7 +575,7 @@ test('OIDC：缺少 id_token', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -609,10 +598,9 @@ test('OIDC：缺少 id_token', async () => {
 });
 
 test('OIDC：nonce 不匹配', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const state = 'noncemismatchstate1234567890123456789012';
-  await caching.set(
+  await cache.set(
     `oauth2:state:${CLIENT_ID}:${state}`,
     { verifier: 'v', nonce: 'expected-nonce-value-xxxxxxxxxxxx' },
     60_000,
@@ -627,7 +615,7 @@ test('OIDC：nonce 不匹配', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -650,15 +638,10 @@ test('OIDC：nonce 不匹配', async () => {
 });
 
 test('OIDC：错误 aud 验签失败', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const nonce = 'badaudnonce123456789012345678901234567890';
   const state = 'badaudstate123456789012345678901234567890';
-  await caching.set(
-    `oauth2:state:${CLIENT_ID}:${state}`,
-    { verifier: 'v', nonce },
-    60_000,
-  );
+  await cache.set(`oauth2:state:${CLIENT_ID}:${state}`, { verifier: 'v', nonce }, 60_000);
   const idToken = await signIdToken({ nonce, aud: 'other-client' });
   stubOidcFetch({
     token: () =>
@@ -669,7 +652,7 @@ test('OIDC：错误 aud 验签失败', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -700,7 +683,7 @@ test('OIDC：discovery 失败', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -727,7 +710,7 @@ test('OIDC：scopes 已含 openid 不重复添加', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     scopes: ['email', 'openid', 'profile'],
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
@@ -744,10 +727,9 @@ test('OIDC：scopes 已含 openid 不重复添加', async () => {
 });
 
 test('OIDC：state 中缺少 nonce', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const state = 'missingnoncestate12345678901234567890123';
-  await caching.set(`oauth2:state:${CLIENT_ID}:${state}`, { verifier: 'v' }, 60_000);
+  await cache.set(`oauth2:state:${CLIENT_ID}:${state}`, { verifier: 'v' }, 60_000);
   const idToken = await signIdToken({ nonce: 'n' });
   stubOidcFetch({
     token: () =>
@@ -757,7 +739,7 @@ test('OIDC：state 中缺少 nonce', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -779,15 +761,10 @@ test('OIDC：state 中缺少 nonce', async () => {
 });
 
 test('OIDC：id_token 缺少 sub', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const nonce = 'emptysubnonce123456789012345678901234567';
   const state = 'emptysubstate123456789012345678901234567';
-  await caching.set(
-    `oauth2:state:${CLIENT_ID}:${state}`,
-    { verifier: 'v', nonce },
-    60_000,
-  );
+  await cache.set(`oauth2:state:${CLIENT_ID}:${state}`, { verifier: 'v', nonce }, 60_000);
   const idToken = await new SignJWT({ nonce })
     .setProtectedHeader({ alg: 'RS256', kid: KID })
     .setIssuer(ISSUER)
@@ -803,7 +780,7 @@ test('OIDC：id_token 缺少 sub', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -840,7 +817,7 @@ test('OIDC：discovery issuer 与配置不一致', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -873,7 +850,7 @@ test('OIDC：discovery issuer 末尾斜杠视为一致', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -903,7 +880,7 @@ test('OIDC：discovery 文档字段不全', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -937,7 +914,7 @@ test('OIDC：discovery 返回空 authorization_endpoint', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -973,7 +950,7 @@ test('OIDC：discovery 返回空 token_endpoint', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -1007,7 +984,7 @@ test('OIDC：discovery 返回空 jwks_uri', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -1027,15 +1004,14 @@ test('OIDC：discovery 返回空 jwks_uri', async () => {
 });
 
 test('OIDC：复用 JWKS 缓存', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const client = new OAuth2Client({
     authorizationEndpoint: `${ISSUER}/authorize`,
     tokenEndpoint: `${ISSUER}/token`,
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER, jwksUri: `${ISSUER}/jwks` },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -1043,7 +1019,7 @@ test('OIDC：复用 JWKS 缓存', async () => {
   for (const suffix of ['a', 'b']) {
     const nonce = `reusejwksnonce${suffix}`.padEnd(43, 'x');
     const state = `reusejwksstate${suffix}`.padEnd(43, 'x');
-    await caching.set(
+    await cache.set(
       `oauth2:state:${CLIENT_ID}:${state}`,
       { verifier: 'v', nonce },
       60_000,
@@ -1091,7 +1067,7 @@ test('OIDC：refresh 走 discovery token_endpoint', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -1130,7 +1106,7 @@ test('OIDC：revoke 使用 discovery revocation_endpoint', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -1157,7 +1133,7 @@ test('OIDC：discovery 无 revocation_endpoint 且未手写时 revoke 抛错', a
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -1183,7 +1159,7 @@ test('OIDC：手写 revocationEndpoint 优先于 discovery', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     oidc: { issuer: ISSUER },
     revocationEndpoint: 'https://manual.example/revoke',
     onProfile: async ({ oidc }) => oidc.claims.sub,
@@ -1198,7 +1174,7 @@ test('OIDC：assertAtHash 委托 oidc-token-hash', () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store: new CacheMemoryAdapter(),
+    store: new Caching(new CacheMemoryAdapter()),
     oidc: { issuer: ISSUER },
   });
 
@@ -1212,11 +1188,10 @@ test('OIDC：assertAtHash 委托 oidc-token-hash', () => {
 });
 
 test('OIDC：多 aud 且 azp 正确时通过', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const nonce = 'N'.repeat(43);
   const state = 'S'.repeat(43);
-  await caching.set(
+  await cache.set(
     `oauth2:state:${CLIENT_ID}:${state}`,
     { verifier: 'V'.repeat(43), nonce },
     60_000,
@@ -1236,7 +1211,7 @@ test('OIDC：多 aud 且 azp 正确时通过', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -1252,11 +1227,10 @@ test('OIDC：多 aud 且 azp 正确时通过', async () => {
 });
 
 test('OIDC：多 aud 缺少 azp 时拒绝', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const nonce = 'N'.repeat(43);
   const state = 'S'.repeat(43);
-  await caching.set(
+  await cache.set(
     `oauth2:state:${CLIENT_ID}:${state}`,
     { verifier: 'V'.repeat(43), nonce },
     60_000,
@@ -1275,7 +1249,7 @@ test('OIDC：多 aud 缺少 azp 时拒绝', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -1298,11 +1272,10 @@ test('OIDC：多 aud 缺少 azp 时拒绝', async () => {
 });
 
 test('OIDC：回调 iss 与配置一致时通过', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const nonce = 'N'.repeat(43);
   const state = 'S'.repeat(43);
-  await caching.set(
+  await cache.set(
     `oauth2:state:${CLIENT_ID}:${state}`,
     { verifier: 'V'.repeat(43), nonce },
     60_000,
@@ -1318,7 +1291,7 @@ test('OIDC：回调 iss 与配置一致时通过', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -1336,11 +1309,10 @@ test('OIDC：回调 iss 与配置一致时通过', async () => {
 });
 
 test('OIDC：回调 iss 不一致时拒绝', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const nonce = 'N'.repeat(43);
   const state = 'S'.repeat(43);
-  await caching.set(
+  await cache.set(
     `oauth2:state:${CLIENT_ID}:${state}`,
     { verifier: 'V'.repeat(43), nonce },
     60_000,
@@ -1352,7 +1324,7 @@ test('OIDC：回调 iss 不一致时拒绝', async () => {
     clientId: CLIENT_ID,
     clientSecret: 's',
     redirectUri: 'http://localhost/cb',
-    store,
+    store: cache,
     oidc: { issuer: ISSUER },
     onProfile: async ({ oidc }) => oidc.claims.sub,
   });
@@ -1372,5 +1344,5 @@ test('OIDC：回调 iss 不一致时拒绝', async () => {
   await supertest(app.listen())
     .get(`/?code=auth&state=${state}&iss=${encodeURIComponent('https://evil.example')}`)
     .expect(401, i18n.t('callback_iss_mismatch'));
-  expect(await caching.get(`oauth2:state:${CLIENT_ID}:${state}`)).toBeNull();
+  expect(await cache.get(`oauth2:state:${CLIENT_ID}:${state}`)).toBeNull();
 });

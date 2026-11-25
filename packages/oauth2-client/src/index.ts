@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from 'node:crypto';
-import { CacheAdapter, Caching } from '@aomex/cache';
-import { parseDuration, registerLifecycle, type DurationInput } from '@aomex/common';
+import { Caching } from '@aomex/cache';
+import { parseDuration, type DurationInput } from '@aomex/common';
 import type { WebContext } from '@aomex/web';
 import { createRemoteJWKSet, jwtVerify, type JWTPayload } from 'jose';
 import { validate as validateOidcTokenHash } from 'oidc-token-hash';
@@ -116,9 +116,9 @@ export namespace OAuth2Client {
     scopes?: readonly string[];
     /**
      * 存放 state、PKCE verifier（及 OIDC nonce）。
-     * 首次读写 state 时经 `registerLifecycle` 调用 `connect`，关停时 `disconnect`
+     * 组合根应 `const cache = new Caching(adapter)`，再传入此处
      */
-    store: CacheAdapter;
+    store: Caching;
     /**
      * state 缓存有效期。默认：`10 minutes`
      */
@@ -226,13 +226,12 @@ export class OAuth2Client<
   Profile = OAuth2Client.IdTokenClaims,
   Claims extends OAuth2Client.IdTokenClaims = OAuth2Client.IdTokenClaims,
 > {
-  protected readonly caching: Caching;
+  protected readonly cache: Caching;
   protected readonly stateTtlMs: number;
   protected readonly pkce: boolean;
   protected readonly tokenAuth: 'body' | 'basic';
   protected metadata: OidcMetadata | null = null;
   protected jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
-  protected readyPromise: Promise<void> | undefined;
 
   /** OIDC 且省略 `onProfile`：`callback` 返回已验签 claims（`Profile` 默认为 `IdTokenClaims`） */
   constructor(opts: OAuth2Client.OidcWithoutOnProfileOptions);
@@ -266,37 +265,22 @@ export class OAuth2Client<
       }
     }
 
-    this.caching = new Caching(opts.store);
+    this.cache = opts.store;
     this.stateTtlMs = ttl;
     this.pkce = opts.pkce !== false;
     this.tokenAuth = opts.tokenAuth ?? 'body';
   }
 
   /**
-   * 确保 store 已 `connect`（可重入）。首次读写 state 时登记生命周期。
-   */
-  protected ensureReady(): Promise<void> {
-    this.readyPromise ??= registerLifecycle({
-      onInit: () => this.opts.store.connect(),
-      onDestroy: () => this.opts.store.disconnect(),
-    }).catch((err) => {
-      this.readyPromise = undefined;
-      throw err;
-    });
-    return this.readyPromise;
-  }
-
-  /**
    * 写入 state（及 PKCE verifier / OIDC nonce）后返回授权 URL，不发送响应
    */
   async getAuthorizationUrl(ctx: WebContext): Promise<string> {
-    await this.ensureReady();
     const { authorizationEndpoint } = await this.resolveEndpoints();
     const state = this.randomToken();
     const verifier = this.pkce ? this.randomToken() : '';
     const nonce = this.opts.oidc ? this.randomToken() : undefined;
 
-    await this.caching.set(
+    await this.cache.set(
       this.stateKey(state),
       { verifier, nonce } satisfies StatePayload,
       this.stateTtlMs,
@@ -978,8 +962,7 @@ export class OAuth2Client<
    * 并发 callback 仅一方成功；换票失败不恢复（防授权码重放）。
    */
   protected async consumeState(state: string): Promise<StatePayload> {
-    await this.ensureReady();
-    const saved = await this.caching.getAndDelete<StatePayload>(this.stateKey(state));
+    const saved = await this.cache.getAndDelete<StatePayload>(this.stateKey(state));
     if (!saved || (this.pkce && !saved.verifier)) {
       throw new Error(i18n.t('invalid_state'));
     }

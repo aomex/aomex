@@ -1,8 +1,9 @@
+import { Caching } from '@aomex/cache';
 import { CacheMemoryAdapter } from '@aomex/cache/memory';
 import { expect, test } from 'vitest';
 import { Abuse } from '../src';
 
-const abuse = new Abuse({ store: new CacheMemoryAdapter(), strategies: [] });
+const abuse = new Abuse({ store: new Caching(new CacheMemoryAdapter()), strategies: [] });
 const matchPath = abuse['matchPath'].bind(abuse);
 const matchAnyPath = abuse['matchAnyPath'].bind(abuse);
 const matchMethod = abuse['matchMethod'].bind(abuse);

@@ -5,6 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'मान ग़लत प्रकार का है',
   not_integer: 'मान एक पूर्णांक नहीं है',
-  cache_service_destroyed: 'कैश सेवा नष्ट कर दी गई है',
   single_flight_no_result: 'singleFlight साझा परिणाम प्राप्त नहीं कर सका',
 });

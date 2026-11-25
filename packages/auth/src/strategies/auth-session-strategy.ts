@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { CacheAdapter, Caching } from '@aomex/cache';
+import { Caching } from '@aomex/cache';
 import { sleep } from '@aomex/common';
 import {
   type CookieSerializeOptions,
@@ -31,9 +31,9 @@ export namespace AuthSessionStrategy {
     AuthorizeArgs extends any[],
   > = {
     /**
-     * 会话存储适配器（`@aomex/cache` 的 `CacheAdapter`，如 memory / redis）
+     * 会话缓存。组合根应 `const cache = new Caching(adapter)`，再传入此处
      */
-    store: CacheAdapter;
+    store: Caching;
     /**
      * 生成会话缓存键。默认：`auth:session:${sessionId}`
      */
@@ -101,7 +101,7 @@ export class AuthSessionStrategy<
   },
   AuthorizeArgs
 > {
-  protected readonly caching: Caching;
+  protected readonly cache: Caching;
   protected readonly cookieName: string;
   protected readonly ttlMs: number;
 
@@ -112,7 +112,7 @@ export class AuthSessionStrategy<
     if (!(opts.cookie.maxAge > 0)) {
       throw new Error(i18n.t('session_max_age_invalid'));
     }
-    this.caching = new Caching(opts.store);
+    this.cache = opts.store;
     this.cookieName = opts.cookie.name || 'sessionId';
     this.ttlMs = opts.cookie.maxAge * 1000;
   }
@@ -134,7 +134,7 @@ export class AuthSessionStrategy<
     const stored =
       data !== undefined
         ? data
-        : await this.caching.get<Stored>(this.getSessionKey(previous));
+        : await this.cache.get<Stored>(this.getSessionKey(previous));
     if (stored === null) return false;
     return this.issue(ctx, stored);
   }
@@ -183,7 +183,7 @@ export class AuthSessionStrategy<
     for (let i = 0; i < 10; i++) {
       const sessionId = randomBytes(32).toString('base64url');
       const key = this.getSessionKey(sessionId);
-      if (await this.caching.setNX(key, data, this.ttlMs)) {
+      if (await this.cache.setNX(key, data, this.ttlMs)) {
         return sessionId;
       }
       await sleep(10);
@@ -197,11 +197,11 @@ export class AuthSessionStrategy<
 
   /** 仅刷新过期时间，不改存储内容（对应 `Caching.expire`） */
   protected async renewSession(sessionId: string): Promise<boolean> {
-    return this.caching.expire(this.getSessionKey(sessionId), this.ttlMs);
+    return this.cache.expire(this.getSessionKey(sessionId), this.ttlMs);
   }
 
   protected async deleteSession(sessionId: string): Promise<void> {
-    await this.caching.delete(this.getSessionKey(sessionId));
+    await this.cache.delete(this.getSessionKey(sessionId));
   }
 
   /**
@@ -228,7 +228,7 @@ export class AuthSessionStrategy<
     const sessionId = this.readSessionId(ctx);
     if (!sessionId) return false;
 
-    const stored = await this.caching.get<Stored>(this.getSessionKey(sessionId));
+    const stored = await this.cache.get<Stored>(this.getSessionKey(sessionId));
     if (stored === null) return false;
 
     const loaded = await this.opts.onLoaded(stored, ctx, sessionId);

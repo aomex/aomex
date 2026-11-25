@@ -5,6 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'Değerin türü yanlış',
   not_integer: 'değer bir tam sayı değil',
-  cache_service_destroyed: 'Önbellek hizmeti yok edildi',
   single_flight_no_result: 'singleFlight paylaşılan bir sonuç alamadı',
 });

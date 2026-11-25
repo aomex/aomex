@@ -5,6 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'Vērtības veids ir nepareizs',
   not_integer: 'vērtība nav vesels skaitlis',
-  cache_service_destroyed: 'Kešatmiņas pakalpojums ir iznīcināts',
   single_flight_no_result: 'singleFlight nesaņēma kopīgu rezultātu',
 });

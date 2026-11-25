@@ -17,7 +17,7 @@ afterEach(async () => {
 function createClient(
   overrides?: Partial<OAuth2Client.OAuth2OnlyOptions<{ id: number; login: string }>>,
 ) {
-  const store = new CacheMemoryAdapter();
+  const cache = new Caching(new CacheMemoryAdapter());
   const onProfile = vi.fn(async () => ({ id: 1, login: 'octocat' }));
   const client = new OAuth2Client({
     authorizationEndpoint: 'https://example.com/oauth/authorize',
@@ -26,14 +26,14 @@ function createClient(
     clientSecret: 'csecret',
     redirectUri: 'http://localhost/oauth/callback',
     scopes: ['read:user'],
-    store,
+    store: cache,
     onProfile,
     ...overrides,
   });
-  return { client, store, onProfile, caching: new Caching(store) };
+  return { client, cache, onProfile };
 }
 
-test('ensureReady：store.connect 失败清空 readyPromise，下次可重试', async () => {
+test('store.connect 失败清空 ready，下次读写可重试', async () => {
   let fail = true;
   let connects = 0;
   class FlakyStore extends CacheMemoryAdapter {
@@ -42,16 +42,22 @@ test('ensureReady：store.connect 失败清空 readyPromise，下次可重试', 
       if (fail) throw new Error('oauth-store-connect-boom');
     }
   }
-  const { client } = createClient({ store: new FlakyStore() });
+  const cache = new Caching(new FlakyStore());
+  const { client } = createClient({ store: cache });
 
-  await expect(client['ensureReady']()).rejects.toThrow('oauth-store-connect-boom');
+  await expect(cache.set('probe', 1)).rejects.toThrow('oauth-store-connect-boom');
   expect(connects).toBe(1);
-  expect(client['readyPromise']).toBeUndefined();
+  expect(cache['ready']).toBeUndefined();
 
   fail = false;
-  await client['ensureReady']();
-  expect(connects).toBe(2);
-  await client['ensureReady']();
+  const app = new TestWebApp({
+    mount: [
+      middleware.web(async (ctx) => {
+        ctx.send(await client.getAuthorizationUrl(ctx));
+      }),
+    ],
+  });
+  await supertest(app.listen()).get('/').expect(200);
   expect(connects).toBe(2);
 });
 
@@ -64,7 +70,7 @@ test('构造：空 clientId 抛错', () => {
         clientId: '',
         clientSecret: 'x',
         redirectUri: 'http://localhost/cb',
-        store: new CacheMemoryAdapter(),
+        store: new Caching(new CacheMemoryAdapter()),
         onProfile: async () => ({}),
       }),
   ).toThrow(i18n.t('client_id_empty'));
@@ -79,7 +85,7 @@ test('构造：空 clientSecret 字符串抛错', () => {
         clientId: 'cid',
         clientSecret: '',
         redirectUri: 'http://localhost/cb',
-        store: new CacheMemoryAdapter(),
+        store: new Caching(new CacheMemoryAdapter()),
         onProfile: async () => ({}),
       }),
   ).toThrow(i18n.t('client_secret_empty'));
@@ -111,7 +117,7 @@ test('构造：空 authorizationEndpoint 抛错', () => {
         clientId: 'cid',
         clientSecret: 'x',
         redirectUri: 'http://localhost/cb',
-        store: new CacheMemoryAdapter(),
+        store: new Caching(new CacheMemoryAdapter()),
         onProfile: async () => ({}),
       }),
   ).toThrow(i18n.t('authorization_endpoint_empty'));
@@ -126,7 +132,7 @@ test('构造：空 tokenEndpoint 抛错', () => {
         clientId: 'cid',
         clientSecret: 'x',
         redirectUri: 'http://localhost/cb',
-        store: new CacheMemoryAdapter(),
+        store: new Caching(new CacheMemoryAdapter()),
         onProfile: async () => ({}),
       }),
   ).toThrow(i18n.t('token_endpoint_empty'));
@@ -141,7 +147,7 @@ test('构造：空 redirectUri 字符串抛错', () => {
         clientId: 'cid',
         clientSecret: 'x',
         redirectUri: '',
-        store: new CacheMemoryAdapter(),
+        store: new Caching(new CacheMemoryAdapter()),
         onProfile: async () => ({}),
       }),
   ).toThrow(i18n.t('redirect_uri_empty'));
@@ -156,7 +162,7 @@ test('构造：stateTtl 为 0 抛错', () => {
         clientId: 'cid',
         clientSecret: 'x',
         redirectUri: 'http://localhost/cb',
-        store: new CacheMemoryAdapter(),
+        store: new Caching(new CacheMemoryAdapter()),
         stateTtl: 0,
         onProfile: async () => ({}),
       }),
@@ -164,7 +170,7 @@ test('构造：stateTtl 为 0 抛错', () => {
 });
 
 test('getAuthorizationUrl：写入 state 并带 PKCE', async () => {
-  const { client, caching } = createClient({
+  const { client, cache } = createClient({
     authorizationParams: { prompt: 'consent' },
   });
   const app = new TestWebApp({
@@ -189,7 +195,7 @@ test('getAuthorizationUrl：写入 state 并带 PKCE', async () => {
   const state = url.searchParams.get('state')!;
   expect(state).toMatch(/^[A-Za-z0-9_-]+$/);
   const challenge = url.searchParams.get('code_challenge')!;
-  const saved = await caching.get<{ verifier: string }>(`oauth2:state:cid:${state}`);
+  const saved = await cache.get<{ verifier: string }>(`oauth2:state:cid:${state}`);
   expect(saved).not.toBeNull();
   expect(createHash('sha256').update(saved!.verifier).digest('base64url')).toBe(
     challenge,
@@ -197,7 +203,7 @@ test('getAuthorizationUrl：写入 state 并带 PKCE', async () => {
 });
 
 test('getAuthorizationUrl：pkce=false 不写 challenge', async () => {
-  const { client, caching } = createClient({ pkce: false });
+  const { client, cache } = createClient({ pkce: false });
   const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
@@ -209,7 +215,7 @@ test('getAuthorizationUrl：pkce=false 不写 challenge', async () => {
   const url = new URL(res.text);
   expect(url.searchParams.get('code_challenge')).toBeNull();
   const state = url.searchParams.get('state')!;
-  const saved = await caching.get<{ verifier: string }>(`oauth2:state:cid:${state}`);
+  const saved = await cache.get<{ verifier: string }>(`oauth2:state:cid:${state}`);
   expect(saved).toEqual({ verifier: '' });
 });
 
@@ -274,8 +280,7 @@ test('getAuthorizationUrl：动态 redirectUri 返回空串抛错', async () => 
 });
 
 test('getAuthorizationUrl：子类可 override stateKey', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   class CustomClient extends OAuth2Client<{ id: number }> {
     protected override stateKey(state: string) {
       return `custom:${state}` as const;
@@ -287,7 +292,7 @@ test('getAuthorizationUrl：子类可 override stateKey', async () => {
     clientId: 'cid',
     clientSecret: 'csecret',
     redirectUri: 'http://localhost/oauth/callback',
-    store,
+    store: cache,
     onProfile: async () => ({ id: 1 }),
   });
   const app = new TestWebApp({
@@ -299,7 +304,7 @@ test('getAuthorizationUrl：子类可 override stateKey', async () => {
   });
   const res = await supertest(app.listen()).get('/').expect(200);
   const state = new URL(res.text).searchParams.get('state')!;
-  expect(await caching.get(`custom:${state}`)).toEqual({
+  expect(await cache.get(`custom:${state}`)).toEqual({
     verifier: expect.any(String),
   });
 });
@@ -318,10 +323,10 @@ test('redirect：响应 302 Location', async () => {
 });
 
 test('callback：完整换票成功', async () => {
-  const { client, caching, onProfile } = createClient();
+  const { client, cache, onProfile } = createClient();
   const state = 'S'.repeat(43);
   const verifier = 'V'.repeat(43);
-  await caching.set(`oauth2:state:cid:${state}`, { verifier }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier }, 60_000);
 
   let capturedUrl = '';
   let capturedInit: RequestInit | undefined;
@@ -354,7 +359,7 @@ test('callback：完整换票成功', async () => {
     .get(`/cb?code=authcode&state=${state}`)
     .expect(200);
   expect(res.body).toEqual({ id: 1, login: 'octocat' });
-  expect(await caching.get(`oauth2:state:cid:${state}`)).toBeNull();
+  expect(await cache.get(`oauth2:state:cid:${state}`)).toBeNull();
   expect(onProfile).toHaveBeenCalledWith({
     token: {
       access_token: 'at',
@@ -379,9 +384,9 @@ test('callback：完整换票成功', async () => {
 });
 
 test('callback：tokenAuth=basic', async () => {
-  const { client, caching } = createClient({ tokenAuth: 'basic' });
+  const { client, cache } = createClient({ tokenAuth: 'basic' });
   const state = 'basicstate12345678901234567890123456789012';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: 'ver' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: 'ver' }, 60_000);
 
   let capturedInit: RequestInit | undefined;
   vi.stubGlobal(
@@ -411,9 +416,9 @@ test('callback：tokenAuth=basic', async () => {
 });
 
 test('callback：form-urlencoded 令牌响应', async () => {
-  const { client, caching, onProfile } = createClient({ pkce: false });
+  const { client, cache, onProfile } = createClient({ pkce: false });
   const state = 'formurlencodedstate123456789012345678901';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
 
   vi.stubGlobal(
     'fetch',
@@ -447,9 +452,9 @@ test('callback：form-urlencoded 令牌响应', async () => {
 });
 
 test('callback：form-urlencoded 缺少 token_type 拒绝', async () => {
-  const { client, caching } = createClient({ pkce: false });
+  const { client, cache } = createClient({ pkce: false });
   const state = 'formonlyaccesstoken1234567890123456789012';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
 
   vi.stubGlobal(
     'fetch',
@@ -478,9 +483,9 @@ test('callback：form-urlencoded 缺少 token_type 拒绝', async () => {
 });
 
 test('callback：无 Content-Type 时按 JSON 解析', async () => {
-  const { client, caching, onProfile } = createClient({ pkce: false });
+  const { client, cache, onProfile } = createClient({ pkce: false });
   const state = 'nocontenttypestate123456789012345678901234';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
   vi.stubGlobal(
     'fetch',
     vi.fn(async () => {
@@ -508,9 +513,9 @@ test('callback：无 Content-Type 时按 JSON 解析', async () => {
 });
 
 test('callback：JSON 仅 access_token + token_type', async () => {
-  const { client, caching, onProfile } = createClient({ pkce: false });
+  const { client, cache, onProfile } = createClient({ pkce: false });
   const state = 'jsononlyaccesstoken1234567890123456789012';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
   vi.stubGlobal(
     'fetch',
     vi.fn(async () => Response.json({ access_token: 'only', token_type: 'bearer' })),
@@ -538,9 +543,9 @@ test('callback：JSON 仅 access_token + token_type', async () => {
 });
 
 test('callback：非法 token_type 拒绝', async () => {
-  const { client, caching } = createClient({ pkce: false });
+  const { client, cache } = createClient({ pkce: false });
   const state = 'badtokentypestate123456789012345678901234';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
   vi.stubGlobal(
     'fetch',
     vi.fn(async () => Response.json({ access_token: 'at', token_type: 'mac' })),
@@ -563,9 +568,9 @@ test('callback：非法 token_type 拒绝', async () => {
 });
 
 test('callback：拒绝隐式/混合流参数', async () => {
-  const { client, caching } = createClient({ pkce: false });
+  const { client, cache } = createClient({ pkce: false });
   const state = 'hybridflowstate123456789012345678901234567';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
   const app = new TestWebApp({
     mount: [
       middleware.web((ctx, next) =>
@@ -584,9 +589,9 @@ test('callback：拒绝隐式/混合流参数', async () => {
 });
 
 test('callback：出站 302 不跟随并视为失败', async () => {
-  const { client, caching } = createClient({ pkce: false });
+  const { client, cache } = createClient({ pkce: false });
   const state = 'redirectmanualstate1234567890123456789012';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
   vi.stubGlobal(
     'fetch',
     vi.fn(async (_url: string | URL | Request, init?: RequestInit) => {
@@ -622,7 +627,7 @@ test('构造：stateTtl 负数由 parseDuration 抛错', () => {
         clientId: 'cid',
         clientSecret: 'x',
         redirectUri: 'http://localhost/cb',
-        store: new CacheMemoryAdapter(),
+        store: new Caching(new CacheMemoryAdapter()),
         stateTtl: -1,
         onProfile: async () => ({}),
       }),
@@ -630,15 +635,14 @@ test('构造：stateTtl 负数由 parseDuration 抛错', () => {
 });
 
 test('构造：stateTtl 支持可读时长', async () => {
-  const store = new CacheMemoryAdapter();
-  const caching = new Caching(store);
+  const cache = new Caching(new CacheMemoryAdapter());
   const client = new OAuth2Client({
     authorizationEndpoint: 'https://example.com/oauth/authorize',
     tokenEndpoint: 'https://example.com/oauth/token',
     clientId: 'cid',
     clientSecret: 'csecret',
     redirectUri: 'http://localhost/oauth/callback',
-    store,
+    store: cache,
     stateTtl: '5m',
     onProfile: async () => ({ id: 1 }),
   });
@@ -652,7 +656,7 @@ test('构造：stateTtl 支持可读时长', async () => {
   });
   const res = await supertest(app.listen()).get('/').expect(200);
   const state = new URL(res.text).searchParams.get('state')!;
-  const ttl = await caching.ttl(`oauth2:state:cid:${state}`);
+  const ttl = await cache.ttl(`oauth2:state:cid:${state}`);
   expect(ttl).toBeGreaterThan(290_000);
   expect(ttl).toBeLessThanOrEqual(300_000);
 });
@@ -716,9 +720,9 @@ test('callback：state 过期或未知', async () => {
 });
 
 test('callback：pkce 开启但 verifier 为空视为无效 state', async () => {
-  const { client, caching } = createClient();
+  const { client, cache } = createClient();
   const state = 'emptyverifierstate1234567890123456789012';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
   const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
@@ -737,9 +741,9 @@ test('callback：pkce 开启但 verifier 为空视为无效 state', async () => 
 });
 
 test('callback：换票 HTTP 失败', async () => {
-  const { client, caching } = createClient();
+  const { client, cache } = createClient();
   const state = 'tokenfailstate12345678901234567890123456';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
   vi.stubGlobal(
     'fetch',
     vi.fn(async () => Response.json({ error: 'invalid_grant' }, { status: 400 })),
@@ -762,9 +766,9 @@ test('callback：换票 HTTP 失败', async () => {
 });
 
 test('callback：换票 JSON 无 access_token', async () => {
-  const { client, caching } = createClient();
+  const { client, cache } = createClient();
   const state = 'noaccesstokenstate1234567890123456789012';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
   vi.stubGlobal(
     'fetch',
     vi.fn(async () => Response.json({ token_type: 'bearer' })),
@@ -787,9 +791,9 @@ test('callback：换票 JSON 无 access_token', async () => {
 });
 
 test('callback：换票响应非 JSON', async () => {
-  const { client, caching } = createClient();
+  const { client, cache } = createClient();
   const state = 'badjsonstate1234567890123456789012345678';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
   vi.stubGlobal(
     'fetch',
     vi.fn(
@@ -814,9 +818,9 @@ test('callback：换票响应非 JSON', async () => {
 });
 
 test('callback：form-urlencoded 无 access_token', async () => {
-  const { client, caching } = createClient({ pkce: false });
+  const { client, cache } = createClient({ pkce: false });
   const state = 'formnoaccesstoken123456789012345678901234';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
   vi.stubGlobal(
     'fetch',
     vi.fn(async () => {
@@ -843,9 +847,9 @@ test('callback：form-urlencoded 无 access_token', async () => {
 });
 
 test('callback：form-urlencoded 非 2xx 即使有 access_token 也拒绝', async () => {
-  const { client, caching } = createClient({ pkce: false });
+  const { client, cache } = createClient({ pkce: false });
   const state = 'formnon2xxaccesstoken12345678901234567890';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
   vi.stubGlobal(
     'fetch',
     vi.fn(async () => {
@@ -873,9 +877,9 @@ test('callback：form-urlencoded 非 2xx 即使有 access_token 也拒绝', asyn
 });
 
 test('callback：form-urlencoded 带 error 字段即使 200 也拒绝', async () => {
-  const { client, caching } = createClient({ pkce: false });
+  const { client, cache } = createClient({ pkce: false });
   const state = 'formerrorwithtoken12345678901234567890123';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
   vi.stubGlobal(
     'fetch',
     vi.fn(async () => {
@@ -902,9 +906,9 @@ test('callback：form-urlencoded 带 error 字段即使 200 也拒绝', async ()
 });
 
 test('callback：换票网络错误映射为 token_exchange_failed', async () => {
-  const { client, caching } = createClient({ pkce: false });
+  const { client, cache } = createClient({ pkce: false });
   const state = 'fetchnetworkerrorstate1234567890123456789';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
   vi.stubGlobal(
     'fetch',
     vi.fn(async () => {
@@ -955,9 +959,9 @@ test('refresh / exchange：出站请求带 AbortSignal 超时', async () => {
 });
 
 test('callback：state 一次性（第二次失败）', async () => {
-  const { client, caching } = createClient();
+  const { client, cache } = createClient();
   const state = 'onetimeusestate1234567890123456789012345';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
   vi.stubGlobal(
     'fetch',
     vi.fn(async () => Response.json({ access_token: 'at', token_type: 'bearer' })),
@@ -980,9 +984,9 @@ test('callback：state 一次性（第二次失败）', async () => {
 });
 
 test('callback：并发消费同一 state 仅一方成功', async () => {
-  const { client, caching, onProfile } = createClient();
+  const { client, cache, onProfile } = createClient();
   const state = 'concurrentstate1234567890123456789012345';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
   vi.stubGlobal(
     'fetch',
     vi.fn(async () => Response.json({ access_token: 'at', token_type: 'bearer' })),
@@ -1008,13 +1012,13 @@ test('callback：并发消费同一 state 仅一方成功', async () => {
   expect(statuses).toEqual([200, 400]);
   expect([r1.text, r2.text]).toContain(i18n.t('invalid_state'));
   expect(onProfile).toHaveBeenCalledTimes(1);
-  expect(await caching.get(`oauth2:state:cid:${state}`)).toBeNull();
+  expect(await cache.get(`oauth2:state:cid:${state}`)).toBeNull();
 });
 
 test('callback：授权服务器 error 校验 state 后拒绝', async () => {
-  const { client, caching } = createClient();
+  const { client, cache } = createClient();
   const state = 'accessdeniedstate12345678901234567890123';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
   const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
@@ -1030,7 +1034,7 @@ test('callback：授权服务器 error 校验 state 后拒绝', async () => {
   await supertest(app.listen())
     .get(`/?error=access_denied&state=${state}`)
     .expect(400, i18n.t('authorization_denied', { error: 'access_denied' }));
-  expect(await caching.get(`oauth2:state:cid:${state}`)).toBeNull();
+  expect(await cache.get(`oauth2:state:cid:${state}`)).toBeNull();
 });
 
 test('callback：授权 error 但 state 无效', async () => {
@@ -1053,9 +1057,9 @@ test('callback：授权 error 但 state 无效', async () => {
 });
 
 test('callback：非法 error 码不拼进文案', async () => {
-  const { client, caching } = createClient();
+  const { client, cache } = createClient();
   const state = 'baderrorcodestate123456789012345678901234';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
   const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
@@ -1072,13 +1076,13 @@ test('callback：非法 error 码不拼进文案', async () => {
     .get(`/?error=${encodeURIComponent('access denied')}&state=${state}`)
     .expect(400, i18n.t('missing_code_or_state'));
   // 非法 error 未消费 state
-  expect(await caching.get(`oauth2:state:cid:${state}`)).toEqual({ verifier: 'v' });
+  expect(await cache.get(`oauth2:state:cid:${state}`)).toEqual({ verifier: 'v' });
 });
 
 test('callback：JSON expires_in 为字符串', async () => {
-  const { client, caching, onProfile } = createClient({ pkce: false });
+  const { client, cache, onProfile } = createClient({ pkce: false });
   const state = 'expiresinstringstate123456789012345678901';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: '' }, 60_000);
   vi.stubGlobal(
     'fetch',
     vi.fn(async () =>
@@ -1105,9 +1109,9 @@ test('callback：JSON expires_in 为字符串', async () => {
 });
 
 test('callback：换票失败后 state 不可恢复', async () => {
-  const { client, caching } = createClient();
+  const { client, cache } = createClient();
   const state = 'burnonafterfailstate123456789012345678901';
-  await caching.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
+  await cache.set(`oauth2:state:cid:${state}`, { verifier: 'v' }, 60_000);
   vi.stubGlobal(
     'fetch',
     vi.fn(async () => Response.json({ error: 'invalid_grant' }, { status: 400 })),
@@ -1127,7 +1131,7 @@ test('callback：换票失败后 state 不可恢复', async () => {
   await supertest(app.listen())
     .get(`/?code=c&state=${state}`)
     .expect(401, i18n.t('token_exchange_failed'));
-  expect(await caching.get(`oauth2:state:cid:${state}`)).toBeNull();
+  expect(await cache.get(`oauth2:state:cid:${state}`)).toBeNull();
   await supertest(app.listen())
     .get(`/?code=c&state=${state}`)
     .expect(401, i18n.t('invalid_state'));
@@ -1398,7 +1402,7 @@ test('首次读写 state 时才登记 store 生命周期', async () => {
     clientId: 'cid',
     clientSecret: 'csecret',
     redirectUri: 'http://localhost/cb',
-    store: new TrackingAdapter(),
+    store: new Caching(new TrackingAdapter()),
     onProfile: async () => ({}),
   });
   expect(order).toEqual([]);

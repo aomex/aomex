@@ -1,188 +1,202 @@
 import { type TypeEqual, expectType } from 'ts-expect';
-import { CacheKey } from '../src/cache-key';
-import { Caching } from '../src/caching';
+import { CacheKey, Caching } from '../src';
 
-let caching!: Caching;
-const cacheKey = new CacheKey().key('foo', 1);
+let cache!: Caching;
+const cacheKey = CacheKey.key('foo', 1);
 
 // get
 {
-  const result1 = await caching.get('');
+  const result1 = await cache.get('');
   expectType<TypeEqual<Caching.Types | null, typeof result1>>(true);
 
-  const result2 = await caching.get('', 1);
+  const result2 = await cache.get('', 1);
   expectType<TypeEqual<number, typeof result2>>(true);
 
-  const result3 = await caching.get<string>('');
+  const result3 = await cache.get<string>('');
   expectType<TypeEqual<string | null, typeof result3>>(true);
 
-  const result4 = await caching.get(cacheKey);
+  const result4 = await cache.get(cacheKey);
   expectType<TypeEqual<Caching.Types | null, typeof result4>>(true);
 
-  const result5 = await caching.get(cacheKey, 1);
+  const result5 = await cache.get(cacheKey, 1);
   expectType<TypeEqual<number, typeof result5>>(true);
 }
 
 // getAndDelete
 {
-  const result1 = await caching.getAndDelete('');
+  const result1 = await cache.getAndDelete('');
   expectType<TypeEqual<Caching.Types | null, typeof result1>>(true);
 
-  const result2 = await caching.getAndDelete('', 1);
+  const result2 = await cache.getAndDelete('', 1);
   expectType<TypeEqual<number, typeof result2>>(true);
 
-  const result3 = await caching.getAndDelete<string>('');
+  const result3 = await cache.getAndDelete<string>('');
   expectType<TypeEqual<string | null, typeof result3>>(true);
 
-  const result4 = await caching.getAndDelete(cacheKey);
+  const result4 = await cache.getAndDelete(cacheKey);
   expectType<TypeEqual<Caching.Types | null, typeof result4>>(true);
 
-  const result5 = await caching.getAndDelete(cacheKey, 1);
+  const result5 = await cache.getAndDelete(cacheKey, 1);
   expectType<TypeEqual<number, typeof result5>>(true);
 
   // @ts-expect-error
-  await caching.getAndDelete(1);
+  await cache.getAndDelete(1);
 }
 
 // set
 {
-  expectType<boolean>(await caching.set('', ''));
-  await caching.set('', 1);
-  await caching.set('', {});
-  await caching.set('', []);
-  await caching.set('', false);
-  await caching.set('', '', 100);
-  await caching.set('', '', '1 day');
-  await caching.set('', '', '30m');
-  await caching.set('', '', '1.5 hours');
-  await caching.set('', '', '500ms');
-  await caching.set(cacheKey, 'v');
-  await caching.set(cacheKey, 'v', 100);
-  await caching.set(cacheKey, 'v', '1 week');
+  expectType<boolean>(await cache.set('', ''));
+  await cache.set('', 1);
+  await cache.set('', {});
+  await cache.set('', []);
+  await cache.set('', false);
+  await cache.set('', '', 100);
+  await cache.set('', '', '1 day');
+  await cache.set('', '', '30m');
+  await cache.set('', '', '1.5 hours');
+  await cache.set('', '', '500ms');
+  await cache.set(cacheKey, 'v');
+  await cache.set(cacheKey, 'v', 100);
+  await cache.set(cacheKey, 'v', '1 week');
   // @ts-expect-error 无单位的数字字符串不是 DurationInput
-  await caching.set('', '', '100');
+  await cache.set('', '', '100');
   // @ts-expect-error
-  await caching.set('', '', 'abc');
+  await cache.set('', '', 'abc');
   // @ts-expect-error
-  await caching.set('', '', true);
+  await cache.set('', '', true);
   // @ts-expect-error
-  await caching.set(1, '');
+  await cache.set(1, '');
 }
 
 // add
 {
-  expectType<boolean>(await caching.setNX('', ''));
-  await caching.setNX('', 1);
-  await caching.setNX('', {});
-  await caching.setNX('', []);
-  await caching.setNX('', false);
-  await caching.setNX('', '', 100);
-  await caching.setNX('', '', '20 seconds');
-  await caching.setNX(cacheKey, 'v');
-  await caching.setNX(cacheKey, 'v', '1 minute');
+  expectType<boolean>(await cache.setNX('', ''));
+  await cache.setNX('', 1);
+  await cache.setNX('', {});
+  await cache.setNX('', []);
+  await cache.setNX('', false);
+  await cache.setNX('', '', 100);
+  await cache.setNX('', '', '20 seconds');
+  await cache.setNX(cacheKey, 'v');
+  await cache.setNX(cacheKey, 'v', '1 minute');
   // @ts-expect-error
-  await caching.setNX('', '', '100');
+  await cache.setNX('', '', '100');
   // @ts-expect-error
-  await caching.setNX('', '', false);
+  await cache.setNX('', '', false);
 }
 
 // delete
 {
-  expectType<boolean>(await caching.delete(''));
-  expectType<boolean>(await caching.delete(cacheKey));
+  expectType<boolean>(await cache.delete(''));
+  expectType<boolean>(await cache.delete(cacheKey));
   // @ts-expect-error
-  await caching.delete('', '');
+  await cache.delete('', '');
 }
 
 // deleteAll
 {
-  expectType<boolean>(await caching.deleteAll());
+  expectType<boolean>(await cache.deleteAll());
   // @ts-expect-error
-  await caching.deleteAll('');
+  await cache.deleteAll('');
 }
 
 // exists
 {
-  expectType<boolean>(await caching.exists(''));
-  expectType<boolean>(await caching.exists(cacheKey));
+  expectType<boolean>(await cache.exists(''));
+  expectType<boolean>(await cache.exists(cacheKey));
 }
 
 // increase
 {
-  const result = await caching.increment('a');
+  const result = await cache.increment('a');
   expectType<TypeEqual<number, typeof result>>(true);
-  expectType<TypeEqual<number, Awaited<ReturnType<typeof caching.increment>>>>(true);
-  await caching.increment(cacheKey);
+  expectType<TypeEqual<number, Awaited<ReturnType<typeof cache.increment>>>>(true);
+  await cache.increment(cacheKey);
 }
 
 // decrease
 {
-  const result = await caching.decrement('a');
+  const result = await cache.decrement('a');
   expectType<TypeEqual<number, typeof result>>(true);
-  await caching.decrement(cacheKey);
+  await cache.decrement(cacheKey);
 }
 
 // expires
 {
-  const result = await caching.expire('', 20);
+  const result = await cache.expire('', 20);
   expectType<TypeEqual<boolean, typeof result>>(true);
-  await caching.expire(cacheKey, 20);
-  await caching.expire('', '1 minute');
-  await caching.expire(cacheKey, '2 months');
+  await cache.expire(cacheKey, 20);
+  await cache.expire('', '1 minute');
+  await cache.expire(cacheKey, '2 months');
   // @ts-expect-error
-  await caching.expire('', '100');
+  await cache.expire('', '100');
   // @ts-expect-error
-  await caching.expire('', true);
+  await cache.expire('', true);
   // @ts-expect-error duration 必填
-  await caching.expire('');
+  await cache.expire('');
 }
 
 // ttl / leftPush / rightPop 接受 CacheKey
 {
-  await caching.ttl(cacheKey);
-  await caching.leftPush(cacheKey, 'a');
-  await caching.rightPop(cacheKey);
+  await cache.ttl(cacheKey);
+  await cache.leftPush(cacheKey, 'a');
+  await cache.rightPop(cacheKey);
 }
 
 // singleFlight
 {
-  const r1 = await caching.singleFlight('k', async (): Promise<string> => 'x');
+  const r1 = await cache.singleFlight('k', async (): Promise<string> => 'x');
   expectType<TypeEqual<string, typeof r1>>(true);
 
-  const r2 = await caching.singleFlight('k', async () => 1 as const);
+  const r2 = await cache.singleFlight('k', async () => 1 as const);
   expectType<TypeEqual<1, typeof r2>>(true);
 
-  const r3 = await caching.singleFlight('k', async () => null);
+  const r3 = await cache.singleFlight('k', async () => null);
   expectType<TypeEqual<null, typeof r3>>(true);
 
-  const r4 = await caching.singleFlight(cacheKey, async () => ({ a: 1 }));
+  const r4 = await cache.singleFlight(cacheKey, async () => ({ a: 1 }));
   expectType<TypeEqual<{ a: number }, typeof r4>>(true);
 
-  const r5 = await caching.singleFlight('k', async (): Promise<string | null> => 'a');
+  const r5 = await cache.singleFlight('k', async (): Promise<string | null> => 'a');
   expectType<TypeEqual<string | null, typeof r5>>(true);
 
-  const r6 = await caching.singleFlight('k', async () => 'literal');
+  const r6 = await cache.singleFlight('k', async () => 'literal');
   expectType<TypeEqual<'literal', typeof r6>>(true);
 
   // @ts-expect-error key 必须是 Caching.Key
-  await caching.singleFlight(1, async () => 'x');
+  await cache.singleFlight(1, async () => 'x');
 
   // @ts-expect-error factory 必须返回 Promise
-  await caching.singleFlight('k', () => 'x');
+  await cache.singleFlight('k', () => 'x');
 
   // @ts-expect-error 返回值须为 Caching.Types | null
-  await caching.singleFlight('k', async () => undefined);
+  await cache.singleFlight('k', async () => undefined);
 
   // @ts-expect-error 缺少 factory
-  await caching.singleFlight('k');
+  await cache.singleFlight('k');
 }
 
 // 手动指定类型
 {
-  await caching.get<object | string>('foo');
-  await caching.get<any[] | string>('foo');
-  await caching.get<string[] | string>('foo');
-  await caching.get<File[] | string>('foo');
-  await caching.get<unknown[] | string>('foo');
-  await caching.get<object>('foo');
+  await cache.get<object | string>('foo');
+  await cache.get<any[] | string>('foo');
+  await cache.get<string[] | string>('foo');
+  await cache.get<File[] | string>('foo');
+  await cache.get<unknown[] | string>('foo');
+  await cache.get<object>('foo');
+}
+
+// key / keyHash
+{
+  expectType<TypeEqual<CacheKey, ReturnType<Caching['key']>>>(true);
+  expectType<TypeEqual<CacheKey, ReturnType<Caching['keyHash']>>>(true);
+  cache.key('a', 1);
+  cache.keyHash('a', 1);
+  cache.key();
+  // @ts-expect-error
+  cache.key(true);
+  // @ts-expect-error
+  cache.keyHash(false);
+  // @ts-expect-error ensureReady 为 protected
+  cache.ensureReady;
 }

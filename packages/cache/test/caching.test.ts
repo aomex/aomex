@@ -1,10 +1,14 @@
-import { describe, expect, test, vitest } from 'vitest';
-import { sleep } from '@aomex/common';
-import { MockStore } from './mock/caching.mock';
+import { afterEach, describe, expect, test, vitest } from 'vitest';
+import { internalDestroyServices, sleep } from '@aomex/common';
+import { MockStore } from './mock/cache.mock';
 import { CacheMemoryAdapter } from '../src/adapters/cache-memory-adapter';
 import { CacheKey, Caching, SINGLE_FLIGHT_LOCK_MS } from '../src';
 
-const caching = new Caching(new MockStore());
+afterEach(async () => {
+  await internalDestroyServices([]);
+});
+
+const cache = new Caching(new MockStore());
 
 test('设置值', async () => {
   const spy = vitest
@@ -12,30 +16,30 @@ test('设置值', async () => {
     // @ts-expect-error
     .mockImplementation(() => true);
 
-  await caching.set('foo', 'bar');
+  await cache.set('foo', 'bar');
   expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', undefined);
   expect(spy).toHaveReturnedWith(true);
 
-  await caching.set('foo', ['bar']);
+  await cache.set('foo', ['bar']);
   expect(spy).toHaveBeenLastCalledWith('foo', '["bar"]', undefined);
 
-  await caching.set('foo', { foo: 'bar' });
+  await cache.set('foo', { foo: 'bar' });
   expect(spy).toHaveBeenLastCalledWith('foo', '{"foo":"bar"}', undefined);
 
-  await caching.set('foo', 'bar', 20);
+  await cache.set('foo', 'bar', 20);
   expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', 20);
 
-  await caching.set('foo', 'bar', '1 minute');
+  await cache.set('foo', 'bar', '1 minute');
   expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', 60_000);
 
-  await caching.set('foo', 'bar', '500ms');
+  await cache.set('foo', 'bar', '500ms');
   expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', 500);
 
-  const key = new CacheKey().key('ns', 'foo');
-  await caching.set(key, 'bar', 30);
+  const key = CacheKey.key('ns', 'foo');
+  await cache.set(key, 'bar', 30);
   expect(spy).toHaveBeenLastCalledWith('ns:foo', '"bar"', 30);
 
-  await expect(caching.set('foo', 'bar', 'bad' as `${number}ms`)).rejects.toThrow(
+  await expect(cache.set('foo', 'bar', 'bad' as `${number}ms`)).rejects.toThrow(
     /无效的时长/,
   );
 
@@ -49,9 +53,9 @@ test('获取值', async () => {
     .mockImplementationOnce(async () => '"bar"')
     .mockImplementationOnce(async () => '"baz"');
 
-  await expect(caching.get('foo')).resolves.toBeNull();
-  await expect(caching.get('foo')).resolves.toBe('bar');
-  await expect(caching.get(new CacheKey().key('foo'))).resolves.toBe('baz');
+  await expect(cache.get('foo')).resolves.toBeNull();
+  await expect(cache.get('foo')).resolves.toBe('bar');
+  await expect(cache.get(CacheKey.key('foo'))).resolves.toBe('baz');
   expect(spy).toHaveBeenLastCalledWith('foo');
 
   spy.mockRestore();
@@ -63,8 +67,8 @@ test('获取时携带默认值', async () => {
     .mockImplementationOnce(async () => null)
     .mockImplementationOnce(async () => '"bar"');
 
-  await expect(caching.get('foo', 'default')).resolves.toBe('default');
-  await expect(caching.get('foo', 'default')).resolves.toBe('bar');
+  await expect(cache.get('foo', 'default')).resolves.toBe('default');
+  await expect(cache.get('foo', 'default')).resolves.toBe('bar');
 
   spy.mockRestore();
 });
@@ -76,9 +80,9 @@ test('原子获取并删除', async () => {
     .mockImplementationOnce(async () => '"bar"')
     .mockImplementationOnce(async () => '"baz"');
 
-  await expect(caching.getAndDelete('foo')).resolves.toBeNull();
-  await expect(caching.getAndDelete('foo')).resolves.toBe('bar');
-  await expect(caching.getAndDelete(new CacheKey().key('foo'))).resolves.toBe('baz');
+  await expect(cache.getAndDelete('foo')).resolves.toBeNull();
+  await expect(cache.getAndDelete('foo')).resolves.toBe('bar');
+  await expect(cache.getAndDelete(CacheKey.key('foo'))).resolves.toBe('baz');
   expect(spy).toHaveBeenLastCalledWith('foo');
 
   spy.mockRestore();
@@ -90,8 +94,8 @@ test('原子获取并删除时携带默认值', async () => {
     .mockImplementationOnce(async () => null)
     .mockImplementationOnce(async () => '"bar"');
 
-  await expect(caching.getAndDelete('foo', 'default')).resolves.toBe('default');
-  await expect(caching.getAndDelete('foo', 'default')).resolves.toBe('bar');
+  await expect(cache.getAndDelete('foo', 'default')).resolves.toBe('default');
+  await expect(cache.getAndDelete('foo', 'default')).resolves.toBe('bar');
 
   spy.mockRestore();
 });
@@ -101,11 +105,11 @@ test('不存在才设置', async () => {
     .spyOn(MockStore.prototype, 'setNotExistValue')
     .mockImplementation(async () => true);
 
-  await expect(caching.setNX('foo', 'bar')).resolves.toBeTruthy();
+  await expect(cache.setNX('foo', 'bar')).resolves.toBeTruthy();
   expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', undefined);
-  await expect(caching.setNX('foo', 'bar', 200)).resolves.toBeTruthy();
+  await expect(cache.setNX('foo', 'bar', 200)).resolves.toBeTruthy();
   expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', 200);
-  await expect(caching.setNX('foo', 'bar', '20 seconds')).resolves.toBeTruthy();
+  await expect(cache.setNX('foo', 'bar', '20 seconds')).resolves.toBeTruthy();
   expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', 20_000);
 
   spy.mockRestore();
@@ -118,12 +122,12 @@ test('判断存在', async () => {
     .mockImplementationOnce(async () => false)
     .mockImplementationOnce(async () => true);
 
-  await expect(caching.exists('foo1')).resolves.toBeTruthy();
+  await expect(cache.exists('foo1')).resolves.toBeTruthy();
   expect(spy).toHaveBeenLastCalledWith('foo1');
-  await expect(caching.exists('foo2')).resolves.toBeFalsy();
+  await expect(cache.exists('foo2')).resolves.toBeFalsy();
   expect(spy).toHaveBeenLastCalledWith('foo2');
-  const hashed = new CacheKey().keyHash('a', 1);
-  await expect(caching.exists(hashed)).resolves.toBeTruthy();
+  const hashed = CacheKey.keyHash('a', 1);
+  await expect(cache.exists(hashed)).resolves.toBeTruthy();
   expect(spy).toHaveBeenLastCalledWith(hashed['value']);
   expect(hashed['value']).toMatch(/^[a-f0-9]{32}$/);
 
@@ -135,7 +139,7 @@ test('自增', async () => {
     .spyOn(MockStore.prototype, 'increaseValue')
     .mockImplementation(async () => 1);
 
-  await expect(caching.increment('foo')).resolves.toBe(1);
+  await expect(cache.increment('foo')).resolves.toBe(1);
   expect(spy).toHaveBeenLastCalledWith('foo');
 
   spy.mockRestore();
@@ -146,7 +150,7 @@ test('自减', async () => {
     .spyOn(MockStore.prototype, 'decreaseValue')
     .mockImplementation(async () => 1);
 
-  await expect(caching.decrement('foo')).resolves.toBe(1);
+  await expect(cache.decrement('foo')).resolves.toBe(1);
   expect(spy).toHaveBeenLastCalledWith('foo');
 
   spy.mockRestore();
@@ -157,11 +161,11 @@ test('设置过期时间', async () => {
     .spyOn(MockStore.prototype, 'expireKey')
     .mockImplementation(async () => true);
 
-  await expect(caching.expire('foo', 20)).resolves.toBeTruthy();
+  await expect(cache.expire('foo', 20)).resolves.toBeTruthy();
   expect(spy).toHaveBeenLastCalledWith('foo', 20);
-  await expect(caching.expire('foo', '1.5 hours')).resolves.toBeTruthy();
+  await expect(cache.expire('foo', '1.5 hours')).resolves.toBeTruthy();
   expect(spy).toHaveBeenLastCalledWith('foo', 5_400_000);
-  await expect(caching.expire('foo', '2 months')).resolves.toBeTruthy();
+  await expect(cache.expire('foo', '2 months')).resolves.toBeTruthy();
   expect(spy).toHaveBeenLastCalledWith('foo', 5_184_000_000);
 
   spy.mockRestore();
@@ -172,7 +176,7 @@ test('查看剩余时间', async () => {
     .spyOn(MockStore.prototype, 'ttlKey')
     .mockImplementation(async () => 100);
 
-  await expect(caching.ttl('foo')).resolves.toBe(100);
+  await expect(cache.ttl('foo')).resolves.toBe(100);
   expect(spy).toHaveBeenLastCalledWith('foo');
 
   spy.mockRestore();
@@ -183,7 +187,7 @@ test('数组左边推入', async () => {
     .spyOn(MockStore.prototype, 'leftPushValue')
     .mockImplementation(async () => true);
 
-  await expect(caching.leftPush('foo', 'bar', 'baz')).resolves.toBeTruthy();
+  await expect(cache.leftPush('foo', 'bar', 'baz')).resolves.toBeTruthy();
   expect(spy).toHaveBeenLastCalledWith('foo', '"bar"', '"baz"');
 
   spy.mockRestore();
@@ -194,7 +198,7 @@ test('数组右边取出', async () => {
     .spyOn(MockStore.prototype, 'rightPopValue')
     .mockImplementation(async () => '"bar"');
 
-  await expect(caching.rightPop('foo')).resolves.toBe('bar');
+  await expect(cache.rightPop('foo')).resolves.toBe('bar');
   expect(spy).toHaveBeenCalledWith('foo');
 
   spy.mockRestore();
@@ -205,19 +209,19 @@ test('删除', async () => {
     .spyOn(MockStore.prototype, 'deleteValue')
     .mockImplementation(async () => true);
 
-  await expect(caching.delete('foo')).resolves.toBeTruthy();
+  await expect(cache.delete('foo')).resolves.toBeTruthy();
   expect(spy).toHaveBeenCalledWith('foo');
 
-  await expect(caching.delete(new CacheKey().key('bar', 2))).resolves.toBeTruthy();
+  await expect(cache.delete(CacheKey.key('bar', 2))).resolves.toBeTruthy();
   expect(spy).toHaveBeenLastCalledWith('bar:2');
 
   spy.mockRestore();
 });
 
 test('resolveKey 将 CacheKey 转为字符串', () => {
-  expect(caching['resolveKey']('plain')).toBe('plain');
-  expect(caching['resolveKey'](new CacheKey().key('a', 1))).toBe('a:1');
-  expect(caching['resolveKey'](new CacheKey().keyHash('x'))).toBe(
+  expect(cache['resolveKey']('plain')).toBe('plain');
+  expect(cache['resolveKey'](CacheKey.key('a', 1))).toBe('a:1');
+  expect(cache['resolveKey'](CacheKey.keyHash('x'))).toBe(
     '9dd4e461268c8034f5c8564e155c67a6',
   );
 });
@@ -227,7 +231,7 @@ test('删除全部', async () => {
     .spyOn(MockStore.prototype, 'deleteAllValues')
     .mockImplementation(async () => true);
 
-  await expect(caching.deleteAll()).resolves.toBeTruthy();
+  await expect(cache.deleteAll()).resolves.toBeTruthy();
   expect(spy).toHaveBeenCalledWith();
 
   spy.mockRestore();
@@ -456,7 +460,7 @@ describe('singleFlight', () => {
 
   test('接受 CacheKey', async () => {
     const cache = new Caching(new CacheMemoryAdapter());
-    const key = new CacheKey().key('sf', 'a');
+    const key = CacheKey.key('sf', 'a');
     await expect(cache.singleFlight(key, async () => 'x')).resolves.toBe('x');
   });
 
@@ -485,11 +489,11 @@ describe('singleFlight', () => {
 
 describe('复杂对象', () => {
   test('Map', async () => {
-    const result = caching['encodeValue'](new Map([['foo', 'bar']]));
+    const result = cache['encodeValue'](new Map([['foo', 'bar']]));
     expect(result).toMatchInlineSnapshot(
       `"{"_$caching_type$_":"Map","_$caching_data$_":[["foo","bar"]]}"`,
     );
-    expect(caching['decodeValue'](result)).toMatchInlineSnapshot(`
+    expect(cache['decodeValue'](result)).toMatchInlineSnapshot(`
       Map {
         "foo" => "bar",
       }
@@ -497,11 +501,11 @@ describe('复杂对象', () => {
   });
 
   test('Set', async () => {
-    const result = caching['encodeValue'](new Set(['a', 'bcc']));
+    const result = cache['encodeValue'](new Set(['a', 'bcc']));
     expect(result).toMatchInlineSnapshot(
       `"{"_$caching_type$_":"Set","_$caching_data$_":["a","bcc"]}"`,
     );
-    expect(caching['decodeValue'](result)).toMatchInlineSnapshot(`
+    expect(cache['decodeValue'](result)).toMatchInlineSnapshot(`
       Set {
         "a",
         "bcc",
@@ -510,25 +514,25 @@ describe('复杂对象', () => {
   });
 
   test('Date', async () => {
-    const result = caching['encodeValue'](new Date('2024-10-24T00:10:24.123Z'));
+    const result = cache['encodeValue'](new Date('2024-10-24T00:10:24.123Z'));
     expect(result).toMatchInlineSnapshot(
       `"{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"}"`,
     );
-    const resume = caching['decodeValue'](result);
+    const resume = cache['decodeValue'](result);
     expect(resume).toMatchInlineSnapshot(`2024-10-24T00:10:24.123Z`);
     expect(resume).toBeInstanceOf(Date);
   });
 
   test('BigInt', async () => {
-    const result = caching['encodeValue'](1234n);
+    const result = cache['encodeValue'](1234n);
     expect(result).toMatchInlineSnapshot(
       `"{"_$caching_type$_":"BigInt","_$caching_data$_":"1234"}"`,
     );
-    expect(caching['decodeValue'](result)).toMatchInlineSnapshot(`1234n`);
+    expect(cache['decodeValue'](result)).toMatchInlineSnapshot(`1234n`);
   });
 
   test('深层复杂对象', async () => {
-    const result = caching['encodeValue']({
+    const result = cache['encodeValue']({
       foo: 'x',
       bar: {
         baz: new Date('2024-10-24T00:10:24.123Z'),
@@ -550,7 +554,7 @@ describe('复杂对象', () => {
     expect(result).toMatchInlineSnapshot(
       `"{"foo":"x","bar":{"baz":{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"},"test2":{"_$caching_type$_":"Map","_$caching_data$_":[["foo",{"_$caching_type$_":"Set","_$caching_data$_":["a","bcc"]}]]},"test3":{"ok":{"_$caching_type$_":"Set","_$caching_data$_":["a",{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"}]}},"test4":[{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"},2,{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"},{"test5":{"_$caching_type$_":"Date","_$caching_data$_":"2024-10-24T00:10:24.123Z"}}]},"baz":{"_$caching_type$_":"BigInt","_$caching_data$_":"1234"}}"`,
     );
-    expect(caching['decodeValue'](result)).toMatchInlineSnapshot(`
+    expect(cache['decodeValue'](result)).toMatchInlineSnapshot(`
       {
         "bar": {
           "baz": 2024-10-24T00:10:24.123Z,
@@ -580,4 +584,44 @@ describe('复杂对象', () => {
       }
     `);
   });
+});
+
+test('key / keyHash 委托 CacheKey', () => {
+  const cache = new Caching(new MockStore());
+  expect(cache.key('user', 1)['value']).toBe('user:1');
+  expect(cache.key()['value']).toBe('');
+  expect(cache.keyHash('user', 1)['value']).toBe(CacheKey.keyHash('user', 1)['value']);
+  expect(cache.key('user').keyHash(1)['value']).toBe(
+    CacheKey.key('user').keyHash(1)['value'],
+  );
+});
+
+test('ensureReady 懒加载：connect 失败可重试，成功后复用', async () => {
+  let fail = true;
+  let connects = 0;
+  let disconnects = 0;
+  class FlakyAdapter extends CacheMemoryAdapter {
+    override async connect() {
+      connects += 1;
+      if (fail) throw new Error('cache-connect-boom');
+    }
+    override async disconnect() {
+      disconnects += 1;
+    }
+  }
+  const cache = new Caching(new FlakyAdapter());
+  expect(cache['ready']).toBeUndefined();
+
+  await expect(cache.set('k', 'v')).rejects.toThrow('cache-connect-boom');
+  expect(connects).toBe(1);
+  expect(cache['ready']).toBeUndefined();
+
+  fail = false;
+  await expect(cache.set('k', 'v')).resolves.toBe(true);
+  expect(connects).toBe(2);
+  await expect(cache.get('k')).resolves.toBe('v');
+  expect(connects).toBe(2);
+
+  await internalDestroyServices([]);
+  expect(disconnects).toBe(1);
 });

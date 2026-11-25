@@ -1,5 +1,5 @@
 import { TestWebApp } from '../../web/src/testing';
-import { Caching, type CacheAdapter } from '@aomex/cache';
+import { Caching } from '@aomex/cache';
 import { CacheMemoryAdapter } from '@aomex/cache/memory';
 import { middleware, OpenAPI } from '@aomex/common';
 import supertest from 'supertest';
@@ -11,12 +11,12 @@ import { AuthSessionStrategy } from '../src/strategies/auth-session-strategy';
 type Stored = { userId: number };
 type Loaded = { userId: number; role?: number };
 
-function createStore() {
-  return new CacheMemoryAdapter();
+function createCache() {
+  return new Caching(new CacheMemoryAdapter());
 }
 
 function createAuth(opts?: {
-  store?: CacheAdapter;
+  store?: Caching;
   sliding?: boolean;
   onLoaded?: AuthSessionStrategy.Options<Stored, Loaded, any[]>['onLoaded'];
   cookieName?: string;
@@ -27,16 +27,16 @@ function createAuth(opts?: {
     any[]
   >['generateCacheKey'];
 }) {
-  const store = opts?.store ?? createStore();
+  const cache = opts?.store ?? createCache();
   const strategy = new AuthSessionStrategy<Stored, Loaded, [role: number]>({
-    store,
+    store: cache,
     generateCacheKey: opts?.generateCacheKey,
     cookie: { name: opts?.cookieName, maxAge: opts?.maxAge ?? 3600 },
     sliding: opts?.sliding,
     onLoaded: opts?.onLoaded ?? ((data) => data),
   });
   const auth = new Auth({ strategies: { session: strategy } });
-  return { auth, store, strategy, caching: strategy['caching'] };
+  return { auth, cache, strategy };
 }
 
 function parseSessionId(
@@ -98,9 +98,9 @@ test('无效 sessionId 返回 401', async () => {
 });
 
 test('过期会话返回 401', async () => {
-  const store = createStore();
-  const { auth, strategy, caching } = createAuth({ store, maxAge: 1 });
-  await caching.set(strategy['getSessionKey']('expired'), { userId: 1 }, 1);
+  const cache = createCache();
+  const { auth, strategy } = createAuth({ store: cache, maxAge: 1 });
+  await cache.set(strategy['getSessionKey']('expired'), { userId: 1 }, 1);
   await new Promise((r) => setTimeout(r, 5));
 
   const app = new TestWebApp({ mount: [auth.authenticate('session')] });
@@ -111,7 +111,7 @@ test('cookie.maxAge 非正数时构造抛错', () => {
   expect(
     () =>
       new AuthSessionStrategy({
-        store: createStore(),
+        store: createCache(),
         cookie: { maxAge: 0 },
         onLoaded(data: Stored) {
           return data;
@@ -121,7 +121,7 @@ test('cookie.maxAge 非正数时构造抛错', () => {
   expect(
     () =>
       new AuthSessionStrategy({
-        store: createStore(),
+        store: createCache(),
         cookie: { maxAge: -1 },
         onLoaded(data: Stored) {
           return data;
@@ -167,7 +167,7 @@ test('logout 后旧 sessionId 失效', async () => {
 
 test('logout 清除 Cookie 时带上 path 与 domain', async () => {
   const strategy = new AuthSessionStrategy<Stored, Loaded, []>({
-    store: createStore(),
+    store: createCache(),
     cookie: { maxAge: 3600, path: '/app', domain: 'example.com' },
     onLoaded(data) {
       return data;
@@ -191,7 +191,7 @@ test('logout 清除 Cookie 时带上 path 与 domain', async () => {
 });
 
 test('regenerateSessionId 默认沿用 Stored 并轮换 id', async () => {
-  const { auth, strategy, caching } = createAuth();
+  const { auth, strategy, cache } = createAuth();
   const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx, next) => {
@@ -225,8 +225,8 @@ test('regenerateSessionId 默认沿用 Stored 并轮换 id', async () => {
   expect(rotate.body.ok).toBe(true);
   const newSid = rotate.body.sid as string;
   expect(newSid).not.toBe(oldSid);
-  expect(await caching.get(strategy['getSessionKey'](oldSid))).toBeNull();
-  expect(await caching.get(strategy['getSessionKey'](newSid))).toEqual({ userId: 1 });
+  expect(await cache.get(strategy['getSessionKey'](oldSid))).toBeNull();
+  expect(await cache.get(strategy['getSessionKey'](newSid))).toEqual({ userId: 1 });
 
   await supertest(app.listen()).get('/').set('Cookie', `sessionId=${oldSid}`).expect(401);
   await supertest(app.listen())
@@ -315,9 +315,9 @@ test('自定义 cookie 名', async () => {
 });
 
 test('自定义 generateCacheKey', async () => {
-  const store = createStore();
-  const { auth, strategy, caching } = createAuth({
-    store,
+  const cache = createCache();
+  const { auth, strategy } = createAuth({
+    store: cache,
     generateCacheKey: (sessionId) => `my:sess:${sessionId}`,
   });
   const app = new TestWebApp({
@@ -339,8 +339,8 @@ test('自定义 generateCacheKey', async () => {
 
   const login = await supertest(app.listen()).get('/login').expect(200);
   const sid = parseSessionId(login.headers['set-cookie']);
-  expect(await caching.get(`my:sess:${sid}`)).toEqual({ userId: 4 });
-  expect(await caching.get(`auth:session:${sid}`)).toBeNull();
+  expect(await cache.get(`my:sess:${sid}`)).toEqual({ userId: 4 });
+  expect(await cache.get(`auth:session:${sid}`)).toBeNull();
 
   await supertest(app.listen())
     .get('/')
@@ -349,27 +349,27 @@ test('自定义 generateCacheKey', async () => {
 });
 
 test('onLoaded 返回 false 时 401', async () => {
-  const store = createStore();
-  const { auth, strategy, caching } = createAuth({
-    store,
+  const cache = createCache();
+  const { auth, strategy } = createAuth({
+    store: cache,
     onLoaded() {
       return false;
     },
   });
-  await caching.set(strategy['getSessionKey']('s1'), { userId: 1 }, 3600_000);
+  await cache.set(strategy['getSessionKey']('s1'), { userId: 1 }, 3600_000);
   const app = new TestWebApp({ mount: [auth.authenticate('session')] });
   await supertest(app.listen()).get('/').set('Cookie', 'sessionId=s1').expect(401);
 });
 
 test('onLoaded 抛出 AuthError 时 401', async () => {
-  const store = createStore();
-  const { auth, strategy, caching } = createAuth({
-    store,
+  const cache = createCache();
+  const { auth, strategy } = createAuth({
+    store: cache,
     onLoaded() {
       throw new AuthError('disabled');
     },
   });
-  await caching.set(strategy['getSessionKey']('s1'), { userId: 1 }, 3600_000);
+  await cache.set(strategy['getSessionKey']('s1'), { userId: 1 }, 3600_000);
   const app = new TestWebApp({ mount: [auth.authenticate('session')] });
   await supertest(app.listen())
     .get('/')
@@ -378,14 +378,14 @@ test('onLoaded 抛出 AuthError 时 401', async () => {
 });
 
 test('onLoaded 可变换身份数据', async () => {
-  const store = createStore();
-  const { auth, strategy, caching } = createAuth({
-    store,
+  const cache = createCache();
+  const { auth, strategy } = createAuth({
+    store: cache,
     onLoaded(data) {
       return { userId: data.userId, role: 9 };
     },
   });
-  await caching.set(strategy['getSessionKey']('s1'), { userId: 1 }, 3600_000);
+  await cache.set(strategy['getSessionKey']('s1'), { userId: 1 }, 3600_000);
   const app = new TestWebApp({
     mount: [
       auth.authenticate('session'),
@@ -402,9 +402,9 @@ test('onLoaded 可变换身份数据', async () => {
 });
 
 test('sliding 用 expire 续期且不把 Loaded 写回 store', async () => {
-  const store = createStore();
-  const { auth, strategy, caching } = createAuth({
-    store,
+  const cache = createCache();
+  const { auth, strategy } = createAuth({
+    store: cache,
     sliding: true,
     maxAge: 3600,
     onLoaded(data) {
@@ -412,9 +412,9 @@ test('sliding 用 expire 续期且不把 Loaded 写回 store', async () => {
     },
   });
   const key = strategy['getSessionKey']('s1');
-  await caching.set(key, { userId: 1 }, 1000);
-  const expireSpy = vitest.spyOn(caching, 'expire');
-  const setSpy = vitest.spyOn(caching, 'set');
+  await cache.set(key, { userId: 1 }, 1000);
+  const expireSpy = vitest.spyOn(cache, 'expire');
+  const setSpy = vitest.spyOn(cache, 'set');
   setSpy.mockClear();
 
   const app = new TestWebApp({
@@ -434,15 +434,15 @@ test('sliding 用 expire 续期且不把 Loaded 写回 store', async () => {
 
   expect(expireSpy).toHaveBeenCalledWith(key, 3600_000);
   expect(setSpy).not.toHaveBeenCalled();
-  expect(await caching.get(key)).toEqual({ userId: 1 });
+  expect(await cache.get(key)).toEqual({ userId: 1 });
   expect(parseSessionId(res.headers['set-cookie'])).toBe('s1');
 });
 
 test('sliding 时 expire 失败则认证失败且不写 Cookie', async () => {
-  const store = createStore();
-  const { auth, strategy, caching } = createAuth({ store, sliding: true });
-  await caching.set(strategy['getSessionKey']('s1'), { userId: 1 }, 3600_000);
-  vitest.spyOn(caching, 'expire').mockResolvedValue(false);
+  const cache = createCache();
+  const { auth, strategy } = createAuth({ store: cache, sliding: true });
+  await cache.set(strategy['getSessionKey']('s1'), { userId: 1 }, 3600_000);
+  vitest.spyOn(cache, 'expire').mockResolvedValue(false);
 
   const app = new TestWebApp({
     mount: [
@@ -461,13 +461,13 @@ test('sliding 时 expire 失败则认证失败且不写 Cookie', async () => {
 });
 
 test('权限认证', async () => {
-  const store = createStore();
+  const cache = createCache();
   const strategy = new AuthSessionStrategy<
     { userId: number },
     { userId: number; role?: number },
     [role: number]
   >({
-    store,
+    store: cache,
     cookie: { maxAge: 3600 },
     onLoaded(data) {
       return data;
@@ -476,12 +476,12 @@ test('权限认证', async () => {
       return this.getIdentity().role === role;
     },
   });
-  await strategy['caching'].set(
+  await strategy['cache'].set(
     strategy['getSessionKey']('admin'),
     { userId: 1, role: 1 },
     3600_000,
   );
-  await strategy['caching'].set(
+  await strategy['cache'].set(
     strategy['getSessionKey']('user'),
     { userId: 2, role: 0 },
     3600_000,
@@ -504,11 +504,11 @@ test('权限认证', async () => {
 });
 
 test('sliding 刷新 TTL', async () => {
-  const store = createStore();
-  const { auth, strategy, caching } = createAuth({ store, sliding: true, maxAge: 3600 });
+  const cache = createCache();
+  const { auth, strategy } = createAuth({ store: cache, sliding: true, maxAge: 3600 });
   const key = strategy['getSessionKey']('s1');
-  await caching.set(key, { userId: 1 }, 1000);
-  const expireSpy = vitest.spyOn(caching, 'expire');
+  await cache.set(key, { userId: 1 }, 1000);
+  const expireSpy = vitest.spyOn(cache, 'expire');
 
   const app = new TestWebApp({
     mount: [
@@ -541,9 +541,9 @@ test('touch 无会话返回 false', async () => {
 });
 
 test('touch 刷新已有会话', async () => {
-  const store = createStore();
-  const { strategy, caching } = createAuth({ store, maxAge: 7200 });
-  await caching.set(strategy['getSessionKey']('s1'), { userId: 1 }, 1000);
+  const cache = createCache();
+  const { strategy } = createAuth({ store: cache, maxAge: 7200 });
+  await cache.set(strategy['getSessionKey']('s1'), { userId: 1 }, 1000);
   const app = new TestWebApp({
     mount: [
       middleware.web(async (ctx) => {
@@ -556,7 +556,7 @@ test('touch 刷新已有会话', async () => {
     .set('Cookie', 'sessionId=s1')
     .expect(200, { ok: true });
   expect(parseSessionId(res.headers['set-cookie'])).toBe('s1');
-  expect(await caching.get(strategy['getSessionKey']('s1'))).toEqual({ userId: 1 });
+  expect(await cache.get(strategy['getSessionKey']('s1'))).toEqual({ userId: 1 });
 });
 
 test('sessionId 为密码学安全随机串', async () => {
@@ -574,18 +574,18 @@ test('sessionId 为密码学安全随机串', async () => {
 });
 
 test('login 用 setNX，碰撞时换 id 重试', async () => {
-  const { strategy, caching } = createAuth({ maxAge: 3600 });
+  const { strategy, cache } = createAuth({ maxAge: 3600 });
   const originalSetNX = Caching.prototype.setNX;
   let attempts = 0;
   const setNX = vitest
-    .spyOn(caching, 'setNX')
+    .spyOn(cache, 'setNX')
     .mockImplementation(async (key, data, ttl) => {
       attempts += 1;
       // 第一次：先占住随机 id，让真实 setNX 返回 false，触发换 id 重试
       if (attempts === 1) {
-        await caching.set(key, { userId: 99 }, ttl);
+        await cache.set(key, { userId: 99 }, ttl);
       }
-      return originalSetNX.call(caching, key, data, ttl);
+      return originalSetNX.call(cache, key, data, ttl);
     });
 
   const app = new TestWebApp({
@@ -601,14 +601,14 @@ test('login 用 setNX，碰撞时换 id 重试', async () => {
   const occupiedKey = setNX.mock.calls[0]![0];
   const freshKey = setNX.mock.calls[1]![0];
   expect(freshKey).not.toBe(occupiedKey);
-  expect(await caching.get(occupiedKey)).toEqual({ userId: 99 });
-  expect(await caching.get(freshKey)).toEqual({ userId: 1 });
+  expect(await cache.get(occupiedKey)).toEqual({ userId: 99 });
+  expect(await cache.get(freshKey)).toEqual({ userId: 1 });
   expect(freshKey).toBe(strategy['getSessionKey'](res.text));
 });
 
 test('login setNX 连续失败则抛错，不无限重试', async () => {
   const { strategy } = createAuth();
-  vitest.spyOn(strategy['caching'], 'setNX').mockResolvedValue(false);
+  vitest.spyOn(strategy['cache'], 'setNX').mockResolvedValue(false);
 
   const app = new TestWebApp({
     mount: [
@@ -621,7 +621,7 @@ test('login setNX 连续失败则抛错，不无限重试', async () => {
     ],
   });
   await supertest(app.listen()).get('/').expect(200);
-  expect(strategy['caching'].setNX).toHaveBeenCalledTimes(10);
+  expect(strategy['cache'].setNX).toHaveBeenCalledTimes(10);
 });
 
 test('空 cookie 值视为未登录', async () => {
@@ -632,8 +632,8 @@ test('空 cookie 值视为未登录', async () => {
 });
 
 test('非法 sessionId 格式视为未登录', async () => {
-  const { auth, strategy, caching } = createAuth();
-  await caching.set(strategy['getSessionKey']('ok-id'), { userId: 1 }, 3600_000);
+  const { auth, strategy, cache } = createAuth();
+  await cache.set(strategy['getSessionKey']('ok-id'), { userId: 1 }, 3600_000);
   const app = new TestWebApp({
     mount: [
       auth.authenticate('session'),
@@ -664,7 +664,7 @@ test('文档', () => {
   const md = new Auth({
     strategies: {
       session: new AuthSessionStrategy({
-        store: createStore(),
+        store: createCache(),
         cookie: { name: 'sessionId', maxAge: 3600 },
         onLoaded(data: { userId: number }) {
           return data;

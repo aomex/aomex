@@ -5,6 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'Hodnota je nesprávneho typu',
   not_integer: 'hodnota nie je celé číslo',
-  cache_service_destroyed: 'Služba vyrovnávacej pamäte bola zničená',
   single_flight_no_result: 'singleFlight nezískal zdieľaný výsledok',
 });

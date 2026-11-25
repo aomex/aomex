@@ -5,6 +5,5 @@ import { zh } from './zh-cn';
 export default I18n.satisfies(zh).define({
   wrong_type: 'Утга буруу төрөлтэй байна',
   not_integer: 'утга нь бүхэл тоо биш юм',
-  cache_service_destroyed: 'Кэш үйлчилгээ устгагдсан',
   single_flight_no_result: 'singleFlight хуваалцсан үр дүн авсангүй',
 });
