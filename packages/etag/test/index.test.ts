@@ -45,7 +45,9 @@ test('响应字符串时，添加etag报文', async () => {
     ],
   });
 
-  await request(app.listen()).get('/').expect('ETag', '"b-Ck1VqNd45QIvq3AZd8XYQLvEhtA"');
+  await request(app.listen())
+    .get('/')
+    .expect('ETag', '"b~pZGm1Av0IEBKARczz7exkNYsZb8LzaMrV7J32a2fFG4"');
 });
 
 test('响应Buffer时，添加etag报文', async () => {
@@ -58,7 +60,9 @@ test('响应Buffer时，添加etag报文', async () => {
     ],
   });
 
-  await request(app.listen()).get('/').expect('ETag', '"b-Ck1VqNd45QIvq3AZd8XYQLvEhtA"');
+  await request(app.listen())
+    .get('/')
+    .expect('ETag', '"b~pZGm1Av0IEBKARczz7exkNYsZb8LzaMrV7J32a2fFG4"');
 });
 
 test('响应JSON时，添加etag报文', async () => {
@@ -71,7 +75,9 @@ test('响应JSON时，添加etag报文', async () => {
     ],
   });
 
-  await request(app.listen()).get('/').expect('ETag', '"d-pedE0BZFQNM7HX6mFsKPL6l+dUo"');
+  await request(app.listen())
+    .get('/')
+    .expect('ETag', '"d~eji_gfOD9pQzrW6QDTWz4jhVk_dqe3q11DVbi6Qe4ks"');
 });
 
 test('带path的数据流时，添加etag报文，并携带W/', async () => {
@@ -87,7 +93,7 @@ test('带path的数据流时，添加etag报文，并携带W/', async () => {
   await request(app.listen())
     .get('/')
     // etag的值与文件的生成时间关联，因此无法得到固定的值
-    .expect('ETag', /^W\/"[a-z0-9-]+"$/);
+    .expect('ETag', /^W\/"[0-9a-v]+~[0-9a-v]+"$/);
 });
 
 test('手动开启携带W/', async () => {
@@ -102,5 +108,5 @@ test('手动开启携带W/', async () => {
 
   await request(app.listen())
     .get('/')
-    .expect('ETag', 'W/"b-Ck1VqNd45QIvq3AZd8XYQLvEhtA"');
+    .expect('ETag', 'W/"b~pZGm1Av0IEBKARczz7exkNYsZb8LzaMrV7J32a2fFG4"');
 });

@@ -142,6 +142,7 @@
 
 - 调用 Bugbot / review 子代理时必须使用 `Diff: uncommitted changes`
 - 仅当用户明确要求审「已提交 / 分支 / PR / 相对 main」时，才用 `Diff: branch changes` 或指定目标
+- **审查必须核对 i18n 文件是否完整**：改动涉及文案键、`i18n.t` 或 `packages/*/src/i18n/locales/` 时，以该包 `zh-cn.ts` 的键与插值占位符（如 `{{name}}`）为母本，核对其余已有语言文件（至少含 `en-us.ts`）键集合一致、无缺键或多余键；`zh-CN` 条目有增删改时，其它语言的对应条目须按新中文同步重译。别名共用的语言（如 `en-GB` 读 `en-us`）不要求单独文件
 
 ## 日常改动习惯
 

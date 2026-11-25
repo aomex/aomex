@@ -35,11 +35,10 @@
     "@aomex/web": "^4.0.0"
   },
   "dependencies": {
-    "etag": "^1.8.1"
+    "etag": "^2.0.0"
   },
   "devDependencies": {
     "@aomex/common": "workspace:*",
-    "@aomex/web": "workspace:*",
-    "@types/etag": "^1.8.4"
+    "@aomex/web": "workspace:*"
   }
 }

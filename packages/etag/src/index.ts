@@ -1,6 +1,6 @@
 import { ReadStream } from 'node:fs';
 import { stat } from 'node:fs/promises';
-import calculate from 'etag';
+import { etag as calculate } from 'etag';
 import { middleware } from '@aomex/common';
 import type { WebMiddleware } from '@aomex/web';
 import { Stream } from 'node:stream';
