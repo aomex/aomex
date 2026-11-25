@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.7.0](https://github.com/aomex/aomex/compare/v4.6.0...v4.7.0) (2026-11-25)
+
+### Bug Fixes
+
+* **cron:** ping的时候重新竞争有可能导致退出中的任务再锁一轮 ([8e2bbd2](https://github.com/aomex/aomex/commit/8e2bbd2b5a0e85aad9f619e5099a0f778c2059bf))
+
+### Features
+
+* **cache:** 以共享 Caching 替代 BaseCacheService，createRemember 绑定实例 ([58595bc](https://github.com/aomex/aomex/commit/58595bcb61e149faa988d4479c3be3b0673ed1eb))
+
+
 # [4.6.0](https://github.com/aomex/aomex/compare/v4.5.0...v4.6.0) (2026-11-24)
 
 **Note:** Version bump only for package @aomex/cron

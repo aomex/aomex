@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.7.0](https://github.com/aomex/aomex/compare/v4.6.0...v4.7.0) (2026-11-25)
+
+### Features
+
+* **logger:** 以 Logger 替代 BaseLoggerService，并统一 lifecycle 失败清门闩 ([6a750d3](https://github.com/aomex/aomex/commit/6a750d3af7068a5ff9805f6cc6549a0da0092bfd))
+
+
 # [4.6.0](https://github.com/aomex/aomex/compare/v4.5.0...v4.6.0) (2026-11-24)
 
 **Note:** Version bump only for package @aomex/console
