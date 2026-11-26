@@ -1,0 +1,26 @@
+import { I18n } from '@aomex/common';
+
+export const zh = I18n.define({
+  empty_brokers: 'brokers 不能为空',
+  empty_broker: 'brokers 含有空地址',
+  empty_client_id: 'clientId 不能为空',
+  empty_group_id: 'groupId 不能为空',
+  empty_topic: '主题名不能为空',
+  invalid_topic_name: '非法的主题名：{{topic}}',
+  topic_name_too_long: '主题名过长：{{length}} > {{max}}',
+  duplicate_topic: '主题重复登记：{{topic}}',
+  mixed_group_id: '同一次消费只能有一个 groupId',
+  empty_consumers: '没有找到 Kafka 消费者',
+  already_consuming: '已有消费者在运行',
+  closed: 'Kafka 连接已关闭',
+  message_too_large: '消息大小超过限制：{{bytes}} > {{max}}',
+  invalid_json: '消息不是合法的 JSON',
+  empty_message: '消息体为空',
+  encode_failed: '消息无法编码为 JSON',
+  unknown_topic: '收到未订阅的主题：{{topic}}',
+  invalid_offset: '非法的消息偏移量：{{offset}}',
+  idempotent_requires_all_acks: '开启幂等生产者时 acks 必须为 -1',
+  unsupported_sasl: '不支持的 SASL 机制：{{mechanism}}',
+  unsupported_tls: 'TLS 配置无法交给客户端：{{name}}',
+  heartbeat_exceeds_session: '心跳间隔必须小于会话超时',
+});

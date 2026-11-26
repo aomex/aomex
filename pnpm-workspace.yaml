@@ -16,3 +16,4 @@ allowBuilds:
   tree-sitter: false
   tree-sitter-json: false
   vue-demi: false
+  '@confluentinc/kafka-javascript': true
