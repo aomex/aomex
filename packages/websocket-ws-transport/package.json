@@ -1,6 +1,6 @@
 {
   "name": "@aomex/websocket-ws-transport",
-  "version": "4.7.0",
+  "version": "4.8.0",
   "description": "WebSocket 的标准 ws 传输层",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",

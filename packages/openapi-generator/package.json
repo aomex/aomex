@@ -1,6 +1,6 @@
 {
   "name": "@aomex/openapi-generator",
-  "version": "4.7.0",
+  "version": "4.8.0",
   "description": "OpenAPI 文档生成工具",
   "scripts": {
     "prepublishOnly": "tsdown"

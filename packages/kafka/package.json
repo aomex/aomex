@@ -1,6 +1,6 @@
 {
   "name": "@aomex/kafka",
-  "version": "4.7.0",
+  "version": "4.8.0",
   "description": "类型安全的 Kafka 生产与消费",
   "repository": "git@github.com:aomex/aomex.git",
   "homepage": "https://aomex.js.org",
