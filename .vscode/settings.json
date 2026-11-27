@@ -1,4 +1,9 @@
 {
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "text": "提交信息必须使用简体中文描述，并遵循 Conventional Commits 格式；type 和 scope 保留约定标识符，冒号后的说明使用简体中文。"
+    }
+  ],
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[prisma]": {

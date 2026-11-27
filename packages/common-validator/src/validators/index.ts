@@ -18,6 +18,7 @@ export * from './object';
 export * from './one-of';
 export * from './stream';
 export * from './string';
+export * from './tuple';
 export * from './ulid';
 export * from './url';
 export * from './uuid';

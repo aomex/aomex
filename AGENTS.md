@@ -148,6 +148,7 @@
 
 - 改动保持最小必要范围；不顺手重构无关代码
 - 公共 API 变更需考虑各 package 的导出与文档
+- Git 提交信息使用简体中文描述，保留 Conventional Commits 的类型与 scope 标识（如 `feat(common-validator): 新增 tuple 校验器`）
 - 测试用 vitest；涉及协议/安全边界的改动必须补回归用例
 - 不要提交密钥、`.env`、凭证类文件
 

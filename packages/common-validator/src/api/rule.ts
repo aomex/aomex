@@ -23,6 +23,7 @@ import {
   OneOfValidator,
   StreamValidator,
   StringValidator,
+  TupleValidator,
   UlidValidator,
   UrlValidator,
   UuidValidator,
@@ -97,6 +98,20 @@ export class Rule {
   ): ArrayValidator<Validator.Infer<T>[]>;
   array(values?: ValidatorToken) {
     return new ArrayValidator<any>(toValidator(values));
+  }
+
+  /**
+   * 按位置校验异构数组；可用 `rest()` 校验固定位置之后的尾项。
+   *
+   * ```typescript
+   * rule.tuple([rule.string(), rule.number()]);
+   * rule.tuple([rule.string(), rule.number()]).rest(rule.boolean());
+   * ```
+   */
+  tuple<const T extends readonly ValidatorToken[]>(
+    validators: T,
+  ): TupleValidator<TupleValidator.Infer<T>> {
+    return new TupleValidator(validators.map((validator) => toValidator(validator)));
   }
 
   /**
