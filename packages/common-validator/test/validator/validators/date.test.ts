@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { DateValidator, ValidateResult } from '../../../src';
+import { DateValidator, toDocument, ValidateResult } from '../../../src';
 
 describe('链式调用返回新的实例', () => {
   const validator = new DateValidator();
@@ -190,6 +190,18 @@ test('获取文档', () => {
       "default": "2024-03-24T05:25:56.000Z",
       "format": "date-time",
       "type": "string",
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(new DateValidator().nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "format": "date-time",
+      "type": [
+        "string",
+        "null",
+      ],
     }
   `);
 });

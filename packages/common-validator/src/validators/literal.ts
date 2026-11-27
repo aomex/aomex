@@ -72,8 +72,7 @@ export class LiteralValidator<const T = never> extends Validator<T> {
   protected override toDocument(): OpenAPI.SchemaObject {
     const { value } = this.config;
     if (value === null) {
-      // OpenAPI 3.0 无 type: null，靠外层 nullable + enum 表达
-      return { enum: [null] };
+      return { type: 'null', enum: [null] };
     }
     return {
       type: typeof value as 'string' | 'number' | 'boolean',

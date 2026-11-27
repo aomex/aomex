@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { IntValidator, ValidateResult } from '../../../src';
+import { IntValidator, toDocument, ValidateResult } from '../../../src';
 
 test('只允许整数', async () => {
   const validator = new IntValidator();
@@ -28,11 +28,22 @@ test('获取文档', () => {
   `);
   expect(new IntValidator().min(10).max(20)['toDocument']()).toMatchInlineSnapshot(`
     {
-      "exclusiveMaximum": false,
-      "exclusiveMinimum": false,
+      "exclusiveMaximum": undefined,
+      "exclusiveMinimum": undefined,
       "maximum": 20,
       "minimum": 10,
       "type": "integer",
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(new IntValidator().nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "type": [
+        "integer",
+        "null",
+      ],
     }
   `);
 });

@@ -13,7 +13,7 @@ const defaultVersion = pkg.version || '0.0.0';
 test('默认返回值', async () => {
   await expect(initializeDocument()).resolves.toEqual({
     info: { title: defaultTitle, version: defaultVersion },
-    openapi: '3.0.3',
+    openapi: '3.2.0',
     paths: {},
     tags: [],
   });
@@ -22,7 +22,7 @@ test('默认返回值', async () => {
 test('指定标题', async () => {
   await expect(initializeDocument({ info: { title: 'foo-bar' } })).resolves.toEqual({
     info: { title: 'foo-bar', version: defaultVersion },
-    openapi: '3.0.3',
+    openapi: '3.2.0',
     paths: {},
     tags: [],
   });
@@ -31,7 +31,7 @@ test('指定标题', async () => {
 test('指定版本号', async () => {
   await expect(initializeDocument({ info: { version: '1.2.3' } })).resolves.toEqual({
     info: { title: defaultTitle, version: '1.2.3' },
-    openapi: '3.0.3',
+    openapi: '3.2.0',
     paths: {},
     tags: [],
   });
@@ -42,7 +42,7 @@ test('增加标签', async () => {
     initializeDocument({ tags: [{ name: 'foo' }, { name: 'bar' }] }),
   ).resolves.toEqual({
     info: { title: defaultTitle, version: defaultVersion },
-    openapi: '3.0.3',
+    openapi: '3.2.0',
     paths: {},
     tags: [{ name: 'foo' }, { name: 'bar' }],
   });

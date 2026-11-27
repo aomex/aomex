@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { UuidValidator, ValidateResult } from '../../../src';
+import { UuidValidator, toDocument, ValidateResult } from '../../../src';
 
 test('合法的uuid', async () => {
   await expect(
@@ -42,6 +42,18 @@ test('获取文档', () => {
       "minLength": undefined,
       "pattern": undefined,
       "type": "string",
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(new UuidValidator(['v4']).nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "format": "uuid",
+      "type": [
+        "string",
+        "null",
+      ],
     }
   `);
 });

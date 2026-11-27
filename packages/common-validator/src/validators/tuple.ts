@@ -1,6 +1,7 @@
 import { i18n } from '../i18n';
 import type { OpenAPI } from '@aomex/internal-tools';
 import { ValidateResult, type TransformedValidator, Validator } from '../base';
+import { toDocument } from '../api/to-document';
 import { toValidator, type ValidatorToken } from '../api/to-validator';
 
 export declare namespace TupleValidator {
@@ -132,13 +133,14 @@ export class TupleValidator<T = unknown[], FixedPrefix = undefined> extends Vali
   }
 
   protected override toDocument(): OpenAPI.SchemaObject {
-    const length = this.config.tupleValidators.length;
+    const { tupleValidators, restValidator } = this.config;
+    const length = tupleValidators.length;
     return {
       type: 'array',
-      // TODO: 升级到 OpenAPI 3.1 后，用 prefixItems 输出位置 schema，用 items 表达 rest。
-      items: {},
+      prefixItems: tupleValidators.map((validator) => toDocument(validator).schema),
+      items: restValidator ? toDocument(restValidator).schema : false,
       minItems: length,
-      maxItems: this.config.restValidator ? undefined : length,
+      maxItems: restValidator ? undefined : length,
     };
   }
 }

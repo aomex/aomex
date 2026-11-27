@@ -20,7 +20,7 @@ export interface RedocUIOptions {
    * redocUI({
    *   openapi: () => {
    *     return {
-   *       version: '3.0.0',
+   *       openapi: '3.2.1',
    *       info: { title: 'aomex', version: '1.0.1' },
    *       paths: {}
    *     };
@@ -31,6 +31,7 @@ export interface RedocUIOptions {
    *     return generateOpenapi({
    *       routers: './src/routers',
    *       app, // 与运行时同一 WebApp 实例
+   *       docs: { openapi: '3.2.1' },
    *     });
    *   }
    * });

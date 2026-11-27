@@ -1,5 +1,11 @@
 import { expect, test } from 'vitest';
-import { LiteralValidator, ValidateResult, rule, validate } from '../../../src';
+import {
+  LiteralValidator,
+  ValidateResult,
+  rule,
+  toDocument,
+  validate,
+} from '../../../src';
 
 test('匹配 string / number / boolean', async () => {
   await expect(validate('ok', rule.literal('ok'))).resolves.toBe('ok');
@@ -175,6 +181,7 @@ test('获取文档', () => {
       "enum": [
         null,
       ],
+      "type": "null",
     }
   `);
 });
@@ -183,4 +190,30 @@ test('ValidateResult.accept 直出', async () => {
   await expect(new LiteralValidator(2)['validate'](2)).resolves.toStrictEqual(
     ValidateResult.accept(2),
   );
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(rule.literal('a').nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "anyOf": [
+        {
+          "enum": [
+            "a",
+          ],
+          "type": "string",
+        },
+        {
+          "type": "null",
+        },
+      ],
+    }
+  `);
+  expect(toDocument(rule.literal(null).nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "enum": [
+        null,
+      ],
+      "type": "null",
+    }
+  `);
 });

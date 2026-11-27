@@ -1,16 +1,16 @@
 import { expect, test } from 'vitest';
 import { validateOpenapi } from '../../src';
 
-test('验证', async () => {
+test('Spectral 未报告 OpenAPI 3.2 缺少 responses', async () => {
   const result = await validateOpenapi({
     info: {
       title: 'x',
       version: '1',
     },
-    openapi: '3.0.3',
+    openapi: '3.2.1',
     paths: {
-      // @ts-expect-error
       '/foo': {
+        // @ts-expect-error 运行时验证缺少 responses 的非法文档
         get: {},
       },
     },
@@ -19,16 +19,7 @@ test('验证', async () => {
 
   expect(result).toMatchInlineSnapshot(`
     {
-      "errors": [
-        {
-          "message": ""get" property must have required property "responses".",
-          "path": [
-            "paths",
-            "/foo",
-            "get",
-          ],
-        },
-      ],
+      "errors": [],
       "warnings": [
         {
           "message": "OpenAPI "servers" must be present and non-empty array.",
@@ -61,4 +52,23 @@ test('验证', async () => {
       ],
     }
   `);
+});
+
+test('Spectral 未报告 OpenAPI 3.1 缺少 responses', async () => {
+  const result = await validateOpenapi({
+    info: {
+      title: 'x',
+      version: '1',
+    },
+    openapi: '3.1.0',
+    paths: {
+      '/foo': {
+        // @ts-expect-error 运行时验证缺少 responses 的非法文档
+        get: {},
+      },
+    },
+    tags: [],
+  });
+
+  expect(result.errors).toEqual([]);
 });

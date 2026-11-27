@@ -95,10 +95,12 @@ export class BigIntValidator<T = bigint> extends Validator<T> {
       example: '922337203685475807',
       // JSON.stringify 无法处理bigint类型
       default: defaultValue === void 0 ? void 0 : Number(defaultValue),
-      minimum: min === void 0 ? void 0 : Number(min),
-      maximum: max === void 0 ? void 0 : Number(max),
-      exclusiveMinimum: minInclusive === void 0 ? void 0 : !minInclusive,
-      exclusiveMaximum: maxInclusive === void 0 ? void 0 : !maxInclusive,
+      minimum: minInclusive === false ? undefined : min === void 0 ? void 0 : Number(min),
+      maximum: maxInclusive === false ? undefined : max === void 0 ? void 0 : Number(max),
+      exclusiveMinimum:
+        minInclusive === false && min !== undefined ? Number(min) : undefined,
+      exclusiveMaximum:
+        maxInclusive === false && max !== undefined ? Number(max) : undefined,
     };
   }
 }

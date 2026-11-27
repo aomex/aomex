@@ -10,7 +10,7 @@ test('指定基础文档', async () => {
     routers: [],
     app: new TestWebApp(),
     docs: {
-      openapi: '3.0.2',
+      openapi: '3.1.2',
       info: { version: '1.2.3', title: 'abc' },
     },
   });
@@ -20,18 +20,50 @@ test('指定基础文档', async () => {
         "title": "abc",
         "version": "1.2.3",
       },
-      "openapi": "3.0.2",
+      "openapi": "3.1.2",
       "paths": {},
       "tags": [],
     }
   `);
 });
 
+test('降级到 OpenAPI 3.1 时转换 JSON Schema 关键字', async () => {
+  const document31 = await generateOpenapi({
+    routers: [],
+    app: new TestWebApp(),
+    docs: { openapi: '3.1.2' },
+    fix(document) {
+      document.components = {
+        schemas: {
+          nullableText: { type: ['string', 'null'] },
+          exclusiveNumber: {
+            type: 'number',
+            exclusiveMinimum: 5,
+            exclusiveMaximum: 10,
+          },
+        },
+      };
+    },
+  });
+  expect(document31.openapi).toBe('3.1.2');
+  expect(document31.components?.schemas?.['nullableText']).toEqual({
+    type: ['string', 'null'],
+  });
+  expect(document31.components?.schemas?.['exclusiveNumber']).toEqual({
+    type: 'number',
+    exclusiveMinimum: 5,
+    exclusiveMaximum: 10,
+  });
+});
+
 test('手动修复文档', async () => {
   const result = await generateOpenapi({
     routers: [],
     app: new TestWebApp(),
-    docs: { info: { title: 'aomex', version: '1.2.3' } },
+    docs: {
+      openapi: '3.2.1',
+      info: { title: 'aomex', version: '1.2.3' },
+    },
     fix(data) {
       data.info.description = ' desc foo bar';
       data.tags ||= [];
@@ -45,7 +77,7 @@ test('手动修复文档', async () => {
         "title": "aomex",
         "version": "1.2.3",
       },
-      "openapi": "3.0.3",
+      "openapi": "3.2.1",
       "paths": {},
       "tags": [
         {
@@ -76,6 +108,7 @@ test('通过 app.mount 收集全局中间件文档', async () => {
   const result = await generateOpenapi({
     routers: join(import.meta.dirname, '..', 'fixtures', 'routers', 'a.router.ts'),
     app,
+    docs: { openapi: '3.2.1' },
   });
 
   expect(result.info.description).toBe('from-global-mount');
@@ -93,7 +126,11 @@ test('空 mount 的 app 可正常生成', async () => {
     'routers',
     'empty.router.ts',
   );
-  const empty = await generateOpenapi({ routers, app: new TestWebApp({ mount: [] }) });
+  const empty = await generateOpenapi({
+    routers,
+    app: new TestWebApp({ mount: [] }),
+    docs: { openapi: '3.2.1' },
+  });
   expect(empty.paths).toEqual({});
 });
 
@@ -120,6 +157,7 @@ test('app.envelope 在文档侧收成 200 套壳', async () => {
   const result = await generateOpenapi({
     routers: join(import.meta.dirname, '..', 'fixtures', 'routers', 'a.router.ts'),
     app,
+    docs: { openapi: '3.2.1' },
   });
 
   const method = result.paths['/foo']!.get!;
@@ -189,6 +227,7 @@ test('response({ skipEnvelope }) 时该状态码不套壳且无临时扩展键',
       'skip-envelope.router.ts',
     ),
     app,
+    docs: { openapi: '3.2.1' },
   });
 
   const raw = result.paths['/raw']!.get!;
@@ -205,8 +244,11 @@ test('response({ skipEnvelope }) 时该状态码不套壳且无临时扩展键',
     },
   });
   expect(
-    (raw.responses!['200'] as OpenAPI.ResponseObject).content?.['application/json']
-      ?.schema,
+    (
+      (raw.responses!['200'] as OpenAPI.ResponseObject).content?.[
+        'application/json'
+      ] as OpenAPI.MediaTypeObject
+    )?.schema,
   ).not.toHaveProperty('oneOf');
 
   const mixed = result.paths['/mixed']!.get!;

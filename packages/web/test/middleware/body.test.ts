@@ -560,11 +560,9 @@ test('文档：schema', () => {
     },
     required: true,
   });
-  expect(
-    (doc.paths['/']!.get!.requestBody as OpenAPI.RequestBodyObject).content![
-      'application/json'
-    ]!.schema,
-  ).not.toHaveProperty('x-ref');
+  const mediaType = (doc.paths['/']!.get!.requestBody as OpenAPI.RequestBodyObject)
+    .content!['application/json'] as OpenAPI.MediaTypeObject;
+  expect(mediaType.schema).not.toHaveProperty('x-ref');
 });
 
 test('文档：schema.asName 打上具名 x-ref', () => {

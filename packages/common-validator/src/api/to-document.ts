@@ -2,7 +2,14 @@ import { createHash } from 'node:crypto';
 import type { OpenAPI } from '@aomex/internal-tools';
 import { toValidator, type ValidatorToken } from './to-validator';
 
-export function toDocument(source: ValidatorToken): OpenAPI.ParameterBaseObject {
+type ValidatorDocument = Pick<
+  Extract<OpenAPI.ParameterObject, { schema: unknown }>,
+  'description' | 'deprecated' | 'example' | 'required'
+> & {
+  schema: OpenAPI.SchemaObject;
+};
+
+export function toDocument(source: ValidatorToken): ValidatorDocument {
   const validator = toValidator(source);
 
   const {
@@ -13,11 +20,10 @@ export function toDocument(source: ValidatorToken): OpenAPI.ParameterBaseObject 
     refName,
   } = validator['config'];
   const bothProperties = { description, deprecated, example };
-  const schema: OpenAPI.SchemaObject = {
+  let schema: OpenAPI.SchemaObject = {
     ...schemaProperties,
     ...bothProperties,
     default: validator['getDefaultValue'](defaultValue),
-    nullable: nullable || undefined,
     ...validator['toDocument'](),
   };
 
@@ -30,6 +36,20 @@ export function toDocument(source: ValidatorToken): OpenAPI.ParameterBaseObject 
           : refName,
       ),
     });
+  }
+
+  if (nullable && schema.type !== 'null') {
+    const hasNonNullEnum = Array.isArray(schema.enum) && !schema.enum.includes(null);
+    const hasNonNullConst = schema.const !== undefined && schema.const !== null;
+    if (hasNonNullEnum || hasNonNullConst) {
+      schema = { anyOf: [schema, { type: 'null' }] };
+    } else if (typeof schema.type === 'string') {
+      schema = { ...schema, type: [schema.type, 'null'] };
+    } else if (Array.isArray(schema.type)) {
+      if (!schema.type.includes('null')) schema.type = [...schema.type, 'null'];
+    } else {
+      schema = { anyOf: [schema, { type: 'null' }] };
+    }
   }
 
   return JSON.parse(

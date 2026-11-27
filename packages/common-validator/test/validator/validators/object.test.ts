@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { ObjectValidator, rule, ValidateResult } from '../../../src';
+import { ObjectValidator, rule, toDocument, ValidateResult } from '../../../src';
 import { describe } from 'node:test';
 
 describe('链式调用返回新的实例', () => {
@@ -217,7 +217,6 @@ test('获取文档', () => {
   ).toMatchInlineSnapshot(`
     {
       "additionalProperties": {
-        "exclusiveMaximum": false,
         "maximum": 1200,
         "type": "integer",
       },
@@ -231,6 +230,27 @@ test('获取文档', () => {
         "my_key1",
       ],
       "type": "object",
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(rule.object({ id: rule.int() }).nullable()).schema)
+    .toMatchInlineSnapshot(`
+    {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+        },
+      },
+      "required": [
+        "id",
+      ],
+      "type": [
+        "object",
+        "null",
+      ],
     }
   `);
 });

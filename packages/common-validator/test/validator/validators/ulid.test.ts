@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { UlidValidator, ValidateResult } from '../../../src';
+import { UlidValidator, toDocument, ValidateResult } from '../../../src';
 
 test('合法的ulid', async () => {
   const validator = new UlidValidator();
@@ -37,6 +37,19 @@ test('获取文档', () => {
       "minLength": undefined,
       "pattern": undefined,
       "type": "string",
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(new UlidValidator().nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "example": "01BJQE4QTHMFP0S5J153XCFSP9",
+      "format": "ulid",
+      "type": [
+        "string",
+        "null",
+      ],
     }
   `);
 });

@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { EmailValidator, ValidateResult } from '../../../src';
+import { EmailValidator, toDocument, ValidateResult } from '../../../src';
 
 test('必须是邮箱格式', async () => {
   const validator = new EmailValidator();
@@ -34,6 +34,18 @@ test('获取文档', () => {
       "minLength": undefined,
       "pattern": "\\.com$",
       "type": "string",
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(new EmailValidator().nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "format": "email",
+      "type": [
+        "string",
+        "null",
+      ],
     }
   `);
 });

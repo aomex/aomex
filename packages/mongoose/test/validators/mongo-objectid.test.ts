@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { MongoObjectIdValidator } from '../../src';
-import { ValidateResult } from '@aomex/common';
+import { toDocument, ValidateResult } from '@aomex/common';
 import { mongo } from 'mongoose';
 
 test('检测objectid类型', async () => {
@@ -44,4 +44,16 @@ test('获取文档', () => {
         "type": "string",
       }
     `);
+});
+
+test('nullable 文档使用 OpenAPI 3.2 联合类型', () => {
+  expect(toDocument(new MongoObjectIdValidator().nullable()).schema)
+    .toMatchInlineSnapshot(`
+    {
+      "type": [
+        "string",
+        "null",
+      ],
+    }
+  `);
 });

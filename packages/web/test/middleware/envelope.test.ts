@@ -37,8 +37,124 @@ describe('envelope openapi middleware', () => {
   });
 
   const schema200 = (methodItem: OpenAPI.OperationObject) =>
-    (methodItem.responses['200'] as OpenAPI.ResponseObject).content!['application/json']!
-      .schema!;
+    (
+      (methodItem.responses['200'] as OpenAPI.ResponseObject).content![
+        'application/json'
+      ] as OpenAPI.MediaTypeObject
+    ).schema!;
+
+  test('解析 OpenAPI 3.2 的本地可复用 media type', () => {
+    const doc = blankDoc();
+    doc.components = {
+      mediaTypes: {
+        payload: {
+          schema: {
+            type: 'object',
+            properties: { id: { type: 'string' } },
+          },
+        },
+      },
+    };
+    const methodItem = doc.paths['/']!.get!;
+    const response: OpenAPI.ResponseObject = {
+      description: 'Created',
+      content: { 'application/json': { $ref: '#/components/mediaTypes/payload' } },
+    };
+    methodItem.responses['201'] = response;
+
+    envelopeOpenApi({ content: baseEnvelope.content }).postMethod?.(
+      methodItem,
+      optsFor(doc),
+    );
+
+    expect(schema200(methodItem)).toMatchObject({
+      properties: {
+        data: {
+          type: 'object',
+          properties: { id: { type: 'string' } },
+        },
+      },
+    });
+  });
+
+  test('不改写 false Schema 响应', () => {
+    const doc = blankDoc();
+    const methodItem = doc.paths['/']!.get!;
+    methodItem.responses['201'] = {
+      description: 'Created',
+      content: { 'application/json': { schema: false } },
+    };
+
+    envelopeOpenApi({ content: baseEnvelope.content }).postMethod?.(
+      methodItem,
+      optsFor(doc),
+    );
+
+    expect(methodItem.responses['201']).toEqual({
+      description: 'Created',
+      content: { 'application/json': { schema: false } },
+    });
+    expect(methodItem.responses['200']).toBeUndefined();
+  });
+
+  test('保留无法解析的 response 引用', () => {
+    const doc = blankDoc();
+    const methodItem = doc.paths['/']!.get!;
+    const response: OpenAPI.ResponseObject = {
+      description: 'Created',
+      content: {
+        'application/json': { $ref: 'https://example.test/media-types/payload' },
+      },
+    };
+    methodItem.responses['201'] = response;
+
+    envelopeOpenApi({ content: baseEnvelope.content }).postMethod?.(
+      methodItem,
+      optsFor(doc),
+    );
+
+    expect(methodItem.responses).toEqual({ '201': response });
+  });
+
+  test('合并 skip 200 时内联本地可复用 media type', () => {
+    const doc = blankDoc();
+    doc.components = {
+      mediaTypes: {
+        payload: {
+          schema: { type: 'object', properties: { id: { type: 'string' } } },
+        },
+      },
+    };
+    const methodItem = doc.paths['/']!.get!;
+    const opts = optsFor(doc);
+    response({
+      statusCode: 200,
+      skipEnvelope: true,
+      content: { id: rule.string() },
+    })
+      ['openapi']()
+      .onMethod?.(methodItem, opts);
+    (methodItem.responses['200'] as OpenAPI.ResponseObject).content = {
+      'application/json': { $ref: '#/components/mediaTypes/payload' },
+    };
+    methodItem.responses['201'] = {
+      description: 'Created',
+      content: { 'application/json': { schema: { type: 'string' } } },
+    };
+
+    envelopeOpenApi({ content: baseEnvelope.content }).postMethod?.(methodItem, opts);
+
+    const media = (methodItem.responses['200'] as OpenAPI.ResponseObject).content![
+      'application/json'
+    ] as OpenAPI.MediaTypeObject;
+    expect(media).not.toHaveProperty('$ref');
+    expect(media.schema).toMatchObject({
+      oneOf: [
+        { type: 'object', properties: { id: { type: 'string' } } },
+        { type: 'object', properties: { data: { type: 'string' } } },
+      ],
+    });
+  });
 
   test('将 2xx 与 default 收成 200 成败 oneOf，保留 3xx 与无内容状态码', () => {
     const doc = blankDoc();
@@ -430,11 +546,9 @@ describe('envelope openapi middleware', () => {
       properties: { id: { type: 'number' } },
     });
     expect(schema200(methodItem)).not.toHaveProperty('oneOf');
-    expect(
-      (methodItem.responses['201'] as OpenAPI.ResponseObject).content![
-        'application/json'
-      ]!.schema,
-    ).toMatchObject({
+    const response201Media = (methodItem.responses['201'] as OpenAPI.ResponseObject)
+      .content!['application/json'] as OpenAPI.MediaTypeObject;
+    expect(response201Media.schema).toMatchObject({
       type: 'object',
       properties: { id: { type: 'number' } },
     });

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { BooleanValidator, ValidateResult } from '../../../src';
+import { BooleanValidator, toDocument, ValidateResult } from '../../../src';
 
 describe('链式调用返回新的实例', () => {
   const validator = new BooleanValidator();
@@ -59,6 +59,17 @@ test('获取文档', () => {
   expect(new BooleanValidator()['toDocument']()).toMatchInlineSnapshot(`
     {
       "type": "boolean",
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(new BooleanValidator().nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "type": [
+        "boolean",
+        "null",
+      ],
     }
   `);
 });

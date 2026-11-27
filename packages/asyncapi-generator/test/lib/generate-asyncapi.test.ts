@@ -98,7 +98,7 @@ test('从 Channel 实例收集 payload / emit', async () => {
   });
   expect(result.components?.messages?.['chat.send']).toMatchObject({
     payload: {
-      schemaFormat: 'application/vnd.oai.openapi;version=3.0.0',
+      schemaFormat: 'application/vnd.oai.openapi;version=3.2.0',
       schema: {
         type: 'object',
         properties: { text: { type: 'string' } },
@@ -142,6 +142,9 @@ test('Spectral asyncapi 校验可通过', async () => {
     channels: [channel],
     docs: { asyncapi: '3.1.0', info: { title: 'ping', version: '1.0.0' } },
   });
-  const { errors } = await validateAsyncapi(document);
+  const { errors, warnings } = await validateAsyncapi(document);
   expect(errors).toEqual([]);
+  expect(
+    warnings.some((item) => item.message.includes('schema validation is only supported')),
+  ).toBe(false);
 });

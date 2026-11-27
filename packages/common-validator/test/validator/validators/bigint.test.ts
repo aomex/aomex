@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { BigIntValidator, ValidateResult } from '../../../src';
+import { BigIntValidator, toDocument, ValidateResult } from '../../../src';
 
 describe('链式调用返回新的实例', () => {
   const validator = new BigIntValidator();
@@ -116,12 +116,32 @@ test('获取文档', () => {
       {
         "default": 15,
         "example": "922337203685475807",
-        "exclusiveMaximum": true,
-        "exclusiveMinimum": false,
+        "exclusiveMaximum": 20,
+        "exclusiveMinimum": undefined,
         "format": "int64",
-        "maximum": 20,
+        "maximum": undefined,
         "minimum": 10,
         "type": "integer",
       }
     `);
+
+  expect(new BigIntValidator().min(10n, false).max(20n)['toDocument']()).toMatchObject({
+    minimum: undefined,
+    exclusiveMinimum: 10,
+    maximum: 20,
+    exclusiveMaximum: undefined,
+  });
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(new BigIntValidator().nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "example": "922337203685475807",
+      "format": "int64",
+      "type": [
+        "integer",
+        "null",
+      ],
+    }
+  `);
 });

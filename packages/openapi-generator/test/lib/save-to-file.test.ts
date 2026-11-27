@@ -10,7 +10,7 @@ const document: OpenAPI.Document = {
   info: { title: 'foo', version: '' },
   paths: {},
   tags: [],
-  openapi: '3.0.3',
+  openapi: '3.2.1',
 };
 
 afterEach(async () => {
@@ -24,7 +24,7 @@ test('默认保存为JSON', async () => {
 
   expect(result.size).toBe('76B');
   expect(readFileSync(result.dest, 'utf8')).toMatchInlineSnapshot(
-    `"{"info":{"title":"foo","version":""},"paths":{},"tags":[],"openapi":"3.0.3"}"`,
+    `"{"info":{"title":"foo","version":""},"paths":{},"tags":[],"openapi":"3.2.1"}"`,
   );
 });
 
@@ -47,7 +47,7 @@ test('保存为YAML (.yml)', async () => {
       version: ""
     paths: {}
     tags: []
-    openapi: 3.0.3
+    openapi: 3.2.1
     "
   `);
 });
@@ -65,7 +65,7 @@ test('保存为YAML (.yaml)', async () => {
       version: ""
     paths: {}
     tags: []
-    openapi: 3.0.3
+    openapi: 3.2.1
     "
   `);
 });

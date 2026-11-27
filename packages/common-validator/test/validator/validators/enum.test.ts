@@ -4,6 +4,7 @@ import {
   ValidateResult,
   enumLikeToRanges,
   rule,
+  toDocument,
   validate,
 } from '../../../src';
 
@@ -123,6 +124,25 @@ test('获取文档', () => {
         true,
       ],
       "type": "boolean",
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(rule.enum(['a', 1, true]).nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "anyOf": [
+        {
+          "enum": [
+            "a",
+            1,
+            true,
+          ],
+        },
+        {
+          "type": "null",
+        },
+      ],
     }
   `);
 });

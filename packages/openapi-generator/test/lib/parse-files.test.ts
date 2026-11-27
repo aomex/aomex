@@ -35,7 +35,6 @@ test('解析文件', async () => {
               "name": "page",
               "schema": {
                 "default": 1,
-                "exclusiveMinimum": false,
                 "minimum": 1,
                 "type": "integer",
               },
@@ -47,7 +46,6 @@ test('解析文件', async () => {
               "schema": {
                 "default": 10,
                 "description": "This is page size",
-                "exclusiveMinimum": false,
                 "minimum": 5,
                 "type": "integer",
               },
@@ -73,7 +71,6 @@ test('解析文件', async () => {
               "name": "page",
               "schema": {
                 "default": 1,
-                "exclusiveMinimum": false,
                 "minimum": 1,
                 "type": "integer",
               },
@@ -85,7 +82,6 @@ test('解析文件', async () => {
               "schema": {
                 "default": 10,
                 "description": "This is page size",
-                "exclusiveMinimum": false,
                 "minimum": 5,
                 "type": "integer",
               },

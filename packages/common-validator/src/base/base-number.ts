@@ -107,10 +107,10 @@ export abstract class BaseNumberValidator<T = number> extends Validator<T> {
     const { max, maxInclusive, min, minInclusive } = this.config;
     return {
       type: 'number',
-      maximum: max,
-      minimum: min,
-      exclusiveMaximum: maxInclusive === void 0 ? void 0 : !maxInclusive,
-      exclusiveMinimum: minInclusive === void 0 ? void 0 : !minInclusive,
+      maximum: maxInclusive === false ? undefined : max,
+      minimum: minInclusive === false ? undefined : min,
+      exclusiveMaximum: maxInclusive === false ? max : undefined,
+      exclusiveMinimum: minInclusive === false ? min : undefined,
     };
   }
 }

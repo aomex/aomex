@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { Decimal, DecimalValidator, ValidateResult } from '../../../src';
+import { Decimal, DecimalValidator, toDocument, ValidateResult } from '../../../src';
 
 describe('链式调用返回新的实例', () => {
   const validator = new DecimalValidator();
@@ -147,14 +147,35 @@ test('获取文档', () => {
 
   expect(new DecimalValidator().min('10').max('20', false).default('15')['toDocument']())
     .toMatchInlineSnapshot(`
+      {
+        "default": "15",
+        "example": "123.45",
+        "exclusiveMaximum": 20,
+        "exclusiveMinimum": undefined,
+        "maximum": undefined,
+        "minimum": 10,
+        "type": "string",
+      }
+    `);
+
+  expect(new DecimalValidator().min('10', false).max('20')['toDocument']()).toMatchObject(
     {
-      "default": "15",
+      minimum: undefined,
+      exclusiveMinimum: 10,
+      maximum: 20,
+      exclusiveMaximum: undefined,
+    },
+  );
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(new DecimalValidator().nullable()).schema).toMatchInlineSnapshot(`
+    {
       "example": "123.45",
-      "exclusiveMaximum": true,
-      "exclusiveMinimum": false,
-      "maximum": 20,
-      "minimum": 10,
-      "type": "string",
+      "type": [
+        "string",
+        "null",
+      ],
     }
   `);
 });

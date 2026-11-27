@@ -136,7 +136,6 @@ export const parseFiles = async (
     );
 
     if (methodName === 'post') {
-      // @ts-expect-error 防止验证警告
       methodItem['x-codegen-request-body-name'] = 'body';
     }
 

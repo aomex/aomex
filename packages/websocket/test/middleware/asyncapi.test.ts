@@ -14,7 +14,7 @@ test('payload 只填入站 message.payload', () => {
   md['asyncapi']().onEvent?.(ctx);
 
   expect(ctx.message.payload).toMatchObject({
-    schemaFormat: 'application/vnd.oai.openapi;version=3.0.0',
+    schemaFormat: 'application/vnd.oai.openapi;version=3.2.0',
     schema: {
       type: 'object',
       properties: {
@@ -46,7 +46,7 @@ test('emit 经 addSend 填出站 message / operation', () => {
     name: 'chat.message',
     description: '房间内聊天消息',
     payload: {
-      schemaFormat: 'application/vnd.oai.openapi;version=3.0.0',
+      schemaFormat: 'application/vnd.oai.openapi;version=3.2.0',
       schema: {
         type: 'object',
         properties: {

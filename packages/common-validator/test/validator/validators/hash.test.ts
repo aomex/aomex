@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { HashValidator, ValidateResult } from '../../../src';
+import { HashValidator, toDocument, ValidateResult } from '../../../src';
 
 test('md5', async () => {
   const validator = new HashValidator('md5');
@@ -28,6 +28,20 @@ test('获取文档', () => {
       "minLength": 40,
       "pattern": undefined,
       "type": "string",
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(new HashValidator('sha1').nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "format": "sha1",
+      "maxLength": 40,
+      "minLength": 40,
+      "type": [
+        "string",
+        "null",
+      ],
     }
   `);
 });

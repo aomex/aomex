@@ -95,11 +95,27 @@ import { expectType, type TypeEqual } from 'ts-expect';
 }
 
 {
-  const payload: AsyncAPI.AnySchemaObject = {
+  const payload: AsyncAPI.MultiFormatSchemaObject = {
     schemaFormat: 'application/schema+json;version=draft-07',
     schema: { type: 'string' },
   };
   expectType<AsyncAPI.MultiFormatSchemaObject>(payload);
+}
+
+{
+  const payload: AsyncAPI.MultiFormatSchemaObject = {
+    schemaFormat: 'application/vnd.oai.openapi;version=3.2.0',
+    schema: { type: ['string', 'null'] },
+  };
+  expectType<AsyncAPI.MultiFormatSchemaObject>(payload);
+}
+
+{
+  const schema: AsyncAPI.SchemaObject = {
+    type: ['string', 'null'],
+    examples: ['a', null],
+  };
+  expectType<AsyncAPI.SchemaObject>(schema);
 }
 
 {

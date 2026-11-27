@@ -1,4 +1,4 @@
-import { ArrayValidator, ValidateResult, rule } from '../../../src';
+import { ArrayValidator, ValidateResult, rule, toDocument } from '../../../src';
 import { expect, test, describe } from 'vitest';
 
 describe('链式调用返回新的实例', () => {
@@ -416,6 +416,20 @@ test('获取文档', () => {
       "minItems": undefined,
       "type": "array",
       "uniqueItems": undefined,
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(rule.array(rule.string()).nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "items": {
+        "type": "string",
+      },
+      "type": [
+        "array",
+        "null",
+      ],
     }
   `);
 });

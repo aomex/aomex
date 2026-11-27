@@ -5,6 +5,7 @@ import {
   HashValidator,
   AnyOfValidator,
   StringValidator,
+  toDocument,
   UrlValidator,
   ValidateResult,
 } from '../../../src';
@@ -83,10 +84,36 @@ test('获取文档', () => {
         },
         {
           "example": "922337203685475807",
-          "exclusiveMinimum": false,
           "format": "int64",
           "minimum": 10,
           "type": "integer",
+        },
+      ],
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(
+    toDocument(new AnyOfValidator([new StringValidator(), new UrlValidator()]).nullable())
+      .schema,
+  ).toMatchInlineSnapshot(`
+    {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "type": "string",
+            },
+            {
+              "example": "https://example.com/path/to?id=1",
+              "format": "uri",
+              "type": "string",
+            },
+          ],
+        },
+        {
+          "type": "null",
         },
       ],
     }

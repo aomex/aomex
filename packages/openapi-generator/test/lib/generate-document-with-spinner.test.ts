@@ -25,7 +25,7 @@ test('指定基础文档', async () => {
     routers: [],
     app: new TestWebApp(),
     docs: {
-      openapi: '3.0.2',
+      openapi: '3.1.2',
       info: { version: '1.2.3', title: 'abc' },
     },
   });
@@ -35,7 +35,7 @@ test('指定基础文档', async () => {
         "title": "abc",
         "version": "1.2.3",
       },
-      "openapi": "3.0.2",
+      "openapi": "3.1.2",
       "paths": {},
       "tags": [],
     }
@@ -46,7 +46,10 @@ test('手动修复文档', async () => {
   const result = await generateOpenapiWithSpinner({
     routers: [],
     app: new TestWebApp(),
-    docs: { info: { title: 'aomex', version: '1.2.3' } },
+    docs: {
+      openapi: '3.2.1',
+      info: { title: 'aomex', version: '1.2.3' },
+    },
     fix(data) {
       data.info.description = ' desc foo bar';
       data.tags ||= [];
@@ -60,7 +63,7 @@ test('手动修复文档', async () => {
         "title": "aomex",
         "version": "1.2.3",
       },
-      "openapi": "3.0.3",
+      "openapi": "3.2.1",
       "paths": {},
       "tags": [
         {
@@ -97,6 +100,7 @@ test('app.envelope 经 spinner 路径收成 200 套壳', async () => {
   const result = await generateOpenapiWithSpinner({
     routers: join(import.meta.dirname, '..', 'fixtures', 'routers', 'a.router.ts'),
     app: webApp,
+    docs: { openapi: '3.2.1' },
     saveToFile,
   });
 

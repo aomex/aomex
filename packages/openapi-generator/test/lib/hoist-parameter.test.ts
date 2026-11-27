@@ -8,7 +8,7 @@ test('每个item都有相同的参数', () => {
       title: 'x',
       version: '1',
     },
-    openapi: '3.0.3',
+    openapi: '3.2.0',
     paths: {
       '/foo': {
         get: {
@@ -27,7 +27,6 @@ test('每个item都有相同的参数', () => {
               name: 'page',
               schema: {
                 default: 1,
-                exclusiveMinimum: false,
                 minimum: 1,
                 type: 'integer',
               },
@@ -72,7 +71,7 @@ test('每个item都有相同的参数', () => {
         "title": "x",
         "version": "1",
       },
-      "openapi": "3.0.3",
+      "openapi": "3.2.0",
       "paths": {
         "/foo": {
           "get": {
@@ -82,7 +81,6 @@ test('每个item都有相同的参数', () => {
                 "name": "page",
                 "schema": {
                   "default": 1,
-                  "exclusiveMinimum": false,
                   "minimum": 1,
                   "type": "integer",
                 },
@@ -119,7 +117,7 @@ test('不是每个item都有相同的参数', () => {
       title: 'x',
       version: '1',
     },
-    openapi: '3.0.3',
+    openapi: '3.2.0',
     paths: {
       '/foo': {
         get: {
@@ -130,7 +128,6 @@ test('不是每个item都有相同的参数', () => {
               name: 'page',
               schema: {
                 default: 1,
-                exclusiveMinimum: false,
                 minimum: 1,
                 type: 'integer',
               },
@@ -175,7 +172,7 @@ test('不是每个item都有相同的参数', () => {
         "title": "x",
         "version": "1",
       },
-      "openapi": "3.0.3",
+      "openapi": "3.2.0",
       "paths": {
         "/foo": {
           "get": {
@@ -185,7 +182,6 @@ test('不是每个item都有相同的参数', () => {
                 "name": "page",
                 "schema": {
                   "default": 1,
-                  "exclusiveMinimum": false,
                   "minimum": 1,
                   "type": "integer",
                 },
@@ -232,7 +228,7 @@ test('单个item不提升', () => {
       title: 'x',
       version: '1',
     },
-    openapi: '3.0.3',
+    openapi: '3.2.0',
     paths: {
       '/foo': {
         get: {
@@ -243,7 +239,6 @@ test('单个item不提升', () => {
               name: 'page',
               schema: {
                 default: 1,
-                exclusiveMinimum: false,
                 minimum: 1,
                 type: 'integer',
               },
@@ -270,7 +265,7 @@ test('单个item不提升', () => {
         "title": "x",
         "version": "1",
       },
-      "openapi": "3.0.3",
+      "openapi": "3.2.0",
       "paths": {
         "/foo": {
           "get": {
@@ -280,7 +275,6 @@ test('单个item不提升', () => {
                 "name": "page",
                 "schema": {
                   "default": 1,
-                  "exclusiveMinimum": false,
                   "minimum": 1,
                   "type": "integer",
                 },

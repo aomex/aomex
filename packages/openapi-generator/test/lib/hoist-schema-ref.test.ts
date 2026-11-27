@@ -4,7 +4,7 @@ import { test, expect, vitest } from 'vitest';
 import { hoistSchemaRef } from '../../src';
 
 const emptyDoc = (): OpenAPI.Document => ({
-  openapi: '3.0.3',
+  openapi: '3.2.1',
   info: { title: '', version: '' },
   paths: {},
 });
@@ -240,7 +240,7 @@ test('refName=true 相同内容 MD5 一致，hoist 只保留一个组件', () =>
 
 test('body(schema.asName) 提升为具名 components；$ref；无名 schema 不进 components', () => {
   const namedDoc: OpenAPI.Document = {
-    openapi: '3.0.3',
+    openapi: '3.2.1',
     info: { title: '', version: '' },
     paths: { '/': { post: { responses: {} } } },
   };
@@ -276,7 +276,7 @@ test('body(schema.asName) 提升为具名 components；$ref；无名 schema 不�
   expect(namedDoc.components?.schemas?.['CreateUser']).not.toHaveProperty('x-ref');
 
   const anonymousDoc: OpenAPI.Document = {
-    openapi: '3.0.3',
+    openapi: '3.2.1',
     info: { title: '', version: '' },
     paths: { '/': { post: { responses: {} } } },
   };
@@ -293,23 +293,14 @@ test('body(schema.asName) 提升为具名 components；$ref；无名 schema 不�
   });
   hoistSchemaRef(anonymousDoc);
 
-  expect(
-    (anonymousDoc.paths['/']!.post!.requestBody as OpenAPI.RequestBodyObject).content![
-      'application/json'
-    ]!.schema,
-  ).toMatchObject({
+  const anonymousMediaType = (
+    anonymousDoc.paths['/']!.post!.requestBody as OpenAPI.RequestBodyObject
+  ).content!['application/json'] as OpenAPI.MediaTypeObject;
+  expect(anonymousMediaType.schema).toMatchObject({
     type: 'object',
     properties: { foo: { type: 'string' } },
   });
-  expect(
-    (anonymousDoc.paths['/']!.post!.requestBody as OpenAPI.RequestBodyObject).content![
-      'application/json'
-    ]!.schema,
-  ).not.toHaveProperty('$ref');
-  expect(
-    (anonymousDoc.paths['/']!.post!.requestBody as OpenAPI.RequestBodyObject).content![
-      'application/json'
-    ]!.schema,
-  ).not.toHaveProperty('x-ref');
+  expect(anonymousMediaType.schema).not.toHaveProperty('$ref');
+  expect(anonymousMediaType.schema).not.toHaveProperty('x-ref');
   expect(anonymousDoc.components?.schemas).toBeUndefined();
 });

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { UrlValidator, ValidateResult } from '../../../src';
+import { toDocument, UrlValidator, ValidateResult } from '../../../src';
 
 describe('链式调用返回新的实例', () => {
   const validator = new UrlValidator();
@@ -65,6 +65,19 @@ test('获取文档', () => {
       "minLength": undefined,
       "pattern": undefined,
       "type": "string",
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(new UrlValidator().nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "example": "https://example.com/path/to?id=1",
+      "format": "uri",
+      "type": [
+        "string",
+        "null",
+      ],
     }
   `);
 });

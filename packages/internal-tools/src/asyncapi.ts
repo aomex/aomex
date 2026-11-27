@@ -1,4 +1,4 @@
-import type { OpenAPIV3 } from 'openapi-types';
+import type * as OpenAPIV32 from '@scalar/openapi-types/3.2';
 
 /**
  * AsyncAPI 3.x TypeScript 类型（自研，对齐规范 3.0.0 / 3.1.0 核心对象）。
@@ -9,7 +9,7 @@ import type { OpenAPIV3 } from 'openapi-types';
  */
 export namespace AsyncAPI {
   /** 复用校验器产出的 JSON Schema（与 OpenAPI Schema 同形） */
-  export type SchemaObject = OpenAPIV3.SchemaObject;
+  export type SchemaObject = OpenAPIV32.SchemaObject;
 
   export interface ReferenceObject {
     $ref: string;

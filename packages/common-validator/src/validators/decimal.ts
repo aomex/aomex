@@ -102,10 +102,14 @@ export class DecimalValidator<T = Decimal> extends Validator<T> {
       type: 'string',
       example: '123.45',
       default: defaultValue === void 0 ? void 0 : defaultValue.toString(),
-      minimum: min === void 0 ? void 0 : min.toNumber(),
-      maximum: max === void 0 ? void 0 : max.toNumber(),
-      exclusiveMinimum: minInclusive === void 0 ? void 0 : !minInclusive,
-      exclusiveMaximum: maxInclusive === void 0 ? void 0 : !maxInclusive,
+      minimum:
+        minInclusive === false ? undefined : min === void 0 ? void 0 : min.toNumber(),
+      maximum:
+        maxInclusive === false ? undefined : max === void 0 ? void 0 : max.toNumber(),
+      exclusiveMinimum:
+        minInclusive === false && min !== undefined ? min.toNumber() : undefined,
+      exclusiveMaximum:
+        maxInclusive === false && max !== undefined ? max.toNumber() : undefined,
     };
   }
 }

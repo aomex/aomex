@@ -14,6 +14,7 @@ import { saveToFile } from './save-to-file';
 import { initializeDocument } from './initialize-document';
 import { parseFiles } from './parse-files';
 import { appendTag } from './append-tag';
+import { convertOpenapiVersion } from './convert-openapi-version';
 import { terminal } from '@aomex/console';
 import type { GenerateOpenapiOptions } from './generate-openapi';
 import { i18n } from '../i18n';
@@ -98,6 +99,7 @@ export const generateOpenapiWithSpinner = async (
       task: async (ctx) => {
         hoistSchemaRef(ctx.document);
         methodParameterToPathParameter(ctx.document);
+        ctx.document = convertOpenapiVersion(ctx.document, config.docs.openapi);
         await sleep(500);
       },
     },

@@ -6,6 +6,8 @@ import {
 } from './lib/generate-document-with-spinner';
 import { i18n } from './i18n';
 
+export type OpenapiVersion = '3.1.0' | '3.1.1' | '3.1.2' | '3.2.0' | '3.2.1';
+
 export interface OpenapiOptions extends GenerateOpenapiWithSpinnerOptions {
   /**
    * 指令名称。默认值：`openapi`
@@ -32,6 +34,7 @@ export interface OpenapiOptions extends GenerateOpenapiWithSpinnerOptions {
  *   commandName: 'openapi',
  *   routers: './src/routers',
  *   app, // 与运行时同一实例
+ *   docs: { openapi: '3.2.1' },
  * });
  * ```
  */

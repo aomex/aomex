@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { AnyValidator, ValidateResult } from '../../../src';
+import { AnyValidator, toDocument, ValidateResult } from '../../../src';
 
 test('可以传递任何值', async () => {
   const validator = new AnyValidator();
@@ -32,6 +32,41 @@ test('获取文档', () => {
         },
         {
           "type": "string",
+        },
+      ],
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(new AnyValidator().nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array",
+            },
+            {
+              "type": "boolean",
+            },
+            {
+              "type": "integer",
+            },
+            {
+              "type": "number",
+            },
+            {
+              "type": "object",
+            },
+            {
+              "type": "string",
+            },
+          ],
+        },
+        {
+          "type": "null",
         },
       ],
     }

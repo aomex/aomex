@@ -40,7 +40,13 @@ export const validateAsyncapi = async (document: AsyncAPI.Document) => {
   const spectral = initSpectral();
   const originResult = await spectral.run(document as unknown as Record<string, unknown>);
   originResult.forEach((item) => {
-    result[item.severity === DiagnosticSeverity.Error ? 'errors' : 'warnings'].push({
+    const target =
+      item.severity === DiagnosticSeverity.Error
+        ? result.errors
+        : item.severity === DiagnosticSeverity.Warning
+          ? result.warnings
+          : undefined;
+    target?.push({
       path: item.path.map(String),
       message: item.message,
     });

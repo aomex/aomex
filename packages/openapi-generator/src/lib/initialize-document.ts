@@ -3,9 +3,11 @@ import type { GenerateOpenapiOptions } from './generate-openapi';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-export const initializeDocument = async (basic?: GenerateOpenapiOptions['docs']) => {
+export const initializeDocument = async (
+  basic?: Partial<GenerateOpenapiOptions['docs']>,
+) => {
   const document: OpenAPI.Document = JSON.parse(JSON.stringify(basic || {}));
-  document.openapi ||= '3.0.3';
+  document.openapi = '3.2.0';
   document.tags ||= [];
   document.info ||= { title: '', version: '' };
   document.paths = {};

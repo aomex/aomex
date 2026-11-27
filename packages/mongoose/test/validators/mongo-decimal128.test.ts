@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { MongoDecimal128Validator } from '../../src';
-import { ValidateResult } from '@aomex/common';
+import { toDocument, ValidateResult } from '@aomex/common';
 import { mongo } from 'mongoose';
 
 test('检测decimal类型', async () => {
@@ -52,4 +52,16 @@ test('获取文档', () => {
         "type": "string",
       }
     `);
+});
+
+test('nullable 文档使用 OpenAPI 3.2 联合类型', () => {
+  expect(toDocument(new MongoDecimal128Validator().nullable()).schema)
+    .toMatchInlineSnapshot(`
+    {
+      "type": [
+        "string",
+        "null",
+      ],
+    }
+  `);
 });

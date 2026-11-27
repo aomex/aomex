@@ -26,7 +26,7 @@ test('同名再次 ensure 不覆盖已填字段', async () => {
   const first = ensureAsyncApiMessage(document, { event: 'ping', action: 'receive' });
   first.message.description = '已填';
   first.message.payload = {
-    schemaFormat: 'application/vnd.oai.openapi;version=3.0.0',
+    schemaFormat: 'application/vnd.oai.openapi;version=3.2.0',
     schema: { type: 'string' },
   };
 

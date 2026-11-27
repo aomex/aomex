@@ -588,15 +588,15 @@ importers:
       '@i18nx/node':
         specifier: ^0.3.1
         version: 0.3.1
+      '@scalar/openapi-types':
+        specifier: ^0.9.10
+        version: 0.9.10
       '@types/bytes':
         specifier: ^3.1.6
         version: 3.1.6
       bytes:
         specifier: ^3.1.2
         version: 3.1.2
-      openapi-types:
-        specifier: ^12.1.3
-        version: 12.1.3
 
   packages/kafka:
     dependencies:
@@ -701,6 +701,9 @@ importers:
       '@aomex/internal-tools':
         specifier: workspace:*
         version: link:../internal-tools
+      '@openapi-spec/downgrader':
+        specifier: 0.8.0
+        version: 0.8.0
       '@stoplight/spectral-core':
         specifier: ^1.24.1
         version: 1.24.1(encoding@0.1.13)
@@ -2009,6 +2012,12 @@ packages:
 
   '@openapi-contrib/openapi-schema-to-json-schema@3.2.0':
     resolution: {integrity: sha512-Gj6C0JwCr8arj0sYuslWXUBSP/KnUlEGnPW4qxlXvAl543oaNQgMgIgkQUA6vs5BCCvwTEiL8m/wdWzfl4UvSw==}
+
+  '@openapi-spec/downgrader@0.8.0':
+    resolution: {integrity: sha512-QPVfSwd1LkhWrstgJbloRzoaiwyVMw6VwcCyV+ObxFBf8L3MDuPR3vvS0lfcn7r6cYrxsW9PDUh4bD6E9UFHhQ==}
+
+  '@openapi-spec/types@0.8.0':
+    resolution: {integrity: sha512-MJGUd1VdG/Ty60uYObP20rnFwrObQOJIGKfBjvSKAgDzTmbKT0gzJabCupwuDu47LbphZWaFtGmZHFYv7B4huQ==}
 
   '@opentelemetry/api-logs@0.219.0':
     resolution: {integrity: sha512-FFx7YnaYJlIjqWW/AG/yAZ0L/NEY724PipXXXQLdtZPbLwBGbUMTGL1i/esI56TWfTUXxhLfpgrnWJCG8aUJyg==}
@@ -6273,9 +6282,6 @@ packages:
     resolution: {integrity: sha512-DPlCms3KKEbjVQb0spV6Awfn6UWNheuG/+folQPzh/wUaKwuqvj8zt5gagD7qoyxtE03cIiKPgLFS3Q8Bz00uQ==}
     engines: {node: '>=12.20.0'}
 
-  openapi-types@12.1.3:
-    resolution: {integrity: sha512-N4YtSYJqghVu4iek2ZUvcN/0aqH1kRDuNqzcycDxhOUpg7GdvLa2F3DgS6yBNhInhv2r/6I0Flkn7CqL8+nIcw==}
-
   ora@5.4.1:
     resolution: {integrity: sha512-5b6Y85tPxZZ7QytO+BQzysW31HJku27cRIlkbAXaNx+BdcVi+LlRFmVXzeF6a7JCwJpyw5c4b+YSVImQIrBpuQ==}
     engines: {node: '>=10'}
@@ -9071,6 +9077,12 @@ snapshots:
   '@openapi-contrib/openapi-schema-to-json-schema@3.2.0':
     dependencies:
       fast-deep-equal: 3.1.3
+
+  '@openapi-spec/downgrader@0.8.0':
+    dependencies:
+      '@openapi-spec/types': 0.8.0
+
+  '@openapi-spec/types@0.8.0': {}
 
   '@opentelemetry/api-logs@0.219.0':
     dependencies:
@@ -14268,8 +14280,6 @@ snapshots:
   openapi-server-url-templating@1.3.0:
     dependencies:
       apg-lite: 1.0.4
-
-  openapi-types@12.1.3: {}
 
   ora@5.4.1:
     dependencies:

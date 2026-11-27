@@ -1,6 +1,7 @@
 import {
   IntValidator,
   TupleValidator,
+  toDocument,
   ValidateResult,
   Validator,
   rule,
@@ -14,6 +15,29 @@ describe('tuple 校验', () => {
     await expect(validator['validate'](['hello', '42'])).resolves.toStrictEqual(
       ValidateResult.accept(['hello', 42]),
     );
+  });
+
+  test('nullable 文档快照', () => {
+    expect(toDocument(rule.tuple([rule.string(), rule.number()]).nullable()).schema)
+      .toMatchInlineSnapshot(`
+      {
+        "items": false,
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+          {
+            "type": "string",
+          },
+          {
+            "type": "number",
+          },
+        ],
+        "type": [
+          "array",
+          "null",
+        ],
+      }
+    `);
   });
 
   test('rest 校验固定前缀后的零个或多个元素', async () => {
@@ -146,13 +170,15 @@ describe('tuple 校验', () => {
   test('获取固定长度的数组文档', () => {
     expect(rule.tuple([rule.string(), rule.number()])['toDocument']()).toStrictEqual({
       type: 'array',
-      items: {},
+      prefixItems: [{ type: 'string' }, { type: 'number' }],
+      items: false,
       minItems: 2,
       maxItems: 2,
     });
     expect(new TupleValidator([])['toDocument']()).toStrictEqual({
       type: 'array',
-      items: {},
+      prefixItems: [],
+      items: false,
       minItems: 0,
       maxItems: 0,
     });
@@ -160,7 +186,8 @@ describe('tuple 校验', () => {
       rule.tuple([rule.string(), rule.number()]).rest(rule.boolean())['toDocument'](),
     ).toStrictEqual({
       type: 'array',
-      items: {},
+      prefixItems: [{ type: 'string' }, { type: 'number' }],
+      items: { type: 'boolean' },
       minItems: 2,
       maxItems: undefined,
     });

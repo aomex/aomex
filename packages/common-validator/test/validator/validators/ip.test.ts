@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { IpValidator, ValidateResult } from '../../../src';
+import { IpValidator, toDocument, ValidateResult } from '../../../src';
 
 test('ipv4格式', async () => {
   const validator = new IpValidator(['v4']);
@@ -76,6 +76,18 @@ test('获取文档', () => {
       "minLength": undefined,
       "pattern": "\\.com$",
       "type": "string",
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(new IpValidator(['v4']).nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "format": "ipv4",
+      "type": [
+        "string",
+        "null",
+      ],
     }
   `);
 });

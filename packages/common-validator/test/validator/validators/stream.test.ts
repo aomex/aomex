@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { StreamValidator, ValidateResult } from '../../../src';
+import { StreamValidator, toDocument, ValidateResult } from '../../../src';
 import { createReadStream } from 'node:fs';
 
 test('检测缓冲类型', async () => {
@@ -27,6 +27,18 @@ test('获取文档', () => {
     {
       "format": "binary",
       "type": "string",
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(new StreamValidator().nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "format": "binary",
+      "type": [
+        "string",
+        "null",
+      ],
     }
   `);
 });

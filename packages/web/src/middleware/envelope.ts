@@ -11,6 +11,30 @@ import {
 
 const ENVELOPE_HTTP_STATUS = 200;
 
+const isReferenceObject = (value: unknown): value is OpenAPI.ReferenceObject =>
+  typeof value === 'object' && value !== null && '$ref' in value;
+
+const resolveMediaType = (
+  media: OpenAPI.MediaTypeObject | OpenAPI.ReferenceObject,
+  document: OpenAPI.Document,
+): OpenAPI.MediaTypeObject | undefined => {
+  if (!isReferenceObject(media)) return media;
+  const prefix = '#/components/mediaTypes/';
+  if (!media.$ref.startsWith(prefix)) return undefined;
+  const encodedName = media.$ref.slice(prefix.length);
+  if (!encodedName || encodedName.includes('/')) return undefined;
+  const name = decodeURIComponent(encodedName).replace(/~1/g, '/').replace(/~0/g, '~');
+  if (name.includes('/')) return undefined;
+
+  const target = document.components?.mediaTypes?.[name];
+  if (!target || isReferenceObject(target)) return undefined;
+  return {
+    ...target,
+    ...(media.summary === undefined ? {} : { summary: media.summary }),
+    ...(media.description === undefined ? {} : { description: media.description }),
+  };
+};
+
 const readSkipEnvelopeStatuses = (methodItem: OpenAPI.OperationObject): Set<number> => {
   const raw = (methodItem as Record<string, unknown>)[X_SKIP_ENVELOPE];
   if (!Array.isArray(raw)) return new Set();
@@ -60,25 +84,53 @@ const isEmptyStatusKey = (key: string): boolean => {
 
 const pickMediaSchema = (
   response: OpenAPI.ResponseObject | OpenAPI.ReferenceObject | undefined,
+  document: OpenAPI.Document,
 ): OpenAPI.SchemaObject | undefined => {
   if (!response || '$ref' in response) return undefined;
   const content = response.content;
   if (!content) return undefined;
   const json = content['application/json'];
-  if (json?.schema && !('$ref' in json.schema)) return json.schema;
+  if (json) {
+    const schema = resolveMediaType(json, document)?.schema;
+    if (
+      schema !== undefined &&
+      typeof schema === 'object' &&
+      schema !== null &&
+      !isReferenceObject(schema)
+    ) {
+      return schema as OpenAPI.SchemaObject;
+    }
+  }
   for (const media of Object.values(content)) {
-    if (media?.schema && !('$ref' in media.schema)) return media.schema;
+    const schema = resolveMediaType(media, document)?.schema;
+    if (
+      schema !== undefined &&
+      typeof schema === 'object' &&
+      schema !== null &&
+      !isReferenceObject(schema)
+    ) {
+      return schema as OpenAPI.SchemaObject;
+    }
   }
   return undefined;
 };
 
-/** 仅取 `application/json` 的 schema；合并 skip 200 时不用其它 media，避免把 html 等塞进 JSON oneOf */
-const pickJsonMediaSchema = (
-  response: OpenAPI.ResponseObject,
-): OpenAPI.SchemaObject | undefined => {
-  const schema = response.content?.['application/json']?.schema;
-  if (!schema || '$ref' in schema) return undefined;
-  return schema;
+const hasUnresolvedResponseReference = (
+  response: OpenAPI.ResponseObject | OpenAPI.ReferenceObject,
+  document: OpenAPI.Document,
+): boolean => {
+  if (isReferenceObject(response)) return true;
+  for (const media of Object.values(response.content ?? {})) {
+    const resolved = resolveMediaType(media, document);
+    if (!resolved) return true;
+    if (
+      resolved.schema !== undefined &&
+      (typeof resolved.schema === 'boolean' || isReferenceObject(resolved.schema))
+    ) {
+      return true;
+    }
+  }
+  return false;
 };
 
 /**
@@ -89,21 +141,32 @@ const mergeEnvelopeIntoSkipped200 = (
   existing: OpenAPI.ResponseObject,
   envSchema: OpenAPI.SchemaObject,
   options: EnvelopeOptions,
+  document: OpenAPI.Document,
 ): OpenAPI.ResponseObject => {
   const merged: OpenAPI.ResponseObject = structuredClone(existing);
-  const envBranches = envSchema.oneOf
-    ? envSchema.oneOf.map((s) => structuredClone(s as OpenAPI.SchemaObject))
-    : [structuredClone(envSchema)];
+  const envBranches =
+    typeof envSchema === 'object' && envSchema !== null && envSchema.oneOf
+      ? envSchema.oneOf.map((s) => structuredClone(s as OpenAPI.SchemaObject))
+      : [structuredClone(envSchema)];
   const envOnly = envBranches.length === 1 ? envBranches[0]! : { oneOf: envBranches };
 
   merged.content = { ...merged.content };
   const prevJson = merged.content['application/json'];
-  const prevJsonSchema = pickJsonMediaSchema(merged);
+  const resolvedPrevJson = prevJson && resolveMediaType(prevJson, document);
 
-  if (prevJsonSchema) {
+  if (prevJson && !resolvedPrevJson) {
+    merged.content['application/json'] = prevJson;
+  } else if (resolvedPrevJson && isReferenceObject(resolvedPrevJson.schema)) {
+    merged.content['application/json'] = prevJson!;
+  } else if (resolvedPrevJson?.schema !== undefined) {
     merged.content['application/json'] = {
-      ...prevJson,
-      schema: { oneOf: [structuredClone(prevJsonSchema), ...envBranches] },
+      ...resolvedPrevJson,
+      schema: { oneOf: [structuredClone(resolvedPrevJson.schema), ...envBranches] },
+    };
+  } else if (resolvedPrevJson) {
+    merged.content['application/json'] = {
+      ...resolvedPrevJson,
+      schema: envOnly,
     };
   } else {
     merged.content['application/json'] = { schema: envOnly };
@@ -232,7 +295,7 @@ export const createEnvelopeMiddleware = (options: EnvelopeOptions): WebMiddlewar
   new WebMiddleware({
     fn: async (_ctx, next) => next(),
     openapi: {
-      postMethod: (methodItem) => {
+      postMethod: (methodItem, opts) => {
         methodItem.responses ||= {};
         const prev = methodItem.responses;
         // response({ skipEnvelope }) 在 onMethod 写入的状态码集合；非数组视为空
@@ -246,7 +309,8 @@ export const createEnvelopeMiddleware = (options: EnvelopeOptions): WebMiddlewar
         let hasSuccessToWrap = false;
         let hasErrorToWrap = false;
 
-        for (const [key, response] of Object.entries(prev)) {
+        for (const key of Object.keys(prev)) {
+          const response = prev[key]!;
           // 运行时也不套壳：重定向、204/205/304
           if (isRedirectStatusKey(key) || isEmptyStatusKey(key)) {
             kept[key] = response;
@@ -259,8 +323,8 @@ export const createEnvelopeMiddleware = (options: EnvelopeOptions): WebMiddlewar
             continue;
           }
           // 优先 application/json，否则取第一个带 schema 的 media
-          const schema = pickMediaSchema(response);
-          if (schema) {
+          const schema = pickMediaSchema(response, opts.document);
+          if (schema !== undefined) {
             if (isSuccessStatusKey(key)) {
               successSchemas.push(schema);
               hasSuccessToWrap = true;
@@ -269,6 +333,8 @@ export const createEnvelopeMiddleware = (options: EnvelopeOptions): WebMiddlewar
               hasErrorToWrap = true;
             }
             // 其它键（如未识别状态）既不 kept 也不进套壳，等价于丢弃
+          } else if (hasUnresolvedResponseReference(response, opts.document)) {
+            kept[key] = response;
           } else if (isSuccessStatusKey(key)) {
             hasSuccessToWrap = true;
           } else if (isErrorStatusKey(key)) {
@@ -304,7 +370,12 @@ export const createEnvelopeMiddleware = (options: EnvelopeOptions): WebMiddlewar
         const existing = kept[envKey];
 
         if (existing && !('$ref' in existing)) {
-          kept[envKey] = mergeEnvelopeIntoSkipped200(existing, envSchema, options);
+          kept[envKey] = mergeEnvelopeIntoSkipped200(
+            existing,
+            envSchema,
+            options,
+            opts.document,
+          );
         } else {
           // 无 skip 200：新建套壳 200
           kept[envKey] = {

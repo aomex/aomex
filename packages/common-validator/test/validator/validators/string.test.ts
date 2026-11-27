@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { StringValidator, ValidateResult } from '../../../src';
+import { StringValidator, toDocument, ValidateResult } from '../../../src';
 
 describe('链式调用返回新的实例', () => {
   const validator = new StringValidator();
@@ -45,6 +45,17 @@ test('获取文档', () => {
       "minLength": 10,
       "pattern": "x$",
       "type": "string",
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(new StringValidator().nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "type": [
+        "string",
+        "null",
+      ],
     }
   `);
 });

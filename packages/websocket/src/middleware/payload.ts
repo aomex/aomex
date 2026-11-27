@@ -58,7 +58,7 @@ export const payload = <T extends ValidatorToken>(
     asyncapi: {
       onEvent({ message }) {
         message.payload = {
-          schemaFormat: 'application/vnd.oai.openapi;version=3.0.0',
+          schemaFormat: 'application/vnd.oai.openapi;version=3.2.0',
           schema: toDocument(fields).schema,
         };
       },

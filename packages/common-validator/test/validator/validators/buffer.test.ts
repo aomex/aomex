@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { BufferValidator, ValidateResult } from '../../../src';
+import { BufferValidator, toDocument, ValidateResult } from '../../../src';
 
 describe('链式调用返回新的实例', () => {
   const validator = new BufferValidator();
@@ -74,6 +74,18 @@ test('获取文档', () => {
       "default": "AAE=",
       "format": "byte",
       "type": "string",
+    }
+  `);
+});
+
+test('nullable 文档快照', () => {
+  expect(toDocument(new BufferValidator().nullable()).schema).toMatchInlineSnapshot(`
+    {
+      "format": "byte",
+      "type": [
+        "string",
+        "null",
+      ],
     }
   `);
 });

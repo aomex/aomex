@@ -6,6 +6,8 @@ import { hoistSchemaRef } from './hoist-schema-ref';
 import { initializeDocument } from './initialize-document';
 import { parseFiles } from './parse-files';
 import { appendTag } from './append-tag';
+import { convertOpenapiVersion } from './convert-openapi-version';
+import type { OpenapiVersion } from '../openapi';
 
 export interface GenerateOpenapiOptions {
   /**
@@ -34,15 +36,19 @@ export interface GenerateOpenapiOptions {
    * generateOpenapi({
    *   routers: './src/routers',
    *   app,
+   *   docs: { openapi: '3.2.1' },
    * });
    * ```
    */
   app: WebApp;
   /**
-   * Openapi基础信息
+   * 文档基础信息，导出版本必填。
    */
-  docs?: Omit<OpenAPI.Document, 'paths' | 'openapi' | 'info'> & {
-    openapi?: `3.0.${0 | 1 | 2 | 3}`;
+  docs: Omit<OpenAPI.Document, 'paths' | 'openapi' | 'info'> & {
+    /**
+     * 必填导出版本。建议尽量选择较高版本；仅在目标工具不兼容时选择较低版本。
+     */
+    openapi: OpenapiVersion;
     info?: Partial<OpenAPI.Document['info']>;
   };
   /**
@@ -68,5 +74,5 @@ export const generateOpenapi = async (
   hoistSchemaRef(document);
   methodParameterToPathParameter(document);
 
-  return JSON.parse(JSON.stringify(document));
+  return convertOpenapiVersion(JSON.parse(JSON.stringify(document)), config.docs.openapi);
 };

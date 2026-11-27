@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import type { OpenAPI } from '@aomex/internal-tools';
 import { describe, expect, test } from 'vitest';
 import { ObjectValidator, toDocument, toValidator, rule, schema } from '../../../src';
 import { MockValidator } from '../../mock/mock-validator';
@@ -81,9 +82,49 @@ test('获取文档', () => {
   expect(toDocument(validator['default']('abc')['nullable']())).toMatchInlineSnapshot(`
     {
       "schema": {
-        "default": "abc",
-        "nullable": true,
+        "anyOf": [
+          {
+            "default": "abc",
+          },
+          {
+            "type": "null",
+          },
+        ],
       },
+    }
+  `);
+});
+
+test('已有 null 类型的联合不会重复添加 null', () => {
+  class MultiTypeValidator extends MockValidator {
+    protected override toDocument(): OpenAPI.SchemaObject {
+      return { type: ['string', 'null'] };
+    }
+  }
+
+  expect(toDocument(new MultiTypeValidator()['nullable']()).schema).toEqual({
+    type: ['string', 'null'],
+  });
+});
+
+test('nullable const Schema 使用 anyOf 保留原约束', () => {
+  class ConstValidator extends MockValidator {
+    protected override toDocument(): OpenAPI.SchemaObject {
+      return { type: 'string', const: 'text' };
+    }
+  }
+
+  expect(toDocument(new ConstValidator()['nullable']()).schema).toMatchInlineSnapshot(`
+    {
+      "anyOf": [
+        {
+          "const": "text",
+          "type": "string",
+        },
+        {
+          "type": "null",
+        },
+      ],
     }
   `);
 });
